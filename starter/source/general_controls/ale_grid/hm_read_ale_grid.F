@@ -45,6 +45,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE MESSAGE_MOD
       USE ALE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -53,7 +54,6 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include "submod_c.inc"
-#include "nchar_c.inc"
 #include "param_c.inc"
 #include "com01_c.inc"
 #include "com04_c.inc"
@@ -67,7 +67,7 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER :: NALE_GRID, II, NITER,NTETRA4
-      CHARACTER :: KEY*ncharkey
+      CHARACTER(LEN=NCHARKEY) :: KEY
       LOGICAL :: IS_AVAILABLE
 
 !     Initializations

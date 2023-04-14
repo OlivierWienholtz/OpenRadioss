@@ -31,7 +31,7 @@ Chd|        DT_MOD                        share/modules/dt_mod.F
 Chd|        OUTPUT_MOD                    ../common_source/modules/output/output_mod.F
 Chd|        SENSOR_MOD                    share/modules/sensor_mod.F    
 Chd|====================================================================
-      SUBROUTINE ENG_QAPRINT_DRIVER(IRUNN_BIS ,SENSORS,DT,OUTPUT)
+      SUBROUTINE ENG_QAPRINT_DRIVER(IRUNN_BIS ,SENSORS,DT,OUTPUT,ROOTNAME,CHRUN0)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -39,6 +39,7 @@ C-----------------------------------------------
       USE SENSOR_MOD
       USE DT_MOD
       USE OUTPUT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,LCHRUN0
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -48,9 +49,12 @@ C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER IRUNN_BIS
-      TYPE (SENSORS_) ,INTENT(IN) :: SENSORS
-      TYPE (DT_)  , INTENT(INOUT) :: DT
-      TYPE(OUTPUT_), INTENT(INOUT) :: OUTPUT !< output structure
+      TYPE (SENSORS_) ,INTENT(IN)         :: SENSORS
+      TYPE (DT_)  , INTENT(INOUT)         :: DT
+      TYPE(OUTPUT_), INTENT(INOUT)        :: OUTPUT !< output structure
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      CHARACTER(LEN=LCHRUN0),INTENT(IN)   :: CHRUN0
+
 C=======================================================================
 
       ! doqa is set in QA_OUT_MOD depending on DO_QA env variable setting
@@ -58,7 +62,7 @@ C=======================================================================
       IF ( doqa /= 1  ) RETURN
 
       IF(NCYCLE == 0) THEN ! ECRITURE QAPRINT AU CYCLE 0 ENGINE
-        CALL ENG_QAPRINT_GENERALCONTROLSINPUT(IRUNN_BIS,OUTPUT)
+        CALL ENG_QAPRINT_GENERAL_CONTROLS_INPUT(IRUNN_BIS,OUTPUT,ROOTNAME,CHRUN0)
 
         CALL ENG_QAPRINT_DTINPUT(DT)
 

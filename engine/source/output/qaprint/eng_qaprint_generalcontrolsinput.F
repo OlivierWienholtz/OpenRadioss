@@ -27,13 +27,14 @@ Chd|-- calls ---------------
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|        OUTPUT_MOD                    ../common_source/modules/output/output_mod.F
 Chd|====================================================================
-      SUBROUTINE ENG_QAPRINT_GENERALCONTROLSINPUT(IRUNN,OUTPUT)
+      SUBROUTINE ENG_QAPRINT_GENERAL_CONTROLS_INPUT(IRUNN,OUTPUT,ROOTNAME,CHRUN0)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE QA_OUT_MOD
       USE MESSAGE_MOD
       USE OUTPUT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,LCHRUN0
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -49,7 +50,7 @@ C-----------------------------------------------
 #include      "com06_c.inc"
 #include      "com08_c.inc"
 #include      "check.inc"
-#include      "chara_c.inc"
+#include      "filescount_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -61,6 +62,8 @@ C-----------------------------------------------
       CHARACTER (LEN=255) :: VARNAME
       DOUBLE PRECISION TEMP_DOUBLE
       TYPE(OUTPUT_), INTENT(INOUT) :: OUTPUT !< output structure
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      CHARACTER(LEN=LCHRUN0),INTENT(IN)   :: CHRUN0
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------
@@ -69,7 +72,7 @@ C-----------------------------------------------
 C     QA PRINT FOR RUN INPUT
 C-----------------------------------------------
       IF (MYQAKEY('/RUN')) THEN
-        CALL QAPRINT(ROOTNAM(1:ROOTLEN),IRUNN,0.0_8)
+        CALL QAPRINT(ROOTNAME,IRUNN,0.0_8)
 
 C       Le restart letter du run sert de nom de la variable dans le ref.extract , suivi de l'ID du run
         IF(LEN_TRIM(CHRUN0)/=0)THEN

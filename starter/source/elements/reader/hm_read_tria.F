@@ -63,6 +63,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C--------------------------------------------------------
 C     LECTURE DES ELEMENTS 2D TRIANGULAIRES
 C--------------------------------------------------------
@@ -223,10 +224,10 @@ C--------------------------------------------------
             IXTG(5,I)=IPID
             IF (IXTG(NIXTG,I)>ID_LIMIT)THEN
                 CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                      I1=IXTG(NIXTG,I),C1=LINE,C2='/TRIA')
+     .                      I1=IXTG(NIXTG,I),C1='/TRIA')
             ELSEIF (NADMESH/=0.AND.IXTG(NIXTG,I)>ID_LIMIT_ADMESH)THEN
                 CALL ANCMSG(MSGID=1069,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                      I1=IXTG(NIXTG,I),C1=LINE,C2='/TRIA')
+     .                      I1=IXTG(NIXTG,I),C1='/TRIA')
             ENDIF       
                                        
             DO J=2,4                                                 

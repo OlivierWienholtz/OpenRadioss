@@ -52,6 +52,7 @@ C-----------------------------------------------
       USE INOUTFILE_MOD
       USE HM_OPTION_READ_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,7 +83,8 @@ C-----------------------------------------------
      .        IL1,IL2,ADR_STIFF,ADR_STIFF0,SIZE_MASS,SIZE_STIFF
       INTEGER IWORK(70000)
       CHARACTER FXBFILE*2148, NWLINE*100, STRERR*29
-      CHARACTER TITR*nchartitle,MESS*40,MESS1*40,EXTENSION*3
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER MESS*40,MESS1*40,EXTENSION*3
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: TABSL,ITAG_DOF
       INTEGER, DIMENSION(:), ALLOCATABLE :: INDEX,ITAG
 
@@ -506,6 +508,7 @@ C-----------------------------------------------
       USE INOUTFILE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -537,9 +540,8 @@ C-----------------------------------------------
      .        NTAG,ADRM1,ADRM2,ADRN1,ADRN2,CNOD(NUMNOD)
       my_real 
      .        FREQ,BETA,OMEGA,DTC1,DTC2,VV(6)
-      CHARACTER TITR*nchartitle,NWLINE*100,
-     .          FXBFILE*100
-
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER NWLINE*100, FXBFILE*100
       INTEGER :: LEN_TMP_NAME
       CHARACTER(len=2148) :: TMP_NAME
       LOGICAL :: IS_AVAILABLE
@@ -1028,6 +1030,7 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1037,8 +1040,7 @@ C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER IFIC, ID
       CHARACTER NWLINE*100
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

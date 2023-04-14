@@ -96,8 +96,10 @@ Chd|        CREATE_LINE_FROM_SURFACE_EXT_ALLstarter/source/model/sets/create_lin
 Chd|-- calls ---------------
 Chd|====================================================================
       MODULE SETDEF_MOD
-C----------------------------------------------------------------------- 
-#include "nchar_c.inc"    
+C-----------------------------------------------
+C   M o d u l e s
+C----------------------------------------------- 
+      USE NAMES_AND_TITLES_MOD  ,ONLY: NCHARTITLE
 c=======================================================================      
 !---------
 !   SET DATA STRUCTURE
@@ -112,7 +114,7 @@ C=======================================================================
 C-----------------------------------------------------------------------
       TYPE SET_
         INTEGER   :: SET_ID               ! SET identifier
-        CHARACTER :: TITLE*nchartitle ! SET title
+        CHARACTER(LEN=NCHARTITLE) :: TITLE ! SET title
         INTEGER   :: SET_TYPE         ! SET type      (1-GENERAL, 2-COLLECT)
         INTEGER   :: SET_ACTIV         
         INTEGER   :: KEYTYPE          ! SET KEY type (all keys)

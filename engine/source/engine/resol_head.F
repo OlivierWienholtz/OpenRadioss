@@ -71,7 +71,7 @@ Chd|====================================================================
      .           FORNEQS     ,MATPARAM_TAB,GROUP_PARAM_TAB,PINCH_DATA ,ALE_CONNECTIVITY,
      .           DRAPE_SH4N  ,DRAPE_SH3N  ,T_MONVOL       ,SENSORS    ,EBCS_TAB        ,
      .           DIFFUSION   ,SEGVAR      ,DYNAIN_DATA    ,DRAPEG     ,USER_WINDOWS    ,
-     .           OUTPUT      ,INTERFACES  ,DT             ,LOADS      )
+     .           OUTPUT      ,INTERFACES  ,DT             ,LOADS      ,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -107,6 +107,7 @@ C-----------------------------------------------
       USE OUTPUT_MOD
       USE INTERFACES_MOD
       USE DT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -166,6 +167,7 @@ C     REAL
       TYPE(INTERFACES_),INTENT(INOUT)         :: INTERFACES
       TYPE(DT_),INTENT(INOUT)         :: DT
       TYPE(LOADS_) ,INTENT(INOUT) :: LOADS
+      TYPE(NAMES_AND_TITLES_)                 :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -269,7 +271,8 @@ C
      L  XCELL           , XFACE         ,NE_NERCVOIS    ,NE_NESDVOIS    ,NE_LERCVOIS    ,NE_LESDVOIS ,IBCSCYC          ,LBCSCYC   ,
      M  T_MONVOL        ,ID_GLOBAL_VOIS ,FACE_VOIS      ,TAGSLV_RBY     ,DYNAIN_DATA    ,FCONT_MAX   ,EBCS_TAB         ,DIFFUSION ,
      N  KLOADPINTER     ,LOADPINTER     ,IN0            ,DGAPLOADINT    ,DRAPEG         ,USER_WINDOWS ,OUTPUT          ,INTERFACES,
-     O  DT              ,LOADS          )
+     O  DT              ,LOADS          ,
+     O  NAMES_AND_TITLES )
 C
       CALL TRACE_OUT(2)
 C

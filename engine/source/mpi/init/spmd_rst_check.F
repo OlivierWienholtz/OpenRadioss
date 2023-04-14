@@ -29,11 +29,12 @@ Chd|        ANCMSG                        source/output/message/message.F
 Chd|        ARRET                         source/system/arret.F         
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
-      SUBROUTINE SPMD_RST_CHECK()
+      SUBROUTINE SPMD_RST_CHECK(NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -48,13 +49,12 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "task_c.inc"
-#include      "chara_c.inc"
 #include      "com01_c.inc"
 #include      "com08_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l  V a r i a b l e s
 C-----------------------------------------------
@@ -87,16 +87,16 @@ C   Check sur TT
            IF (TTREC/=TT) THEN
 
              WRITE(RSRUN1,'(I4.4)')1
-             FILNAM1=ROOTNAM(1:ROOTLEN)
-     .                  //'_'//CHRUN//'_'//RSRUN1//'.rst'
+             FILNAM1=TRIM(NAMES_AND_TITLES%ROOTNAME)
+     .                  //'_'//NAMES_AND_TITLES%CHRUN//'_'//RSRUN1//'.rst'
 
              WRITE(RSRUN,'(I4.4)')I
-             FILNAM=ROOTNAM(1:ROOTLEN)
-     .                  //'_'//CHRUN//'_'//RSRUN//'.rst'
+             FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)
+     .                  //'_'//NAMES_AND_TITLES%CHRUN//'_'//RSRUN//'.rst'
 
              CALL ANCMSG(MSGID=24,ANMODE=ANINFO_BLIND,
-     .                   C1=FILNAM1(1:ROOTLEN+15),
-     .                   C2=FILNAM(1:ROOTLEN+15))
+     .                   C1=FILNAM1(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+15),
+     .                   C2=FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+15))
               CALL ARRET(2)
            ENDIF
 

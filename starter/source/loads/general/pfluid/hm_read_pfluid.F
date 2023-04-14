@@ -52,6 +52,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE SENSOR_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -87,9 +88,9 @@ C-----------------------------------------------
      .        FUN_HSP,FUN_CX,FUN_VEL,IFRA1,IFRA2,ICFIELD8,ICFIELD12,ICFIELD9,ICFIELD13,
      .        NCUR_HSP,NCUR_VEL,NCUR_CX,
      .        H, CAPT
-      CHARACTER MESS*40, XYZ*ncharfield, XYZ1*ncharfield,
-     .          char_X*1, char_Y*1, char_Z*1, char_XX*2, char_YY*2, char_ZZ*2
-      CHARACTER TITR*nchartitle
+      CHARACTER MESS*40, char_X*1, char_Y*1, char_Z*1, char_XX*2, char_YY*2, char_ZZ*2
+      CHARACTER(LEN=NCHARFIELD) :: XYZ, XYZ1
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL IS_AVAILABLE
 
       DATA char_X/'X'/
@@ -259,7 +260,7 @@ C-----------
         !-----------   
         !Reader for XYZ field                                                             
         XYZ = ''                                                                     
-        CALL HM_GET_STRING('Dir_hsp',XYZ,ncharfield,IS_AVAILABLE)                    
+        CALL HM_GET_STRING('Dir_hsp',XYZ,NCHARFIELD,IS_AVAILABLE)                    
         !-----------                                                                 
         ICFIELD8 = 0                                                                 
         IF(XYZ(1:1)  == char_X)ICFIELD8=1                                            
@@ -329,7 +330,7 @@ C-----------
           ENDIF                                                                      
         ENDIF                                                                        
         !-----------                                                                 
-        CALL HM_GET_STRING('Dir_vel',XYZ1,ncharfield,IS_AVAILABLE)                   
+        CALL HM_GET_STRING('Dir_vel',XYZ1,NCHARFIELD,IS_AVAILABLE)                   
         !-----------                                                                 
         ICFIELD12 = 0                                                                
         IF(XYZ1(1:1)  == char_X)ICFIELD12=1                                          

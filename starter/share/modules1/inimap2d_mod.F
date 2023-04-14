@@ -33,9 +33,12 @@ Chd|        ST_QAPRINT_INITIAL_CONDITIONS source/output/qaprint/st_qaprint_initi
 Chd|-- calls ---------------
 Chd|====================================================================
       MODULE INIMAP2D_MOD
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
+C-----------------------------------------------
 #include "my_real.inc"
-#include "nchar_c.inc"
-
         TYPE FUNC_DATA
           my_real, ALLOCATABLE, DIMENSION(:,:) :: RHO
           my_real, ALLOCATABLE, DIMENSION(:,:) :: VFRAC                 
@@ -52,7 +55,7 @@ Chd|====================================================================
           INTEGER, DIMENSION(:), ALLOCATABLE :: TAGNODE
           my_real, DIMENSION(3) :: VEC1, VEC2, VEC3
 
-          CHARACTER*nchartitle :: TITLE
+          CHARACTER(LEN=NCHARTITLE) :: TITLE
           LOGICAL :: FILE
           INTEGER :: NUM_CENTROIDS, NUM_NODE_VEL
           LOGICAL :: CORRECTLY_READ          

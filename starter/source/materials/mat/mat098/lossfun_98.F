@@ -31,9 +31,9 @@ Chd|        FCT_FIBER_2                   source/materials/mat/mat098/lossfun_98
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|        TABLE_MOD                     share/modules1/table_mod.F    
 Chd|====================================================================
-      SUBROUTINE LOSSFUN_98(NVAR,NDC,X,FUN,DFUN,CONS,DCONS,IGOTO,
-     .                    NPC,PLD ,IFUNC,NFUNC,UPARAM,LENC,LENT,
-     .                    XBIA,NPTBI,ISYM )
+      SUBROUTINE LOSSFUN_98( NVAR,NDC,X,FUN,DFUN,CONS,DCONS,IGOTO,
+     .                       NPC,PLD ,IFUNC,NFUNC,UPARAM,LENC,LENT,
+     .                       XBIA,NPTBI,ISYM )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -46,14 +46,11 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      !CHARACTER*nchartitle :: TITR
-      !INTEGER  , DIMENSION(NFUNC)      :: IFUNC,FUNC_ID
       INTEGER     IGOTO ,SIZEPN,NPTBI
       INTEGER     NVAR,NDC
       my_real  
      .     CONS(*),DCONS(*),X(NVAR),UPARAM(*),FUN(NVAR),DFUN(NVAR),
      .     XBIA(NPTBI)
-!      TYPE(TTABLE) TABLE(*)
 C-----------------------------------------------
 C   VARIABLES FOR FUNCTION INTERPOLATION 
 C-----------------------------------------------

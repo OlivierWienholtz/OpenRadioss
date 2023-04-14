@@ -46,6 +46,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE UNITAB_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -73,7 +74,8 @@ C-----------------------------------------------
      .      IFLAGUNIT,IUNIT,NB_ELEMENTS
       INTEGER WORKS(70000)
       INTEGER, DIMENSION(:), ALLOCATABLE :: KSYSUSRS,INDEXS,ITRIS
-      CHARACTER MESS*40,KEY*ncharkey
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARKEY) :: KEY
       my_real
      .      FILL
       LOGICAL IS_AVAILABLE

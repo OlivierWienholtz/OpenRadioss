@@ -27,7 +27,11 @@ Chd|  SPMD_COLLECTX                 source/mpi/output/spmd_collectx.F
 Chd|-- called by -----------
 Chd|-- calls ---------------
 Chd|====================================================================
-      SUBROUTINE SPMD_COLLECTX(X, ITAB, WEIGHT,NODGLOB,SIZP0)
+      SUBROUTINE SPMD_COLLECTX(X, ITAB, WEIGHT,NODGLOB,SIZP0,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -45,11 +49,11 @@ C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "task_c.inc"
 #include      "spmd_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER ITAB(*),WEIGHT(*),NODGLOB(*),SIZP0
       my_real
      .        X(3,*)
@@ -71,12 +75,12 @@ C-----------------------------------------------
 C   S o u r c e  L i n e s
 C-----------------------------------------------
       WRITE(CYCLENUM,'(I7.7)')NCYCLE
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.xdb'
+      FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.xdb'
     
       OPEN(UNIT=67,FILE=FILNAM,ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
      
-      FILEN = ROOTLEN+17
+      FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
       IF (ISPMD/=0) THEN
         N = 0
         DO I = 1, NUMNOD

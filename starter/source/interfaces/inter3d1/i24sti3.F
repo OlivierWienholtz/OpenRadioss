@@ -56,6 +56,7 @@ C   M o d u l e s
 C----------------------------------------------- 
       USE INTBUF_FRIC_MOD  
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -94,8 +95,7 @@ C     REAL
      .   AREAS(*),THK(*),THK_PART(*),PEN_OLD(5,NSN), FILLSOL(*),
      .   PM_STACK(20,*)
       INTEGER ID,IPARTNS(*),IPARTS(*)
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(INTBUF_FRIC_STRUCT_) INTBUF_FRIC_TAB(*)
       TYPE (SURF_) :: IGRSURF
       TYPE (SURF_) :: IGRSURF2
@@ -1077,6 +1077,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE INTBUF_FRIC_MOD  
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1114,8 +1115,7 @@ C     REAL
      .   AREAS(*),THK(*),THK_PART(*),SLSFAC,DXM ,GAPMAX_M, FILLSOL(*),
      .   PM_STACK(3,*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(INTBUF_FRIC_STRUCT_) INTBUF_FRIC_TAB(*) 
       TYPE (SURF_) :: IGRSURF
 C-----------------------------------------------

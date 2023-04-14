@@ -195,7 +195,7 @@ Chd|====================================================================
      J                  FXB_MATRIX ,FXB_MATRIX_ADD,FXB_LAST_ADRESS,PTR_NOPT_FXB,R_SKEW,
      K                  KNOD2EL1D  ,NOD2EL1D     ,EBCS_TAB     ,RBY_INIAXIS  ,ALEA    ,
      L                  KNOD2ELC   ,NOD2ELC      ,DR           ,SLRBODY      , DRAPEG ,
-     M                  IPARI      ,INTBUF_TAB   ,INTERFACES)
+     M                  IPARI      ,INTBUF_TAB   ,INTERFACES   ,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------                     
@@ -221,6 +221,7 @@ C-----------------------------------------------
       USE ARRAY_MOD
       USE INTERFACES_MOD
       USE INTBUFDEF_MOD 
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -349,6 +350,7 @@ C-----------------------------------------------
       TYPE(t_ale_connectivity), INTENT(INOUT) :: ALE_CONNECTIVITY
       TYPE(INTBUF_STRUCT_) , INTENT(IN   ) ::  INTBUF_TAB(NINTER)
       TYPE(INTERFACES_) , INTENT(INOUT   ) ::  INTERFACES
+      TYPE(NAMES_AND_TITLES_),INTENT(IN)   ::  NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -397,8 +399,7 @@ C remove automatic allocation to reduce stack consumption
       my_real
      .    ADDEDMS(NPART), MST3(MVSIZ),PTTRIA(MVSIZ)
       INTEGER ID,ISTOT, NF1,ICUMU,I15_,SIPHASE, NUMEL_TOT,NNOD,NSROT
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE):: TITR
       LOGICAL :: ERROR_THROWN
 
       ! ----------------
@@ -1189,7 +1190,8 @@ C Case total strain
      .             NSIGI ,IN        ,VR    ,IPM        ,NSIGS   ,
      .             VOLNOD ,BVOLNOD  ,VNS   ,BNS        ,PTSOL   ,
      .             BUFMAT ,NPC      ,PLD   ,FAIL_INI   ,INS     ,
-     .             ILOADP ,FACLOAD  ,PERTURB,RNOISE    )
+     .             ILOADP ,FACLOAD  ,PERTURB,RNOISE    ,NAMES_AND_TITLES%ROOTNAME,
+     .             NAMES_AND_TITLES%ROOTNAME_LENGTH)
           ELSE
             GBUF => ELBUF_TAB(NG)%GBUF
             IF (NPT == 1 .AND. ISTOT == 1) THEN
@@ -2368,7 +2370,8 @@ C-------------------------------------------------------------------------------
       CALL NLOC_DMG_INIT(ELBUF_TAB,NLOC_DMG ,IPARG    ,IXC      ,
      .                   IXS      ,IXTG     ,ELE_AREA ,DTELEM   ,
      .                   NUMEL    ,IPM      ,X        ,XREFS    ,
-     .                   XREFC    ,XREFTG   ,BUFMAT   ,PM       )
+     .                   XREFC    ,XREFTG   ,BUFMAT   ,PM       ,
+     .                   NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
 c
 c-----------------------------------------------------------------------------------
 
@@ -2434,8 +2437,11 @@ Chd|====================================================================
       SUBROUTINE CHEKMP2(NUMEL ,IPART   ,IPARTEL ,IX      ,NIX     ,
      1                  NE     ,EMAT    ,EPID    ,IPM      ,IGEO    ,
      2                  ELEM   )
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------     
       USE MESSAGE_MOD
-C
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE 
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -2455,8 +2461,7 @@ C     REAL
 c      my_real
 c     .   PM(NPROPM,*)
       CHARACTER *(*) ELEM
-      CHARACTER*nchartitle,
-     .   TITR2
+      CHARACTER(LEN=NCHARTITLE):: TITR2
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -2707,8 +2712,11 @@ Chd|        FRETITL2                      source/starter/freform.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE CHECKMP(NUMEL,IX,NIX,NG,NE,EMAT,EPID,IPM,IGEO,ELEM,IPARTEL)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------     
       USE MESSAGE_MOD
-C
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE 
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -2729,8 +2737,7 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, MT, IG
-      CHARACTER*nchartitle,
-     .   TITR,TITR2
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR2
 C-----------------------------------------------
 C   P r e - C o n d i t i o n s
 C-----------------------------------------------
@@ -3044,7 +3051,10 @@ Chd|-- calls ---------------
 Chd|        FRETITL2                      source/starter/freform.F      
 Chd|====================================================================
       SUBROUTINE OUTPART(PARTSAV,IPART,NPART)
-C
+C-----------------------------------------------
+C   M o d u l e s 
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -3067,7 +3077,7 @@ C-----------------------------------------------
       my_real
      .   MAS,SM,XX,YY,ZZ,XY,YZ,ZX,XG,YG,ZG,
      .   IXX,IXY,IYY,IYZ,IZZ,IZX,EK,VX,VY,VZ
-      CHARACTER TEXT*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TEXT
 C======================================================================|
 C
       WRITE(IOUT,'(//,A)')'PART MASS & INERTIA'
@@ -3342,7 +3352,7 @@ C-----------------------------------------------
      .   MAS,SM,XX,YY,ZZ,XY,YZ,ZX,XG,YG,ZG,
      .   IXX,IXY,IYY,IYZ,IZZ,IZX,EK,VX,VY,VZ,HM,HR,HF,DN,QA,QB,QH,
      .   NS_A,NS_B,DM,QF,QM,QR,DF
-      CHARACTER(len=nchartitle) TEXT
+      CHARACTER(len=NCHARTITLE) TEXT
       CHARACTER(len=23), DIMENSION(27) :: EL_TYP
       DATA EL_TYP / 'SOLID-HEXA ', 
      .    'TETRA4 ',

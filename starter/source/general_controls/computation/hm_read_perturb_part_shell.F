@@ -50,6 +50,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARFIELD,NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -85,7 +86,10 @@ C-----------------------------------------------
      .   CPT_PART,NB_RANDOM,I_SEED,DISTRIB(50),
      .   II,NB_INTERV,IGRPRT,N,IOK,SEED,SEED_RANDOM,
      .   ITYP,L,I_PERTURB_VAR,SIZEY,EMPTY
-      CHARACTER TITR*nchartitle,KEY*ncharkey,MES*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=40)         :: MES,MESS
+      CHARACTER (LEN=2*NCHARFIELD) :: CHVAR
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: TAB_PART
       INTEGER, DIMENSION(:),   ALLOCATABLE :: A_SEED
       INTEGER, DIMENSION(1:8) :: DT_SEED
@@ -96,7 +100,7 @@ C-----------------------------------------------
       CHARACTER*100 CHAR(100)
       CHARACTER*100 CHAR1(100)
       CHARACTER*100 CHAR2
-      CHARACTER MESS*40,CHVAR*(2*ncharfield)
+
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
@@ -134,7 +138,7 @@ c
 C
         ! Reading the number of the Group of Part + the perturbed variable
         CALL HM_GET_INTV('grpart_ID'    ,IGRPRT  ,IS_AVAILABLE,LSUBMODEL) 
-        CALL HM_GET_STRING('chvar',CHVAR   ,2*ncharfield,IS_AVAILABLE)
+        CALL HM_GET_STRING('chvar',CHVAR   ,2*NCHARFIELD,IS_AVAILABLE)
         IF (CHVAR(1:5) == 'thick' .OR. CHVAR(1:5) == 'THICK') I_PERTURB_VAR = 1  
 c
         EMPTY = 1
@@ -239,7 +243,7 @@ C
         ! Reading the number of the Group of Part + the perturbed variable
         CALL HM_GET_INTV('grpart_ID' ,IGRPRT  ,IS_AVAILABLE,LSUBMODEL) 
         QP_IPERTURB(I,5) = IGRPRT
-        CALL HM_GET_STRING('chvar',CHVAR   ,2*ncharfield,IS_AVAILABLE)
+        CALL HM_GET_STRING('chvar',CHVAR   ,2*NCHARFIELD,IS_AVAILABLE)
         IF (CHVAR(1:5) == 'thick' .OR. CHVAR(1:5) == 'THICK') QP_IPERTURB(I,6) = 1
 c
         ! Checking Shell part group

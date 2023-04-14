@@ -239,7 +239,7 @@ Chd|====================================================================
      Y                  LESDVOIS ,CRKEDGE  ,INDX_CRK    ,XEDGE4N     ,XEDGE3N   ,
      Z                  STACK    ,SPH2SOL  ,STIFN       ,STIFR       ,IGRNOD    ,
      1                  H3D_DATA ,SUBSET   ,MULTI_FVM   ,KNOTLOCPC   ,KNOTLOCEL ,
-     2                  FCONT_MAX,FNCONTP2 ,FTCONTP2    )
+     2                  FCONT_MAX,FNCONTP2 ,FTCONTP2    ,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -257,6 +257,7 @@ C-----------------------------------------------
       USE INOUTFILE_MOD
       USE ALE_CONNECTIVITY_MOD
       USE MATPARAM_DEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -279,7 +280,6 @@ C-----------------------------------------------
 #include      "scr17_c.inc"
 #include      "scr23_c.inc"
 #include      "scr25_c.inc"
-#include      "chara_c.inc"
 #include      "scrcut_c.inc"
 #include      "task_c.inc"
 #include      "spmd_c.inc"
@@ -351,6 +351,7 @@ C-----------------------------------------------
       TYPE(MULTI_FVM_STRUCT), INTENT(IN) :: MULTI_FVM
       TYPE(t_ale_connectivity), INTENT(IN) :: ALE_CONNECTIVITY
       TYPE (MATPARAM_STRUCT_) ,DIMENSION(NUMMAT) ,INTENT(IN) :: MATPARAM_TAB
+      TYPE(NAMES_AND_TITLES_), INTENT(IN) :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -535,41 +536,41 @@ C-----------------------------------------------
           ENDDO
           IF (CPT == 5)THEN
             WRITE(CHANIM,'(I4.4)')IANIM
-            FILNAM=ROOTNAM(1:ROOTLEN)//'A'//CHANIM
-            FILEN = ROOTLEN + 5
+            FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'A'//CHANIM
+            FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 5
           ELSEIF (CPT == 6)THEN
             WRITE(CHANIM,'(I5.5)')IANIM
-            FILNAM=ROOTNAM(1:ROOTLEN)//'A'//CHANIM
-            FILEN = ROOTLEN + 6
+            FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'A'//CHANIM
+            FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 6
           ELSEIF (CPT == 7)THEN
             WRITE(CHANIM,'(I6.6)')IANIM
-            FILNAM=ROOTNAM(1:ROOTLEN)//'A'//CHANIM
-            FILEN = ROOTLEN + 7
+            FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'A'//CHANIM
+            FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 7
           ELSEIF (CPT == 8)THEN
             WRITE(CHANIM,'(I7.7)')IANIM
-            FILNAM=ROOTNAM(1:ROOTLEN)//'A'//CHANIM
-            FILEN = ROOTLEN + 8
+            FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'A'//CHANIM
+            FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 8
           ELSEIF (CPT == 9)THEN
             WRITE(CHANIM,'(I8.8)')IANIM
-            FILNAM=ROOTNAM(1:ROOTLEN)//'A'//CHANIM
-            FILEN = ROOTLEN + 9
+            FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'A'//CHANIM
+            FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 9
           ELSE
             IANIM = 1
             WRITE(CHANIM,'(I3.3)')IANIM
-            FILNAM=ROOTNAM(1:ROOTLEN)//'A'//CHANIM
-            FILEN = ROOTLEN + 4
+            FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'A'//CHANIM
+            FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 4
           ENDIF
         ELSE
           WRITE(CHANIM,'(I3.3)')IANIM
-          FILNAM=ROOTNAM(1:ROOTLEN)//'A'//CHANIM
-          FILEN = ROOTLEN + 4
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'A'//CHANIM
+          FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 4
         ENDIF
        ENDIF
        IF(ANIM_VERS>=50)THEN
         IF(IANIM>=10000)IANIM=1
         WRITE(CHANIM1,'(I4.4)')IANIM
-        FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHANIM1//'.ani'
-        FILEN = ROOTLEN + 9
+        FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHANIM1//'.ani'
+        FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 9
        ENDIF
 C
         LEN_TMP_NAME = OUTFILE_NAME_LEN + FILEN      

@@ -45,10 +45,11 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE UNITAB_MOD
-      USE ELBUFTAG_MOD            
+      USE ELBUFTAG_MOD
       USE SUBMODEL_MOD
-      USE MATPARAM_DEF_MOD    
+      USE MATPARAM_DEF_MOD
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -63,10 +64,10 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      TYPE(SUBMODEL_DATA),INTENT(IN)        :: LSUBMODEL(*)
-      TYPE(MLAW_TAG_), INTENT(INOUT)   :: MTAG
-      TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
-      CHARACTER*nchartitle, INTENT(IN)       :: TITR
+      TYPE(SUBMODEL_DATA),INTENT(IN)         :: LSUBMODEL(*)
+      TYPE(MLAW_TAG_), INTENT(INOUT)         :: MTAG
+      TYPE (UNIT_TYPE_),INTENT(IN)           :: UNITAB 
+      CHARACTER(LEN=NCHARTITLE), INTENT(IN)  :: TITR
       INTEGER, INTENT(IN)                    :: MAT_ID
       INTEGER, INTENT(INOUT) :: IPM(NPROPMI)
       my_real, INTENT(INOUT) :: PM(NPROPM)

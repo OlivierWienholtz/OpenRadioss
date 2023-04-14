@@ -48,6 +48,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE ELBUFDEF_MOD            
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C////////////////////////////////////////////////
 C   ROUTINE GENERIQUE 4NOEUDS-3NOEUDS 
@@ -88,7 +89,7 @@ C-----------------------------------------------
       my_real 
      .         TXX,TYY,TZZ,TXY,TYZ,TZX,UXX,UYY,UZZ,UXY,UYZ,UZX,A,B,C,
      .         E1(6),E2(6),Z1,Z2,Z0,AA,S6(6),POSI(MVSIZ,NPT)
-      CHARACTER*nchartitle, TITR1
+      CHARACTER(LEN=NCHARTITLE) :: TITR1
       TYPE(L_BUFEL_) ,POINTER :: LBUF
       TYPE(BUF_LAY_) ,POINTER :: BUFLY    
 C=======================================================================

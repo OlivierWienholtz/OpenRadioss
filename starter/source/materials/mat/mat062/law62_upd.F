@@ -34,6 +34,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -45,14 +46,12 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER*nchartitle  :: TITR
+      CHARACTER(LEN=NCHARTITLE)  :: TITR
       INTEGER MAT_ID,IOUT,NUPARAM
       my_real, DIMENSION(NUPARAM), INTENT(INOUT) :: UPARAM
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-
-c
       INTEGER NDATA,I,K,INDX,ITER,NORDRE,J,NPRONY
       my_real
      .   LAM_MIN,LAM_MAX,STRAIN_MIN,STRAIN_MAX,

@@ -62,9 +62,9 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      INTEGER               :: I, ID, IGU, IGS, NN, UID, FLAG_FMT
-      INTEGER               :: FLAG_FMT_TMP, IFIX_TMP, ISU, IS, J
-      CHARACTER             :: TITR*nchartitle
+      INTEGER                   :: I, ID, IGU, IGS, NN, UID, FLAG_FMT
+      INTEGER                   :: FLAG_FMT_TMP, IFIX_TMP, ISU, IS, J
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL IS_AVAILABLE
       INTEGER, DIMENSION(:), POINTER :: INGR2USR
 C-----------------------------------------------

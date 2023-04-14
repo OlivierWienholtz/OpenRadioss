@@ -30,18 +30,21 @@ Chd|-- calls ---------------
 Chd|====================================================================
       SUBROUTINE FUNC_INTERS(TITR,MAT_ID,FUNC1,FUNC2,FAC1,FAC2,NPC,PLD,XINT,YINT)
 C-----------------------------------------------
+C   M o d u l e s 
+C-----------------------------------------------
+        USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr17_c.inc"
 #include      "tabsiz_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER*nchartitle :: TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER  :: MAT_ID,FUNC1,FUNC2
       my_real  :: XINT,YINT,FAC1,FAC2
       INTEGER  ,DIMENSION(SNPC) :: NPC 
@@ -133,6 +136,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -140,7 +144,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER*nchartitle :: TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       !INTEGER  , DIMENSION(NFUNC)      :: IFUNC,FUNC_ID
       INTEGER     FUNC,FUND,NPC(*) 
       INTEGER  :: MAT_ID
@@ -277,6 +281,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -284,7 +289,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER*nchartitle :: TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       !INTEGER  , DIMENSION(NFUNC)      :: IFUNC,FUNC_ID
       INTEGER     FUNC,FUND,NPC(*) 
       INTEGER  :: MAT_ID

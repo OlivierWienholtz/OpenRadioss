@@ -30,7 +30,8 @@ C.../FILECOUNT/
      *        RESTARTFILESIZE,
      *        BCSFILESIZE,
      *        MUMPSFILESIZE,
-     *        H3DTOTALSIZE
+     *        H3DTOTALSIZE,
+     *        MULTIREST
 
       COMMON /FILECOUNT/
      * TOTALFILECOUNT,
@@ -42,4 +43,5 @@ C.../FILECOUNT/
      * RESTARTFILESIZE,
      * BCSFILESIZE,
      * MUMPSFILESIZE,
-     * H3DTOTALSIZE
+     * H3DTOTALSIZE,
+     * MULTIREST

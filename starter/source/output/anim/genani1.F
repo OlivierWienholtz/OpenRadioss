@@ -102,7 +102,7 @@ Chd|====================================================================
      D                   MS     , FXANI  , MBUFEL, MDEPL  , NLEVEL  ,
      E                   ELSUB  , DSANIM , NELEM , CEP    , CEPSP   ,
      F                   NOM_OPT,PTR_NOPT_RWALL,PTR_NOPT_SECT,
-     G                   ELBUF_TAB,SPH2SOL,SUBSET)
+     G                   ELBUF_TAB,SPH2SOL,SUBSET,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -111,6 +111,7 @@ C-----------------------------------------------
       USE ELBUFDEF_MOD
       USE GROUPDEF_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -126,7 +127,6 @@ C-----------------------------------------------
 #include      "units_c.inc"
 #include      "scr05_c.inc"
 #include      "scr14_c.inc"
-#include      "scr15_c.inc"
 #include      "scr16_c.inc"
 #include      "scr12_c.inc"
 #include      "scr17_c.inc"
@@ -155,6 +155,7 @@ C
      .        MDEPL(3*NUMNOD,*)
       TYPE (ELBUF_STRUCT_), DIMENSION(NGROUP) :: ELBUF_TAB
 C-----------------------------------------------
+      TYPE (NAMES_AND_TITLES_), INTENT(IN) :: NAMES_AND_TITLES
       TYPE (SUBSET_) , DIMENSION(NSUBS) :: SUBSET
       TYPE (SURF_)   , DIMENSION(NSURF) :: IGRSURF
 C-----------------------------------------------
@@ -185,7 +186,8 @@ C
      .        CDG(3), WAFT(SWAFT), XMIN, YMIN, ZMIN, XMAX, YMAX, ZMAX,
      .        XNORM(SXNORM), XFUNC1(SFUNC1), MAS(SMAS), RID
       REAL    R4, WA4(SWA4)
-      CHARACTER  FILNAM*103, CHANIM*3, CHANIM1*4, TITL*nchartitle, CTMOD*100
+      CHARACTER  FILNAM*103, CHANIM*3, CHANIM1*4, CTMOD*100
+      CHARACTER(LEN=NCHARTITLE) :: TITL
       CHARACTER*80 STR
 Cf51e11 +2
       INTEGER OFF
@@ -219,14 +221,14 @@ C-----------------------------------------------
         IF(IANIM>=10000)IANIM=1
         WRITE(CHANIM1,'(I4.4)')IANIM
         FILNAM=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//
-     .         ROOTNAM(1:ROOTLEN)//'_'//CHANIM1//'.ani'
-        FILEN = OUTFILE_NAME_LEN + ROOTLEN + 9
+     .        TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHANIM1//'.ani'
+        FILEN = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + 9
       ELSE
         IF(IANIM>=1000)IANIM=1
         WRITE(CHANIM,'(I3.3)')IANIM
         FILNAM=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//
-     .         ROOTNAM(1:ROOTLEN)//'A'//CHANIM
-        FILEN = OUTFILE_NAME_LEN + ROOTLEN + 4
+     .         TRIM(NAMES_AND_TITLES%ROOTNAME)//'A'//CHANIM
+        FILEN = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + 4
       ENDIF
 C
       DO I=1,FILEN

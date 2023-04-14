@@ -37,7 +37,7 @@ Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|        R2R_MOD                       share/modules1/r2r_mod.F      
 Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F 
 Chd|====================================================================
-      SUBROUTINE R2R_FORK(CHRUN,FILNAM,LSUBMODEL)
+      SUBROUTINE R2R_FORK(CHRUN,FILNAM,LSUBMODEL,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -46,6 +46,7 @@ C-----------------------------------------------
       USE INOUTFILE_MOD
       USE QA_OUT_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD , ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -59,12 +60,13 @@ C-----------------------------------------------
 #include      "warn_c.inc"
 #include      "scr03_c.inc"
 #include      "scr17_c.inc"
-#include      "scr15_c.inc"
 #include      "param_c.inc"
 #include      "r2r_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME),INTENT(INOUT) :: ROOTNAME
+      INTEGER,INTENT(INOUT)                  :: ROOTNAME_LENGTH
       CHARACTER FILNAM*100,CHRUN*4,ROOT_SUB*80
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(*)               
 C-----------------------------------------------
@@ -83,7 +85,7 @@ C-----------------------------------------------
         DOM_SWITCH = 0
         DOM_NAME = ''
         ROOTNAM0 = ''
-        ROOTNAM0 = ROOTNAM(1:ROOTLEN)
+        ROOTNAM0 = TRIM(ROOTNAME)
         ALLOCATE (ISUBDOM(8,NSUBDOM),STAT=stat)
 
 2000    CONTINUE
@@ -188,10 +190,11 @@ C
             WRITE(ISTDO,'(A)') '-----------------------------------'
             WRITE(ISTDO,'(A)') ''          
         ELSE
-            ROOTNAM = DOM_NAME
-            ROOTLEN = LEN_TRIM(ROOTNAM)         
+            ROOTNAME = ''
+            ROOTNAME = DOM_NAME
+            ROOTNAME_LENGTH = LEN_TRIM(ROOTNAME)         
 c-----------Initialisations for the starter processes of the subdomains----
-            FILNAM  =ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.out'
+            FILNAM  = TRIM(ROOTNAME)//'_'//CHRUN//'.out'
             R2R_FILNAM = FILNAM
             TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//R2R_FILNAM(1:LEN_TRIM(R2R_FILNAM))    
             LEN_TMP_NAME = OUTFILE_NAME_LEN+LEN_TRIM(R2R_FILNAM)
@@ -206,7 +209,7 @@ c
             WRITE(ISTDO,'(A)') ''      
             WRITE(ISTDO,'(A)') '-----------------------------------'     
             WRITE(ISTDO,'(A)')' .. TREATMENT OF SUBDOMAIN '
-     .       //ROOTNAM(1:ROOTLEN)
+     .       //TRIM(ROOTNAME) 
             WRITE(ISTDO,'(A)') '-----------------------------------'
             WRITE(ISTDO,'(A)') ''
 C-----------printout only for main domain
@@ -265,7 +268,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr15_c.inc"
 #include      "execinp.inc"
 #include      "warn_c.inc"
 C-----------------------------------------------

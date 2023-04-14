@@ -27,20 +27,24 @@ Chd|        NGR2USR                       source/system/nintrr.F
 Chd|-- calls ---------------
 Chd|====================================================================
       MODULE HM_CURRENT_OPTION_MOD
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+C-----------------------------------------------
       INTERFACE
       SUBROUTINE HM_GET_CURRENT_OPTION(OPTION_ID,UNIT_ID,OPTION_TITR,
      .                              KEYWORD1,KEYWORD2,KEYWORD3,KEYWORD4)  
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER OPTION_ID,UNIT_ID
-      CHARACTER*(ncharkey) KEYWORD1,KEYWORD2,KEYWORD3,KEYWORD4
-      CHARACTER*(nchartitle) OPTION_TITR
+      CHARACTER(len=NCHARKEY) KEYWORD1,KEYWORD2,KEYWORD3,KEYWORD4
+      CHARACTER(len=nchartitle) OPTION_TITR
       OPTIONAL ::
      .   OPTION_ID,UNIT_ID,KEYWORD1,KEYWORD2,KEYWORD3,KEYWORD4,OPTION_TITR
 

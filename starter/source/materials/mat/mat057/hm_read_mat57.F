@@ -66,7 +66,8 @@ C-----------------------------------------------
       USE MESSAGE_MOD      
       USE SUBMODEL_MOD
       USE MATPARAM_DEF_MOD          
-      USE HM_OPTION_READ_MOD 
+      USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,15 +83,15 @@ C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       TYPE(UNIT_TYPE_),INTENT(IN) :: UNITAB 
-      my_real, DIMENSION(NPROPM) ,INTENT(INOUT)  :: PM     
+      my_real, DIMENSION(NPROPM) ,INTENT(INOUT)    :: PM     
       my_real, DIMENSION(100)    ,INTENT(INOUT)    :: PARMAT
       my_real, DIMENSION(MAXUPARAM) ,INTENT(INOUT) :: UPARAM
       INTEGER, DIMENSION(MAXFUNC)   ,INTENT(INOUT) :: IFUNC
-      INTEGER, INTENT(INOUT)          :: MFUNC,NUPARAM,NUVAR,ISRATE
-      TYPE(MLAW_TAG_),INTENT(INOUT)   :: MTAG
-      INTEGER,INTENT(IN)              :: ID,MAXFUNC,MAXUPARAM
-      CHARACTER*nchartitle,INTENT(IN) :: TITR
-      TYPE(SUBMODEL_DATA),INTENT(IN)  :: LSUBMODEL(*)
+      INTEGER, INTENT(INOUT)                       :: MFUNC,NUPARAM,NUVAR,ISRATE
+      TYPE(MLAW_TAG_),INTENT(INOUT)                :: MTAG
+      INTEGER,INTENT(IN)                           :: ID,MAXFUNC,MAXUPARAM
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN)         :: TITR
+      TYPE(SUBMODEL_DATA),INTENT(IN)               :: LSUBMODEL(*)
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

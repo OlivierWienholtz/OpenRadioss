@@ -61,6 +61,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD 
       USE INIVOL_DEF_MOD
       USE INIVOL_ARRAY_MOD   
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -75,14 +76,14 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER*nchartitle,INTENT(IN) :: TITR
-      INTEGER,INTENT(INOUT) :: IPM(NPROPMI)
-      INTEGER,INTENT(IN) :: ID
-      my_real,INTENT(INOUT) :: PM(NPROPM)      
-      TYPE (UNIT_TYPE_),INTENT(IN) :: UNITAB       
-      TYPE(MLAW_TAG_),INTENT(INOUT) :: MTAG      
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN)  :: TITR
+      INTEGER,INTENT(INOUT)                 :: IPM(NPROPMI)
+      INTEGER,INTENT(IN)                    :: ID
+      my_real,INTENT(INOUT)                 :: PM(NPROPM)      
+      TYPE (UNIT_TYPE_),INTENT(IN)          :: UNITAB       
+      TYPE(MLAW_TAG_),INTENT(INOUT)         :: MTAG      
       TYPE(MULTI_FVM_STRUCT), INTENT(INOUT) :: MULTI_FVM
-      TYPE(SUBMODEL_DATA),INTENT(IN) :: LSUBMODEL(NSUBMOD)
+      TYPE(SUBMODEL_DATA),INTENT(IN)        :: LSUBMODEL(NSUBMOD)
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

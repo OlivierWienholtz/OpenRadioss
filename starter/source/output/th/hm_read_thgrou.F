@@ -76,6 +76,7 @@ C-----------------------------------------------
       USE MAPPING_OPTION_MOD
       USE SENSOR_MOD
       USE INTERFACES_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -132,8 +133,9 @@ C-----------------------------------------------
      .        OK,IGS,IGRS,NSU,K,L,CONT,IAD0,IADV,NTRI,NL,
      .        IFITMP,IADFIN,NUMEL,NV,NVAR,M,N,IAD2,IAD,NSNE,NNE,ISK,
      .        NVALL,TAGP,TAGS,IFIX_TMP,IBID,NIN
-      CHARACTER TITR*nchartitle,MESS*40,KEY*ncharline,COPT*ncharline,
-     .        TITR1*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
+      CHARACTER(LEN=NCHARLINE)  :: KEY,COPT
+      CHARACTER(LEN=40)         ::  MESS
 C
       INTEGER NVARN,NVARS,NVARC,NVART,NVARP,NVARR,NVARUR
       INTEGER NVARNS,NVARSPH
@@ -2604,7 +2606,7 @@ C          frame numbers user -> internal
           NVALL = 9                                               
           IGS=IGS+1                                               
           TITR1(1:5)='VENT '                                      
-   	      DO J=1,nchartitle-5                                 
+   	      DO J=1,NCHARTITLE-5                                 
    	        TITR1(J+5:J+5) = TITR(J:J)                        
    	      ENDDO                                               
           CALL FRETITL(TITR1,ITHGRP(NITHGR-LTITR+1,IGS),LTITR)    

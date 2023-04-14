@@ -63,7 +63,8 @@ C-----------------------------------------------
       USE ELBUFTAG_MOD            
       USE MESSAGE_MOD      
       USE SUBMODEL_MOD
-      USE MATPARAM_DEF_MOD          
+      USE MATPARAM_DEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,7 +83,7 @@ C-----------------------------------------------
       INTEGER, INTENT(INOUT)                :: IPM(NPROPMI),ISRATE,IFUNC(MAXFUNC),NFUNC,MAXFUNC,MAXUPARAM,NUPARAM, NUVAR,IMATVIS
       TYPE(MLAW_TAG_),INTENT(INOUT)         :: MTAG
       INTEGER,INTENT(IN)                    :: MAT_ID
-      CHARACTER*nchartitle,INTENT(IN)       :: TITR
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN)  :: TITR
       TYPE(SUBMODEL_DATA),INTENT(IN)        :: LSUBMODEL(*)
       TYPE(MATPARAM_STRUCT_) ,INTENT(INOUT) :: MATPARAM
 C-----------------------------------------------
@@ -90,7 +91,7 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER ::    ID,ITEST,ILAW
       my_real  ::   E,NU,G,RBULK,SCALEFAC,FAC_UNIT  
-      CHARACTER  STRING*ncharfield
+      CHARACTER(LEN=NCHARFIELD) :: STRING
       my_real :: RHO0, RHOR
       LOGICAL :: IS_AVAILABLE,IS_ENCRYPTED
 C-----------------------------------------------

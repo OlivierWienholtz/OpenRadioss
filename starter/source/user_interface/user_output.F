@@ -35,15 +35,15 @@ Chd|        DELETE_USER_FILE              source/user_interface/dyn_userlib.c
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|====================================================================
       SUBROUTINE USER_OUTPUT(IOUT,ILAW,ROOTN,ROOTLEN,INPF)
+C----------------------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
-C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "scr17_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -58,6 +58,7 @@ C-----------------------------------------------
       LOGICAL TEST
       INTEGER :: LEN_TMP_NAME
       CHARACTER(len=4096) :: TMP_NAME
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C-----------------------------------------------
       WRITE(CLAW,'(I4.4)')ILAW
        FILNAM  ='SO'//ROOTN(1:ROOTLEN)//'_'//CLAW//'.scr'

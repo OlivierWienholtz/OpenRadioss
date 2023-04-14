@@ -50,6 +50,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -79,8 +80,9 @@ C-----------------------------------------------
      .        IC0, IC01, IC02, IC03, IC04, ID ,ILAGM,
      .        CHKCOD,NOD,SUB_INDEX
       INTEGER IUN
-      CHARACTER MESS*40,STRING*ncharfield,CODE*7
-      CHARACTER TITR*nchartitle
+      CHARACTER MESS*40,CODE*7
+      CHARACTER(LEN=NCHARFIELD) :: STRING
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL :: IS_AVAILABLE, FOUND
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
@@ -105,7 +107,7 @@ C-----------------------------------------------
      .                       OPTION_ID = ID,
      .                       OPTION_TITR = TITR,
      .                       SUBMODEL_INDEX = SUB_INDEX)
-         CALL HM_GET_STRING('dofstring', STRING, ncharfield, IS_AVAILABLE)
+         CALL HM_GET_STRING('dofstring', STRING, NCHARFIELD, IS_AVAILABLE)
          CALL HM_GET_INTV('inputsystem', IS, IS_AVAILABLE, LSUBMODEL)
          IF(IS == 0 .AND. SUB_INDEX /= 0 ) IS = LSUBMODEL(SUB_INDEX)%SKEW
          CALL HM_GET_INTV('entityid', IGR, IS_AVAILABLE, LSUBMODEL)

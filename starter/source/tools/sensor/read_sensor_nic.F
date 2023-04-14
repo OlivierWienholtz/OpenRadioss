@@ -46,6 +46,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE SENSOR_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -54,7 +55,6 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "param_c.inc"
-#include      "scr17_c.inc"
 #include      "tabsiz_c.inc"
 #include      "com04_c.inc"
 #include      "sphcom.inc"
@@ -66,7 +66,7 @@ C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER ,INTENT(IN) :: SENS_ID
       INTEGER ,DIMENSION(LISKN,SISKWN) ,INTENT(IN)  :: ISKN
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE (SENSOR_STR_)   ,INTENT(OUT)        :: SENSOR_PTR
       TYPE (SUBMODEL_DATA) ,DIMENSION(NSUBMOD) :: LSUBMODEL
       TYPE (SUBSET_)       ,DIMENSION(NSUBS)   :: SUBSET
@@ -78,7 +78,7 @@ C-----------------------------------------------
      .   NPARIS,NPARRS,NVAR
       my_real :: TDEL,TMIN,NIJMAX,FTENS,FCOMP,MFLEX,MEXT,ALPHA,CFC,
      .           FAC_FORC,FAC_MOM
-      CHARACTER F_DIR*ncharfield, M_DIR*ncharfield
+      CHARACTER(LEN=NCHARFIELD) :: F_DIR,M_DIR
       LOGICAL :: IS_AVAILABLE
 c--------------------------------
 c     SENSOR BASED ON NECK INJURY CRITERION FOR SAFETY
@@ -99,8 +99,8 @@ card2
 card3
       CALL HM_GET_INTV  ('Spring_Id' ,SPRING_ID ,IS_AVAILABLE,LSUBMODEL)
       CALL HM_GET_INTV  ('Skew_Id'   ,SKEW_ID   ,IS_AVAILABLE,LSUBMODEL)
-      CALL HM_GET_STRING('Ax_Dir'    ,F_DIR       ,ncharfield,IS_AVAILABLE)
-      CALL HM_GET_STRING('Bend_Dir'  ,M_DIR      ,ncharfield,IS_AVAILABLE)
+      CALL HM_GET_STRING('Ax_Dir'    ,F_DIR       ,NCHARFIELD,IS_AVAILABLE)
+      CALL HM_GET_STRING('Bend_Dir'  ,M_DIR      ,NCHARFIELD,IS_AVAILABLE)
 card4
       CALL HM_GET_FLOATV('Tmin'      ,TMIN      ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('Alpha'     ,ALPHA     ,IS_AVAILABLE,LSUBMODEL,UNITAB)

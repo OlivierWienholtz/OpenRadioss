@@ -28,8 +28,12 @@ Chd|        RESOL                         source/engine/resol.F
 Chd|-- calls ---------------
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|====================================================================
-      SUBROUTINE SPMD_COLLECT(A, ITAB, WEIGHT,NODGLOB,SIZP0)
+      SUBROUTINE SPMD_COLLECT(A, ITAB, WEIGHT,NODGLOB,SIZP0,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -47,11 +51,11 @@ C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "task_c.inc"
 #include      "spmd_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER ITAB(*),WEIGHT(*),NODGLOB(*),SIZP0
       my_real
      .        A(3,*)
@@ -97,7 +101,7 @@ C-----------------------------------------------
      .                MPI_COMM_WORLD,IERROR)
       ELSE
        WRITE(CYCLENUM,'(I7.7)')NCYCLE
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.adb'
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.adb'
 
        LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)
        TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM)) 
@@ -105,7 +109,7 @@ C-----------------------------------------------
        OPEN(UNIT=IDBG5,FILE=TMP_NAME(1:LEN_TMP_NAME),ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-      FILEN = ROOTLEN+17
+      FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
 
         DO I=1,NUMNOD
           IF (WEIGHT(I)==1) THEN

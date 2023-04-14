@@ -33,8 +33,9 @@ Chd|        ST_QAPRINT_INITIAL_CONDITIONS source/output/qaprint/st_qaprint_initi
 Chd|-- calls ---------------
 Chd|====================================================================
       MODULE INIMAP1D_MOD
+
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 #include "my_real.inc"
-#include "nchar_c.inc"
 
         TYPE FUNC_DATA
           my_real, ALLOCATABLE, DIMENSION(:) :: RHO
@@ -53,7 +54,7 @@ Chd|====================================================================
           INTEGER, DIMENSION(:), ALLOCATABLE :: TAGNODE
           INTEGER :: PROJ, FORMULATION
           INTEGER :: ID
-          CHARACTER*nchartitle :: TITLE
+          CHARACTER(LEN=NCHARTITLE) :: TITLE
           LOGICAL :: FILE
           INTEGER :: NUM_CENTROIDS, NUM_NODE_VEL
           LOGICAL :: CORRECTLY_READ

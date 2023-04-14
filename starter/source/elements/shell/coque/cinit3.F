@@ -83,7 +83,8 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE MATPARAM_DEF_MOD
       USE NLOCAL_REG_MOD    
-      USE DRAPE_MOD        
+      USE DRAPE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -132,7 +133,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      CHARACTER*nchartitle, TITR,TITR1
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
       INTEGER I,J,N,IP,NDEPAR,IGTYP,NUVAR,ID,NLAY,II,IREP,IPROP,NUPARAM,
      .   IL,IR,IS,IT,CPT_ELTENS,IUN,NPTR,NPTS,NPTT,IXEL,ILAW,IMAT,IFAIL,
      .   IGMAT,JJ(9),NPT_ALL,MPT,LAYNPT_MAX,LAY_MAX

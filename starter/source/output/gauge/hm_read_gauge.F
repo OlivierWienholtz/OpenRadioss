@@ -50,6 +50,7 @@ C-----------------------------------------------
       USE R2R_MOD
       USE HM_OPTION_READ_MOD    
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -84,9 +85,13 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, J,ID, NGAU, NOD, ISK, UID, IFLAGUNIT, IG, L,NBGAUGE_SPH,NBGAUGE_POINT
       INTEGER FLAG_FMT,FLAG_FMT_TMP,IFIX_TMP,N,NS,NG,OFFS
+      !
       my_real FF,BID,DIST,Xgauge,Ygauge,Zgauge
-      CHARACTER MESS*40
-      CHARACTER TITR*nchartitle,KEY*ncharkey, KEY2*ncharkey
+      !
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY, KEY2
+      !
       DATA MESS/'GAUGE DEFINITION                        '/
 C=======================================================================
       IS_AVAILABLE = .FALSE.

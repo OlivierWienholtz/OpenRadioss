@@ -514,7 +514,8 @@ Chd|        USER_WINDOWS_MOD              ../common_source/modules/user_windows_
 Chd|        XFEM2DEF_MOD                  ../common_source/modules/xfem2def_mod.F
 Chd|====================================================================
       SUBROUTINE LECTUR(MULTI_FVM                   ,LSUBMODEL          ,IS_DYNA         ,DETONATORS   ,EBCS_TAB,
-     .                  SEATBELT_CONVERTED_ELEMENTS ,NB_SEATBELT_SHELLS ,NB_DYNA_INCLUDE ,USER_WINDOWS ,OUTPUT  )
+     .                  SEATBELT_CONVERTED_ELEMENTS ,NB_SEATBELT_SHELLS ,NB_DYNA_INCLUDE ,USER_WINDOWS ,OUTPUT, 
+     .                   NAMES_AND_TITLES  )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -592,6 +593,7 @@ C-----------------------------------------------
       USE ALE_MOD
       USE OUTPUT_MOD
       USE INTERFACES_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -599,17 +601,18 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      TYPE(MULTI_FVM_STRUCT)             :: MULTI_FVM
-      TYPE(SUBMODEL_DATA)                :: LSUBMODEL(NSUBMOD)
-      INTEGER,INTENT(IN)                 ::IS_DYNA
-      TYPE(DETONATOR_STRUCT_),TARGET     :: DETONATORS
-      TYPE(T_EBCS_TAB), INTENT(INOUT)    :: EBCS_TAB
-      INTEGER,INTENT(IN)                 ::NB_SEATBELT_SHELLS
-      INTEGER,INTENT(INOUT)              ::SEATBELT_CONVERTED_ELEMENTS(3,NB_SEATBELT_SHELLS)
-      INTEGER,INTENT(IN)                 ::NB_DYNA_INCLUDE
-      TYPE(USER_WINDOWS_), INTENT(INOUT) :: USER_WINDOWS
-      TYPE(OUTPUT_),  INTENT(INOUT)      :: OUTPUT
+      TYPE(MULTI_FVM_STRUCT)                 :: MULTI_FVM
+      TYPE(SUBMODEL_DATA)                    :: LSUBMODEL(NSUBMOD)
+      INTEGER,INTENT(IN)                     :: IS_DYNA
+      TYPE(DETONATOR_STRUCT_),TARGET         :: DETONATORS
+      TYPE(T_EBCS_TAB), INTENT(INOUT)        :: EBCS_TAB
+      INTEGER,INTENT(IN)                     :: NB_SEATBELT_SHELLS
+      INTEGER,INTENT(INOUT)                  :: SEATBELT_CONVERTED_ELEMENTS(3,NB_SEATBELT_SHELLS)
+      INTEGER,INTENT(IN)                     :: NB_DYNA_INCLUDE
+      TYPE(USER_WINDOWS_), INTENT(INOUT)     :: USER_WINDOWS
+      TYPE(OUTPUT_),  INTENT(INOUT)          :: OUTPUT
 c      TYPE(SENSORS_), INTENT(INOUT)      :: SENSORS! declared as global in USER_SENSOR_MOD
+      TYPE(NAMES_AND_TITLES_), INTENT(INOUT) :: NAMES_AND_TITLES           
 C-----------------------------------------------
 C   G l o b a l   P a r a m e t e r s
 C-----------------------------------------------
@@ -641,7 +644,6 @@ C-----------------------------------------------
 #include      "scr10_c.inc"
 #include      "scr12_c.inc" 
 #include      "scr14_c.inc"
-#include      "scr15_c.inc"
 #include      "scr16_c.inc"
 #include      "scr17_c.inc"
 #include      "scr19_c.inc"
@@ -862,13 +864,12 @@ C
 
 C-----------------------------------------------
       CHARACTER(LEN=4096) :: SCR_FILE_NAME
-      CHARACTER(LEN=ncharline) :: RLINE
+      CHARACTER(LEN=NCHARLINE) :: RLINE
       CHARACTER (LEN=4) :: CWIN
       LOGICAL :: IS_AVAILABLE
       INTEGER NLINES,NUSERWI,USERWI_ID
       INTEGER SCR_FILE_NAME_LEN
-      CHARACTER(LEN=ncharkey) :: KEY
-      CHARACTER TITLE*nchartitle
+      CHARACTER(LEN=NCHARKEY) :: KEY
 C-----------------------------------------------
 C Model Checker Memory
       DATA IUN/1/
@@ -984,7 +985,7 @@ C======================================================================|
       INTEGER SRWORK
       INTEGER LXINTD
       my_real TOTADDMAS
-      CHARACTER*ncharline ERR_MSG
+      CHARACTER(LEN=NCHARLINE) :: ERR_MSG
       INTEGER, DIMENSION(:), ALLOCATABLE :: IBORDEDGE,INOM_OPT
       DOUBLE PRECISION RSIBUFSSG,RNIGE,RRIGE,RXIGE,RVIGE
       INTEGER INTMAX, LLINAL,ITET4_10
@@ -1130,6 +1131,7 @@ C
       INTEGER :: S_NOD2ELS,S_NOD2ELTG,S_NOD2EL1D
       ! ------------------------------------
 c   BEGINNING
+c toto
 !     domain decomposition statistic
       DDSTAT(1:50,1:PARASIZ)=0
       I22LEN_L = 0 
@@ -1548,7 +1550,7 @@ c
      +          NRBMERGE+NUMBCSN+NSLIPRING+NRETRACTOR
       SNOM_OPT = SNOM_OPT1*LNOPT1+1
       SINOM_OPT= 33
-      SNOM_SECT= ncharline*NSECT
+      SNOM_SECT= NCHARLINE*NSECT
       IF (FLAG_GOTO==1) GOTO 209
 C
 C---  Allocations
@@ -2019,7 +2021,7 @@ c---------------------------------------------------------------
      .     MATPARAM_TAB,MLAW_TAG ,FAIL_TAG ,VISC_TAG ,EOS_TAG   ,
      .     RWORK       ,SBUFMAT  ,IPM      ,PM       ,UNITAB    ,
      .     MULTI_FVM   ,MAXEOS   ,FAILWAVE ,NLOC_DMG ,LSUBMODEL ,
-     .     TABLE       ,NPC      )
+     .     TABLE       ,NPC      ,NAMES_AND_TITLES)
 c---------------------------------------------------------------
       ALLOCATE (BUFMAT(SBUFMAT)    ,STAT=stat)
       IF (STAT /= 0) CALL ANCMSG(MSGID=268,ANMODE=ANINFO,
@@ -2154,7 +2156,7 @@ C
      .                          DBRWORK    , SBUFGEO     , ISKWN    , IGEO     ,IPM       ,
      .                          NPC        , TF          , UNITAB   , RTRANS   ,LSUBMODEL ,
      .                          PROP_TAG   , IPART       , KNOT     , IDRAPEID ,STACK_INFO,
-     .                          NUMGEOSTACK, NPROP_STACK , MULTI_FVM, IADGEO)
+     .                          NUMGEOSTACK, NPROP_STACK , MULTI_FVM, IADGEO   ,NAMES_AND_TITLES)
 C
         ALLOCATE (BUFGEO(SBUFGEO)    ,STAT=stat)
         IF (STAT /= 0) CALL ANCMSG(MSGID=268,ANMODE=ANINFO,
@@ -4929,7 +4931,8 @@ c
       CALL HM_READ_SENSORS(
      .     SENSORS   ,LACCELM  ,ITABM1    ,IPART     ,LGAUGE    ,
      .     SUBSETS   ,NSETS    ,IGRSURF   ,IGRNOD    ,BUFSF     ,
-     .     SKEW      ,ISKWN    ,UNITAB    ,LSUBMODEL ,HM_NSENSOR)
+     .     SKEW      ,ISKWN    ,UNITAB    ,LSUBMODEL ,HM_NSENSOR,
+     .     NAMES_AND_TITLES  )
       ! -----------------
       ! check if a user sensor is used with a list of node
       ! convert the list of User node ID into Local node ID
@@ -5046,7 +5049,8 @@ c--------------------------------------------
 C--------------------------------------------
 C     LECTURE DES ANCIENS POIDS
 C--------------------------------------------
-      CALL PRELEC_DDW(FILNAM,LEN_FILNAM,MARQUEUR3)
+      CALL PRELEC_DDW(FILNAM,LEN_FILNAM,MARQUEUR3,NAMES_AND_TITLES%ROOTNAME,
+     .                NAMES_AND_TITLES%ROOTNAME_LENGTH)
       IF(MARQUEUR3) THEN
         WRITE(IOUT,'(A)')' '
         WRITE(IOUT,'(A)')
@@ -5086,7 +5090,8 @@ C
 !
 !==============
         CALL HM_READ_WINDOW_USER(USER_WINDOWS,LSUBMODEL,ITAB,
-     *                           X, V, VR, MS, IN)
+     *                           X, V, VR, MS, IN,
+     *                           NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
 !==============
 !
       ENDIF
@@ -5715,7 +5720,8 @@ C allocation moyenne normalement suffisante si taille de groupe moyenne > NVSIZ/
      5     ITAB      ,IPART    ,IPARTC   ,IPARTG   ,IPARTS,
      6     POIN_PART_SHELL,POIN_PART_TRI,POIN_PART_SOL,
      7     MID_PID_SHELL,MID_PID_TRI,MID_PID_SOL,T_MONVOL,
-     8     EBCS_TAG_CELL_SPMD,NPBY,LPBY)
+     8     EBCS_TAG_CELL_SPMD,NPBY,LPBY,NAMES_AND_TITLES%ROOTNAME,
+     9     NAMES_AND_TITLES%ROOTNAME_LENGTH)
 
       DEALLOCATE (IWORK)
 C---------------------------
@@ -6572,7 +6578,8 @@ C si NSPMD = 1 il faut qd meme construire dd_iad et fr_iad
      2       IXP    ,IXR    ,IXTG    ,DD_IAD  ,
      3       X      ,DD_TMP    ,IXS10   ,IXS20   ,
      4       IXS16  ,KXX    ,IXX       ,KXSP    ,IXSP    ,
-     5       CEPSP  ,IXTG1)
+     5       CEPSP  ,IXTG1  ,NAMES_AND_TITLES%ROOTNAME,
+     6       NAMES_AND_TITLES%ROOTNAME_LENGTH )
 C
       DEALLOCATE (DD_TMP)
       CALL TRACE_OUT1()
@@ -6858,17 +6865,18 @@ C---------------------------------------------
 C    CHECK ENGINE FILE : DYNAIN FILE
 C-------------------------------------------
       DYNAIN_DATA%DYNAIN_CHECK = 0
-      CALL CHECK_DYNAIN(IPART,IPARTC,IPARTG,IXC,IXTG,DYNAIN_DATA%DYNAIN_CHECK)
+      CALL CHECK_DYNAIN(IPART,IPARTC,IPARTG,IXC,IXTG,DYNAIN_DATA%DYNAIN_CHECK,
+     *                  NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
 
 C---------------------------------------------
 C    CHECK ENGINE FILE /H3D/?/TMAX initialization
 C-------------------------------------------
-      CALL INI_H3DTMAX_ENGINE(IPARG,IPART,IPARTS,IPARTC,IPARTG,IDDLEVEL)
+      CALL INI_H3DTMAX_ENGINE(IPARG,IPART,IPARTS,IPARTC,IPARTG,IDDLEVEL,NAMES_AND_TITLES)
 C---------------------------------------------
 C    CHECK ENGINE FILE DYNAIN or STATE if to use F.I. total strain for QEPH
 C-------------------------------------------
       ISTR_24 = 0
-      IF (NUMELC/=0) CALL CHECK_QEPH_STRA(ISTR_24)
+      IF (NUMELC/=0) CALL CHECK_QEPH_STRA(ISTR_24,NAMES_AND_TITLES)
 C--------------------------------------------
 C     LECTURE DES ELEMENTS DESACTIVABLES
 C--------------------------------------------
@@ -7403,7 +7411,7 @@ C
      E               NMNT_2   ,KXIG3D   ,IXIG3D  ,KNOD2ELQ ,NOD2ELQ  ,
      F               SEGQUADFR,TAGPRT_FRIC,INTBUF_FRIC_TAB ,IPARTT   ,
      G               IPARTP   ,IPARTX   ,IPARTR  ,NSN_MULTI_CONNEC ,T2_NB_CONNEC,
-     H               ICODE    ,ISKEW    )
+     H               ICODE    ,ISKEW    ,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
       IF(IDDLEVEL == 0) CALL STOPTIME(12,1)
       IF(IDDLEVEL == 1) CALL STOPTIME(13,1)
 
@@ -8428,7 +8436,7 @@ C
      J            FXB_MATRIX,FXB_MATRIX_ADD,FXB_LAST_ADRESS,INOM_OPT(11),R_SKEW,
      K            KNOD2EL1D,NOD2EL1D  ,EBCS_TAB  ,RBY_INIAXIS,ALEA  ,
      L            KNOD2ELC,NOD2ELC    ,DR        ,SLRBODY , DRAPEG  ,
-     M            IPARI   ,INTBUF_TAB ,INTERFACES) 
+     M            IPARI   ,INTBUF_TAB ,INTERFACES,NAMES_AND_TITLES) 
 
 
       IF (NINTER>0.AND.NUMELIG3D>0) THEN
@@ -8900,7 +8908,8 @@ C-----
      5               KNOD2ELC,KNOD2ELTG,NOD2ELS,NOD2ELC  ,NOD2ELTG,
      6               INTSTAMP,SKEW     ,MS     ,IN       ,V       ,
      7               VR      ,RBY      ,NPBY   ,LPBY     ,IPARTS  ,
-     8               IPARTC  ,IPARTG,THK_PART,NOM_OPT,INOM_OPT(3))
+     8               IPARTC  ,IPARTG,THK_PART,NOM_OPT,INOM_OPT(3),
+     9               NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
         DEALLOCATE (RWORK)
         DEALLOCATE (IWORK)
 C-----
@@ -9959,7 +9968,8 @@ C     Update of STIFFN for TETRA10 for time step estimation
 C--------------------------------------------
       IF (NS10E>0.AND.N2D==0) CALL STIFN1_ND(ICNDS10,STIFFN)
       IF (NDAMP>0) CALL DAMPDTNODA(MS_B,IN_B,STIFFN,STIFFN(NUMNOD+1),
-     1                            IGRNOD,DAMPR )
+     1                            IGRNOD,DAMPR,NAMES_AND_TITLES%ROOTNAME ,
+     .                            NAMES_AND_TITLES%ROOTNAME_LENGTH)
 C--------------------------------------------
 C     TRI ET IMPRESSION DES DT ELEM
 C--------------------------------------------
@@ -10169,11 +10179,13 @@ C--------------------------------------------
       ERR_CATEGORY='ANIMATION FILE WRITING'
       CALL TRACE_IN1(ERR_MSG,LEN_TRIM(ERR_MSG))
       WRITE(ISTDO,'(A)')TITRE(46)
-      IF(IOUTPUT>0) CALL DESOUT(
+      IF(IOUTPUT>0) THEN
+           CALL DESOUT(
      .         X      ,IXS    ,IXQ    ,IXC    ,IXT    ,
      .         IXP    ,IXR    ,IXTG   ,ITAB   ,PM     ,
      .         GEO    ,MS     ,IXS10  ,IGEO  ,IPM    ,
-     .         KXSP    ,IPART  ,IPARTSP )
+     .         KXSP    ,IPART  ,IPARTSP ,NAMES_AND_TITLES)
+      ENDIF
       MWA = ZERO
 C--------------------------------------------
 C     ECRITURE FICHIER ANIM
@@ -10253,7 +10265,7 @@ C
      D      MS       ,FXANI    ,MBUFEL  ,MDEPL    ,NSLEVEL  ,
      E      ELSUB,   DSANIM,  NELEM,  CEP,     CEPSP,
      F      NOM_OPT  ,INOM_OPT(5),INOM_OPT(8),
-     G      ELBUF_TAB,SPH2SOL  ,SUBSETS )
+     G      ELBUF_TAB,SPH2SOL  ,SUBSETS,NAMES_AND_TITLES )
       DEALLOCATE(DNULL)
 
       ENDIF
@@ -10262,7 +10274,8 @@ C     Driver to reader of so-called "engine cards"
 C----------------------------------------------
 C      NGINE = 0 ! Number of Engine "cards", to be counted in contrl.F
       IF ((IS_DYNA /= 0 .OR. NB_DYNA_INCLUDE /= 0).AND.(NGINE+NANIM_ENG/=0)) 
-     .          CALL READ_ENGINE_DRIVER(IGRPART,IS_DYNA,NB_DYNA_INCLUDE)
+     .          CALL READ_ENGINE_DRIVER(IGRPART,IS_DYNA,NB_DYNA_INCLUDE,
+     .          NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
 C----------------------------------------------
 C     Driver to QAPRINT
 C----------------------------------------------
@@ -10724,7 +10737,7 @@ c
      C         INDX_S,INDX_Q,INDX_TG,FACE_ELM_S,FACE_ELM_Q,FACE_ELM_TG,NBR_TH_MONVOL, EBCS_TAB,
      D         KLOADPINTER  ,LOADPINTER   ,DGAPLOADINT   ,S_LOADPINTER, SCEP,DYNAIN_DATA,
      E         DRAPEG       ,USER_WINDOWS ,OUTPUT        ,INTERFACES  ,NUMBER_LOAD_CYL ,
-     F         LOADS_PER_PROC(P))
+     F         LOADS_PER_PROC(P),NAMES_AND_TITLES)
       GOTO 220
  221  CONTINUE
 

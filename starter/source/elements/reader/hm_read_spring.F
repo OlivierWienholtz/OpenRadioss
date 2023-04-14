@@ -57,6 +57,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C----------------------------------------------------------
 C     LECTURE ELEMENT RESSORT
 C     VERSION NUMEROTATION DES NOEUDS LIBRE/MARS 90/DIM
@@ -172,7 +173,7 @@ c
 c	    
           IF (IXR(NIXR,I)>ID_LIMIT) THEN
             CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                  I1=IXR(NIXR,I),C1=LINE,C2='/SPRING')
+     .                  I1=IXR(NIXR,I),C1='/SPRING')
           ENDIF
           IXR(1,I)=IPID   
           IXR(2,I)=USR2SYS(IXR(2,I),ITABM1,MESS,IXR(NIXR,I))

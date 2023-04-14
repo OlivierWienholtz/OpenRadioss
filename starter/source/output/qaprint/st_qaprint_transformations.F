@@ -60,7 +60,7 @@ C--------------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, MY_ID, MY_TRANS, TEMP_INT, ITRANSSUB, IGS, IS_INTEGER_RTRANS(NRTRANS)
-      CHARACTER *nchartitle TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       CHARACTER (LEN=255) :: VARNAME
       DOUBLE PRECISION TEMP_DOUBLE
 C-----------------------------------------------
@@ -71,7 +71,7 @@ C
       IF (MYQAKEY('/TRANSFORM')) THEN
         DO MY_TRANS=1,NTRANSF
 C
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           MY_ID = NINT(RTRANS(MY_TRANS,19))
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_ID,0.0_8)

@@ -59,6 +59,7 @@ Chd|====================================================================
      N      PROV_E,N11,N21,N31,IREMNODE,
      O      FLAGREMNODE,KREMNODE,REMNODE)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -92,8 +93,7 @@ C     REAL
      .   GAPMIN, GAPMAX, MARGE, GAPSMX, BGAPSMX,
      .   GAP_S_L(*),GAP_M_L(*),MARGE_SH
       INTEGER ID,MSEGTYP(*)
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, DIMENSION(MVSIZ), INTENT(INOUT) ::PROV_N,PROV_E
       INTEGER, DIMENSION(MVSIZ), INTENT(INOUT) :: IX1,IX2,IX3,IX4,NSVG
       my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: X1,X2,X3,X4

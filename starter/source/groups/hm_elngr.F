@@ -57,8 +57,7 @@ C-----------------------------------------------
       INTEGER IX(NIX,*),TAGBUF(*)
       INTEGER NIX,NIX1,NIX2,NGRELE,ID,FLAG
       CHARACTER ELCHAR*(*)
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(SUBMODEL_DATA) LSUBMODEL(*)
 C-----------------------------------------------
       TYPE (GROUP_)  , DIMENSION(NGRELE) :: IGRELEM
@@ -121,6 +120,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -136,8 +136,7 @@ C-----------------------------------------------
      .        TAGBUF(*)
       INTEGER NGRELE,ID,FLAG
       CHARACTER ELCHAR*(*)
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(SUBMODEL_DATA) LSUBMODEL(*)
 C-----------------------------------------------
       TYPE (GROUP_)  , DIMENSION(NGRELE) :: IGRELEM

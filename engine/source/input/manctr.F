@@ -34,7 +34,7 @@ Chd|        H3D_MOD                       share/modules/h3d_mod.F
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|        SENSOR_MOD                    share/modules/sensor_mod.F    
 Chd|====================================================================
-      SUBROUTINE MANCTR(SENSORS ,H3D_DATA)
+      SUBROUTINE MANCTR(SENSORS ,H3D_DATA,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -43,6 +43,7 @@ C-----------------------------------------------
       USE SENSOR_MOD
       USE ANIM_MOD
       USE ALE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -58,14 +59,14 @@ C-----------------------------------------------
 #include      "scr06_c.inc"
 #include      "scr07_c.inc"
 #include      "scr14_c.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
 #include      "rad2r_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      TYPE(H3D_DATABASE) :: H3D_DATA
-      TYPE (SENSORS_) ,INTENT(INOUT) :: SENSORS
+      TYPE(H3D_DATABASE)                     :: H3D_DATA
+      TYPE (SENSORS_) ,INTENT(INOUT)         :: SENSORS
+      TYPE(NAMES_AND_TITLES_),INTENT(IN)     :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   P a r a m e t e r s
 C-----------------------------------------------
@@ -77,7 +78,8 @@ C-----------------------------------------------
       INTEGER J,MANIM0, MREST0, MSTOP0, MFILR, MCYCLE, LK2, IKEY, WMCHECK0, 
      .   MSG_R2R, R2R_MSTOP_LOC,ICTLSTOP0, MH3D0,SENS_ID
       my_real TMPMAN(50), TMAN,TMAN_LOC
-      CHARACTER FILNAM*100, CARTE*ncharline, KEY2*80, FMT*80, KEY0(NKEY)*5,REC*1
+      CHARACTER FILNAM*100, KEY2*80, FMT*80, KEY0(NKEY)*5,REC*1
+      CHARACTER(LEN=NCHARLINE) :: CARTE  
       INTEGER :: LEN_TMP_NAME
       CHARACTER(len=2148) :: TMP_NAME
 C-----------------------------------------------
@@ -177,7 +179,7 @@ C-----------------------------
 C
       IF((NCYCLE/NCINP)*NCINP==NCYCLE)THEN
        IF(ISPMD==0)THEN
-        FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.ctl'
+        FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.ctl'
         LEN_TMP_NAME = INFILE_NAME_LEN + LEN_TRIM(FILNAM)
         TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))         
         OPEN(UNIT=IUSC3,FILE=TMP_NAME(1:LEN_TMP_NAME),

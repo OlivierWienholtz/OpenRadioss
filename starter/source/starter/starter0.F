@@ -100,6 +100,7 @@ C-----------------------------------------------
       USE USER_INTERFACE_MOD
       USE ALE_MOD
       USE OUTPUT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARFIELD,NAMES_AND_TITLE_INIT
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -130,7 +131,6 @@ C-----------------------------------------------
 #include      "scr05_c.inc"
 #include      "scr06_c.inc"
 #include      "scr12_c.inc"
-#include      "scr15_c.inc"
 #include      "scr17_c.inc"
 #include      "scr23_c.inc"
 #include      "param_c.inc"
@@ -170,7 +170,7 @@ C
       CHARACTER ALTDOCTAG*256,CHECKSUM*256
       CHARACTER*2048 FNAME,VAL
 C
-      CHARACTER*ncharline ERR_MSG  
+      CHARACTER(LEN=NCHARLINE) :: ERR_MSG  
       CHARACTER(len=8)  :: STARTDATE
       CHARACTER(len=10) :: STARTTIME
       CHARACTER(len=2048) :: TMP_NAME 
@@ -184,15 +184,18 @@ C
       TYPE(t_ebcs_tab)                                :: EBCS_TAB
       TYPE(OUTPUT_)                                   :: OUTPUT
 c      TYPE(SENSORS_) :: SENSORS    ! declared as global in USER_SENSOR_MOD
+      TYPE(NAMES_AND_TITLES_)                         :: NAMES_AND_TITLES
 
-      CHARACTER CWD*ncharline
-      CHARACTER GLOBAL_PATH*(ncharline+2048)
+      CHARACTER (LEN=NCHARLINE)      :: CWD
+      CHARACTER (LEN=NCHARLINE+2048) :: GLOBAL_PATH
       INTEGER :: LEN_CWD
       INTEGER*4 GETCWD, STATUS_CWD
+      INTEGER :: LFILESIZE          ! Lengh of filname, buimd with NAMES_AND_TITLES%ROOTNAME + extension
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------
       INTEGER  ANEND      
+      EXTERNAL ANEND
 C--------------------------------------------------------
 C     LAM MAX LENGTH REAL ARRAY
 C     LMA MAX LENGTH INTEGER ARRAY
@@ -204,7 +207,10 @@ C------------------------------------------------
 C=======================================================================
 #include      "archloops.inc"
 C -------------------------------------------------
-C First task check the exec arguments (fill common)
+C     Initialize character structure
+      CALL NAMES_AND_TITLE_INIT(NAMES_AND_TITLES)
+C -------------------------------------------------
+C check the exec arguments (fill common)
       CALL EXECARGCHECK()
 C -------------------------------------------------
 C     Constants
@@ -219,7 +225,7 @@ C ===================================================
       IOUT=6 
       ISTDO=6
 C=======================================================================
-      CALL  RADIOSS_TITLE(ISTDO,CPUNAM,ARCHTITLE,FILNAM,ROOTLEN,CHRUN,IRESP,1)
+      CALL  RADIOSS_TITLE(ISTDO,CPUNAM,ARCHTITLE,FILNAM,CHRUN,IRESP,1)
 C=======================================================================
 
 C-------------------------------------------------------------------
@@ -319,7 +325,7 @@ C MUSCL compression coefficient, default value set to 1.
       RATIO22 = ONE + TEN/HUNDRED
       RADIOSSV = 100090402
       IFLEXPIPE = 1
-      LEN = ncharfield*2
+      LEN = NCHARFIELD*2
 C
 C No Decay for Starter
       TAGLEN      = 0
@@ -368,7 +374,8 @@ C-----------------------------------------------------
       IS_DYNA = 0
       IF (GOT_INPUT == 1)THEN
 C       SEARCH RUN NUMBER
-        CALL GET_FILE_NAME_INFO(INPUT, LENI, ROOTN, LENR, RUNN, FVERS, IS_DYNA)
+        CALL GET_FILE_NAME_INFO(INPUT, LENI, NAMES_AND_TITLES%ROOTNAME,  
+     *                          NAMES_AND_TITLES%ROOTNAME_LENGTH, RUNN, FVERS, IS_DYNA)
         IF (GOT_PATH==1) THEN
           FNAME=PATH(1:LENP)//INPUT(1:LENI)
         ELSE
@@ -396,8 +403,8 @@ C       SEARCH RUN NUMBER
 #endif
       ELSE
         FNAME  = " "
-        ROOTN  = "RADIOSS_STARTER_INPUT"
-        LENR   = 21
+        NAMES_AND_TITLES%ROOTNAME  = "RADIOSS_STARTER_INPUT"
+        NAMES_AND_TITLES%ROOTNAME_LENGTH = LEN_TRIM(NAMES_AND_TITLES%ROOTNAME)
         LFNAME = 1
         ISTDI = 5
       ENDIF
@@ -408,7 +415,8 @@ C------------------------------------------------
 
       NB_DYNA_INCLUDE = 0
       IF(IS_DYNA == 1) THEN
-        CALL CPP_READ_DYNA_AND_CONVERT(FNAME, LFNAME,EDI_RES,FILNAM,ROOTLEN+9+OUTFILE_NAME_LEN)
+            LFILESIZE = NAMES_AND_TITLES%ROOTNAME_LENGTH+9+OUTFILE_NAME_LEN
+            CALL CPP_READ_DYNA_AND_CONVERT(FNAME, LFNAME,EDI_RES,FILNAM,LFILESIZE)
       ENDIF
       CALL STOPTIME(15,1)
 C----------------------------------------------------------------------
@@ -419,12 +427,6 @@ C----------------------------------------------------------------------
       CALL TRACE_IN1(ERR_MSG,LEN_TRIM(ERR_MSG))
 C----------------------------------------------------------------------
       IF (GOT_INPUT == 1)THEN
-C Rootname is not taken from /INPUT
-        IF (LENR <=80)THEN
-            ROOTNAM(1:LENR)=ROOTN(1:LENR)
-        ENDIF
-        ROOTLEN = LENR
-C Runnumber is taken from input name
         IRUN = RUNN
       ENDIF
 
@@ -443,27 +445,31 @@ C-------------------------------------------------------------------
       WRITE(CHRUN,'(I4.4)')IRUN
 C	  
       IF (IPID==1) THEN
-      FILNAM  =OUTFILE_NAME(1:OUTFILE_NAME_LEN)//
-     .         ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.out'
-      OPEN(UNIT=IOUT,FILE=FILNAM(1:OUTFILE_NAME_LEN+ROOTLEN+9),
-     .     ACCESS='SEQUENTIAL',
-     .     FORM='FORMATTED',STATUS='UNKNOWN')
 
-      WRITE(IOUT, '(1X,A)')FILNAM(1:ROOTLEN+9)
-C
-      CALL TRACE_OUT1()
-C
-      CALL  RADIOSS_TITLE(IOUT,CPUNAM,ARCHTITLE,
-     *                      FILNAM,ROOTLEN,CHRUN,IRESP,1)
+          FILNAM = OUTFILE_NAME(1:OUTFILE_NAME_LEN)//TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRUN//'.out'
 
-      CALL PRINTCPU()
-      CALL PRINTCENTER(" ",0,IOUT,1)
+          OPEN(UNIT=IOUT,FILE=FILNAM(1:OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+9),
+     .         ACCESS='SEQUENTIAL',FORM='FORMATTED',STATUS='UNKNOWN')
+
+          LFILESIZE = NAMES_AND_TITLES%ROOTNAME_LENGTH+9
+          WRITE(IOUT, '(1X,A)')FILNAM(1:LFILESIZE)
+C
+          CALL TRACE_OUT1()
+C
+          CALL  RADIOSS_TITLE(IOUT,CPUNAM,ARCHTITLE,
+     *                      FILNAM,CHRUN,IRESP,1)
+
+          CALL PRINTCPU()
+          CALL PRINTCENTER(" ",0,IOUT,1)
+
       ELSEIF (FLG_SWALE==1) THEN
-       FILNAM  =OUTFILE_NAME(1:OUTFILE_NAME_LEN)//ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.out'
-       OPEN(UNIT=IOUT,FILE=FILNAM(1:ROOTLEN+9+OUTFILE_NAME_LEN),
-     .     ACCESS='SEQUENTIAL',
-     .     FORM='FORMATTED',STATUS='UNKNOWN')     
+          FILNAM =OUTFILE_NAME(1:OUTFILE_NAME_LEN)//TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRUN//'.out'
+
+          LFILESIZE = NAMES_AND_TITLES%ROOTNAME_LENGTH+9+OUTFILE_NAME_LEN
+          OPEN(UNIT=IOUT,FILE=FILNAM(1:LFILESIZE),
+     .     ACCESS='SEQUENTIAL',FORM='FORMATTED',STATUS='UNKNOWN')     
       ENDIF
+
       CALL TITRE1
 C------------------------------------------------
       ERR_MSG='OPEN OUTPUT FILE'
@@ -539,7 +545,7 @@ C new composite shell pid max nbs 200
       NRBE3L = 10
 C     Parameters
 C      LTITR   = 40
-      RTITR = nchartitle/3.
+      RTITR = NCHARTITLE/3.
       LTITR = ceiling(RTITR)
       LNOPT1  = 20 + LTITR
       LIGRN1  = 20 + LTITR
@@ -687,8 +693,9 @@ c
         IF(NB_DYNA_INCLUDE .NE. 0) THEN
           DYNA_MESSAGE=1
           CLOSE(IOUT)
-          CALL CPP_PRINT_DYNA(FILNAM,ROOTLEN+9+OUTFILE_NAME_LEN)
-          OPEN(UNIT=IOUT,FILE=FILNAM(1:ROOTLEN+9+OUTFILE_NAME_LEN),
+          LFILESIZE = NAMES_AND_TITLES%ROOTNAME_LENGTH+9+OUTFILE_NAME_LEN
+          CALL CPP_PRINT_DYNA(FILNAM,LFILESIZE)
+          OPEN(UNIT=IOUT,FILE=FILNAM(1:LFILESIZE),
      .    ACCESS='SEQUENTIAL',FORM='FORMATTED',STATUS='UNKNOWN',POSITION="APPEND")   
           WRITE(IOUT,'(A)')''
           WRITE(IOUT,'(A)')''
@@ -704,8 +711,9 @@ C-------------------------------------------------------------------
         IF (IS_DYNA == 1) THEN
           DYNA_MESSAGE=1
           CLOSE(IOUT)
-          CALL CPP_PRINT_DYNA(FILNAM,ROOTLEN+9+OUTFILE_NAME_LEN)
-          OPEN(UNIT=IOUT,FILE=FILNAM(1:ROOTLEN+9+OUTFILE_NAME_LEN),
+          LFILESIZE = NAMES_AND_TITLES%ROOTNAME_LENGTH+9+OUTFILE_NAME_LEN
+          CALL CPP_PRINT_DYNA(FILNAM,LFILESIZE)
+          OPEN(UNIT=IOUT,FILE=FILNAM(1:LFILESIZE),
      .    ACCESS='SEQUENTIAL',FORM='FORMATTED',STATUS='UNKNOWN',POSITION="APPEND")   
           WRITE(IOUT,'(A)')''
           WRITE(IOUT,'(A)')''
@@ -722,9 +730,12 @@ C Write list of replaced parameters
 C------------------------------------------------
       IF(IPID /= 0 .AND. GOT_HSTP_READ == 0) THEN
         CLOSE(IOUT)
-        CALL CPP_PRINT_PARAMETERS(FILNAM,ROOTLEN+9+OUTFILE_NAME_LEN)
-        OPEN(UNIT=IOUT,FILE=FILNAM(1:ROOTLEN+9+OUTFILE_NAME_LEN),
-     .    ACCESS='SEQUENTIAL',FORM='FORMATTED',STATUS='UNKNOWN',POSITION="APPEND") 
+        LFILESIZE = NAMES_AND_TITLES%ROOTNAME_LENGTH+9+OUTFILE_NAME_LEN
+
+        CALL CPP_PRINT_PARAMETERS(FILNAM,LFILESIZE)
+
+        OPEN(UNIT=IOUT,FILE=FILNAM(1:LFILESIZE),
+     .       ACCESS='SEQUENTIAL',FORM='FORMATTED',STATUS='UNKNOWN',POSITION="APPEND") 
       ENDIF 
 C------------------------------------------------
 C count submodels & dimension LSUBMODEL structure 
@@ -793,7 +804,7 @@ c 2d seatbelt translation
 C-------------------------------------------------------------------
 C     Control variables (count options)
 C-------------------------------------------------------------------
-      CALL CONTRL(MULTI_FVM,LSUBMODEL,IS_DYNA,DETONATORS,USER_WINDOWS)
+      CALL CONTRL(MULTI_FVM,LSUBMODEL,IS_DYNA,DETONATORS,USER_WINDOWS,NAMES_AND_TITLES)
 C-------------------------------------------------------------------
 C     Parameters modification and parameters write (-HSTP_READ -HSTP_WRITE ARGUMENTS)
 C-------------------------------------------------------------------
@@ -806,58 +817,66 @@ C-----------------------------------------------------
       CALL TRACE_OUT1()
 C-----------------------------------------------------
       IF(IMACH/=3) THEN
-       FILNAM = ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_0000.rst'
-       LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 14
-       TMP_NAME  =OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+14)
-       IF(IRFORM/5==0)THEN
-!         OPEN(UNIT=IUREE,FILE=FILNAM(1:ROOTLEN+14),
-!     .     ACCESS='SEQUENTIAL',
-!     .     FORM='UNFORMATTED',STATUS='UNKNOWN')
-         OPEN(UNIT=IUREE,FILE=TMP_NAME(1:LEN_TMP_NAME),
-     .     ACCESS='SEQUENTIAL',
-     .     FORM='UNFORMATTED',STATUS='UNKNOWN')
-       ELSEIF(IRFORM/5==1)THEN
-!         OPEN(UNIT=IUREE,FILE=FILNAM(1:ROOTLEN+14),
-!     .     ACCESS='SEQUENTIAL',
-!     .     FORM='FORMATTED',STATUS='UNKNOWN')
-         OPEN(UNIT=IUREE,FILE=TMP_NAME(1:LEN_TMP_NAME),
-     .     ACCESS='SEQUENTIAL',
-     .     FORM='FORMATTED',STATUS='UNKNOWN')
-         WRITE(IUREE,'(A)') FILNAM(1:ROOTLEN+14)
-       ELSEIF (IRFORM/5==2) THEN
+
+         FILNAM = TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRUN//'_0000.rst'
+         LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + 14
+         LFILESIZE = NAMES_AND_TITLES%ROOTNAME_LENGTH+14
+         TMP_NAME  =OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LFILESIZE)
+         
+         IF(IRFORM/5==0)THEN
+
+             OPEN(UNIT=IUREE,FILE=TMP_NAME(1:LEN_TMP_NAME),
+     .            ACCESS='SEQUENTIAL',FORM='UNFORMATTED',STATUS='UNKNOWN')
+
+         ELSEIF(IRFORM/5==1)THEN
+
+             OPEN(UNIT=IUREE,FILE=TMP_NAME(1:LEN_TMP_NAME),ACCESS='SEQUENTIAL',
+     .            FORM='FORMATTED',STATUS='UNKNOWN')
+
+             WRITE(IUREE,'(A)') FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+14)
+
+         ELSEIF (IRFORM/5==2) THEN
+
 C restart file with binary format ieee 64 bits
-        DO I=1,OUTFILE_NAME_LEN
-            IFILNAM(I)=ICHAR(OUTFILE_NAME(I:I))     
-        ENDDO
-        DO I=1,ROOTLEN+14
-          IFILNAM(OUTFILE_NAME_LEN+I)=ICHAR(FILNAM(I:I))
-        ENDDO
-        CALL CUR_FIL_C(1)
-        CALL OPEN_C(IFILNAM,OUTFILE_NAME_LEN+ROOTLEN+14,0)
-        CALL WRITE_C_C(IFILNAM,ROOTLEN+14)
-       ELSEIF (IRFORM/5==3) THEN
+             DO I=1,OUTFILE_NAME_LEN
+                 IFILNAM(I)=ICHAR(OUTFILE_NAME(I:I))     
+             ENDDO
+
+             DO I=1,NAMES_AND_TITLES%ROOTNAME_LENGTH+14
+                 IFILNAM(OUTFILE_NAME_LEN+I)=ICHAR(FILNAM(I:I))
+             ENDDO
+
+             CALL CUR_FIL_C(1)
+             CALL OPEN_C(IFILNAM,OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH+14,0)
+             CALL WRITE_C_C(IFILNAM,NAMES_AND_TITLES%ROOTNAME_LENGTH+14)
+
+         ELSEIF (IRFORM/5==3) THEN
 C restart file with binary format ieee 64 bits .Z
-        DO I=1,OUTFILE_NAME_LEN
-            IFILNAM(I)=ICHAR(OUTFILE_NAME(I:I))     
-        ENDDO
-        DO I=1,ROOTLEN+14
-          IFILNAM(OUTFILE_NAME_LEN+I)=ICHAR(FILNAM(I:I))
-        ENDDO
-        CALL CUR_FIL_C(1)
-        CALL OPEN_C(IFILNAM,OUTFILE_NAME_LEN+ROOTLEN+14,3)
-        CALL WRITE_C_C(IFILNAM,ROOTLEN+14)
-       ELSEIF (IRFORM/5==4) THEN
+             DO I=1,OUTFILE_NAME_LEN
+                IFILNAM(I)=ICHAR(OUTFILE_NAME(I:I))     
+             ENDDO
+
+             DO I=1,NAMES_AND_TITLES%ROOTNAME_LENGTH+14
+               IFILNAM(OUTFILE_NAME_LEN+I)=ICHAR(FILNAM(I:I))
+             ENDDO
+             CALL CUR_FIL_C(1)
+             CALL OPEN_C(IFILNAM,OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+14,3)
+             CALL WRITE_C_C(IFILNAM,NAMES_AND_TITLES%ROOTNAME_LENGTH+14)
+
+         ELSEIF (IRFORM/5==4) THEN
 C restart written file with binary format ieee 64 bits .gz
-        DO I=1,OUTFILE_NAME_LEN
-            IFILNAM(I)=ICHAR(OUTFILE_NAME(I:I))     
-        ENDDO
-        DO I=1,ROOTLEN+14
-          IFILNAM(OUTFILE_NAME_LEN+I)=ICHAR(FILNAM(I:I))
-        ENDDO
-        CALL CUR_FIL_C(1)
-       CALL OPEN_C(IFILNAM,OUTFILE_NAME_LEN+ROOTLEN+14,6)
-       CALL WRITE_C_C(IFILNAM,ROOTLEN+14)
-       ENDIF
+             DO I=1,OUTFILE_NAME_LEN
+                IFILNAM(I)=ICHAR(OUTFILE_NAME(I:I))     
+             ENDDO
+
+             DO I=1,NAMES_AND_TITLES%ROOTNAME_LENGTH+14
+                IFILNAM(OUTFILE_NAME_LEN+I)=ICHAR(FILNAM(I:I))
+             ENDDO
+
+             CALL CUR_FIL_C(1)
+             CALL OPEN_C(IFILNAM,OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+14,6)
+             CALL WRITE_C_C(IFILNAM,NAMES_AND_TITLES%ROOTNAME_LENGTH+14)
+         ENDIF
       ENDIF
 C
 
@@ -878,7 +897,8 @@ C
 
 c----------- Child process creation for multidomains-----
         IF (NSUBDOM>0) THEN
-            CALL R2R_FORK(CHRUN,FILNAM,LSUBMODEL)
+            CALL R2R_FORK(CHRUN,FILNAM,LSUBMODEL,NAMES_AND_TITLES%ROOTNAME,
+     .                    NAMES_AND_TITLES%ROOTNAME_LENGTH )
         ENDIF
 
 c       start CPU timer for lectur
@@ -888,7 +908,8 @@ C      Main reading routine
 C--------------------------------------------------
         CALL LECTUR(
      .       MULTI_FVM                   ,LSUBMODEL          ,IS_DYNA          ,DETONATORS   ,EBCS_TAB,
-     .       SEATBELT_CONVERTED_ELEMENTS ,NB_SEATBELT_SHELLS ,NB_DYNA_INCLUDE  ,USER_WINDOWS ,OUTPUT  )
+     .       SEATBELT_CONVERTED_ELEMENTS ,NB_SEATBELT_SHELLS ,NB_DYNA_INCLUDE  ,USER_WINDOWS ,OUTPUT,
+     .       NAMES_AND_TITLES  )
 
 c       stop CPU timer for lectur
         CALL STOPTIME(2,1)
@@ -916,15 +937,18 @@ C
         !   write the message only if restart 
         !   files are generated
         IF(RESTART_FILE==1) THEN
+
             IF(IMACH/=3) THEN
-                FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_0000.rst'
-                WRITE (IOUT,60) FILNAM(1:ROOTLEN+14)
+
+                FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRUN//'_0000.rst'
+                WRITE (IOUT,60) FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+14)
  60             FORMAT (/4X,14H RESTART FILE:,1X,A,8H WRITTEN/
      .                   4X,14H -------------/)
             ELSE
+
                 WRITE(CHRUNR,'(I4.4)')IRUN
-                FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUNR
-                WRITE (IOUT,80) FILNAM(1:ROOTLEN+5)
+                FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRUNR
+                WRITE (IOUT,80) FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+5)
  80             FORMAT (/4X,14H RESTART FILES:,1X,A,8H WRITTEN/
      .                  4X,14H -------------/)
             ENDIF

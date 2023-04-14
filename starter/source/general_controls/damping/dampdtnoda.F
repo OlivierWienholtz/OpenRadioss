@@ -28,11 +28,12 @@ Chd|-- calls ---------------
 Chd|        READ_ENGINE_DTMIN             source/general_controls/damping/read_engine_dtmin.F
 Chd|        GROUPDEF_MOD                  ../common_source/modules/groupdef_mod.F
 Chd|====================================================================
-      SUBROUTINE DAMPDTNODA(MS ,IN  ,STIFN ,STIFR ,IGRNOD   ,DAMPR )
+      SUBROUTINE DAMPDTNODA(MS ,IN  ,STIFN ,STIFR ,IGRNOD   ,DAMPR,ROOTNAME,ROOTNAME_LENGTH )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -46,14 +47,16 @@ C-----------------------------------------------
 C-----------------------------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME), INTENT(IN)           :: ROOTNAME         ! INPUT deck rootname
+      INTEGER, INTENT(IN)                            :: ROOTNAME_LENGTH  ! INPUT deck rootname length
 C     REAL
-      my_real , DIMENSION(NUMNOD), INTENT(IN) ::MS 
-      my_real , DIMENSION(NUMNOD*IRODDL), INTENT(IN) ::IN 
-      my_real , DIMENSION(NUMNOD), INTENT(INOUT) ::STIFN 
-      my_real , DIMENSION(NUMNOD), INTENT(INOUT) ::STIFR 
-      my_real , DIMENSION(NRDAMP,NDAMP), INTENT(IN) ::DAMPR 
+      my_real , DIMENSION(NUMNOD), INTENT(IN)        :: MS 
+      my_real , DIMENSION(NUMNOD*IRODDL), INTENT(IN) :: IN 
+      my_real , DIMENSION(NUMNOD), INTENT(INOUT)     :: STIFN 
+      my_real , DIMENSION(NUMNOD), INTENT(INOUT)     :: STIFR 
+      my_real , DIMENSION(NRDAMP,NDAMP), INTENT(IN)  :: DAMPR 
 C-----------------------------------------------
-      TYPE (GROUP_) ,DIMENSION(NGRNOD), INTENT(IN) :: IGRNOD
+      TYPE (GROUP_) ,DIMENSION(NGRNOD), INTENT(IN)   :: IGRNOD
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -62,7 +65,7 @@ C-----------------------------------------------
      .   DT2N(NUMNOD),BB,COEFF,DTN,DTN2,DAMPAI,DAMPBI,DT0,DAMPA3,
      .   ALPHA05,BETA1,DTMAX,FAC,DTMI1,FAC0    
 C----------------------------------------------------------
-        CALL READ_ENGINE_DTMIN(DTMI1)
+        CALL READ_ENGINE_DTMIN(DTMI1,ROOTNAME,ROOTNAME_LENGTH)
         DTMAX = EP04
         DT0 = DTMAX
         DO I=1,NDAMP

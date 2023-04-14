@@ -191,24 +191,23 @@ Chd|        TABLE_MOD                     engine/share/modules/table_mod.F
 Chd|====================================================================
       MODULE MATPARAM_DEF_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD  ,ONLY: NCHARTITLE
 C----------------------------------------------------------------------- 
 #include "my_real.inc"
-#include "nchar_c.inc"
 c=======================================================================      
 c define type MATPARAM_STRUCT_ for general material data structure table
 c allocatable dimension : NUMMAT
 c=======================================================================      
 c 
       TYPE MATPARAM_STRUCT_
-        integer     :: ILAW    
-        integer     :: MAT_ID
-        character   :: TITLE*nchartitle
-        integer     :: NTABLE
-        integer     :: COMPRESSIBILITY      ! "compressible","incompressible","elasto_plastic"
-        integer     :: SMSTR                ! "small_strain", "large_strain"
-        integer     :: STRAIN_FORMULATION   ! "total", "incremental"
-        integer     :: IPRES                ! "hydrostatic",hydro_eos","hook"
-        integer     :: ORTHOTROPY           ! "isotropic", "orthotropic", "anisotropic"
+        integer                   :: ILAW    
+        integer                   :: MAT_ID
+        character(LEN=NCHARTITLE) :: TITLE
+        integer                   :: COMPRESSIBILITY      ! "compressible","incompressible","elasto_plastic"
+        integer                   :: SMSTR                ! "small_strain", "large_strain"
+        integer                   :: STRAIN_FORMULATION   ! "total", "incremental"
+        integer                   :: IPRES                ! "hydrostatic",hydro_eos","hook"
+        integer                   :: ORTHOTROPY           ! "isotropic", "orthotropic", "anisotropic"
         TYPE (TTABLE) ,DIMENSION(:) ,ALLOCATABLE :: TABLE   ! local table of functions
       END TYPE MATPARAM_STRUCT_
 c=======================================================================      

@@ -51,6 +51,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE MESSAGE_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARFIELD,NCHARKEY,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -90,9 +91,10 @@ C-----------------------------------------------
 C     REAL
       my_real
      .   P(12), PNOR1, PNOR2, PNORM1, DET1, DET2, DET3, DET, PP,BID
-      CHARACTER NOMFG*nchartitle
-      CHARACTER TITR*nchartitle,MESS*40,MESSF*40,KEY*ncharkey
-      CHARACTER DIR*ncharfield
+      CHARACTER(LEN=NCHARTITLE) :: TITR,NOMFG
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=NCHARFIELD) :: DIR
+      CHARACTER(LEN=40)         :: MESS,MESSF
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
@@ -207,7 +209,7 @@ C--------------------------------------------------
 C--------------------------------------------------
 C EXTRACT DATAS (STRING)
 C--------------------------------------------------
-          CALL HM_GET_STRING('DIR',DIR,ncharfield,IS_AVAILABLE)
+          CALL HM_GET_STRING('DIR',DIR,NCHARFIELD,IS_AVAILABLE)
           DO K = 1,LFIELD
             IF(DIR(K:K) == 'X'.OR.DIR(K:K) == 'x')IDIR = 1
             IF(DIR(K:K) == 'Y'.OR.DIR(K:K) == 'Y')IDIR = 2

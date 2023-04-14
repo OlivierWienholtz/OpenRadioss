@@ -96,7 +96,7 @@ C-----------------------------------------------
       INTEGER I
       INTEGER J, IEL, IBID
       INTEGER, DIMENSION(:), ALLOCATABLE :: TAGVENT,TMP
-      CHARACTER*nchartitle,
+      CHARACTER(LEN=NCHARTITLE)
      .        TITR
       INTEGER, DIMENSION(:), ALLOCATABLE :: MINUS_SIGN_REVERSE
 C

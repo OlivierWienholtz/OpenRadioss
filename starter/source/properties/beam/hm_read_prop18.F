@@ -46,6 +46,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -64,13 +65,14 @@ C-----------------------------------------------
       INTEGER IGTYP,IG,NBADI 
       my_real
      .   GEO(*)
-      CHARACTER IDTITL*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: IDTITL
       TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP) :: PROP_TAG
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(*)
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      CHARACTER STRING*ncharfield,CHROT*7
+      CHARACTER(LEN=NCHARFIELD) :: STRING
+      CHARACTER CHROT*7
       INTEGER I,J,IP,INTR,INTS,NIP,NIPMAX,NC,NS,IPY,IPZ,IPA,IREF,ISECT,
      .        IRX,IR1X,IR1Y,IR1Z,IR2X,IR2Y,IR2Z,ISS
       INTEGER IHBE,ISMSTR,ISHEAR
@@ -317,6 +319,7 @@ Chd|====================================================================
      .                        AREA,L1,L2,L3,L4,L5,L6,IG,IDTITL)
 C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -334,7 +337,7 @@ C     REAL
      .   AREA,L1,L2,L3,L4,L5,L6
       my_real
      .   GEO(NPROPG)
-      CHARACTER IDTITL*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: IDTITL
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

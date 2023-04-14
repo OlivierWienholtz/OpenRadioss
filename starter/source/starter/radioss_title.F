@@ -28,7 +28,7 @@ Chd|-- calls ---------------
 Chd|        PRINTCENTER                   source/starter/radioss_title.F
 Chd|====================================================================
       SUBROUTINE RADIOSS_TITLE(IOUT,CPUNAM,ARCHTITLE,
-     *             FILNAM,ROOTLEN,CHRUN,IRESP,IFLAG)
+     *             FILNAM,CHRUN,IRESP,IFLAG)
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -41,7 +41,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER IOUT,ROOTLEN,IRESP,IFLAG
+      INTEGER IOUT,IRESP,IFLAG
       CHARACTER CPUNAM*20,FILNAM*100,CHRUN*4,ARCHTITLE*66
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s

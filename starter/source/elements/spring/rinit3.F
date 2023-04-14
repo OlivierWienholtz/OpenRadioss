@@ -63,13 +63,14 @@ Chd|====================================================================
      .                  INR      ,STIFINT  ,STR      ,IGEO   ,SIGRS ,
      .                  NSIGRS   ,IMERGE2  ,IADMERGE2,MSRT   ,IXR_KJ,
      .                  NOM_OPT  ,STRR     ,PTSPRI   ,IPM    ,PM   ,
-     .                  UPARAM   ,R_SKEW)
+     .                  UPARAM   ,R_SKEW   ,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE ELBUFDEF_MOD
       USE MESSAGE_MOD
       USE SEATBELT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -90,7 +91,6 @@ C-----------------------------------------------
 #include      "scr12_c.inc"
 #include      "scr17_c.inc"
 #include      "userlib.inc"
-#include      "scr15_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -107,7 +107,10 @@ C     REAL
      .   STIFINT(*), STR(*),SIGRS(NSIGRS,*), MSRT(*),STRR(*),UPARAM(*),
      .   PM(NPROPM,*)
 C
-      TYPE(ELBUF_STRUCT_), TARGET :: ELBUF_STR
+      TYPE(ELBUF_STRUCT_), TARGET                :: ELBUF_STR
+      INTEGER, INTENT(IN)                        :: ROOTNAME_LENGTH  ! INPUT deck rootname length
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
+
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -142,8 +145,7 @@ C     REAL
       my_real 
      .     NOISE,BIDON,MAS2
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       CHARACTER OPTION*50
 C
       TYPE(G_BUFEL_),POINTER :: GBUF
@@ -917,11 +919,11 @@ C=======================================================================
 C
         IF (IGTYP == 29) THEN   
           IF (USERL_AVAIL == 1) THEN
-            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAM,ROOTLEN,
+            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1        NEL      ,I0     ,
      2        UIX    ,UL    ,GBUF%MASS  ,UINER  ,USTIFM ,
      3        USTIFR ,UVISM ,UVISR  ,GBUF%VAR,NUVAR  )
-            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,0)
+            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,0)
           ELSE
          OPTION='/PROP/USER29'
          CALL ANCMSG(MSGID=1155,
@@ -931,11 +933,11 @@ C
           ENDIF
         ELSEIF (IGTYP == 30) THEN
           IF (USERL_AVAI L == 1) THEN
-            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAM,ROOTLEN,
+            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1        NEL      ,I0     ,
      2        UIX    ,UL    ,GBUF%MASS  ,UINER  ,USTIFM ,
      3        USTIFR ,UVISM ,UVISR  ,GBUF%VAR,NUVAR  )
-            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,0)
+            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,0)
           ELSE
          OPTION='/PROP/USER30'
          CALL ANCMSG(MSGID=1155,
@@ -945,11 +947,11 @@ C
           ENDIF
         ELSEIF (IGTYP == 31) THEN
           IF (USERL_AVAIL == 1) THEN
-            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAM,ROOTLEN,
+            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1        NEL      ,I0     ,
      2        UIX    ,UL    ,GBUF%MASS  ,UINER  ,USTIFM ,
      3        USTIFR ,UVISM ,UVISR  ,GBUF%VAR,NUVAR  )
-            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,0)
+            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,0)
           ELSE
          OPTION='/PROP/USER31'
          CALL ANCMSG(MSGID=1155,
@@ -959,11 +961,11 @@ C
           ENDIF
         ELSEIF (IGTYP == 37) THEN
           IF (USERL_AVAIL == 1) THEN
-            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAM,ROOTLEN,
+            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1        NEL      ,I0     ,
      2        UIX    ,UL    ,GBUF%MASS  ,UINER  ,USTIFM ,
      3        USTIFR ,UVISM ,UVISR  ,GBUF%VAR,NUVAR  )
-            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,0)
+            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,0)
           ELSE
          OPTION='/PROP/USER37'
          CALL ANCMSG(MSGID=1155,
@@ -973,11 +975,11 @@ C
           ENDIF
         ELSEIF (IGTYP == 38) THEN
           IF (USERL_AVAIL == 1) THEN
-            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAM,ROOTLEN,
+            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1        NEL      ,I0     ,
      2        UIX    ,UL    ,GBUF%MASS  ,UINER  ,USTIFM ,
      3        USTIFR ,UVISM ,UVISR  ,GBUF%VAR,NUVAR  )
-            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,0)
+            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,0)
           ELSE
          OPTION='/PROP/USER38'
          CALL ANCMSG(MSGID=1155,
@@ -987,11 +989,11 @@ C
           ENDIF
         ELSEIF (IGTYP == 39) THEN
           IF (USERL_AVAIL == 1) THEN
-            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAM,ROOTLEN,
+            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1        NEL      ,I0     ,
      2        UIX    ,UL    ,GBUF%MASS  ,UINER  ,USTIFM ,
      3        USTIFR ,UVISM ,UVISR  ,GBUF%VAR,NUVAR  )
-            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,0)
+            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,0)
           ELSE
          OPTION='/PROP/USER39'
          CALL ANCMSG(MSGID=1155,
@@ -1001,11 +1003,11 @@ C
           ENDIF
         ELSEIF (IGTYP == 40) THEN
           IF (USERL_AVAIL == 1) THEN
-            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAM,ROOTLEN,
+            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1        NEL      ,I0     ,
      2        UIX    ,UL    ,GBUF%MASS  ,UINER  ,USTIFM ,
      3        USTIFR ,UVISM ,UVISR  ,GBUF%VAR,NUVAR  )
-            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,0)
+            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,0)
           ELSE
          OPTION='/PROP/USER40'
          CALL ANCMSG(MSGID=1155,
@@ -1015,11 +1017,11 @@ C
           ENDIF
         ELSEIF (IGTYP == 41) THEN
           IF (USERL_AVAIL == 1) THEN
-            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAM,ROOTLEN,
+            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1        NEL      ,I0     ,
      2        UIX    ,UL    ,GBUF%MASS  ,UINER  ,USTIFM ,
      3        USTIFR ,UVISM ,UVISR  ,GBUF%VAR,NUVAR  )
-            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,0)
+            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,0)
           ELSE
          OPTION='/PROP/USER41'
          CALL ANCMSG(MSGID=1155,
@@ -1029,11 +1031,11 @@ C
           ENDIF
         ELSEIF (IGTYP == 42) THEN
           IF (USERL_AVAIL == 1) THEN
-            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAM,ROOTLEN,
+            CALL ST_USERLIB_RINIUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1        NEL      ,I0     ,
      2        UIX    ,UL    ,GBUF%MASS  ,UINER  ,USTIFM ,
      3        USTIFR ,UVISM ,UVISR  ,GBUF%VAR,NUVAR  )
-            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,0)
+            CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,0)
           ELSE
          OPTION='/PROP/USER42'
          CALL ANCMSG(MSGID=1155,

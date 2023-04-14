@@ -36,13 +36,14 @@ Chd|        R2R_MOD                       share/modules1/r2r_mod.F
 Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F 
 Chd|====================================================================
       SUBROUTINE LECEXTLNK(IEXTER,IPART,LSUBMODEL)
-      USE MESSAGE_MOD
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      USE MESSAGE_MOD
       USE R2R_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD   
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-------------------------------------
 C     Read radioss link for external process coupling.
 C-----------------------------------------------
@@ -67,7 +68,9 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER N, NUSER, IGR, IGRS, STAT,I,COMPT,SET
-      CHARACTER MESS*40,KEY*ncharkey,TITR*nchartitle
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER J,ADD,K
       INTEGER FLAG_OK,NUM_LINK,FOUND,NEL,ID,NELN
       INTEGER, DIMENSION(:), ALLOCATABLE :: ID_SUB_TEMP

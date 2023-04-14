@@ -41,7 +41,8 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE MULTI_FVM_MOD
       USE GROUPDEF_MOD
-C----------------------------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARFIELD,NCHARTITLE,NCHARKEY
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -69,8 +70,17 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,N
       my_real
-     .   V1, V2, V3
-      CHARACTER LLINE*ncharline
+     .   V1, V2, V3, VL1, VL2, VL3,
+     .   NIXJ(6), FAC_L,FAC_T,FAC_V,VR1,VR2,VR3,VRL1,VRL2,VRL3
+      LOGICAL LV,LVR
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARLINE)  :: LLINE
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=NCHARFIELD) :: XYZ
+      INTEGER, DIMENSION(:), ALLOCATABLE :: IAD_VEL,NOD_VEL,NVEL
+      my_real, DIMENSION(:,:), ALLOCATABLE :: V_NODE,VR_NODE
+      CHARACTER(LEN=NCHARLINE) :: KLINE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------

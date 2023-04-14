@@ -33,8 +33,12 @@ Chd|====================================================================
       SUBROUTINE LECREFSTA(ITABM1  ,UNITAB,IXC   ,IXTG  ,IXS   ,
      .                     XYZREF  ,XREFC ,XREFTG,XREFS ,TAGNOD,
      .                     IDDLEVEL,TAGREF )
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE UNITAB_MOD
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -66,6 +70,7 @@ C-----------------------------------------------
 C     REAL
       my_real
      .  XX,YY,ZZ,FAC_L
+      CHARACTER(LEN=NCHARLINE) :: LINE
       CHARACTER MESS*40
       DATA MESS/'REFSTA'/      
 C-----------------------------------------------

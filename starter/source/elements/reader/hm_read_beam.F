@@ -57,6 +57,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -145,7 +146,7 @@ C--------------------------------------------------
         IXP(5,I)=IPID 
         IF (IXP(6,I)>ID_LIMIT) THEN               
           CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                I1=IXP(6,I),C1=LINE,C2='/BEAM')
+     .                I1=IXP(6,I),C1='/BEAM')
         ENDIF
 C optional Node 3 
         IF (IXP(4,I)==0 .OR. IXP(4,I)==IXP(2,I)

@@ -55,7 +55,7 @@ Chd|====================================================================
      .             MATPARAM_TAB,MLAW_TAG ,FAIL_TAG ,VISC_TAG ,EOS_TAG  ,
      .             BUFMAT      ,BUFLEN   ,IPM      ,PM       ,UNITAB   ,
      .             MULTI_FVM   ,MAXEOS   ,FAILWAVE ,NLOC_DMG ,LSUBMODEL,
-     .             TABLE       ,NPC      )
+     .             TABLE       ,NPC      ,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   D e s c r i p t i o n
 C-----------------------------------------------
@@ -79,6 +79,7 @@ C-----------------------------------------------
       USE MATPARAM_DEF_MOD
       USE HM_OPTION_READ_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 c-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -113,6 +114,7 @@ C-----------------------------------------------
       TYPE(MATPARAM_STRUCT_) ,DIMENSION(NUMMAT), INTENT(INOUT) :: MATPARAM_TAB
       TYPE(SUBMODEL_DATA) ,INTENT(IN) :: LSUBMODEL(NSUBMOD)
       TYPE(TTABLE) TABLE(NTABLE)
+      TYPE(NAMES_AND_TITLES_),INTENT(INOUT)  :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -162,7 +164,8 @@ c-------------------------------------------------------------------
       CALL HM_READ_MAT(
      .     MATPARAM_TAB,MLAW_TAG    ,FAIL_TAG    ,EOS_TAG     ,BUFMAT      ,
      .     BUFLEN      ,IADBUF      ,MAXEOS      ,IPM         ,PM          ,
-     .     MULTI_FVM   ,UNITAB      ,LSUBMODEL   ,TABLE)
+     .     MULTI_FVM   ,UNITAB      ,LSUBMODEL   ,TABLE,NAMES_AND_TITLES%ROOTNAME,
+     .     NAMES_AND_TITLES%ROOTNAME_LENGTH)
 
 c-------------------------------------------------------------------
 c     /EOS : Equations of State P=P(µ,E)
@@ -175,7 +178,8 @@ c     /FAIL : Failure Models
 c-------------------------------------------------------------------     
       CALL HM_READ_FAIL(FAIL_TAG,FAILWAVE ,NLOC_DMG,IPM     ,PM       ,
      .                  BUFMAT  ,BUFLEN   ,IADBUF  ,UNITAB  ,LSUBMODEL,
-     .                  NRUPT   ,NVAR_FAIL,TABLE   )
+     .                  NRUPT   ,NVAR_FAIL,TABLE   ,NAMES_AND_TITLES%ROOTNAME,
+     .                  NAMES_AND_TITLES%ROOTNAME_LENGTH)
      
 c-------------------------------------------------------------------
 c     /VISC : Visco elastic  Models

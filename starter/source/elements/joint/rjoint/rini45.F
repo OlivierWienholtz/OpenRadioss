@@ -37,7 +37,11 @@ Chd|====================================================================
       SUBROUTINE RINI45(NEL   ,IOUT   ,IPROP , IX, X, XL    ,
      3                  MASS   ,XINER ,STIFN  , STIFR ,VISCM ,
      4                  VISCR,UVAR ,NUVAR,IXR, IXR_KJ,ID,TITR)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------     
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-------------------------------------------------------------------------
 C     This subroutine initialize springs using user properties.
 C-------------------------------------------------------------------------
@@ -86,8 +90,7 @@ C----------------------------------------------------------
      .        STIFR(NEL),VISCM(NEL) ,VISCR(NEL),UVAR(NUVAR,*),
      .        X(3,*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -321,7 +324,11 @@ Chd|        ANCMSG                        source/output/message/message.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       INTEGER FUNCTION GET_SKEW45(IOUT,JTYP,EX,IXR,IXR_KJ,IEL,X,ID,TITR)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------     
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -337,8 +344,7 @@ C----------------------------------------------------------
       INTEGER IOUT,IXR(NIXR,*),IEL,JTYP,IXR_KJ(5,*)
       my_real EX(LSKEW),X(3,*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -651,7 +657,11 @@ Chd|        GET_U_SKEW                    source/user_interface/uaccess.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE INIT_SKEW45(JTYP,IPROP,IDSK1,IDSK2,EX,THETA0,ID,TITR)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------     
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-------------------------------------------------------------------------
 C     This subroutine compute the initial angles from skews
 C-------------------------------------------------------------------------
@@ -668,8 +678,7 @@ C   D u m m y   A r g u m e n t s   a n d   F u n c t i o n
 C----------------------------------------------------------
       INTEGER JTYP,IPROP,ID,IDSK1,IDSK2
       my_real EX(*),THETA0(*)
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

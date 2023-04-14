@@ -84,7 +84,8 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE NLOCAL_REG_MOD
       USE MATPARAM_DEF_MOD    
-      USE DRAPE_MOD            
+      USE DRAPE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -156,8 +157,7 @@ C-----------------------------------------------
      .        X31(MVSIZ), Y31(MVSIZ), Z31(MVSIZ),
      .        X2L(MVSIZ), X3L(MVSIZ), Y3L(MVSIZ)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       my_real, 
      .    ALLOCATABLE, DIMENSION(:) :: DIR_A,DIR_B
       INTEGER, ALLOCATABLE, DIMENSION(:) :: INDX     

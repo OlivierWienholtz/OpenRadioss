@@ -48,6 +48,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD 
       USE ELBUFTAG_MOD
       USE MATPARAM_DEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e sXM
 C-----------------------------------------------
@@ -65,11 +66,11 @@ C-----------------------------------------------
       TYPE (UNIT_TYPE_),INTENT(IN)                 :: UNITAB 
       INTEGER, INTENT(IN)                          :: MAT_ID,MAXUPARAM,MAXTABL
       my_real, DIMENSION(NPROPM) ,INTENT(INOUT)    :: PM     
-      CHARACTER*nchartitle ,INTENT(IN)             :: TITR
+      CHARACTER(LEN=NCHARTITLE) ,INTENT(IN)        :: TITR
       INTEGER, INTENT(INOUT)                       :: ISRATE,ITABLE(MAXTABL)
-      INTEGER, INTENT(INOUT)                         :: NUPARAM,NUVAR,NTABL,NVARTMP
-      my_real, DIMENSION(MAXUPARAM) ,INTENT(INOUT)   :: UPARAM
-      my_real, DIMENSION(100),INTENT(INOUT)          :: PARMAT
+      INTEGER, INTENT(INOUT)                       :: NUPARAM,NUVAR,NTABL,NVARTMP
+      my_real, DIMENSION(MAXUPARAM) ,INTENT(INOUT) :: UPARAM
+      my_real, DIMENSION(100),INTENT(INOUT)        :: PARMAT
       TYPE(SUBMODEL_DATA), DIMENSION(*),INTENT(IN) :: LSUBMODEL
       TYPE(MLAW_TAG_), INTENT(INOUT)               :: MTAG
       TYPE(MATPARAM_STRUCT_) ,INTENT(INOUT)        :: MATPARAM  

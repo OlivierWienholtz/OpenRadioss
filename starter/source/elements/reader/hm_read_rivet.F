@@ -66,6 +66,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -166,7 +167,7 @@ C--------------------------------------------------
         IXRI(1,I)=IPID   
         IF (IXRI(4,I)>ID_LIMIT) THEN               
           CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                I1=IXRI(4,I),C1=LINE,C2='/RIVET')
+     .                I1=IXRI(4,I),C1='/RIVET')
         ENDIF
       ENDDO
 C--------------------------------------------------

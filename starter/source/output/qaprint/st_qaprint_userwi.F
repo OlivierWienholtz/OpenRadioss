@@ -33,6 +33,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE QA_OUT_MOD
       USE USER_WINDOWS_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -44,7 +45,6 @@ C-----------------------------------------------
 #include      "param_c.inc"
 #include      "scr10_c.inc"
 #include      "units_c.inc"
-#include      "nchar_c.inc"
 #include      "scry_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s

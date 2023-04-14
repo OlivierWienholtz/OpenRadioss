@@ -359,7 +359,7 @@ Chd|====================================================================
      C INDX_S,INDX_Q,INDX_TG,FACE_ELM_S,FACE_ELM_Q,FACE_ELM_TG,NBR_TH_MONVOL, EBCS_TAB,
      D   KLOADPINTER  , LOADPINTER ,DGAPLOADINT     ,S_LOADPINTER, LEN_CEP ,DYNAIN_DATA,
      E   DRAPEG       ,USER_WINDOWS,OUTPUT          ,INTERFACES  ,NUMBER_LOAD_CYL,
-     F   LOADS_PER_PROC)
+     F   LOADS_PER_PROC   ,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -406,6 +406,7 @@ C-----------------------------------------------
       USE ALE_MOD
       USE OUTPUT_MOD
       USE INTERFACES_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,LTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -415,7 +416,6 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "com05_c.inc"
 #include      "com10_c.inc"
 #include      "com_xfem1.inc"
 #include      "eigcom.inc"
@@ -426,7 +426,6 @@ C-----------------------------------------------
 #include      "param_c.inc"
 #include      "scr03_c.inc"
 #include      "scr05_c.inc"
-#include      "scr15_c.inc"
 #include      "scr16_c.inc"
 #include      "scr17_c.inc"
 #include      "scr23_c.inc"
@@ -446,8 +445,9 @@ C-----------------------------------------------
         INTEGER, DIMENSION(:), POINTER :: P
       END TYPE INTERMASURFEP
       TYPE (DYNAIN_DATABASE), INTENT(INOUT)    :: DYNAIN_DATA
-      TYPE (OUTPUT_),INTENT(IN)             :: OUTPUT
-      TYPE (INTERFACES_)   ,INTENT(IN)      :: INTERFACES
+      TYPE (OUTPUT_),INTENT(IN)                :: OUTPUT
+      TYPE (INTERFACES_)   ,INTENT(IN)         :: INTERFACES
+      TYPE (NAMES_AND_TITLES_), INTENT(IN)     :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -751,6 +751,7 @@ c SPH inlet spmd structure
      .      MSNDP(NSPMD)
       INTEGER :: LEN_TMP_NAME
       CHARACTER(len=4096) :: TMP_NAME
+      INTEGER, DIMENSION(LTITLE)  :: ITITLE
 C-----------------------------------------------
 C structure de fichier v44 a modifier
 C-----------------------------------------------
@@ -805,6 +806,7 @@ C
       TYPE(t_connectivity_ext1) :: ee_connect_l
 C-----------------------------------------------
       TYPE(SEATBELT_REMOTE_NODES_STRUCT) ANCHOR_REMOTE_L,ANCHOR_REMOTE_SEND_L
+      CHARACTER C
 C=======================================================================
 C ALLOCATION
 C ----------
@@ -1400,7 +1402,7 @@ C
      .     FXBIPM,    FXBNOD,   NODLOCAL, IPARG,    FXBELM,
      .     FXBNOD_L,  FXBMOD_L, FXBELM_L, FXBSIG_L, P-1   ,
      .     FXBMOD,    FXBSIG,   FXBIPM_L, FXBGRVI,
-     .     FXBGRVI_L, LENNOD_L, ITASK)
+     .     FXBGRVI_L, LENNOD_L, ITASK,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
 C arrays pined to PMAIN
          CALL C_FXBODY3(
      .     LENGLM_L, LENCP_L,   LENLM_L,  LENFLS_L, LENDLS_L,
@@ -1676,14 +1678,14 @@ C--------------------------------------------
       IR_ = P
       WRITE(CHRUN,'(I4.4)')IRUN
       WRITE(PROCNAM,'(I4.4)')P
-      FILNAM = ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//PROCNAM//'.rst'
+      FILNAM = TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRUN//'_'//PROCNAM//'.rst'
       TMP_NAME = OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))
-      LEN_TMP_NAME = OUTFILE_NAME_LEN+ROOTLEN+14
+      LEN_TMP_NAME = OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+14
 C fichier de restart au format binaire ieee 64 bits
       DO I=1,LEN_TMP_NAME
           IFILNAM(I)=ICHAR(TMP_NAME(I:I))
       ENDDO
-      DO I=1,ROOTLEN+14
+      DO I=1,NAMES_AND_TITLES%ROOTNAME_LENGTH+14
           IFILNAM2(I)=ICHAR(FILNAM(I:I))
       ENDDO
       CALL CUR_FIL_C(1)
@@ -1694,8 +1696,7 @@ C fichier de restart au format binaire ieee 64 bits
      . ,STATUS='UNKNOWN',FORM='FORMATTED')
       ENDIF
 #endif
-      CALL WRITE_C_C(IFILNAM2,ROOTLEN+14)
-      LEN_IA = LEN_IA + ROOTLEN+14
+      CALL WRITE_C_C(IFILNAM2,NAMES_AND_TITLES%ROOTNAME_LENGTH+14)
 C--------------------------------------------
 C  Skippon_l for obsolide "modif" option.
       SKIPPON_L = NUMNOD_L+1 + LCNE_L + LCNI2_L +
@@ -1760,10 +1761,13 @@ C--------------------------------------------
 
       CALL WRCOMR(LMXVREA,LVARREA,TABVREA,MSNDP(P),P,INTERFACES%PARAMETERS)
 C--------------------------------------
-C     write TEXT
+C     write TITLE
 C--------------------------------------
-      CALL WRITE_I_C(TEXT,LCOM05)
-      LEN_IA = LEN_IA + LCOM05
+      DO I=1,LTITLE
+      
+         ITITLE = ICHAR( NAMES_AND_TITLES%TITLE(I:I) )
+      ENDDO
+      CALL WRITE_I_C(ITITLE,LTITLE)
 C--------------------------------------
 C     Write HEADER.
 C--------------------------------------
@@ -3231,7 +3235,8 @@ C-----------------------------------------------
      .     FXBDEP,    FXBVIT,    FXBACC,    FXBELM_L, FXBSIG_L,
      .     FXBGRVI_L, FXBGRVR_L, LENNOD_L,  LENMOD_L, LENGLM_L,
      .     LENCP_L,   LENLM_L,   LENFLS_L,  LENDLS_L, LENELM_L,
-     .     LENSIG_L,  LENGRVI_L, LENGRVR_L, LEN_AM,   ITASK)
+     .     LENSIG_L,  LENGRVI_L, LENGRVR_L, LEN_AM,   ITASK   ,
+     .     NAMES_AND_TITLES%ROOTNAME, NAMES_AND_TITLES%ROOTNAME_LENGTH )
 C
          DEALLOCATE(FXBNOD_L, FXBMOD_L, FXBGLM_L, FXBCPM_L, FXBCPS_L,
      .              FXBLM_L, FXBFLS_L, FXBDLS_L, FXBELM_L, FXBSIG_L,

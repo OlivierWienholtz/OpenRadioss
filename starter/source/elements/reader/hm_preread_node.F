@@ -40,6 +40,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -71,7 +72,7 @@ C     REAL
      .                                       X
       REAL*8, DIMENSION(:,:), ALLOCATABLE :: HM_X
       REAL*8, DIMENSION(:), ALLOCATABLE :: DMERGE
-      CHARACTER KEY*ncharfield
+      CHARACTER(LEN=NCHARFIELD) :: KEY
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------      
       FAC_L = ONE
@@ -126,7 +127,7 @@ C--------------------------------------------------
         ENDIF
         IF ( ITAB(N) > ID_LIMIT )THEN
           CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                I1=ITAB(N),C1=LINE,C2='/NODE')
+     .                I1=ITAB(N),C1='/NODE')
         ENDIF                    
 C--------------------------------------------------
 C      UNITS

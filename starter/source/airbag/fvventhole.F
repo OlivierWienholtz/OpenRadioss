@@ -58,7 +58,7 @@ C-----------------------------------------------
       INTEGER, DIMENSION(NEL), INTENT(INOUT) :: ITAGEL
       INTEGER NB_NODE
       INTEGER, DIMENSION(NEL), INTENT(IN) :: ELTG
-      CHARACTER*nchartitle,
+      CHARACTER(LEN=NCHARTITLE)
      .        TITR
       TYPE (SURF_)   , DIMENSION(NSURF)   :: IGRSURF
 C-----------------------------------------------

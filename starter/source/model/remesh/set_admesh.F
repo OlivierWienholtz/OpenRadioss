@@ -43,6 +43,7 @@ C-----------------------------------------------
       USE HM_OPTION_READ_MOD
       USE SUBMODEL_MOD
       USE UNITAB_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C----------------------------------------------------------
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
@@ -73,8 +74,11 @@ C-----------------------------------------------
 C     REAL
       my_real
      .  ANGL,ANGLDEGR,THKERR
-      CHARACTER MESS*40,TITR*nchartitle,KEY*ncharkey,KEY2*ncharkey
-
+     !
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY,KEY2
+     !
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
       DATA MESS /'OPTIONS FOR ADAPTIVE MESHING DEFINITION '/

@@ -87,7 +87,7 @@ Chd|        SETDEF_MOD                    ../common_source/modules/setdef_mod.F
 Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F 
 Chd|        USER_WINDOWS_MOD              ../common_source/modules/user_windows_mod.F
 Chd|====================================================================
-      SUBROUTINE CONTRL(MULTI_FVM,LSUBMODEL,IS_DYNA,DETONATORS,USER_WINDOWS)
+      SUBROUTINE CONTRL(MULTI_FVM,LSUBMODEL,IS_DYNA,DETONATORS,USER_WINDOWS,NAMES_AND_TITLES)
 C----------------------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -111,6 +111,7 @@ C-----------------------------------------------
       USE ALEFVM_MOD , only:ALEFVM_Param
       USE USER_WINDOWS_MOD
       USE ALE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -127,7 +128,6 @@ C-----------------------------------------------
 #include      "warn_c.inc"
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "com05_c.inc"
 #include      "com06_c.inc"
 #include      "com08_c.inc"
 #include      "com09_c.inc"
@@ -140,7 +140,6 @@ C-----------------------------------------------
 #include      "scr06_c.inc"
 #include      "scr10_c.inc"
 #include      "scr12_c.inc"
-#include      "scr15_c.inc"
 #include      "scr16_c.inc"
 #include      "scr21_c.inc"
 #include      "scr22_c.inc"
@@ -168,11 +167,12 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      TYPE(MULTI_FVM_STRUCT), INTENT(IN) :: MULTI_FVM
+      TYPE(MULTI_FVM_STRUCT), INTENT(IN)     :: MULTI_FVM
       TYPE(SUBMODEL_DATA) LSUBMODEL(NSUBMOD)
-      INTEGER,INTENT(IN)::IS_DYNA
-      TYPE(DETONATOR_STRUCT_) :: DETONATORS
-      TYPE(USER_WINDOWS_), INTENT(INOUT) :: USER_WINDOWS
+      INTEGER,INTENT(IN)                     ::IS_DYNA
+      TYPE(DETONATOR_STRUCT_)                :: DETONATORS
+      TYPE(USER_WINDOWS_), INTENT(INOUT)     :: USER_WINDOWS
+      TYPE(NAMES_AND_TITLES_),INTENT(INOUT)  :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -188,8 +188,9 @@ C-----------------------------------------------
       INTEGER IARCHS(8)
       INTEGER IS_BEGIN,SCHAR
       my_real DTINI, DTX ,RBID
-      CHARACTER CART*ncharline, XRFILE*ncharline,KEY*ncharline,KEY2*ncharline,TMPLINE*ncharline
-      CHARACTER TITR*nchartitle,MESS*40, ERRMSG*40
+      CHARACTER(LEN=NCHARLINE)  :: CART,XRFILE,KEY,KEY2,TMPLINE
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER MESS*40, ERRMSG*40
       CHARACTER (LEN=255) :: STR_NBTHREADS
 
 C OpenMP specific
@@ -214,6 +215,7 @@ C
      .           NB_INIBEAM,NB_INITRUSS,NB_INISPRIG
       CHARACTER*20 UNIT_NAME
       INTEGER IS_U_STRING
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C----------------------------------------------------------
 C   E x t e r n a l  F u n c t i o n
 C----------------------------------------------------------
@@ -232,14 +234,18 @@ C=======================================================================
       IF (NUMTITLE > 0) THEN
          CALL HM_OPTION_START('/TITLE')
          CALL HM_OPTION_READ_KEY(LSUBMODEL, OPTION_TITR = LINE)
-         CALL HM_GET_STRING('MY_TITLE', LINE, ncharline, IS_AVAILABLE)
+         CALL HM_GET_STRING('MY_TITLE', LINE, NCHARLINE, IS_AVAILABLE)
       ELSE 
          LINE = ' '
       ENDIF
 !     Standard output
       WRITE(ISTDO,'(A)') LINE(1:LEN_TRIM(LINE))
 !     For 0.out title writing
-      READ(LINE(1:LEN_TRIM(LINE)),'(20A4)') TEXT
+      IF(LEN_TRIM(LINE) > 80)THEN                       ! TITLE Can only have 80 characters due to its usage in time history. 
+            NAMES_AND_TITLES%TITLE(1:80)=LINE(1:80)     ! If longer, truncate
+      ELSE 
+           NAMES_AND_TITLES%TITLE(1:LEN_TRIM(LINE)) = LINE(1:LEN_TRIM(LINE))
+      ENDIF
       IMOT=0
       REEL=ZEP66  
 C=======================================================================
@@ -274,16 +280,16 @@ C
           DO N=1,NUNIT0
             CALL HM_OPTION_READ_KEY(LSUBMODEL,OPTION_ID = ID)
             UNIT_NAME = ''
-            CALL HM_GET_STRING('UNIT_NAME',UNIT_NAME,2*ncharfield,IS_AVAILABLE)
+            CALL HM_GET_STRING('UNIT_NAME',UNIT_NAME,2*NCHARFIELD,IS_AVAILABLE)
 c
             IF(UNIT_NAME == 'LENGTH') THEN
-              CALL HM_GET_STRING('TYPE_UNIT',KEYL,2*ncharfield,IS_AVAILABLE)
+              CALL HM_GET_STRING('TYPE_UNIT',KEYL,2*NCHARFIELD,IS_AVAILABLE)
             ENDIF
             IF(UNIT_NAME == 'MASS') THEN
-              CALL HM_GET_STRING('TYPE_UNIT',KEYM,2*ncharfield,IS_AVAILABLE)
+              CALL HM_GET_STRING('TYPE_UNIT',KEYM,2*NCHARFIELD,IS_AVAILABLE)
             ENDIF
             IF(UNIT_NAME == 'TIME') THEN
-              CALL HM_GET_STRING('TYPE_UNIT',KEYT,2*ncharfield,IS_AVAILABLE)
+              CALL HM_GET_STRING('TYPE_UNIT',KEYT,2*NCHARFIELD,IS_AVAILABLE)
             ENDIF
 c
           ENDDO
@@ -378,7 +384,7 @@ C-------------------------------------------------------------------
 C     READING OF /AMS
 C-------------------------------------------------------------------
       CALL HM_OPTION_COUNT('/AMS', NB_AMS)
-      CALL HM_READ_SMS(LSUBMODEL)
+      CALL HM_READ_SMS(LSUBMODEL,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
 C-------------------------------------------------------------------
 C     READING OF /CAA
 C-------------------------------------------------------------------
@@ -627,7 +633,7 @@ C
 C     Look for /DT1/BRICK & /DT1TET10 /DTTSH in RADIOSS Engine input deck
 C
       IF(NUMELS>0)THEN
-        CALL FIND_DT1BRICK_ENGINE()
+        CALL FIND_DT1BRICK_ENGINE(NAMES_AND_TITLES)
       END IF
 C-----
       CALL HM_ELEM_COUNT('SHELL',NUMELC,IS_DYNA)
@@ -877,7 +883,7 @@ C
       ENDIF
 C
 C---- READING OF /REFSTA
-      CALL HM_READ_REFSTA(LSUBMODEL, XRFILE)
+      CALL HM_READ_REFSTA(LSUBMODEL, XRFILE,NAMES_AND_TITLES%ROOTNAME)
 C-----
       CALL HM_OPTION_COUNT('/INIGRAV',NINIGRAV)
 C----- 
@@ -1150,7 +1156,7 @@ C--     Lecture fichier Y00/Ynn
         ELSE
           J = 0
           IF(IROOTYY_R==2)THEN
-           DO  I=1,ncharline
+           DO  I=1,NCHARLINE
             IF(S0FILE(I:I)/=' ')J = J + 1
            ENDDO
            N = J - 3
@@ -1227,7 +1233,7 @@ C---------------------------------------------------
 C=======================================================================
 C     Writing to 0000.out FILE
 C=======================================================================
-      WRITE (IOUT,'(//,1X,20A4)')TEXT
+      WRITE (IOUT,'(//,1X,A)')TRIM(NAMES_AND_TITLES%TITLE)
       WRITE (IOUT,'(//A/A/,(A,1PG20.13))')TITRE(110),TITRE(111)
       WRITE (IOUT,'(A,I10)')  TITRE(117)(1:57),IPRI,
      .      TITRE(120)(1:57),INVERS_SRC
@@ -1679,12 +1685,13 @@ Chd|        ANCMSG                        source/output/message/message.F
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
-      SUBROUTINE FIND_DT1BRICK_ENGINE()
+      SUBROUTINE FIND_DT1BRICK_ENGINE(NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1693,8 +1700,11 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
-#include      "scr15_c.inc"
 #include      "scr17_c.inc"
+C-----------------------------------------------
+C   D u m m y   A r g u m e n t s
+C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_) :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -1702,24 +1712,25 @@ C-----------------------------------------------
       CHARACTER FILNAM*109, KEYA*80, KEYA2*80
 
       INTEGER :: LEN_TMP_NAME
-      CHARACTER(len=4096) :: TMP_NAME
+      CHARACTER(len=4096)     :: TMP_NAME
 C-----------------------------------------------
       IO_ERR1=0
       IDTTSH=0
 C-----------------------------------------------
 C     Lecture des donnees dans le fichier engine
 C-----------------------------------------------   
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_0001.rad'
+      FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_0001.rad'
 
-      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTLEN+9)
-      LEN_TMP_NAME = INFILE_NAME_LEN+ROOTLEN+9
+      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+9)
+      LEN_TMP_NAME = INFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+9
       OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .        ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
 C
       IF (IO_ERR1/=0) THEN
-         FILNAM=ROOTNAM(1:ROOTLEN)//'D01'
-         TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTLEN+3)
-         LEN_TMP_NAME = INFILE_NAME_LEN+ROOTLEN+3
+
+         FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'D01'
+         TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+3)
+         LEN_TMP_NAME = INFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+3
          OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .        ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
       ENDIF      
@@ -1751,14 +1762,14 @@ C
         IF(NUMTETRA4/=0) CALL ANCMSG(MSGID=1589,
      .              MSGTYPE=MSGWARNING,
      .              ANMODE=ANINFO_BLIND_2,
-     .              C1=ROOTNAM(1:ROOTLEN)//'_0001.rad',
-     .              C2=ROOTNAM(1:ROOTLEN)//'D01')   
+     .              C1=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_0001.rad',
+     .              C2=TRIM(NAMES_AND_TITLES%ROOTNAME)//'D01')   
 C
         IF(NUMELS10/=0) CALL ANCMSG(MSGID=1606,
      .              MSGTYPE=MSGWARNING,
      .              ANMODE=ANINFO_BLIND_2,
-     .              C1=ROOTNAM(1:ROOTLEN)//'_0001.rad',
-     .              C2=ROOTNAM(1:ROOTLEN)//'D01')   
+     .              C1=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_0001.rad',
+     .              C2=TRIM(NAMES_AND_TITLES%ROOTNAME)//'D01')   
 C
       ENDIF
 C------------------------------------------- 
@@ -1774,13 +1785,14 @@ Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|        OUTMAX_MOD                    ../common_source/modules/outmax_mod.F
 Chd|====================================================================
-      SUBROUTINE INI_H3DTMAX_ENGINE(IPARG,IPART,IPARTS,IPARTC,IPARTG,IDDLEVEL)
+      SUBROUTINE INI_H3DTMAX_ENGINE(IPARG,IPART,IPARTS,IPARTC,IPARTG,IDDLEVEL,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
       USE OUTMAX_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1790,12 +1802,12 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "scr15_c.inc"
 #include      "scr17_c.inc"
 #include      "param_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_), INTENT(IN) :: NAMES_AND_TITLES
       INTEGER ,INTENT(IN) :: IDDLEVEL
       INTEGER, DIMENSION(NPARG,NGROUP) ,INTENT(IN):: IPARG
       INTEGER ,DIMENSION(LIPART1,NPART),INTENT(IN):: IPART
@@ -1809,7 +1821,7 @@ C-----------------------------------------------
       INTEGER IH3D,NG,ITY,NFT,IKEY,K_LEN
 
       INTEGER :: TMAX_IPART(NPART),NKPART(NPART+1,NKEYMAX+1)
-      CHARACTER CARTE*ncharline
+      CHARACTER(LEN=NCHARLINE) :: CARTE
 C-----------------------------------------------
       IF (ALLOCATED(IKEYMAX)) DEALLOCATE(IKEYMAX)
       IF (ALLOCATED(IPART_OK)) DEALLOCATE(IPART_OK)
@@ -1827,117 +1839,117 @@ C-----------------------------------------------
       IH3D=1
       K_LEN = 19 
       CARTE(1:K_LEN) = '/H3D/ELEM/VONM/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
       IF (IKEY >0) THEN
         IKEYMAX(IH3D) = 1
       ELSE
         K_LEN = 20 
         CARTE(1:K_LEN) = '/H3D/SOLID/VONM/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
         CARTE(1:K_LEN) = '/H3D/SHELL/VONM/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
       END IF
       IH3D=2
       K_LEN = 20 
       CARTE(1:K_LEN) = '/H3D/ELEM/SIGEQ/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
       IF (IKEY >0) THEN
         IKEYMAX(IH3D) = 1
       ELSE
         K_LEN = 21 
         CARTE(1:K_LEN) = '/H3D/SOLID/SIGEQ/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
         CARTE(1:K_LEN) = '/H3D/SHELL/SIGEQ/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
       END IF
       IH3D=3
       K_LEN = 19 
       CARTE(1:K_LEN) = '/H3D/ELEM/ENER/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
       IF (IKEY >0) THEN
         IKEYMAX(IH3D) = 1
       ELSE
         K_LEN = 20 
         CARTE(1:K_LEN) = '/H3D/SOLID/ENER/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
         CARTE(1:K_LEN) = '/H3D/SHELL/ENER/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
       END IF
       IH3D=4
       K_LEN = 19 
       CARTE(1:K_LEN) = '/H3D/ELEM/DAMA/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
       IF (IKEY >0) THEN
         IKEYMAX(IH3D) = 1
       ELSE
         K_LEN = 20 
         CARTE(1:K_LEN) = '/H3D/SOLID/DAMA/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
         CARTE(1:K_LEN) = '/H3D/SHELL/DAMA/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
       END IF
       IH3D=5
       K_LEN = 26 
       CARTE(1:K_LEN) = '/H3D/ELEM/TENS/STRESS/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
       IF (IKEY >0) THEN
         IKEYMAX(IH3D) = 1
       ELSE
         K_LEN = 27 
         CARTE(1:K_LEN) = '/H3D/SOLID/TENS/STRESS/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
         CARTE(1:K_LEN) = '/H3D/SHELL/TENS/STRESS/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
       END IF
       IH3D=6
       K_LEN = 26 
       CARTE(1:K_LEN) = '/H3D/ELEM/TENS/STRAIN/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
       IF (IKEY >0) THEN
         IKEYMAX(IH3D) = 1
       ELSE
         K_LEN = 27 
         CARTE(1:K_LEN) = '/H3D/SOLID/TENS/STRAIN/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
         CARTE(1:K_LEN) = '/H3D/SHELL/TENS/STRAIN/TMAX'    
-        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+        CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
         IF (IKEY >0) IKEYMAX(IH3D) = 1
       END IF
       IH3D=7 ! NKEYMAX+1
       K_LEN = 9 
       CARTE(1:K_LEN) = '/H3D/PART'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,NKPART(1,IH3D),IPART,NAMES_AND_TITLES)
       IF (IKEY == 0 ) NKPART(1:NPART,IH3D)=1
       IH3D=8 
       K_LEN =18 
       CARTE(1:K_LEN) = '/H3D/NODA/DIS/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,TMAX_IPART,IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,TMAX_IPART,IPART,NAMES_AND_TITLES)
       IF (IKEY > 0 ) LMAX_DIS = 3
       IH3D=9 
       K_LEN =18 
       CARTE(1:K_LEN) = '/H3D/NODA/VEL/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,TMAX_IPART,IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,TMAX_IPART,IPART,NAMES_AND_TITLES)
       IF (IKEY > 0 ) LMAX_VEL = 3
       IH3D=10 
       K_LEN =18 
       CARTE(1:K_LEN) = '/H3D/NODA/GPS/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,TMAX_IPART,IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,TMAX_IPART,IPART,NAMES_AND_TITLES)
       IF (IKEY > 0 ) LMAX_NSIG = 6
       IH3D=11 
       K_LEN =23 
       CARTE(1:K_LEN) = '/H3D/NODA/GPSTRAIN/TMAX'    
-      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,TMAX_IPART,IPART)
+      CALL READ_H3DTMAX_KEY(CARTE,K_LEN,IKEY,TMAX_IPART,IPART,NAMES_AND_TITLES)
       IF (IKEY > 0 ) LMAX_NSTRA = 6
 C
         IH3D = 0
@@ -1976,12 +1988,13 @@ Chd|-- calls ---------------
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
-      SUBROUTINE READ_H3DTMAX_KEY(KEY_TM,KEY_LEN,IFUND,NTM_PART,IPART)
+      SUBROUTINE READ_H3DTMAX_KEY(KEY_TM,KEY_LEN,IFUND,NTM_PART,IPART,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1991,12 +2004,12 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "scr15_c.inc"
 #include      "scr17_c.inc"
 #include      "param_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN)  :: NAMES_AND_TITLES
       INTEGER, INTENT(IN):: KEY_LEN
       CHARACTER(len=KEY_LEN) :: KEY_TM
       INTEGER ,DIMENSION(LIPART1,NPART),INTENT(IN):: IPART
@@ -2007,8 +2020,8 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, J, K, N ,NELC , NELTG , IP , NPRT , IPRT
       INTEGER IH3D,NG,ITY,NFT,IO_ERR1,LEN_C,IC
-      CHARACTER FILNAM*109, KEYA*80, KEYA2*80,CARTE*ncharline
-
+      CHARACTER FILNAM*109, KEYA*80, KEYA2*80
+      CHARACTER(LEN=NCHARLINE) :: CARTE
       INTEGER :: LEN_TMP_NAME,TMAX_IPART(NPART)
       CHARACTER(len=4096) :: TMP_NAME
 C-----------------------------------------------
@@ -2017,10 +2030,10 @@ C-----------------------------------------------
 C-----------------------------------------------
 C     Lecture des donnees dans le fichier engine
 C-----------------------------------------------   
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_0001.rad'
+      FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_0001.rad'
 
-      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTLEN+9)
-      LEN_TMP_NAME = INFILE_NAME_LEN+ROOTLEN+9
+      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+9)
+      LEN_TMP_NAME = INFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+9
       OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .        ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
 

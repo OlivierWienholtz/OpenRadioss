@@ -49,6 +49,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD    
       USE SUBMODEL_MOD        
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,9 +83,11 @@ C-----------------------------------------------
      .        IKINE1(3*NUMNOD),SUB_ID,
      .        CHKCOD,ISERR,NOD,S_STRING,SUB_INDEX
       INTEGER IUN,IGR1,IGRS1,IGR2,IGRS2,IAD_L,NBY_NI,NBCSCYCI,ICYC,IS0
-      CHARACTER MESS*40,KEY*ncharkey,STRING*ncharfield,CODE*7,
-     .        KEY2*ncharkey
-      CHARACTER TITR*nchartitle,OPT*8
+      CHARACTER MESS*40,CODE*7
+      CHARACTER(LEN=NCHARKEY) :: KEY,KEY2
+      CHARACTER(LEN=NCHARFIELD) :: STRING
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER OPT*8
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s

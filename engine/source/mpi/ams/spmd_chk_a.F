@@ -25,7 +25,11 @@ Chd|  SPMD_CHK_A                    source/mpi/ams/spmd_chk_a.F
 Chd|-- called by -----------
 Chd|-- calls ---------------
 Chd|====================================================================
-      SUBROUTINE SPMD_CHK_A(A        ,ITAB ,IAD_ELEM ,FR_ELEM,LENR  )
+      SUBROUTINE SPMD_CHK_A(A        ,ITAB ,IAD_ELEM ,FR_ELEM,LENR,NAMES_AND_TITLES  )
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -42,10 +46,10 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "task_c.inc"
 #include      "units_c.inc"
-#include      "chara_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER IAD_ELEM(2,*),FR_ELEM(*), LENR,ITAB(*)
       my_real
      .        A(3,*)
@@ -76,12 +80,12 @@ C-----------------------------------------------
         END DO
 	IFIL = IDBG5+2
         WRITE(CYCLENUM,'(I7.7)')NCYCLE
-        FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.dadb'
+        FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.dadb'
 
        OPEN(UNIT=IFIL,FILE=FILNAM,ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-       FILEN = ROOTLEN+18
+       FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+18
 C
         NB_NOD = 0
         DO N = 1, NSPMD-1

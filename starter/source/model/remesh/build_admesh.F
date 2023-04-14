@@ -200,7 +200,11 @@ Chd|====================================================================
      .                    IPART ,IPARTC,IPARTTG,IXC   ,IXTG  ,
      .                    X     ,ITAB  ,ITABM1 ,SH4TREE,SH3TREE,
      .                    IPADMESH,PADMESH)
+C----------------------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -238,8 +242,10 @@ C-----------------------------------------------
       INTEGER, DIMENSION(:,:),ALLOCATABLE :: TAG
       my_real
      .  ANGL,XA,XB
-C     REAL
-      CHARACTER MESS*40,TITR*nchartitle,KEY*ncharkey
+C 
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY
 C-----------------------------------------------
       DATA MESS /'OPTIONS FOR ADAPTIVE MESHING DEFINITION '/
 C-----------------------------------------------

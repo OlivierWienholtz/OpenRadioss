@@ -58,7 +58,8 @@ C-----------------------------------------------
       USE MULTI_FVM_MOD
       USE GROUPDEF_MOD
       USE HM_OPTION_READ_MOD
-C----------------------------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARKEY,NCHARTITLE,NCHARFIELD
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -106,8 +107,11 @@ C-----------------------------------------------
      .   V1, V2, V3, V4, V5, V6, VL1, VL2, VL3,VRA, OX, OY, OZ,
      .   NIXJ(6),VR1,VR2,VR3,VRL1,VRL2,VRL3
       LOGICAL LV,LVR
-      CHARACTER MESS*40,LLINE*ncharline,TITR*nchartitle,KEY*ncharkey,
-     .          XYZ*ncharfield
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARLINE)  :: LLINE
+      CHARACTER(LEN=NCHARFIELD) :: XYZ
+      CHARACTER MESS*40
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
@@ -218,7 +222,7 @@ C--------------------------------------------------
 C--------------------------------------------------
 C EXTRACT DATAS (STRING)
 C--------------------------------------------------
-          CALL HM_GET_STRING('rad_dir',XYZ,ncharfield,IS_AVAILABLE)
+          CALL HM_GET_STRING('rad_dir',XYZ,NCHARFIELD,IS_AVAILABLE)
 C--------------------------------------------------
 C EXTRACT DATAS (INTEGER VALUES)
 C--------------------------------------------------
@@ -693,7 +697,7 @@ C--------------------------------------------------
       RETURN
       END
 Chd|====================================================================
-Chd|  HM_PREREAD_INIVEL             source/initial_conditions/general/inivel/hm_read_inivel.F
+Chd|  HM_PREREAD_INIVEL        source/initial_conditions/general/inivel/hm_read_inivel.F
 Chd|-- called by -----------
 Chd|        CONTRL                        source/starter/contrl.F       
 Chd|-- calls ---------------
@@ -711,6 +715,7 @@ C-----------------------------------------------
       USE STACK_VAR_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARKEY,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -728,8 +733,9 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,IG,CPT
-      CHARACTER IDTITL*nchartitle,KEY*ncharkey, 
-     .          SOLVERKEYWORD*ncharline
+      CHARACTER(LEN=NCHARTITLE) :: IDTITL
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=NCHARLINE)  :: SOLVERKEYWORD
       LOGICAL IS_AVAILABLE
 C=======================================================================
 C--------------------------------------------------

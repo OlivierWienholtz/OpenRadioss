@@ -27,11 +27,12 @@ Chd|        LECTUR                        source/starter/lectur.F
 Chd|-- calls ---------------
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|====================================================================
-      SUBROUTINE CHECK_QEPH_STRA(ISTR_24)
+      SUBROUTINE CHECK_QEPH_STRA(ISTR_24,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -39,27 +40,27 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr15_c.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
       INTEGER , INTENT(INOUT) :: ISTR_24
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_)    :: NAMES_AND_TITLES
       INTEGER I, J,IO_ERR1,IFUND,LEN_TMP_NAME
-      CHARACTER FILNAM*109, KEYA*80, KEYA2*80,CARTE*ncharline
-      CHARACTER(len=4096) :: TMP_NAME
+      CHARACTER FILNAM*109, KEYA*80, KEYA2*80
+      CHARACTER (LEN=NCHARLINE)  ::  CARTE
+      CHARACTER(len=4096)        :: TMP_NAME
 C-----------------------------------------------
       IFUND=0
       IO_ERR1 = 0
 C-----------------------------------------------
 C     READING ENGINE FILE
 C-----------------------------------------------   
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_0001.rad'
+      FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_0001.rad'
 
-      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTLEN+9)
-      LEN_TMP_NAME = INFILE_NAME_LEN+ROOTLEN+9
+      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+9)
+      LEN_TMP_NAME = INFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + 9
       OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .        ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
 

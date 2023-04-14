@@ -36,6 +36,7 @@ C-----------------------------------------------
       USE QA_OUT_MOD
       USE UNITAB_MOD
       USE ALE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -74,7 +75,7 @@ C-----------------------------------------------
       INTEGER I,II,J,IPERT,MY_ID, MY_DAMP, MY_CONSTRAINT,TEMP_INT,
      .        MY_RAND, MY_UNIT, MY_DEFAULTINTER,LENRNOISE,
      .        IDS(NPERTURB),IDX(NPERTURB),IDSEIG(NEIG),IDXEIG(NEIG),MY_EIG
-      CHARACTER *nchartitle TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       CHARACTER (LEN=255) :: VARNAME
       DOUBLE PRECISION TEMP_DOUBLE
       LOGICAL :: OK_QA
@@ -84,7 +85,7 @@ C-----------------------------------------------
       IF (MYQAKEY('/DAMP')) THEN
         DO MY_DAMP=1,NDAMP
 C
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           MY_ID = NINT(DAMPR(1,MY_DAMP))
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_ID,0.0_8)
@@ -110,7 +111,7 @@ C-----------------------------------------------
       IF (MYQAKEY('/DAMP/INTER')) THEN
         DO MY_DAMP=1,NDAMP
 C
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           MY_ID = NINT(DAMPR(1,MY_DAMP))
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_ID,0.0_8)
@@ -429,7 +430,7 @@ C-----------------------------------------------
 C
         DO MY_UNIT=1,NUNITS
 C
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           MY_ID = UNITAB%UNIT_ID(MY_UNIT)
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_ID,0.0_8)

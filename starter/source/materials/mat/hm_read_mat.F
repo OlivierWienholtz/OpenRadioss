@@ -151,7 +151,8 @@ Chd|====================================================================
       SUBROUTINE HM_READ_MAT(
      .   MATPARAM_TAB,MLAW_TAG    ,FAIL_TAG    ,EOS_TAG     ,BUFMAT      ,
      .   BUFLEN      ,IADBUF      ,MAXEOS      ,IPM         ,PM          ,
-     .   MULTI_FVM   ,UNITAB      ,LSUBMODEL   ,TABLE)
+     .   MULTI_FVM   ,UNITAB      ,LSUBMODEL   ,TABLE       ,ROOTNAME    , 
+     .   ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
 C   ===================
@@ -168,6 +169,7 @@ C-----------------------------------------------
       USE MATPARAM_DEF_MOD
       USE HM_OPTION_READ_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARLINE,NCHARTITLE
 C============================================================================
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -201,6 +203,8 @@ C-----------------------------------------------
       TYPE(MULTI_FVM_STRUCT) :: MULTI_FVM
       TYPE(MATPARAM_STRUCT_) , TARGET, DIMENSION(NUMMAT),INTENT(INOUT) :: MATPARAM_TAB
       TYPE(SUBMODEL_DATA),INTENT(IN) ::LSUBMODEL(*)
+      INTEGER, INTENT(IN)                        :: ROOTNAME_LENGTH  ! INPUT deck rootname length
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -214,8 +218,10 @@ C-----------------------------------------------
       INTEGER ,DIMENSION(MAXTABL)  :: ITABLE
       my_real ,DIMENSION(:), ALLOCATABLE :: UPARAM
       my_real ,DIMENSION(128)      :: PARMAT   
-      CHARACTER TITR*nchartitle,KEY*ncharline,SOLVERKEYWORD*ncharline,MESS*40
-      CHARACTER(LEN = ncharline) :: KEY2
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARLINE)  :: KEY,SOLVERKEYWORD
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARLINE)  :: KEY2
 C
       TYPE(ULAWBUF) :: USERBUF
       TYPE(MATPARAM_STRUCT_) , POINTER :: MATPARAM
@@ -286,7 +292,7 @@ C--------------------------------------------------
 c----        
         CALL FRETITL(TITR,IPM(NPROPMI-LTITR+1,I),LTITR)
         USERBUF%ID   = MAT_ID   !IPM(1,I)
-        USERBUF%NAME = TITR(1:nchartitle)          
+        USERBUF%NAME = TITR(1:NCHARTITLE)          
 c
         PARMAT(:) = ZERO
         UPARAM(:) = ZERO
@@ -1129,7 +1135,8 @@ c-------
      .                            NUVAR,IFUNC,MAXFUNC,NFUNC,
      .                            PARMAT,
      .                            LSUBMODEL,
-     .                            PM(1,I) )
+     .                            PM(1,I),ROOTNAME    , 
+     .                            ROOTNAME_LENGTH )
 c-------
           CASE ('LAW30','USER2')
             ILAW  = 30
@@ -1147,7 +1154,8 @@ c-------
      .                            NUVAR,IFUNC,MAXFUNC,NFUNC,
      .                            PARMAT,
      .                            LSUBMODEL,
-     .                            PM(1,I) )
+     .                            PM(1,I),ROOTNAME    , 
+     .                            ROOTNAME_LENGTH )
 c-------
           CASE ('LAW31','USER3')
             ILAW  = 31
@@ -1165,7 +1173,8 @@ c-------
      .                            NUVAR,IFUNC,MAXFUNC,NFUNC,
      .                            PARMAT,
      .                            LSUBMODEL,
-     .                            PM(1,I) )           
+     .                            PM(1,I),ROOTNAME    , 
+     .                            ROOTNAME_LENGTH )           
 
 c-------
           CASE ('USER01','USER02','USER03','USER04','USER05','USER06',
@@ -1197,7 +1206,8 @@ c-------
      .                          NUVAR,IFUNC,MAXFUNC,NFUNC,
      .                          PARMAT,USERBUF,
      .                          LSUBMODEL,
-     .                          PM(1,I) )
+     .                          PM(1,I) ,ROOTNAME    , 
+     .                          ROOTNAME_LENGTH )
             MTAG%G_TEMP = 1
             MTAG%L_TEMP = 1
             MTAG%G_EPSD = 1
@@ -1425,9 +1435,6 @@ C------------------------------
 
       DEALLOCATE( UPARAM )
 c------------------------------
-      RETURN
- 999  CALL ANCMSG(MSGID=55,ANMODE=ANINFO,MSGTYPE=MSGERROR,C1=KEY0(KCUR),C2=KLINE,C3=LINE)
-         CALL ARRET(2)
       RETURN
 c------------------------------
  2000 FORMAT(//

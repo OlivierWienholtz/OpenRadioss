@@ -60,6 +60,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE ELBUFTAG_MOD            
       USE MULTI_FVM_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C---s----1---------2---------3---------4---------5---------6---------7->
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
@@ -78,7 +79,7 @@ C-----------------------------------------------
 C INPUT ARGUMENTS
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER,INTENT(IN)::IG,IGTYP
-      CHARACTER*nchartitle,INTENT(IN)::TITR
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN)::TITR
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(*)
 C MODIFIED ARGUMENT
       INTEGER,INTENT(INOUT)::IGEO(*)

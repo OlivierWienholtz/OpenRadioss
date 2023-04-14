@@ -58,6 +58,7 @@ C-----------------------------------------------
       USE HM_OPTION_READ_MOD
       USE SETDEF_MOD
       USE R2R_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARKEY,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -67,13 +68,13 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "scr17_c.inc"
 #include      "units_c.inc"
 #include      "param_c.inc"
 #include      "my_allocate.inc"
 #include      "submod_c.inc"
 #include      "tabsiz_c.inc"
 #include      "r2r_c.inc"
+#include      "scr17_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -95,9 +96,11 @@ C-----------------------------------------------
      . IPHASE,IFILL,NCONT,NLIN,ISU,NN,JJ,NINTMAX,ITYP,NUMEL_TOT,
      . SRFTYP,FAC,K,ICUMU,IMAT,IADBUF,NUPARAM,ISUBMAT,STAT,KK,N_R2R
       my_real FILL_RATIO,ILAW
-      CHARACTER TITR*nchartitle,MESS*40,KEY*ncharkey
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARKEY)   :: KEY
       DATA MESS/'INITIAL VOLUME FRACTION                 '/
-      CHARACTER*ncharline ERR_MSG
+      CHARACTER(LEN=NCHARLINE):: ERR_MSG
       LOGICAL IS_ENCRYPTED,IS_AVAILABLE
 C-----------------------------------------------
 C   C o m m e n t s
@@ -178,7 +181,7 @@ C
 
 
         INIVOL(IGS)%ID = ID
-        INIVOL(IGS)%TITLE(1:nchartitle)=' '
+        INIVOL(IGS)%TITLE(1:NCHARTITLE)=' '
         INIVOL(IGS)%TITLE = TITR(1:LEN_TRIM(TITR))
         INIVOL(IGS)%NBCONTY=NLIN
         INIVOL(IGS)%IPARTFILL = IPARTFILL

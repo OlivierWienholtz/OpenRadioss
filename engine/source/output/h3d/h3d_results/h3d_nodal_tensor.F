@@ -54,6 +54,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE ELBUFDEF_MOD 
       USE OUTMAX_MOD
+      USE NAMES_AND_TITLES_MOD  ,ONLY: NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -65,7 +66,6 @@ C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "param_c.inc"
 #include      "sphcom.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -81,7 +81,7 @@ C-----------------------------------------------
      .   IXS(NIXS,*),IXQ(NIXQ,*),NV46,MONVOL(*),
      .   IXS10(6,*) ,IXS16(8,*) ,IXS20(12,*) ,
      .   IXT(NIXT,*),IXP(NIXP,*),IXR(NIXR,*),IAD_ELEM(2,*),FR_ELEM(*),WEIGHT(*)
-      CHARACTER*ncharline KEYWORD
+      CHARACTER(LEN=NCHARLINE) KEYWORD
       INTEGER ,INTENT(IN) :: IPARTSP(NUMSPH),IPARTR(NUMELR),IPARTP(NUMELP),
      .                       IPARTT(NUMELT),IPARTS(NUMELS),IPARTQ(NUMELQ)
       INTEGER ,INTENT(IN) :: KXSP(NISP,NUMSPH)

@@ -45,6 +45,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -75,10 +76,10 @@ C-----------------------------------------------
      .      UID,SUB_ID,NLAY,NPTR,NPTS,NPTT,IFAIL,IRUPT_TYP,NVAR_RUPT,
      .      ILAY,IMAT,NPT_MAX,NUBEAM0,NVSH_STRA,PROP,NSROT
       INTEGER IGBR, JGBR, IOK
-      CHARACTER MESS*40,KEY2*ncharkey,KEY3*ncharkey
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARKEY) :: KEY,KEY2,KEY3
 C-----------------------------------------------
       LOGICAL IS_AVAILABLE,GLOB
-      CHARACTER KEY*ncharkey
       INTEGER  ID_ELEM,NB_INIBRI,NB_INISHE,NB_INISH3,NB_ELEMENTS,
      .      NB_INITRUSS,NB_INIBEAM,NB_INISPRI,NB_INIQUA
       my_real

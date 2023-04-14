@@ -40,6 +40,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE OPTIONDEF_MOD
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -47,7 +48,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "nchar_c.inc"
 #include      "com04_c.inc"
 #include      "param_c.inc"
 C-----------------------------------------------
@@ -61,8 +61,8 @@ C-----------------------------------------------
       my_real
      .        X(3,*),SKEW(LSKEW,*)
 
-      CHARACTER KEYSET*ncharfield
-      CHARACTER SET_TITLE*nchartitle
+      CHARACTER(LEN=NCHARFIELD) :: KEYSET
+      CHARACTER(LEN=NCHARTITLE) :: SET_TITLE
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -129,6 +129,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE OPTIONDEF_MOD
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -149,8 +150,8 @@ C-----------------------------------------------
       my_real
      .        X(3,*),SKEW(LSKEW,*)
 
-      CHARACTER KEYSET*ncharfield
-      CHARACTER SET_TITLE*nchartitle
+      CHARACTER(LEN=NCHARFIELD) :: KEYSET
+      CHARACTER(LEN=NCHARTITLE) :: SET_TITLE
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

@@ -51,6 +51,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE STACK_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -75,7 +76,7 @@ C-----------------------------------------------
       INTEGER :: ISKN(LISKN,*)
       my_real, INTENT(INOUT) :: GEO_STACK(NPROPG)
       my_real, INTENT(IN) ::  PM(NPROPM,NUMMAT),RTRANS(NTRANSF,*)
-      CHARACTER(LEN = nchartitle) :: TITR
+      CHARACTER(LEN = NCHARTITLE) :: TITR
       TYPE (UNIT_TYPE_), INTENT(IN) :: UNITAB
       TYPE (SUBMODEL_DATA), DIMENSION(NSUBMOD), INTENT(IN) :: LSUBMODEL
       TYPE(STACK_INFO_) , TARGET :: STACK_INFO

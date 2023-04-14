@@ -45,6 +45,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE GROUPDEF_MOD
       USE INOUTFILE_MOD      
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -53,14 +54,13 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "units_c.inc"
-#include      "scr17_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       TYPE(INIMAP2D_STRUCT), INTENT(INOUT) :: INIMAP2D
-      CHARACTER*ncharline, INTENT(INOUT) :: FILENAME
+      CHARACTER(LEN=NCHARTITLE), INTENT(INOUT) :: FILENAME
       INTEGER, INTENT(IN) :: ID
-      CHARACTER TITLE*nchartitle
+      CHARACTER (LEN=NCHARTITLE), INTENT(IN) :: TITLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------
@@ -68,7 +68,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      CHARACTER MESS*40,BUFFER*14,ROOTNAME*ncharline
+      CHARACTER MESS*40,BUFFER*14
       DATA MESS/'INFILE'/
       INTEGER NUM_CENTROIDS,N_CYCLE,K,ISUBMAT,NBMAT,NUM_NODE_VEL,INPUT_VERSION,NB_COMP
       my_real X_SCALE,Y_SCALE,X_SHIFT,Y_SHIFT,TT

@@ -37,6 +37,7 @@ Chd|====================================================================
      .                   KXIG3D  ,IXIG3D  ,ITABM1  ,NCTRLMAX, TABCONPATCH)
       USE MESSAGE_MOD
       USE MESHSURFIG3D_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE,NCHARKEY
 C----------------------------------------------------------
 C     LECTURE ELEMENT ISO GEOMETRIQUE
 C-----------------------------------------------
@@ -86,6 +87,7 @@ C-----------------------------------------------
       CHARACTER MESS*40
       my_real
      .   BID 
+      CHARACTER(LEN=NCHARLINE) :: LINE,KLINE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------

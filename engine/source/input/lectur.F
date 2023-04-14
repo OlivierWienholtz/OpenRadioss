@@ -91,7 +91,7 @@ Chd|====================================================================
      F                  IGRPART ,TAG_SKINS6,ICFIELD,LCFIELD,TAGSLV_RBY,
      G                  MDS_LABEL,MDS_OUTPUT_TABLE,MDS_NMAT,MAX_DEPVAR,
      H                  MDS_NDEPSVAR,STACK,IBCL,ILOADP,LLOADP,SENSORS,
-     I                  DYNAIN_DATA,DT ,LOADS ,OUTPUT)
+     I                  DYNAIN_DATA,DT ,LOADS ,OUTPUT,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -115,6 +115,7 @@ C-----------------------------------------------
       USE DT_MOD
       USE LOADS_MOD
       USE OUTPUT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -147,7 +148,6 @@ C-----------------------------------------------
 #include      "scrcut_c.inc"
 #include      "scrnoi_c.inc"
 #include      "parit_c.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
 #include      "sphcom.inc"
 #include      "impl1_c.inc"
@@ -163,6 +163,7 @@ C-----------------------------------------------
 #include      "intstamp_c.inc"
 #include      "my_allocate.inc"
 #include      "couple_c.inc"
+#include      "filescount_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -198,6 +199,7 @@ C-----------------------------------------------
       TYPE (DT_), INTENT(INOUT)              :: DT
       TYPE (LOADS_), INTENT(IN)              :: LOADS
       TYPE(OUTPUT_), INTENT(INOUT) :: OUTPUT !< output structure
+      TYPE(NAMES_AND_TITLES_),INTENT(IN)     :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -226,7 +228,7 @@ C-----------------------------------------------
      .   CV1, CV2, CV3, VOLM, TSTART, TFIN, CS1(2), DT_INPUT, DT_CRIT
        CHARACTER*9 Cale1,Cale2,ALEform(0:6),CHAR1,CHAR2
        CHARACTER*9 Label1,Label2,Label3,Label4,Label5,Label6,Label7,Label8,Label9
-       CHARACTER CARTE*ncharline,LINE*ncharline
+       CHARACTER(LEN=NCHARLINE) ::  CARTE,LINE
       my_real eta1,eta2,MIN_ASPECT,MIN_DEFV
       my_real, DIMENSION(:), POINTER :: OFFG
       TYPE (SENSOR_STR_) ,DIMENSION(:) ,POINTER :: SENSOR_TAB
@@ -2611,8 +2613,7 @@ C---------------------------------------------------------
 C---------------------------------------------------------
 C     FILTERED SAMPLED OUTPUT
 C---------------------------------------------------------
-C      IF(NNOISE > 0.AND.MCHECK == 0)CALL LECNOISE(INOISE,ITABM1)
-      IF(NNOISE > 0)CALL LECNOISE(INOISE,ITABM1)
+      IF(NNOISE > 0)CALL LECNOISE(INOISE,ITABM1,NAMES_AND_TITLES)
       NNOISER=NNOISE
 C---------------------------------------------------------
 C     MADYMO COUPLING GENERAL DATA (CONVERSION FACTORS).

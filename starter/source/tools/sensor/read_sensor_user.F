@@ -38,7 +38,7 @@ Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F
 Chd|====================================================================
       SUBROUTINE READ_SENSOR_USER(HM_NSENSOR,ISEN    ,TITLE  ,
      .                            UNITAB   ,LSUBMODEL ,KEY       ,UNIT_ID ,SENS_ID,
-     .                            SENSOR_PTR)
+     .                            SENSOR_PTR,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------  
@@ -46,6 +46,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE SENSOR_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARKEY,NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -55,15 +56,16 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "scr17_c.inc"
 #include      "units_c.inc"
-#include      "scr15_c.inc"
 #include      "userlib.inc"
 #include      "submod_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      INTEGER ,INTENT(IN)                 :: ROOTNAME_LENGTH
       INTEGER ,INTENT(IN) :: HM_NSENSOR,UNIT_ID ,SENS_ID,ISEN
-      CHARACTER(LEN=ncharkey) :: KEY
-      CHARACTER(LEN=nchartitle) :: TITLE
+      CHARACTER(LEN=NCHARKEY) :: KEY
+      CHARACTER(LEN=NCHARTITLE) :: TITLE
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB
       TYPE (SUBMODEL_DATA) ,DIMENSION(NSUBMOD) :: LSUBMODEL
       TYPE (SENSOR_STR_)   ,INTENT(OUT)        :: SENSOR_PTR
@@ -79,12 +81,11 @@ C-----------------------------------------------
       LOGICAL :: IS_AVAILABLE
       LOGICAL :: ALREADY_DONE
       INTEGER NLINES
-      CHARACTER(LEN=ncharline) :: RLINE
+      CHARACTER(LEN=NCHARLINE) :: RLINE
+      CHARACTER(LEN=NCHARLINE) :: IUSER_KEY
       CHARACTER (LEN=4) :: CSENS
       CHARACTER(LEN=4096) :: SCR_FILE_NAME
       INTEGER SCR_FILE_NAME_LEN
-!
-      CHARACTER IUSER_KEY*ncharline
       CHARACTER OPTION*256
       INTEGER SIZE
 C=======================================================================
@@ -153,12 +154,12 @@ C--------------------
           IF (USERL_AVAIL==1 .AND. (TYP==29.OR.TYP==30.OR.TYP==31)) THEN
 !
             WRITE(CSENS,'(I4.4)')TYP
-            SCR_FILE_NAME='SI'//ROOTNAM(1:ROOTLEN)//'_'//CSENS//'.scr'
+            SCR_FILE_NAME='SI'//TRIM(ROOTNAME)//'_'//CSENS//'.scr'
             SCR_FILE_NAME_LEN=LEN_TRIM(SCR_FILE_NAME)
-            OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=ncharline)
+            OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=NCHARLINE)
 !
             J=1
-            CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, ncharline, IS_AVAILABLE)
+            CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, NCHARLINE, IS_AVAILABLE)
             READ(RLINE,ERR=999,FMT=FMT_F)TDEL
 
 C           global activation time
@@ -166,7 +167,7 @@ C           global activation time
 !
            ! Read & Dump in scratch file
             DO J=2,NLINES
-              CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, ncharline, IS_AVAILABLE)
+              CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, NCHARLINE, IS_AVAILABLE)
               WRITE(30,FMT='(A)')TRIM(RLINE)
             ENDDO
             CLOSE(UNIT=30)
@@ -186,8 +187,8 @@ C           global activation time
             SENSOR_PTR%TSTART  = INFINITY
 
             IF (USERL_AVAIL==1)THEN
-              CALL ST_USERLIB_LECSEN(TYP,ROOTNAM,ROOTLEN)
-              CALL USER_OUTPUT(IOUT,TYP,ROOTNAM,ROOTLEN,1)
+              CALL ST_USERLIB_LECSEN(TYP,ROOTNAME,ROOTNAME_LENGTH)
+              CALL USER_OUTPUT(IOUT,TYP,ROOTNAME,ROOTNAME_LENGTH,1)
             ENDIF
 
           ELSEIF(TYP == 30)THEN
@@ -198,8 +199,8 @@ C           global activation time
             SENSOR_PTR%TSTART  = INFINITY
 
             IF (USERL_AVAIL==1)THEN
-              CALL ST_USERLIB_LECSEN(TYP,ROOTNAM,ROOTLEN)
-              CALL USER_OUTPUT(IOUT,TYP,ROOTNAM,ROOTLEN,1)
+              CALL ST_USERLIB_LECSEN(TYP,ROOTNAME,ROOTNAME_LENGTH)
+              CALL USER_OUTPUT(IOUT,TYP,ROOTNAME,ROOTNAME_LENGTH,1)
             ENDIF
 
           ELSEIF(TYP == 31)THEN
@@ -210,8 +211,8 @@ C           global activation time
             SENSOR_PTR%TSTART  = INFINITY
 
             IF (USERL_AVAIL==1)THEN
-              CALL ST_USERLIB_LECSEN(TYP,ROOTNAM,ROOTLEN)
-              CALL USER_OUTPUT(IOUT,TYP,ROOTNAM,ROOTLEN,1)
+              CALL ST_USERLIB_LECSEN(TYP,ROOTNAME,ROOTNAME_LENGTH)
+              CALL USER_OUTPUT(IOUT,TYP,ROOTNAME,ROOTNAME_LENGTH,1)
             ENDIF
 
           ENDIF
@@ -240,9 +241,7 @@ C-----------
  999  CALL ANCMSG(MSGID=55,
      .            ANMODE=ANINFO,
      .            MSGTYPE=MSGERROR,
-     .            C1=KEY0(KCUR),
-     .            C2=KLINE,
-     .            C3=LINE)
+     .            C1='SENSORS')
       CALL ARRET(2)
 C-----------
       RETURN

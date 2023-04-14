@@ -77,8 +77,7 @@ C     REAL
      .   X(3,*), PM(NPROPM,*), GEO(NPROPG,*), AREAS(*),THK(*),
      .   AS(*), BS(*),PM_STACK(*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE (SURF_) :: IGRSURFS
       TYPE (SURF_) :: IGRSURFM
 C-----------------------------------------------

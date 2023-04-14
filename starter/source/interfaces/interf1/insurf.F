@@ -37,6 +37,7 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C     LECTURE DES SURFACES ET DECOMPTE DES SEGMENTS
 C           ENTREE : 
@@ -62,8 +63,7 @@ C-----------------------------------------------
       INTEGER,INTENT(IN) :: S_MSV,SIRECT
       INTEGER IRECT(4,SIRECT/4), ITAB(NUMNOD), MSV(S_MSV),SURF_NODES(NRT,4)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, DIMENSION(2*NUMNOD+1), INTENT(INOUT) ::  NTAG
       LOGICAL, INTENT(INOUT) :: TYPE18
       my_real,INTENT(IN) :: X(3,NUMNOD)

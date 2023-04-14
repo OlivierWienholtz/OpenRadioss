@@ -56,7 +56,7 @@ C-----------------------------------------------
      .        NJET, 
      .        NN, NEL, ID, TAGVENT(NUMNOD),ITAB(NUMNOD)
       INTEGER, DIMENSION(NEL), INTENT(INOUT) :: ITAGEL
-      CHARACTER*nchartitle,
+      CHARACTER(LEN=NCHARTITLE)
      .        TITR
       TYPE (SURF_)   , DIMENSION(NSURF)   :: IGRSURF
 C-----------------------------------------------

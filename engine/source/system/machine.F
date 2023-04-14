@@ -644,8 +644,13 @@ Chd|-- called by -----------
 Chd|-- calls ---------------
 Chd|====================================================================
       SUBROUTINE WRITE_IOUT(LINE,LEN1)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD  ,ONLY: NCHARLINE
+C-----------------------------------------------
 #include "implicit_f.inc"
-#include      "comlock.inc"
+#include "comlock.inc"
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
@@ -653,12 +658,8 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-#ifndef ncharline
-#define ncharline 500
-#endif
-      CHARACTER(len=ncharline)  LINE
+      CHARACTER(LEN=NCHARLINE)  LINE
       INTEGER LEN1
-
 #include "lockon.inc"
       WRITE(IOUT,'(A)') LINE(1:LEN1)
 #include "lockoff.inc"

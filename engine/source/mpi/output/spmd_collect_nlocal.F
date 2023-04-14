@@ -31,11 +31,14 @@ Chd|        NLOCAL_REG_MOD                ../common_source/modules/nlocal_reg_mo
 Chd|====================================================================
       SUBROUTINE SPMD_COLLECT_NLOCAL(A      ,SIZEA   ,NUMNOD_LOCAL,
      .                               POSI   ,NLOC_DMG,SIZP0       ,
-     .                               NODGLOB,ITAB    )
-
+     .                               NODGLOB,ITAB ,NAMES_AND_TITLES )
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE INOUTFILE_MOD
       USE DEBUG_MOD
       USE NLOCAL_REG_MOD
+      USE NAMES_AND_TITLES_MOD  ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -52,11 +55,11 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "task_c.inc"
 #include      "spmd_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN)  :: NAMES_AND_TITLES
       INTEGER ITAB(*),NUMNOD_LOCAL,NODGLOB(*)
       INTEGER NPOS,SIZP0
       INTEGER MSGOFF,MSGOFF0,MSGTYP,INFO,I,K,NG,N,
@@ -133,7 +136,7 @@ C
 
         IF(ISPMD==0) THEN
             WRITE(CYCLENUM,'(I7.7)')NCYCLE
-            FILNAM=ROOTNAM(1:ROOTLEN)//'_NLOCAL_'//CHRUN//'_'//CYCLENUM//'.adb'
+            FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_NLOCAL_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.adb'
 
             LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)
             TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM)) 
@@ -141,7 +144,7 @@ C
             OPEN(UNIT=IDBG5,FILE=TMP_NAME(1:LEN_TMP_NAME),ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-            FILEN = ROOTLEN+17
+            FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
 
             DO I=1,NUMNOD_LOCAL
                 NPOS = POSI(I)                              ! Position of its first d.o.f in A

@@ -51,6 +51,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE MESSAGE_MOD
       USE STACK_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -78,9 +79,9 @@ C-----------------------------------------------
       my_real
      .   GEO(NPROPG), PM(NPROPM,*),RTRANS(NTRANSF,*)
       TYPE(SUBMODEL_DATA) LSUBMODEL(*)
-      CHARACTER IDTITL*nchartitle
+      CHARACTER(LEN=NCHARTITLE)              :: IDTITL
       TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP) :: PROP_TAG
-      TYPE(STACK_INFO_) , TARGET :: STACK_INFO
+      TYPE(STACK_INFO_) , TARGET             :: STACK_INFO
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -95,8 +96,7 @@ C-----------------------------------------------
      .   ASHEAR, ANG, POS, HM, HF, HR, DN, DM,VISC_INT
       INTEGER, DIMENSION(:),ALLOCATABLE :: IDMAT_INTP,IDMAT_SUB
       
-      CHARACTER*nchartitle,
-     .   TITR,TITR1
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
       LOGICAL :: IS_AVAILABLE, IS_ENCRYPTED
 C-----------------------------------------------
 C   D a t a

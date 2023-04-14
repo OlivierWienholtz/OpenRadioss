@@ -69,6 +69,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD   
       USE MATPARAM_DEF_MOD
       USE SENSOR_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -102,8 +103,8 @@ C-----------------------------------------------
       INTEGER, DIMENSION(MAXTAB)     :: TABLE_ID
       INTEGER, DIMENSION(:), POINTER :: IFUNC,ITABLE
       my_real, DIMENSION(:), POINTER :: UPARAM,UPARF
-      TYPE(MLAW_TAG_), POINTER :: MTAG
-      CHARACTER*nchartitle, TITR
+      TYPE(MLAW_TAG_), POINTER       :: MTAG
+      CHARACTER(LEN=NCHARTITLE)      :: TITR
       TYPE(MATPARAM_STRUCT_) , POINTER :: MATPARAM
 C=======================================================================
 c     TRAITEMENT OF MATERIAL PARAMETERS AND FUNCTIONS

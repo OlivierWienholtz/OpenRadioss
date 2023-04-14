@@ -42,7 +42,8 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE MESSAGE_MOD 
       USE SUBMODEL_MOD
-      USE HM_OPTION_READ_MOD 
+      USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -55,13 +56,13 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      TYPE (UNIT_TYPE_),INTENT(IN)   ::UNITAB 
-      INTEGER,INTENT(IN)             ::MAT_ID,FAIL_ID
-      TYPE(SUBMODEL_DATA),INTENT(IN) ::LSUBMODEL(*)
-      CHARACTER,INTENT(IN)           ::TITR*nchartitle
-      INTEGER,INTENT(INOUT)          ::IFUNC(MAXFUNC),NFUNC,MAXFUNC,MAXUPARAM
-      my_real,INTENT(INOUT)          ::UPARAM(MAXUPARAM)
-      INTEGER,INTENT(OUT)            ::NUPARAM,NUVAR
+      TYPE (UNIT_TYPE_),INTENT(IN)         :: UNITAB 
+      INTEGER,INTENT(IN)                   :: MAT_ID,FAIL_ID
+      TYPE(SUBMODEL_DATA),INTENT(IN)       :: LSUBMODEL(*)
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN) :: TITR
+      INTEGER,INTENT(INOUT)                :: IFUNC(MAXFUNC),NFUNC,MAXFUNC,MAXUPARAM
+      my_real,INTENT(INOUT)                :: UPARAM(MAXUPARAM)
+      INTEGER,INTENT(OUT)                  :: NUPARAM,NUVAR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

@@ -21,21 +21,24 @@ Copyright>        As an alternative to this open-source version, Altair also off
 Copyright>        software under a commercial license.  Contact Altair to discuss further if the
 Copyright>        commercial version may interest you: https://www.altair.com/radioss/.
 Chd|====================================================================
-Chd|  REFSTA_MOD                    share/modules1/refsta_mod.F   
+Chd|  ACCELERATION_DP_MOD           share/modules/acceleration_dp_mod.F
 Chd|-- called by -----------
-Chd|        CONTRL                        source/starter/contrl.F       
-Chd|        HM_READ_REFSTA                source/loads/reference_state/refsta/hm_read_refsta.F
-Chd|        ST_QAPRINT_REFSTA             source/output/qaprint/st_qaprint_refsta.F
+Chd|        RESOL                         source/engine/resol.F         
+Chd|        SPMD_EXCH_A                   source/mpi/forces/spmd_exch_a.F
 Chd|-- calls ---------------
 Chd|====================================================================
-      MODULE REFSTA_MOD
+      MODULE ARRET_MOD
+
+        ! This module will hosts all variables need for ARRET() routine to 
+        ! avoid passing tham as argument
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
-      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
+        USE NAMES_AND_TITLES_MOD
 C-----------------------------------------------
-#include "my_real.inc"
-         CHARACTER(LEN=ncharline) :: REFSTA_FILENAME
-         LOGICAL IS_REFSTA
 
-      END MODULE REFSTA_MOD
+        ! ROOTNAME & CHRUN are used to pass names and titles
+        TYPE (NAMES_AND_TITLES_)   :: NAMES_AND_TITLES 
+
+
+      END MODULE ARRET_MOD

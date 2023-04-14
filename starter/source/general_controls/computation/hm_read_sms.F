@@ -33,7 +33,7 @@ Chd|        HM_OPTION_START               source/devtools/hm_reader/hm_option_st
 Chd|        HM_OPTION_READ_MOD            share/modules1/hm_option_read_mod.F
 Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F 
 Chd|====================================================================
-      SUBROUTINE HM_READ_SMS(LSUBMODEL)
+      SUBROUTINE HM_READ_SMS(LSUBMODEL,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
 C   ===================
@@ -48,6 +48,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE HM_OPTION_READ_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -61,6 +62,9 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
+      INTEGER, INTENT(IN)                  :: ROOTNAME_LENGTH  ! INPUT deck rootname length
 C INPUT ARGUMENTS
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(*)
 C OUTPUT ARGUMENTS
@@ -98,7 +102,7 @@ C
 C
 C       Engine file is checked for automatic element selection activation
         DT_SMS_SWITCH = ZERO
-        CALL FIND_YIELD_ENGINE(DT_SMS_SWITCH)
+        CALL FIND_YIELD_ENGINE(DT_SMS_SWITCH,ROOTNAME,ROOTNAME_LENGTH)
 C
         IF (DT_SMS_SWITCH==ZERO) THEN
           IF (IDTGRS==0) THEN
@@ -144,12 +148,13 @@ Chd|        ANCMSG                        source/output/message/message.F
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
-      SUBROUTINE FIND_YIELD_ENGINE(DT_SMS_SWITCH)
+      SUBROUTINE FIND_YIELD_ENGINE(DT_SMS_SWITCH,ROOTNAME,ROOTNAME_LENGTH)
       USE INOUTFILE_MOD
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -157,10 +162,11 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr15_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
+      INTEGER, INTENT(IN)                  :: ROOTNAME_LENGTH  ! INPUT deck rootname length
       my_real
      .   DT_SMS_SWITCH
 C-----------------------------------------------
@@ -177,17 +183,17 @@ C-----------------------------------------------
 C-----------------------------------------------
 C     Lecture des donnes dans le fichier engine
 C-----------------------------------------------   
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_0001.rad'
+      FILNAM=TRIM(ROOTNAME)//'_0001.rad'
 
-      LEN_TMP_NAME = INFILE_NAME_LEN+ROOTLEN+9
-      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTLEN+9)
+      LEN_TMP_NAME = INFILE_NAME_LEN+ROOTNAME_LENGTH+9
+      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTNAME_LENGTH+9)
       OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .     ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
 C
       IF (IO_ERR1/=0) THEN
-         FILNAM=ROOTNAM(1:ROOTLEN)//'D01'
-      LEN_TMP_NAME = INFILE_NAME_LEN+ROOTLEN+9
-      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTLEN+3)
+         FILNAM=TRIM(ROOTNAME)//'D01'
+      LEN_TMP_NAME = INFILE_NAME_LEN+ROOTNAME_LENGTH+9
+      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTNAME_LENGTH+3)
          OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .        ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
       ENDIF      
@@ -219,8 +225,8 @@ C
         CALL ANCMSG(MSGID=1570,
      .              MSGTYPE=MSGWARNING,
      .              ANMODE=ANINFO_BLIND_2,
-     .              C1=ROOTNAM(1:ROOTLEN)//'_0001.rad',
-     .              C2=ROOTNAM(1:ROOTLEN)//'D01')   
+     .              C1=TRIM(ROOTNAME)//'_0001.rad',
+     .              C2=TRIM(ROOTNAME)//'D01')   
 C
       ENDIF
                    

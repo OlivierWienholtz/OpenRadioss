@@ -35,6 +35,7 @@ Chd|====================================================================
      .                   NLIST   ,MESS    ,IX1     ,IX2     ,INDEX   ,
      .                   KK      ,NEL     ,TYPE    ,ID      ,TITR)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -52,14 +53,14 @@ C-----------------------------------------------
      .        NLIST,IX1(*), IX2(*), INDEX(*), KK, NEL, LEVEL
       CHARACTER MESS*40
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR,TYPE
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TYPE
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER LIST(NLIST), IL, JREC, J10(10)
       INTEGER I, J, NOLD, K, IWORK(70000)
       INTEGER LELT, NE, IP, NLEV
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C-----------------------------------------------
 C CONSTITUTION DE LIST
 C-----------------------------------------------
@@ -177,6 +178,7 @@ Chd|====================================================================
      .                   KK      ,NEL     ,NELT    ,TYPE    ,ID      ,
      .                   TITR)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -195,8 +197,8 @@ C-----------------------------------------------
      .        NLIST, IX1(*), IX2(*), INDEX(*), KK, NEL, NELT(*)
       CHARACTER MESS*40
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR,TYPE
+      CHARACTER(LEN=NCHARTITLE)::  TITR,TYPE
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

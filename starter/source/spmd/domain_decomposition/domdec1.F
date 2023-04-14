@@ -35,12 +35,12 @@ Chd|====================================================================
      2     IXP   ,IXR   ,IXTG  ,DD_IAD ,
      3     X     ,DD_IAD_PREV,IXS10 ,IXS20  ,
      4     IXS16 ,KXX   ,IXX        ,KXSP  ,IXSP   ,
-     5     CEPSP ,IXTG6 )
-C 
+     5     CEPSP ,IXTG6 ,ROOTNAME, ROOTNAME_LENGTH )
+
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
-
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -70,6 +70,8 @@ C-----------------------------------------------
      .        KXX(NIXX,*), IXX(*), KXSP(NISP,*), IXSP(*), CEPSP(*)
       my_real
      .        X(3,NUMNOD)
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME
+      INTEGER, INTENT(IN) :: ROOTNAME_LENGTH
 C-----------------------------------------------
 C   F u n c t i o n
 C-----------------------------------------------
@@ -195,7 +197,8 @@ C  a condition que imach==3 !
       IF (IMACH==3.AND.DECANI==1.AND.ANIM_VERS<40) THEN
         CALL DD_ANI(X     ,IXS   ,IXQ  ,IXC  ,
      .              IXT   ,IXP   ,IXR  ,IXTG ,
-     .              IPARG ,KXSP  ,IXSP )
+     .              IPARG ,KXSP  ,IXSP ,ROOTNAME,
+     .              ROOTNAME_LENGTH )
       ENDIF
      
       RETURN

@@ -47,7 +47,7 @@ Chd|====================================================================
      1                    IGTYP  ,IG      ,IDTITL  ,KEYTYPE  ,GEO      ,
      2                    IGEO   ,LBUFGEO ,BUFGEO  ,IADBUF   ,UNITAB   ,
      3                    ISKN   ,KNOT    ,IAD_KNOT,PROP_TAG ,LSUBMODEL,
-     4                    RTRANS ,SUB_ID  ,IUNIT   ,SUB_INDEX)
+     4                    RTRANS ,SUB_ID  ,IUNIT   ,SUB_INDEX,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -55,6 +55,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE ELBUFTAG_MOD            
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARLINE,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -73,7 +74,9 @@ C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
 C     INPUT ARGUMENTS
-      CHARACTER,INTENT(IN):: IDTITL*nchartitle, KEYTYPE*ncharline
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN):: IDTITL
+      CHARACTER(LEN=NCHARLINE),INTENT(IN) :: KEYTYPE
+
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER,INTENT(IN):: IG,ISKN(LISKN,*),SUB_ID,IUNIT,SUB_INDEX
       my_real  ,INTENT(IN):: RTRANS(NTRANSF,*)
@@ -86,6 +89,7 @@ C     MODIFIED ARGUMENT
      .        GEO(NPROPG), KNOT(*)
       DOUBLE PRECISION,INTENT(INOUT)::  BUFGEO(*)
       TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP),INTENT(INOUT) :: PROP_TAG
+      TYPE(NAMES_AND_TITLES_),INTENT(INOUT)  :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -97,8 +101,7 @@ C-----------------------------------------------
      .        QA,QB
       CHARACTER FILNAM*512,CLAW*4
       INTEGER LEN_FILNAM
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C=======================================================================
 c------------------------------
 C     User properties are read w/old reader
@@ -114,7 +117,7 @@ c      FILNAM  ='SI'//ROOTNAM(1:ROOTLEN)//'_'//CLAW//'.scr'
 c      LEN_FILNAM=LEN_TRIM(FILNAM)
 c
 c      OPEN(UNIT=30,FILE=FILNAM(1:LEN_FILNAM),
-c     . FORM='FORMATTED',RECL=ncharline)
+c     . FORM='FORMATTED',RECL=NCHARLINE)
 c
 c      LINE=' '
 c      DO WHILE(LINE(1:1) /= '/')
@@ -220,7 +223,8 @@ C--------------------------------------------------
           CALL HM_READ_PROP_USER(
      .                 IOUT    ,NUVAR ,PARGEO   ,UNITAB,IGTYP,
      .                 IG      ,TITR  ,LSUBMODEL,IUNIT ,ISKN ,
-     .                 KEYTYPE ,PROP_TAG)
+     .                 KEYTYPE ,PROP_TAG,NAMES_AND_TITLES%ROOTNAME,
+     .                 NAMES_AND_TITLES%ROOTNAME_LENGTH)
 !
         CASE DEFAULT
           CALL ANCMSG(MSGID=1647,ANMODE=ANINFO,MSGTYPE=MSGERROR,
@@ -316,7 +320,7 @@ C-----------
  999  CALL ANCMSG(MSGID=54,
      .            ANMODE=ANINFO,
      .            MSGTYPE=MSGERROR,
-     .            C1=KLINE)
+     .            C1='PROP')
       RETURN
  1000 FORMAT(
      & 5X,'USER PROPERTY SET'/,

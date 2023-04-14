@@ -98,7 +98,7 @@ C-----------------------------------------------
      .        ITAG(2*NUMELT+2*NUMELP+3*NUMELR),
      .        NGP(NSPMD+1),IPARTR2R,NUVAR,IE,ID1
       INTEGER ID
-      CHARACTER*nchartitle,
+      CHARACTER(LEN=NCHARTITLE)
      .   TITR,TITR1,TITR2
       INTEGER WORK(70000)
       DATA NFIX/13/

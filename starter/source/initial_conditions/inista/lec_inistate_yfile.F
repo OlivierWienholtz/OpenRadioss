@@ -32,6 +32,10 @@ Chd|====================================================================
      3                  ISIGSH    ,IUSER     ,
      4                  ID_SIGSH  , ID_SOLID_SIGI, ID_QUAD_SIGI  )
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -66,6 +70,7 @@ C-----------------------------------------------
      .   THKI, EM, EB, H1, H2, H3, R0 , EIN, SMOOTHL
       my_real
      .   S(6), SIGLOC(6)
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C=======================================================================
 C
 C -- LECTURE OF INITIAL STATE DATA - EXTRACTED FROM INITIA.F

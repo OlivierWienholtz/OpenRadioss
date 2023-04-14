@@ -37,7 +37,8 @@ Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F
 Chd|====================================================================
       SUBROUTINE HM_READ_PROP_USER(IOUT ,NUVAR ,PARGEO   ,UNITAB,IGTYP,
      .                             IG   ,TITLE ,LSUBMODEL,IUNIT ,ISKN ,
-     .                             KEY  ,PROP_TAG)
+     .                             KEY  ,PROP_TAG,ROOTNAME,
+     .                             ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
 C   ===================
@@ -60,6 +61,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE ELBUFTAG_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARKEY,NCHARTITLE,NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -67,8 +69,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr15_c.inc"
-#include      "scr17_c.inc"
 #include      "param_c.inc"
 #include      "userlib.inc"
 #include      "submod_c.inc"
@@ -79,25 +79,26 @@ C-----------------------------------------------
       INTEGER ,INTENT(IN) :: IOUT,IG,IUNIT
       INTEGER ,INTENT(INOUT) :: IGTYP
       INTEGER ,INTENT(IN) :: ISKN(LISKN,*)
-      CHARACTER(LEN=ncharkey) :: KEY
-      CHARACTER(LEN=nchartitle) :: TITLE
+      CHARACTER(LEN=NCHARKEY) :: KEY
+      CHARACTER(LEN=NCHARTITLE) :: TITLE
       INTEGER NUVAR(2)
       my_real
      .        PARGEO(100)
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB
       TYPE (SUBMODEL_DATA) ,DIMENSION(NSUBMOD) :: LSUBMODEL
-      TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP) :: PROP_TAG
+      TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP)   :: PROP_TAG
+      INTEGER, INTENT(IN)                      :: ROOTNAME_LENGTH  ! INPUT deck rootname length
+      CHARACTER(LEN=LROOTNAME), INTENT(IN)     :: ROOTNAME         ! INPUT deck rootname
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       my_real, DIMENSION(4) :: UNITAB_SUB
       LOGICAL :: IS_AVAILABLE
       INTEGER J,NLINES
-      CHARACTER(LEN=ncharline) :: RLINE
+      CHARACTER(LEN=NCHARLINE) :: RLINE,IUSER_KEY
       CHARACTER (LEN=4) :: CSPRI
       CHARACTER(LEN=4096) :: SCR_FILE_NAME
       INTEGER SCR_FILE_NAME_LEN
-      CHARACTER IUSER_KEY*ncharline
 !
       CHARACTER OPTION*256
       INTEGER SIZE
@@ -139,14 +140,14 @@ c--------------------------------------------------
 !      IF (NLINES > 1) THEN
 !
         WRITE(CSPRI,'(I4.4)')IGTYP
-        SCR_FILE_NAME='SI'//ROOTNAM(1:ROOTLEN)//'_'//CSPRI//'.scr'
+        SCR_FILE_NAME='SI'//TRIM(ROOTNAME)//'_'//CSPRI//'.scr'
         SCR_FILE_NAME_LEN=LEN_TRIM(SCR_FILE_NAME)
-        OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=ncharline)
+        OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=NCHARLINE)
 !
         ! Read & Dump in scratch file
 !        DO J=2,NLINES
         DO J=1,NLINES
-          CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, ncharline, IS_AVAILABLE)
+          CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, NCHARLINE, IS_AVAILABLE)
           WRITE(30,FMT='(A)')TRIM(RLINE)
         ENDDO
         CLOSE(UNIT=30)
@@ -156,8 +157,8 @@ c--------------------------------------------------
         UNITAB_SUB(3)=UNITAB%FAC_L(IUNIT)
         UNITAB_SUB(4)=UNITAB%FAC_T(IUNIT)
 !
-        CALL ST_USERLIB_LECGUSER(IGTYP,ROOTNAM,ROOTLEN,NUVAR ,PARGEO,UNITAB_SUB,ISKN,IG,TITLE)
-        CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAM,ROOTLEN,1)
+        CALL ST_USERLIB_LECGUSER(IGTYP,ROOTNAME,ROOTNAME_LENGTH,NUVAR ,PARGEO,UNITAB_SUB,ISKN,IG,TITLE)
+        CALL USER_OUTPUT(IOUT,IGTYP,ROOTNAME,ROOTNAME_LENGTH,1)
 !
 !      ELSE
 !   error TBD

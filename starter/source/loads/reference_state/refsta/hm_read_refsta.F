@@ -38,7 +38,7 @@ Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|        REFSTA_MOD                    share/modules1/refsta_mod.F   
 Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F 
 Chd|====================================================================
-      SUBROUTINE HM_READ_REFSTA( LSUBMODEL,XRFILE )
+      SUBROUTINE HM_READ_REFSTA( LSUBMODEL,XRFILE,ROOTNAME )
 C============================================================================
 C   M o d u l e s
 C-----------------------------------------------
@@ -48,6 +48,7 @@ C-----------------------------------------------
       USE HM_OPTION_READ_MOD
       USE REFSTA_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE,LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -58,16 +59,16 @@ C-----------------------------------------------
 #include      "units_c.inc"
 #include      "scr17_c.inc"
 #include      "scr03_c.inc"
-#include      "scr15_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(*)
-      CHARACTER*ncharline, INTENT(INOUT) :: XRFILE
+      CHARACTER(LEN=NCHARLINE), INTENT(INOUT) :: XRFILE
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      CHARACTER TMP_NAME*ncharline
+      CHARACTER(LEN=NCHARLINE) :: TMP_NAME
       INTEGER LEN_TMP_NAME,J, I, LEN_
       LOGICAL IS_AVAILABLE, IS_ENCRYPTED
 C-----------------------------------------------
@@ -84,26 +85,26 @@ C-----------------------------------------------
       
         RS0_FMT=0                                                                                                        
         NITRS=0     
-        XRFILE(1:ncharline)=' '                                                                                                     
-        CALL HM_GET_STRING('filename',XRFILE,ncharline,IS_AVAILABLE)                                                       
+        XRFILE(1:NCHARLINE)=' '                                                                                                     
+        CALL HM_GET_STRING('filename',XRFILE,NCHARLINE,IS_AVAILABLE)                                                       
         CALL HM_GET_INTV('nitrs',NITRS,IS_AVAILABLE,LSUBMODEL)                                                           
         CALL HM_GET_INTV('refsta_fileformat',RS0_FMT,IS_AVAILABLE,LSUBMODEL)                                                        
                                                                                                                          
         IF (NITRS == 0) NITRS=100  
         LEN_ = LEN_TRIM(XRFILE)                                                                                       
-        IF(LEN_ > 0 )XRFILE(LEN_+1:ncharline) = ' '
+        IF(LEN_ > 0 )XRFILE(LEN_+1:NCHARLINE) = ' '
         !
         IF (XRFILE==' ') THEN                                                                                          
-          XRFILE=ROOTNAM(1:ROOTLEN)//'RS0'                                                                               
+          XRFILE=TRIM(ROOTNAME)//'RS0'                                                                               
         ELSE                                                                                                             
           J=0                                                                                                            
-          DO I=1,ncharline                                                                                               
+          DO I=1,NCHARLINE                                                                                               
             IF(XRFILE(I:I)/=' ')THEN                                                                                   
               J=J+1                                                                                                      
               XRFILE(J:J) = XRFILE(I:I)                                                                                  
             ENDIF                                                                                                        
           ENDDO                                                                                                          
-          DO I=J+1,ncharline                                                                                             
+          DO I=J+1,NCHARLINE                                                                                             
               XRFILE(I:I) = ' '                                                                                          
           ENDDO                                                                                                          
         ENDIF                                                                                                            

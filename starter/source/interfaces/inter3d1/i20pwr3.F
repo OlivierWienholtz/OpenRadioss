@@ -174,7 +174,11 @@ Chd|====================================================================
      6                  Y3 ,Y4 ,Z1 ,Z2 ,Z3,
      7                  Z4 ,XI ,YI ,ZI ,N1,
      8                  N2 ,N3 ,PENE,NSVG)
+C-----------------------------------------------
+C   M o d u l e
+C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -194,8 +198,7 @@ C     REAL
       my_real
      .   STF(*),STFN(*),XANEW(3,*),GAPV(*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
@@ -410,6 +413,7 @@ Chd|====================================================================
      5                   IX3 ,IX4,N1  ,N2 ,N3 ,
      6                   PENE,NSVG)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -435,8 +439,7 @@ C     REAL
       my_real
      .   STF(*),STFN(*),X(3,*),GAPV(*),PENIS(2,*) ,PENIM(2,*),GAP_S(*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, DIMENSION(MVSIZ), INTENT(IN) :: IX1,IX2,IX3,IX4,NSVG
       my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: N1,N2,N3,PENE
 C-----------------------------------------------

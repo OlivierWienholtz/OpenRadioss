@@ -47,6 +47,7 @@ C-----------------------------------------------
       USE ELBUFTAG_MOD            
       USE MESSAGE_MOD 
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
 C   ===================
@@ -73,16 +74,16 @@ C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER, INTENT(IN)    :: MAT_ID,MAXUPARAM,MAXFUNC,MAXTABL
-      my_real, DIMENSION(NPROPM) ,INTENT(INOUT)    :: PM     
-      CHARACTER*nchartitle ,INTENT(IN)             :: TITR
-      INTEGER, INTENT(INOUT)                       :: ISRAT ,NTABLE,ITABLE(MAXTABL)
+      my_real, DIMENSION(NPROPM) ,INTENT(INOUT)      :: PM     
+      CHARACTER(LEN=NCHARTITLE) ,INTENT(IN)          :: TITR
+      INTEGER, INTENT(INOUT)                         :: ISRAT ,NTABLE,ITABLE(MAXTABL)
       INTEGER, INTENT(INOUT)                         :: NUPARAM,NUVAR
-      INTEGER, INTENT(INOUT)                       :: MFUNC
-      INTEGER, DIMENSION(MAXFUNC)   ,INTENT(INOUT) :: IFUNC
+      INTEGER, INTENT(INOUT)                         :: MFUNC
+      INTEGER, DIMENSION(MAXFUNC)   ,INTENT(INOUT)   :: IFUNC
       my_real, DIMENSION(MAXUPARAM) ,INTENT(INOUT)   :: UPARAM
-      my_real, DIMENSION(100),INTENT(INOUT) :: PARMAT
-      TYPE(SUBMODEL_DATA), DIMENSION(*),INTENT(IN) :: LSUBMODEL
-      TYPE(MLAW_TAG_), INTENT(INOUT) :: MTAG
+      my_real, DIMENSION(100),INTENT(INOUT)          :: PARMAT
+      TYPE(SUBMODEL_DATA), DIMENSION(*),INTENT(IN)   :: LSUBMODEL
+      TYPE(MLAW_TAG_), INTENT(INOUT)                 :: MTAG
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

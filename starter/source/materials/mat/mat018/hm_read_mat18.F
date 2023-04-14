@@ -43,7 +43,8 @@ C-----------------------------------------------
       USE ELBUFTAG_MOD            
       USE MESSAGE_MOD 
       USE SUBMODEL_MOD
-      USE MATPARAM_DEF_MOD          
+      USE MATPARAM_DEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE     
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
 C   ===================
@@ -62,10 +63,10 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER*nchartitle ,INTENT(IN) :: TITR
+      CHARACTER(LEN=NCHARTITLE) ,INTENT(IN)              :: TITR
       TYPE(SUBMODEL_DATA), DIMENSION(NSUBMOD),INTENT(IN) :: LSUBMODEL
-      my_real, DIMENSION(*), INTENT(IN) :: UNITAB
-      INTEGER, INTENT(IN) :: MAT_ID
+      my_real, DIMENSION(*), INTENT(IN)                  :: UNITAB
+      INTEGER, INTENT(IN)    :: MAT_ID
       INTEGER, INTENT(INOUT) :: IPM(NPROPMI)
       my_real, INTENT(INOUT) :: PM(NPROPM)     
       INTEGER, INTENT(INOUT) :: NUPARAM,NUVAR,NFUNC,JTHE

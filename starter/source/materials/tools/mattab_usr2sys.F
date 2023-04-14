@@ -38,6 +38,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -51,9 +52,9 @@ C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER ,INTENT(IN)  :: MAT_ID,NTABL
-      INTEGER      ,DIMENSION(NTABL)   :: ITABLE    ! Table IDs in material law
-      TYPE(TTABLE) ,DIMENSION(NTABLE)  :: TABLE
-      CHARACTER*nchartitle ,INTENT(IN) :: TITR
+      INTEGER      ,DIMENSION(NTABL)        :: ITABLE    ! Table IDs in material law
+      TYPE(TTABLE) ,DIMENSION(NTABLE)       :: TABLE
+      CHARACTER(LEN=NCHARTITLE) ,INTENT(IN) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

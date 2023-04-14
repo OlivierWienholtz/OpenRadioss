@@ -34,6 +34,7 @@ Chd|====================================================================
      2                  NOM_OPT,PTR_NOPT_RWALL,PTR_NOPT_RBE2,
      3                  PTR_NOPT_RBE3,ITAGCYC)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -68,8 +69,7 @@ C-----------------------------------------------
      .        MARQUEURDOUBLE(13),J1,FLAG_IKCOND,MARQ2,MARQM2,
      .        NS,NM,M,IAD,NUN,JJ,IKRW(NUMNOD),NIKRW
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------------------------
       MARQ2  = 0
       MARQM2 = 0

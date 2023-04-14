@@ -49,6 +49,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD 
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,8 +83,8 @@ C-----------------------------------------------
       INTEGER NOD1(2000),NOD2(2000),SUB_INDEX,ISK_L
       my_real
      .   BID(1),AX(4),NX(4),FMAX(2),MMAX(2)
-      CHARACTER TITR*nchartitle
-      CHARACTER KEY *ncharfield
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARFIELD) :: KEY
       PARAMETER (NELMAX = 500)
       LOGICAL :: IS_AVAILABLE,FOUND
 C=======================================================================
@@ -380,9 +381,7 @@ C-----------
   998 CALL ANCMSG(MSGID=55,
      .            ANMODE=ANINFO,
      .            MSGTYPE=MSGERROR,
-     .            C1=KEY0(KCUR),
-     .            C2=KLINE,
-     .            C3=LINE)
+     .            C1='CLUSTER')
 C-----------
       RETURN
       END

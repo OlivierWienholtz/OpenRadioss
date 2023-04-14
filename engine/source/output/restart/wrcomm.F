@@ -89,7 +89,6 @@ C-----------------------------------------------
 #include      "scr03_c.inc"
 #include      "scr05_c.inc"
 #include      "scrnoi_c.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
 #include      "scr16_c.inc"
 #include      "scr14_c.inc"
@@ -123,6 +122,7 @@ C-----------------------------------------------
 #include      "drape_c.inc"
 #include      "ige3d_c.inc"
 #include      "thermal_c.inc"
+#include      "filescount_c.inc"
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

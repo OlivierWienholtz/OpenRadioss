@@ -78,7 +78,8 @@ C-----------------------------------------------
       INTEGER FLAG_FMT,FLAG_FMT_TMP,IFIX_TMP
       my_real
      .   FAC1,FAC2,FACX,FACY,FAC2_DIM,FACX_DIM,FACY_DIM
-      CHARACTER MESS*40, TITR*nchartitle
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s

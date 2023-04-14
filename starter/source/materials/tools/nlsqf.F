@@ -40,7 +40,11 @@ Chd|        MRQCOF                        source/materials/tools/nlsqf.F
 Chd|====================================================================
       SUBROUTINE MRQMIN(X,Y,SIG,NDATA,A,IA,
      .                 MA,COVAR,ALPHA,NCA, ERRNOW, 
-     .                 IFUNCS,GAMMA,IRET,ICOMP)  
+     .                 IFUNCS,GAMMA,IRET,ICOMP)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -563,7 +567,11 @@ Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE LAW69_NLSQF(LAWID,STRETCH,Y,MA,NMUAL,NPT,MUAL,
      $                       ICHECK, NSTART, ERRTOL,ID,TITR)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -587,8 +595,7 @@ C-----------------------------------------------
       my_real YOGD,XOGD
 
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER MINITER_LM, MAXITER_LM
       DATA MINITER_LM /5/
       SAVE MINITER_LM

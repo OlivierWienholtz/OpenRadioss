@@ -52,7 +52,8 @@ Chd|====================================================================
      .                   NSIGI    ,IN      ,VR     ,IPM      ,NSIGS   ,
      .                   VOLNOD   ,BVOLNOD ,VNS    ,BNS      ,PTSOL   ,
      .                   BUFMAT   ,NPF     ,TF     ,FAIL_INI ,INS     ,
-     .                   ILOADP   ,FACLOAD ,RNOISE ,PERTURB  )
+     .                   ILOADP   ,FACLOAD ,RNOISE ,PERTURB  ,ROOTNAME,
+     .                   ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -60,6 +61,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE DETONATORS_MOD      
       USE ALE_CONNECTIVITY_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -79,11 +81,12 @@ C-----------------------------------------------
 #include      "scr17_c.inc"
 #include      "scry_c.inc"
 #include      "vect01_c.inc"
-#include      "scr15_c.inc"
 #include      "userlib.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
+      INTEGER, INTENT(IN)                        :: ROOTNAME_LENGTH  ! INPUT deck rootname length
       INTEGER IXS(NIXS,*), IPARG(NPARG),IPARTS(*),
      .    NEL, IPART(LIPART1,*), 
      .    IGEO(NPROPGI,*), IPM(NPROPMI,*), PTSOL(*), NSIGI, NSIGS,
@@ -109,8 +112,7 @@ C-----------------------------------------------
      .        IPROP(MVSIZ) ,IMAT(MVSIZ) ,SID(MVSIZ),
      .        NC1(MVSIZ), NC2(MVSIZ), NC3(MVSIZ), NC4(MVSIZ),
      .        NC5(MVSIZ), NC6(MVSIZ), NC7(MVSIZ), NC8(MVSIZ)
-      CHARACTER*nchartitle,
-     .   TITR1
+      CHARACTER(LEN=NCHARTITLE):: TITR1
       CHARACTER*50 OPTION
       my_real
      .   BID, FV, V8LOC(51,MVSIZ), VOLU(MVSIZ), DTX(MVSIZ),
@@ -270,7 +272,7 @@ C----------------------------------------
           SIG_LOC(6,I) = GBUF%SIG(II(6)+I)
         ENDDO
         IF (USERL_AVAIL==1)THEN
-          CALL ST_USERLIB_SINIUSR(IGTYP,ROOTNAM,ROOTLEN,
+          CALL ST_USERLIB_SINIUSR(IGTYP,ROOTNAME,ROOTNAME_LENGTH,
      1       NEL    ,NUVAR    ,IPROP  ,IMAT   ,SID    ,
      2       GBUF%EINT,GBUF%VOL,MBUF%VAR,GBUF%OFF,GBUF%RHO,SIG_LOC,
      3       XX(1,1),XX(1,2),XX(1,3),XX(1,4),XX(1,5),XX(1,6),XX(1,7),XX(1,8),

@@ -43,7 +43,6 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "com06_c.inc"
-#include      "scr02_c.inc"
 #include      "scr17_c.inc"
 #include      "scr18_c.inc"
 #include      "sphcom.inc"
@@ -56,7 +55,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      INTEGER I
+      INTEGER I,NODADT
       my_real
      .        DT_CRIT
 C-----------------------------------------------

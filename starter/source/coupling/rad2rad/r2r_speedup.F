@@ -38,12 +38,13 @@ Chd|        R2R_MOD                       share/modules1/r2r_mod.F
 Chd|====================================================================
       SUBROUTINE R2R_SPEEDUP(DTELEM,DTNODA,DT_R2R,COST_R2R,ISOLOFF,
      .                       ISHEOFF,ITRUOFF ,IPOUOFF ,IRESOFF ,ITRIOFF,
-     .                       IQUAOFF)
+     .                       IQUAOFF,ROOTNAME)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE R2R_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -52,12 +53,12 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "units_c.inc"
-#include      "scr15_c.inc"
 #include      "sphcom.inc"
 #include      "r2r_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME),INTENT(INOUT) :: ROOTNAME
       INTEGER ISOLOFF(*),ISHEOFF(*),ITRUOFF(*),IPOUOFF(*),IRESOFF(*),ITRIOFF(*),
      .   IQUAOFF(*)
       my_real
@@ -73,7 +74,7 @@ C-----------------------------------------------
 C      
       CALL FIND_DT_ENGINE(DTELEM,DTNODA,DT,FLG_CHK,FLG_CTL,
      .                   ISOLOFF,ISHEOFF,ITRUOFF ,IPOUOFF ,IRESOFF ,
-     .                   ITRIOFF,IQUAOFF)
+     .                   ITRIOFF,IQUAOFF,ROOTNAME)
 C
       DO I=1,NUMSPH-NSPHRES
         COST_R2R = COST_R2R + 12.0
@@ -95,7 +96,7 @@ C
           CALL ANCMSG(MSGID=1095,
      .                 MSGTYPE=MSGWARNING,
      .                 ANMODE=ANINFO_BLIND_2,
-     .                 C1=ROOTNAM(1:ROOTLEN)//'_0001.rad')
+     .                 C1=TRIM(ROOTNAME)//'_0001.rad')
         ENDIF
 C
         DT_SUB = DT_R2R(1,1)
@@ -160,13 +161,14 @@ Chd|        R2R_MOD                       share/modules1/r2r_mod.F
 Chd|====================================================================
       SUBROUTINE FIND_DT_ENGINE(DTELEM,DTNODA,DT,FLG_CHK,FLG_CTL,
      .                         ISOLOFF,ISHEOFF,ITRUOFF ,IPOUOFF ,IRESOFF ,
-     .                         ITRIOFF,IQUAOFF)
+     .                         ITRIOFF,IQUAOFF,ROOTNAME)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE R2R_MOD
       USE INOUTFILE_MOD
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -176,12 +178,12 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "com06_c.inc"
-#include      "scr15_c.inc"
 #include      "sphcom.inc"
 #include      "my_allocate.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME),INTENT(INOUT) :: ROOTNAME
       INTEGER FLG_CHK,FLG_CTL,ISOLOFF(*),ISHEOFF(*),ITRUOFF(*),
      .   IPOUOFF(*),IRESOFF(*),ITRIOFF(*),IQUAOFF(*)
       my_real
@@ -298,14 +300,14 @@ C-----------------------------------------------
 C-----------------------------------------------
 C     Prereading of data in engine input file
 C-----------------------------------------------   
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_0001.rad'
+      FILNAM=TRIM(ROOTNAME)//'_0001.rad'
       TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))    
       LEN_TMP_NAME = INFILE_NAME_LEN+LEN_TRIM(FILNAM)
       OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .     ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
 C
       IF (IO_ERR1/=0) THEN
-         FILNAM=ROOTNAM(1:ROOTLEN)//'D01'
+         FILNAM=TRIM(ROOTNAME)//'D01'
          TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))    
          LEN_TMP_NAME = INFILE_NAME_LEN+LEN_TRIM(FILNAM)
          OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),

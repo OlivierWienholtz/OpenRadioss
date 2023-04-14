@@ -45,7 +45,8 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE SUBMODEL_MOD
       USE MESSAGE_MOD  
-      USE INOUTFILE_MOD          
+      USE INOUTFILE_MOD       
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE   
 C-----------------------------------------------
 C   D e s c r i p t i o n
 C-----------------------------------------------
@@ -76,7 +77,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr17_c.inc"
 #include      "submod_c.inc"
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -85,10 +85,10 @@ C-----------------------------------------------
       my_real E0, RHO0, RHO0I, P0, T0, XNR, XNT, DPDR, RHO
       my_real DYDZ,RHOI,RHOR
       my_real MU0,DF,SSP0,G0,DPDMU
-      CHARACTER FILE*(ncharline),FILE_TMP*(ncharline)
+      CHARACTER(LEN=NCHARLINE)  :: FILE,FILE_TMP
+      CHARACTER(LEN=NCHARTITLE) :: TITR           
       INTEGER :: FILE_LEN
       LOGICAL :: IS_ENCRYPTED, IS_AVAILABLE, IS_AVAILABLE_RHO0
-      CHARACTER*nchartitle TITR        
 C-----------------------------------------------
 C   S o u r c e   L i n e s
 C-----------------------------------------------
@@ -100,7 +100,7 @@ C-----------------------------------------------
 
       CALL HM_GET_FLOATV('MAT_EA', E0, IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('SESAME_RHO', RHO0, IS_AVAILABLE_RHO0,LSUBMODEL,UNITAB)
-      CALL HM_GET_STRING('ISRTY',FILE, ncharline,IS_AVAILABLE)
+      CALL HM_GET_STRING('ISRTY',FILE, NCHARLINE,IS_AVAILABLE)
 
       RHOR = PM(1)
       RHOI = PM(89)

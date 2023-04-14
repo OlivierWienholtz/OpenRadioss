@@ -62,6 +62,7 @@ C-----------------------------------------------
       USE DRAPE_MOD
       USE INIVOL_DEF_MOD
       USE INIVOL_ARRAY_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C            A R G U M E N T S
 C-----------------------------------------------
@@ -136,8 +137,7 @@ C-----------------------------------------------
       INTEGER WORK(70000),NGP(NSPMD+1)
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: ISTOR
       INTEGER ID,IPARTR2R
-      CHARACTER*nchartitle,
-     .   TITR,TITR1
+      CHARACTER(LEN=NCHARTITLE) ::  TITR,TITR1
       INTEGER, DIMENSION(:), ALLOCATABLE :: MINDEXTG2
       my_real, DIMENSION(:,:), ALLOCATABLE :: XNUM_RNOISE
       INTEGER, DIMENSION(:), ALLOCATABLE :: INDEX2

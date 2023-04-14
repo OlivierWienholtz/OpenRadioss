@@ -49,6 +49,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE NLOCAL_REG_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -65,7 +66,7 @@ C-----------------------------------------------
       TYPE(SUBMODEL_DATA),INTENT(IN) ::LSUBMODEL(*)
       INTEGER MAXUPARAM,NUPARAM,NUVAR,NFUNC,NLOC_MOD,FAIL_ID,MAT_ID
       my_real UPARAM(MAXUPARAM) 
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

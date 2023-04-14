@@ -43,6 +43,7 @@ Chd|====================================================================
      B IPARTC   ,IPARTG      ,THK_PART ,THKNOD0 ,ID     ,
      C TITR     ,DGAPLOAD    )
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -77,8 +78,7 @@ C     REAL
      .   GAP_S(*), THKNOD(*), STF(*), STFN(*), 
      .   GAP_S0(*), AREA_S0(*), XM0(3,*),THK_PART(*),THKNOD0(*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

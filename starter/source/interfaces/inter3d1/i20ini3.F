@@ -69,6 +69,7 @@ C-----------------------------------------------
       USE IXINTMOD
       USE INTBUFDEF_MOD
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -111,8 +112,7 @@ C     REAL
       TYPE(INTBUF_STRUCT_) INTBUF_TAB
 
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE (SURF_)   , DIMENSION(NSURF)   :: IGRSURF
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s

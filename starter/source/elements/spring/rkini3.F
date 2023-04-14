@@ -32,6 +32,7 @@ Chd|====================================================================
       SUBROUTINE RKINI3(IFUNCT  ,NPC     ,PLD     ,XK      ,ECROU   , 
      .                  IGEO ,A       ,LSCALE  ,ID,TITR,NOM_OPT)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -51,8 +52,7 @@ C-----------------------------------------------
       my_real
      .   PLD(*)
       INTEGER ID,ID1
-      CHARACTER*nchartitle,
-     .   TITR,TITR1
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
       INTEGER NOM_OPT(LNOPT1,*)
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s

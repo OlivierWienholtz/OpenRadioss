@@ -27,8 +27,12 @@ Chd|        RESOL                         source/engine/resol.F
 Chd|-- calls ---------------
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|====================================================================
-      SUBROUTINE COLLECT(A,ITAB,WEIGHT,NODGLOB)
+      SUBROUTINE COLLECT(A,ITAB,WEIGHT,NODGLOB,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -38,11 +42,11 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER ITAB(*),WEIGHT(*),NODGLOB(*)
       my_real
      .        A(3,*)
@@ -59,13 +63,13 @@ C-----------------------------------------------
 C-----------------------------------------------
 
        WRITE(CYCLENUM,'(I7.7)')NCYCLE
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.adb'
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.adb'
        LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)
        TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))    
        OPEN(UNIT=IDBG5,FILE=TMP_NAME(1:LEN_TMP_NAME),ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-       FILEN = ROOTLEN+17
+       FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
      
        DO I = 1, NUMNOD
          EMPL = NODGLOB(I)
@@ -93,7 +97,11 @@ Chd|  COLLECT_PIT                   source/output/outfile/collect.F
 Chd|-- called by -----------
 Chd|-- calls ---------------
 Chd|====================================================================
-      SUBROUTINE COLLECT_PIT(A,ITAB,WEIGHT,NODGLOB)
+      SUBROUTINE COLLECT_PIT(A,ITAB,WEIGHT,NODGLOB,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -103,11 +111,11 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER ITAB(*),WEIGHT(*),NODGLOB(*)
       my_real
      .        A(3,*)
@@ -122,12 +130,12 @@ C-----------------------------------------------
 C-----------------------------------------------
 
        WRITE(CYCLENUM,'(I7.7)')NCYCLE
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.pit'
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.pit'
     
        OPEN(UNIT=IDBG5,FILE=FILNAM,ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-       FILEN = ROOTLEN+17
+       FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
      
        DO I = 1, NUMNOD
          EMPL = NODGLOB(I)
@@ -155,7 +163,11 @@ Chd|  COLLECTX                      source/output/outfile/collect.F
 Chd|-- called by -----------
 Chd|-- calls ---------------
 Chd|====================================================================
-      SUBROUTINE COLLECTX(X,ITAB,WEIGHT,NODGLOB)
+      SUBROUTINE COLLECTX(X,ITAB,WEIGHT,NODGLOB,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -165,11 +177,11 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER ITAB(*),WEIGHT(*),NODGLOB(*)
       my_real
      .        X(3,*)
@@ -180,16 +192,15 @@ C-----------------------------------------------
        CHARACTER FILNAM*100,CYCLENUM*7
        DOUBLE PRECISION
      .        RECGLOB(4,NUMNOD)
-
 C-----------------------------------------------
 
        WRITE(CYCLENUM,'(I7.7)')NCYCLE
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.xdb'
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.xdb'
     
        OPEN(UNIT=67,FILE=FILNAM,ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-       FILEN = ROOTLEN+17
+       FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
      
        DO I = 1, NUMNOD
          EMPL = NODGLOB(I)
@@ -217,7 +228,11 @@ Chd|  COLLECTV                      source/output/outfile/collect.F
 Chd|-- called by -----------
 Chd|-- calls ---------------
 Chd|====================================================================
-      SUBROUTINE COLLECTV(V,ITAB,WEIGHT,NODGLOB)
+      SUBROUTINE COLLECTV(V,ITAB,WEIGHT,NODGLOB,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -227,11 +242,11 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER ITAB(*),WEIGHT(*),NODGLOB(*)
       my_real
      .        V(3,*)
@@ -244,14 +259,13 @@ C-----------------------------------------------
      .        RECGLOB(4,NUMNOD)
 
 C-----------------------------------------------
-
        WRITE(CYCLENUM,'(I7.7)')NCYCLE
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.vdb'
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.vdb'
     
        OPEN(UNIT=67,FILE=FILNAM,ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-       FILEN = ROOTLEN+17
+       FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
      
        DO I = 1, NUMNOD
          EMPL = NODGLOB(I)
@@ -283,8 +297,12 @@ Chd|-- calls ---------------
 Chd|        MY_ORDERS                     ../common_source/tools/sort/my_orders.c
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|====================================================================
-      SUBROUTINE COLLECTM(NODNX_SMS,ITAB,WEIGHT,NODGLOB)
+      SUBROUTINE COLLECTM(NODNX_SMS,ITAB,WEIGHT,NODGLOB,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -294,12 +312,12 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER ITAB(*),WEIGHT(*),NODGLOB(*),NODNX_SMS(*)
+       TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
+       INTEGER ITAB(*),WEIGHT(*),NODGLOB(*),NODNX_SMS(*)
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -314,13 +332,13 @@ C-----------------------------------------------
 C-----------------------------------------------
 
        WRITE(CYCLENUM,'(I7.7)')NCYCLE
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.mdb'
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.mdb'
        LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)
        TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))    
        OPEN(UNIT=67,FILE=TMP_NAME(1:LEN_TMP_NAME),ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-       FILEN = ROOTLEN+17
+       FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
      
        DO I = 1, NUMNOD
          EMPL = NODGLOB(I)
@@ -380,8 +398,12 @@ Chd|        RESOL                         source/engine/resol.F
 Chd|-- calls ---------------
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|====================================================================
-      SUBROUTINE COLLECTT(TEMP,ITAB,WEIGHT,NODGLOB)
+      SUBROUTINE COLLECTT(TEMP,ITAB,WEIGHT,NODGLOB,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -391,11 +413,11 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER ITAB(*),WEIGHT(*),NODGLOB(*)
       my_real
      .        TEMP(*)
@@ -412,14 +434,14 @@ C-----------------------------------------------
 C-----------------------------------------------
 
        WRITE(CYCLENUM,'(I7.7)')NCYCLE
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.tdb'
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.tdb'
        LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)
        TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM)) 
     
        OPEN(UNIT=IDBG8,FILE=FILNAM,ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-       FILEN = ROOTLEN+17
+       FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
      
        DO I = 1, NUMNOD
          EMPL = NODGLOB(I)

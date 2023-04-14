@@ -49,6 +49,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE PINCHTYPE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -70,7 +71,7 @@ C-----------------------------------------------
       INTEGER IGTYP,IG,UID,SUB_ID
       my_real
      .   GEO(*)
-      CHARACTER IDTITL*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: IDTITL
       TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP) :: PROP_TAG
       TYPE(MULTI_FVM_STRUCT) :: MULTI_FVM
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(*)

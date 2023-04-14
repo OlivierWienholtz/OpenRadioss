@@ -39,6 +39,7 @@ Chd|====================================================================
      8                  Z3 ,Z4 ,XI ,YI ,ZI  ,
      9                  N1 ,N2 ,N3 ,PENE)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -64,8 +65,7 @@ C-----------------------------------------------
       my_real
      .   STF(*),STFN(*),X(3,*),CAND_P(*),GAPV(*), FPENMAX
       INTEGER ID,IDDLEVEL,IREMNODE
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, DIMENSION(MVSIZ), INTENT(IN) :: IX1,IX2,IX3,IX4,NSVG
       my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: X1,X2,X3,X4
       my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: Y1,Y2,Y3,Y4

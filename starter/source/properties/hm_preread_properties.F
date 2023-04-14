@@ -42,6 +42,7 @@ C-----------------------------------------------
       USE STACK_VAR_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -50,7 +51,6 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
-#include      "scr17_c.inc"
 #include      "param_c.inc"
 #include      "scr03_c.inc"
 #include      "scr21_c.inc"
@@ -74,8 +74,11 @@ C-----------------------------------------------
       my_real
      .    FN, FT, DX, ANGL,PUN,HTEST,HCLOS,CVIS,RBID,VX,VY,VZ,
      .    KNOT1,KNOT2,KNOT3,R5(5),DN
-      CHARACTER IDTITL*nchartitle,MESS*40,KEY*ncharline, 
-     .          STRING*ncharfield,CHROT*7,SOLVERKEYWORD*ncharline
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: IDTITL
+      CHARACTER(LEN=NCHARLINE)  :: KEY,SOLVERKEYWORD
+      CHARACTER(LEN=NCHARFIELD) :: STRING
+      CHARACTER(LEN=7)          :: CHROT
       INTEGER ISH3N,ITET4,IPLAS,NPT,ISROT,NP,LAMIN,NSUB_STACK,NISUB_STACK,
      .        NPLY_STACK,NPLY_SUB
       LOGICAL IS_AVAILABLE

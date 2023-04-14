@@ -62,6 +62,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE OPTIONDEF_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARFIELD,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -105,12 +106,13 @@ C-----------------------------------------------
       MY_REAL
      .        XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX,BID,FAC_L,
      .        DIAM,XP1,YP1,ZP1,XP2,YP2,ZP2
-      CHARACTER TITR*nchartitle,KEY*ncharkey,MES*40,KEY2*ncharkey,
-     .          TYPE*nchartitle
       INTEGER, DIMENSION(:),ALLOCATABLE :: BUFTMP
       INTEGER, DIMENSION(:),ALLOCATABLE :: BUFBOX
-      CHARACTER*nchartitle,
-     .   TITR1
+C---------------------------------------------
+      CHARACTER(LEN=40) :: MES
+      CHARACTER(LEN=NCHARKEY)   :: KEY,KEY2
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1,TYPE
+C----------------------------------------------
       LOGICAL IS_AVAILABLE,IS_ENCRYPTED
 C-----------------------------------------------
       INTEGER, DIMENSION(:), POINTER :: ELEM

@@ -45,6 +45,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE UNITAB_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -72,7 +73,11 @@ C-----------------------------------------------
       INTEGER USR2SYS,NUMNUSR1,IDS,NI,NJ,NK,NL,K,L,P,Q,QQ,
      .        NN,UID,IP0,ID_IP
 C     REAL
-      CHARACTER MESS*40,TITR*nchartitle,KEY*ncharkey
+      !
+      CHARACTER(LEN=NCHARTITLE) ::TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=40) :: MESS*40
+      !
       INTEGER , DIMENSION(:), ALLOCATABLE :: IPARTC, SHELL_ID
       INTEGER , DIMENSION(:), ALLOCATABLE :: IPARTTG, SH3N_ID
       REAL*8 , DIMENSION(:), ALLOCATABLE :: SH_ANGLE, SH_THK
@@ -332,7 +337,7 @@ C--------------------------------------------------
      .        .AND. (ITAB(I) <  IDFT_NODE_AUTO.OR.
      .               ITAB(I) >= IDLT_NODE_AUTO)) THEN
               CALL ANCMSG(MSGID=1069,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                    I1=ITAB(I),C1=LINE,C2='/NODE') 
+     .                    I1=ITAB(I),C1='/NODE') 
 	ENDIF 			 
       ENDDO
       IF(ALLOCATED(SUBID_NODES)) DEALLOCATE(SUBID_NODES)
@@ -347,7 +352,7 @@ C------
       DO I=1,NUMELC
 	  IF (IXC(NIXC,I)>ID_LIMIT_ADMESH) THEN	     
             CALL ANCMSG(MSGID=1069,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .            I1=IXC(NIXC,I),C1=LINE,C2='/SHELL') 
+     .            I1=IXC(NIXC,I),C1='/SHELL') 
 	  ENDIF
 	  DO J=2,5						   
 	    IXC(J,I)=USR2SYS(IXC(J,I),ITABM1,MESS,ID)  
@@ -360,7 +365,7 @@ C------
       DO I=1,NUMELTG
 	  IF (IXTG(NIXTG,I)>ID_LIMIT_ADMESH) THEN	     
             CALL ANCMSG(MSGID=1069,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .            I1=IXTG(NIXTG,I),C1=LINE,C2='/SH3N')
+     .            I1=IXTG(NIXTG,I),C1='/SH3N')
 	  ENDIF
 	  DO J=2,4						   
 	    IXTG(J,I)=USR2SYS(IXTG(J,I),ITABM1,MESS,ID) 

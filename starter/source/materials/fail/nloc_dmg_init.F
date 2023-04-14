@@ -36,7 +36,8 @@ Chd|====================================================================
       SUBROUTINE NLOC_DMG_INIT(ELBUF_TAB,NLOC_DMG ,IPARG    ,IXC      ,
      .                         IXS      ,IXTG     ,AREA     ,DTELEM   ,
      .                         NUMEL    ,IPM      ,X        ,XREFS    ,
-     .                         XREFC    ,XREFTG   ,BUFMAT   ,PM       )
+     .                         XREFC    ,XREFTG   ,BUFMAT   ,PM       ,
+     .                         ROOTNAME ,ROOTNAME_LENGTH )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -44,6 +45,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE NLOCAL_REG_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -55,12 +57,13 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
 #include      "my_allocate.inc"
-#include      "scr15_c.inc"
 #include      "units_c.inc"
 #include      "r2r_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
+      INTEGER, INTENT(IN)                        :: ROOTNAME_LENGTH  ! INPUT deck rootname length
       INTEGER NUMEL
       INTEGER IPARG(NPARG,NGROUP),IXS(NIXS,*),IXC(NIXC,*),IXTG(NIXTG,*)
       INTEGER IPM(NPROPMI,*)
@@ -600,9 +603,9 @@ C
         ! Checking if a DT option is set in the engine file
         DTMINI_AMS     = ZERO
         DTMINI_CST_AMS = ZERO
-        FILNAM = ROOTNAM(1:ROOTLEN)//'_0001.rad'
-        LEN_TMP_NAME = INFILE_NAME_LEN+ROOTLEN+9
-        TMP_NAME = INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTLEN+9)
+        FILNAM = TRIM(ROOTNAME)//'_0001.rad'
+        LEN_TMP_NAME = INFILE_NAME_LEN+ROOTNAME_LENGTH+9
+        TMP_NAME = INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTNAME_LENGTH+9)
         INQUIRE(FILE = TMP_NAME,EXIST = ENG_FILE)
         IF (ENG_FILE) THEN 
           ! Opening the engine file
@@ -642,7 +645,7 @@ C
           CALL ANCMSG(MSGID=1730,
      .                MSGTYPE=MSGWARNING,
      .                ANMODE=ANINFO_BLIND_2,
-     .                C1=ROOTNAM(1:ROOTLEN)//'_0001.rad')   
+     .                C1=TRIM(ROOTNAME)//'_0001.rad')   
         ENDIF
         ! Maximum of the minimal timesteps
         DTMINI = MAX(DTMINI_AMS,DTMINI_CST_AMS)

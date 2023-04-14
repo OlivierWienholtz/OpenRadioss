@@ -435,6 +435,8 @@ Chd|====================================================================
       USE QA_OUT_MOD
       USE DYNLIB_MOD
       USE SCRATCHFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
+      USE ARRET_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -450,7 +452,6 @@ C-----------------------------------------------
 #include      "scr06_c.inc"
 #include      "scr07_c.inc"
 #include      "rad2r_c.inc"
-#include      "chara_c.inc"
 #include      "userlib.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
@@ -496,7 +497,7 @@ C -----------------------------------------------
            CALL RELEASE_ABFPIPE(ABINP,ABOUT)
 
            IF(ABFILE(1) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.tmp'
              IFIL = 11
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 9
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -504,7 +505,7 @@ C -----------------------------------------------
              CALL DELETE_TMPFILE(TMP_NAME,LEN_TMP_NAME)
            ENDIF
            IF(ABFILE(2) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_a.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_a.tmp'
              IFIL = 12
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 11
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -512,7 +513,7 @@ C -----------------------------------------------
              CALL DELETE_TMPFILE(TMP_NAME,LEN_TMP_NAME)
            ENDIF
            IF(ABFILE(3) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_b.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_b.tmp'
              IFIL = 13
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 11
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -520,7 +521,7 @@ C -----------------------------------------------
              CALL DELETE_TMPFILE(TMP_NAME,LEN_TMP_NAME)
            ENDIF
            IF(ABFILE(4) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_c.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_c.tmp'
              IFIL = 14
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 11
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -528,7 +529,7 @@ C -----------------------------------------------
              CALL DELETE_TMPFILE(TMP_NAME,LEN_TMP_NAME)
            ENDIF
            IF(ABFILE(5) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_d.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_d.tmp'
              IFIL = 15
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 11
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -536,7 +537,7 @@ C -----------------------------------------------
              CALL DELETE_TMPFILE(TMP_NAME,LEN_TMP_NAME)
            ENDIF
            IF(ABFILE(6) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_e.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_e.tmp'
              IFIL = 16
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 11
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -544,7 +545,7 @@ C -----------------------------------------------
              CALL DELETE_TMPFILE(TMP_NAME,LEN_TMP_NAME)
            ENDIF
            IF(ABFILE(7) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_f.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_f.tmp'
              IFIL = 17
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 11
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -552,7 +553,7 @@ C -----------------------------------------------
              CALL DELETE_TMPFILE(TMP_NAME,LEN_TMP_NAME)
            ENDIF
            IF(ABFILE(8) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_g.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_g.tmp'
              IFIL = 18
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 11
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -560,7 +561,7 @@ C -----------------------------------------------
              CALL DELETE_TMPFILE(TMP_NAME,LEN_TMP_NAME)
            ENDIF
            IF(ABFILE(9) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_h.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_h.tmp'
              IFIL = 19
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 11
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -568,7 +569,7 @@ C -----------------------------------------------
              CALL DELETE_TMPFILE(TMP_NAME,LEN_TMP_NAME)
            ENDIF
            IF(ABFILE(10) /= 0) THEN
-             INAME=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_i.tmp'
+             INAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_i.tmp'
              IFIL = 20
              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 11
              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//INAME(1:LEN_TRIM(INAME))
@@ -629,9 +630,9 @@ C
                 WRITE(ISTDO,1250) NCYCLE
                 CALL PRINT_RUNTIME( )
 
-                IF (IHTML == 1) CALL REPORT(IH3DREADER,N,IMVW)                ! Htlm report
-                IF (IMVW /= 0) CALL SORTIE_MVW(IMVW,IMVW_REF)               ! MVW output
-                IF ((IRAD2R==1).AND.(ISPMD==0)) CALL SEND_IBUF_C(1,1)	    ! Rad2rad termination
+                IF (IHTML == 1) CALL REPORT(IH3DREADER,N,IMVW,NAMES_AND_TITLES%ROOTNAME)                              ! Htlm report
+                IF (IMVW /= 0)  CALL SORTIE_MVW(IMVW,IMVW_REF,NAMES_AND_TITLES%IMVW_REFPATH,NAMES_AND_TITLES%ROOTNAME) ! MVW output
+                IF ((IRAD2R==1).AND.(ISPMD==0)) CALL SEND_IBUF_C(1,1)	                                                ! Rad2rad termination
 
               ENDIF
 

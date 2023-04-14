@@ -46,13 +46,14 @@ Chd|====================================================================
      3                 SUBSET,ITHGRP,ITHBUF,IGEO ,
      4                 IPM  ,IPARTH ,NPARTH ,NVPARTH ,
      5                 NVSUBTH ,ITTYP,ITHFLAG,ITHVAR,IFILTITL,
-     6                 SITHBUF)
+     6                 SITHBUF,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE GROUPDEF_MOD
       USE INOUTFILE_MOD
       USE TH_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,LTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -61,13 +62,11 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
-#include      "com05_c.inc"
 #include      "units_c.inc"
 #include      "param_c.inc"
 #include      "scr05_c.inc"
 #include      "scr13_c.inc"
 #include      "scrfs_c.inc"
-#include      "chara_c.inc"
 #include      "titr_c.inc"
 #include      "scr07_c.inc"
 #include      "scr17_c.inc"
@@ -79,6 +78,7 @@ C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER,INTENT(IN)                     :: SITHBUF  ! Size of ithbuf
       INTEGER,INTENT(IN), DIMENSION(SITHBUF) :: ITHBUF   ! Time history buffer
+      TYPE(NAMES_AND_TITLES_),INTENT(IN)     :: NAMES_AND_TITLES ! Names and Model TITLE
       INTEGER 
      .   IWA(*),
      .   IPART(LIPART1,*),IPM(NPROPMI,*),IGEO(NPROPGI,*),
@@ -116,8 +116,7 @@ C-----------------------------------------------
       DATA EOR/'ZZZZZEOR'/
 C=======================================================================
 C
-      WRITE(CARD,'(20A4)')TEXT
-      READ(CARD,'(20A4)')TITLE
+      CARD(1:LTITLE) = NAMES_AND_TITLES%TITLE(1:LTITLE)
 C      ICODE=3017
 C      ICODE=3023
 C      ICODE=3030
@@ -135,7 +134,7 @@ C      ICODE=3030
         LTITL = 40
       ENDIF
 C
-      LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN+LONG
+      LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG
       TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))  
 C
       IF(TH_TITLES == 1)
@@ -180,16 +179,19 @@ C
       ENDIF
 C-------TITRE------------
       IF(ITTYP==0)THEN
+       READ(NAMES_AND_TITLES%TITLE,'(20A4)')TITLE
        WRITE(IUNIT)ICODE,TITLE
 
       ELSEIF(ITTYP==1)THEN
         CH8=STRI(ICODE)
-        WRITE(IUNIT,'(A)')FILNAM(1:ROOTLEN+LONG)         
+        WRITE(IUNIT,'(A)')FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)         
         WRITE(IUNIT,'(2A)')CH8,CARD(1:72)
+
       ELSEIF(ITTYP==2)THEN
-        WRITE(IUNIT,'(2A)')FILNAM(1:ROOTLEN+LONG),' FORMAT'
+        WRITE(IUNIT,'(2A)')FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG),' FORMAT'
         WRITE(IUNIT,'(A,I5,A,I5,A)')EOR,1,'I',72,'C'
         WRITE(IUNIT,'(I5,A)')ICODE,CARD(1:72)
+
       ELSEIF(ITTYP==3)THEN
        DO I=1,80
          ITITLE(I)=ICHAR(CARD(I:I))
@@ -216,7 +218,7 @@ C-------ivers date------------
       ELSEIF(ITTYP==1)THEN
         WRITE(IUNIT,'(A)')CH80
       ELSEIF(ITTYP==2)THEN
-        WRITE(IUNIT,'(2A)')FILNAM(1:ROOTLEN+LONG),' FORMAT'
+        WRITE(IUNIT,'(2A)')FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG),' FORMAT'
         WRITE(IUNIT,'(A,I5,A)')EOR,80,'C'
         WRITE(IUNIT,'(A)')CH80
       ELSEIF(ITTYP==3)THEN

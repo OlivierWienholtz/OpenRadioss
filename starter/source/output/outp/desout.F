@@ -31,8 +31,9 @@ Chd|====================================================================
       SUBROUTINE DESOUT(X   ,IXS  ,IXQ  ,IXC  ,IXT  ,
      .                  IXP ,IXR  ,IXTG ,ITAB ,PM   ,
      .                  GEO ,MS   ,IXS10,IGEO ,IPM  ,
-     .                  KXSP,IPART,IPARTSP)
+     .                  KXSP,IPART,IPARTSP,NAMES_AND_TITLES)
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -41,16 +42,15 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
-#include      "com05_c.inc"
 #include      "units_c.inc"
 #include      "param_c.inc"
-#include      "scr15_c.inc"
 #include      "scr16_c.inc"
 #include      "scr17_c.inc"
 #include      "sphcom.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN)     :: NAMES_AND_TITLES
       INTEGER IXS(NIXS,*), IXQ(NIXQ,*), IXC(NIXC,*), IXT(NIXT,*),
      .   IXP(NIXP,*), IXR(NIXR,*), IXTG(NIXTG,*),IXS10(6,*),ITAB(*),
      .   IGEO(NPROPGI,*),IPM(NPROPMI,*),
@@ -62,17 +62,19 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER IWA(10), I, J, FILEN
-      CHARACTER CARD*nchartitle, FILNAM*100   
+      CHARACTER(LEN=NCHARTITLE) :: CARD
+      CHARACTER FILNAM*100   
       INTEGER :: LEN_TMP_NAME
       CHARACTER(len=2148) :: TMP_NAME   
 C-----------------------------------------
-      WRITE(CARD,'(20A4)')TEXT
+      CARD=''
+      CARD(1:80)=NAMES_AND_TITLES%TITLE(1:80)
 C
-      FILNAM=ROOTNAM(1:ROOTLEN)//'Y000'
-      FILEN = ROOTLEN + 4
+      FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'Y000'
+      FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 4
       IF(IROOTYY/=2)THEN       
-       FILEN = ROOTLEN + 9
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_0000.sty'
+       FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 9
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_0000.sty'
       ENDIF  
       LEN_TMP_NAME = FILEN
       TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TMP_NAME)      

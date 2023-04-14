@@ -29,18 +29,18 @@ Chd|        ERRMSG                        source/input/errmsg.F
 Chd|====================================================================
       SUBROUTINE REDKEY0(KEY0,NKEY,CARTE,IKEY,NSLASH) 
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD , ONLY : NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
 C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "nchar_c.inc"
-C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER NKEY, IKEY,NSLASH(*)
-      CHARACTER(len=ncharline) :: CARTE
+      CHARACTER(len=NCHARLINE) :: CARTE
       CHARACTER(len=5) ::  KEY0(NKEY)
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -51,7 +51,7 @@ C-----------------------------------------------
       J=0
       KEY(1:5)='     '
 
-      DO I=2,ncharline 
+      DO I=2,NCHARLINE 
       IF(CARTE(I:I)=='/')EXIT
       IF(CARTE(I:I)==' ')CYCLE
        J=J+1

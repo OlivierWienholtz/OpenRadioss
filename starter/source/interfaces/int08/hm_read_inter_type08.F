@@ -45,6 +45,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE UNITAB_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -62,7 +63,7 @@ C-----------------------------------------------
      .   STFAC
       my_real
      .   FRIGAP(*)
-      CHARACTER TITR*nchartitle,TITR1*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
 C-----------------------------------------------
       TYPE (GROUP_)  ,TARGET, DIMENSION(NGRNOD)  :: IGRNOD
       TYPE (SURF_)   ,TARGET , DIMENSION(NSURF)   :: IGRSURF
@@ -82,10 +83,11 @@ C-----------------------------------------------
       my_real
      .   FRIC,STARTT,STOPT,FNOR,DBDEPTH,VISC,VISCF,
      .   FRIC_LAST,FNOR_LAST
-      CHARACTER MESS*40, MSGTITL*nchartitle
-      CHARACTER OPT*ncharkey
-!
       INTEGER, DIMENSION(:), POINTER :: INGR2USR
+!
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARKEY)   :: OPT
+      CHARACTER(LEN=NCHARTITLE) :: MSGTITL
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------

@@ -50,7 +50,9 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE SUBMODEL_MOD
       USE MESSAGE_MOD
-      USE HM_OPTION_READ_MOD       
+      USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
+
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -96,7 +98,8 @@ C     REAL
      .  XTMP(3,NUMNOD)
       my_real, DIMENSION(:), ALLOCATABLE ::
      .  XX,YY,ZZ
-      CHARACTER MESS*40,TITR*nchartitle,TITR1*nchartitle
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
       DATA MESS/'XREF'/
       LOGICAL :: IS_AVAILABLE,FOUND      
 C-----------------------------------------------

@@ -48,7 +48,8 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
       USE SUBMODEL_MOD
-      USE HM_OPTION_READ_MOD      
+      USE HM_OPTION_READ_MOD     
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY 
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -84,7 +85,8 @@ C-----------------------------------------------
       my_real 
      .        FREQ,BETA,OMEGA,DTC1,DTC2,BID
       my_real RDUM1,RDUM2,RDUM3,RDUM4,RDUM5
-      CHARACTER TITR*nchartitle,MESS*40,MESS1*40,NWLINE*100,
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER MESS*40,MESS1*40,NWLINE*100,
      .          FXBFILE*100,EXTENSION*3
 
       INTEGER, DIMENSION(:),ALLOCATABLE :: ITAG

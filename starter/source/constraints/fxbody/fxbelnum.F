@@ -39,7 +39,6 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "scr01_c.inc"
 #include      "param_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
@@ -53,6 +52,9 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,NG,NEL,NFT,ITY,II,NALL,NEL2,J,IAD,MAT,JHBE,
      .        IT1,IT2,IT3,IT4,IT5,IT6,IT7,IT8,JSROT
+      INTEGER NB1, NB2, NB3, NB4, NB5, NB6, NB7, NB8, NB9, NB10, NB11,
+     .        NB12, NB13, NB14, NB15, NB16, NB17, NB18, NB19, NB20
+
 C=======================================================================
       DO I=1,NUMNOD
          ITAG(I)=0

@@ -53,6 +53,7 @@ C-----------------------------------------------
       USE REORDER_MOD
       USE GROUPDEF_MOD
       USE DRAPE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C            A R G U M E N T S
 C-----------------------------------------------
@@ -130,8 +131,7 @@ C-----------------------------------------------
        my_real
      . ANGLE(NUMELTG)
 C     REAL OU REAL*8
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C
       INTEGER, DIMENSION(:), ALLOCATABLE :: INDEX2
 

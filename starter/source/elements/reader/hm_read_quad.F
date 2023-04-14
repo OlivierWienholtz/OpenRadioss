@@ -59,6 +59,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C--------------------------------------------------------
 C     LECTURE DES ELEMENTS QUAD 4 NOEUDS
 C     VERSIION NUMEROTATION DES NOEUDS LIBRE/MARS 90/DIM
@@ -102,7 +103,8 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, J, I1, I2, ID,IDS,IPID,MT,N,MID,PID,UID,NDEGEN,JC,STAT,
      .   IFLAGUNIT,FLAG_FMT,FLAG_FMT_TMP,IFIX_TMP,ISHXFEM,IOUTN,IERROR,INDEX_PART
-      CHARACTER MESS*40, MESS2*40,TITR*nchartitle
+      CHARACTER(LEN=40) :: MESS, MESS2
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       my_real
      .   BID,FAC_L
       INTEGER, DIMENSION(:), ALLOCATABLE :: SUB_QUAD,UID_QUAD
@@ -188,10 +190,10 @@ C--------------------------------------------------
         IXQ(6,I)=IPID 
         IF (IXQ(NIXQ,I)>ID_LIMIT)THEN
             CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                  I1=IXQ(NIXQ,I),C1=LINE,C2='/QUAD')
+     .                  I1=IXQ(NIXQ,I),C1='/QUAD')
         ELSEIF (NADMESH/=0.AND.IXQ(NIXQ,I)>ID_LIMIT_ADMESH)THEN
             CALL ANCMSG(MSGID=1069,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                  I1=IXQ(NIXQ,I),C1=LINE,C2='/QUAD')
+     .                  I1=IXQ(NIXQ,I),C1='/QUAD')
         ENDIF                            
         IF(  ( IXQ(4,I) == IXQ(5,I)) .OR.        
      .       ( IXQ(5,I) == 0 )) THEN             

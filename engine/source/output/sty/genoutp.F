@@ -76,7 +76,7 @@ Chd|====================================================================
      7                  IPM   ,KXSP      ,SPBUF  ,NODGLOB,LENG ,
      8                  FOPT  ,NOM_OPT   ,NPBY   ,FNCONT   ,FTCONT,
      9                  GEO   ,THKE      ,STACK  ,DRAPE_SH4N, DRAPE_SH3N,
-     A                  DRAPEG )
+     A                  DRAPEG,ROOTNAME  ,ROOTLEN)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -84,6 +84,7 @@ C-----------------------------------------------
       USE STACK_MOD
       USE INOUTFILE_MOD
       USE DRAPE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -103,7 +104,6 @@ C-----------------------------------------------
 #include      "scr14_c.inc"
 #include      "scr16_c.inc"
 #include      "scr17_c.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
 #include      "sphcom.inc"
 #include      "filescount_c.inc"
@@ -125,6 +125,8 @@ C     REAL
       TYPE (STACK_PLY) :: STACK
       TYPE(DRAPE_) :: DRAPE_SH4N(NUMELC_DRAPE), DRAPE_SH3N(NUMELTG_DRAPE)
       TYPE(DRAPEG_) :: DRAPEG
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      INTEGER,INTENT(IN)                        :: ROOTLEN
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -163,12 +165,12 @@ C-----------------------------------------------
        IF(IROOTYY == 2)THEN
         IF(IOUTP>=1000)IOUTP=1
         WRITE(CHOUTP,'(I3.3)')IOUTP
-        FILNAM=ROOTNAM(1:ROOTLEN)//'Y'//CHOUTP
+        FILNAM=TRIM(ROOTNAME)//'Y'//CHOUTP
         FILEN = ROOTLEN + 4 
        ELSE       
         IF(IOUTP>=10000)IOUTP=1
         WRITE(CHOUTP,'(I4.4)')IOUTP
-        FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHOUTP//'.sty'
+        FILNAM=TRIM(ROOTNAME)//'_'//CHOUTP//'.sty'
         FILEN = ROOTLEN + 9
         ENDIF
         LEN_TMP_NAME = OUTFILE_NAME_LEN + FILEN

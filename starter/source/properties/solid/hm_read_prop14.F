@@ -63,6 +63,7 @@ C-----------------------------------------------
       USE ELBUFTAG_MOD            
       USE MULTI_FVM_MOD
       USE ALE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -70,8 +71,8 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr17_c.inc"
 #include      "units_c.inc"
+#include      "scr17_c.inc"
 #include      "scr21_c.inc"
 #include      "submod_c.inc"
 #include      "com01_c.inc"
@@ -85,7 +86,7 @@ C INPUT ARGUMENTS
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER,INTENT(IN)::IG,IGTYP
       INTEGER,INTENT(IN)::IPART(LIPART1,*)
-      CHARACTER*nchartitle,INTENT(IN)::TITR
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN)::TITR
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(NSUBMOD)
       TYPE(MULTI_FVM_STRUCT),INTENT(IN) :: MULTI_FVM      
 C MODIFIED ARGUMENT
@@ -99,7 +100,7 @@ C-----------------------------------------------
       INTEGER I8PT,ITET4,ITET4_PREV,NSPHDIR,ID_SENS,ID_PARTSPH,IPARTSPH,J,ITET10,I_ALE_FLAG
       my_real CVIS,QA,QB,QH,VNS1,VNS2,DTMIN,VDEFMIN,VDEFMAX,ASPMAX,ASPTET 
       LOGICAL IS_AVAILABLE, IS_ENCRYPTED, lFOUND
-      CHARACTER*ncharline :: MSGLINE
+      CHARACTER(LEN=NCHARLINE) :: MSGLINE
 C-----------------------------------------------
 C   S o u r c e   L i n e s
 C-----------------------------------------------
@@ -550,6 +551,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE ELBUFTAG_MOD            
       USE MULTI_FVM_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
       USE ALE_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
@@ -570,7 +572,7 @@ C-----------------------------------------------
 C INPUT ARGUMENTS
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER,INTENT(IN)::IG,IGTYP
-      CHARACTER*nchartitle,INTENT(IN)::TITR
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN)::TITR
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(NSUBMOD)
       TYPE(MULTI_FVM_STRUCT),INTENT(IN) :: MULTI_FVM      
 C MODIFIED ARGUMENT

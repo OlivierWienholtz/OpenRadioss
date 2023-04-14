@@ -43,6 +43,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -78,7 +79,8 @@ C-----------------------------------------------
       my_real 
      .        FREQ,BETA,OMEGA,DTC1,DTC2,BID,XM(3),ZZ,RHO_INVMK,UNSN,NORM,FAC,FAC2,MSTOT,TOLE,
      .        KT,KR,RR,SKEW(9),RDUM1,MIN_DIAG_STIF,FAC2X,FAC2Y,FAC2Z
-      CHARACTER TITR*nchartitle,MESS*40,MESS1*40,NWLINE*100,
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER MESS*40,MESS1*40,NWLINE*100,
      .          FXBFILE*100
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: TABSL,ITAG_DOF
       INTEGER, DIMENSION(:), ALLOCATABLE :: INDEX,LISTN

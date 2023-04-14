@@ -50,6 +50,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE HM_OPTION_READ_MOD    
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -80,8 +81,10 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER K, N, NSL, NUSER, J, I, IGU,IC,ICR,J10(10),
      .   IGRS, NOSYS,J6(6),IS,IPOL,IDIR,ISL,IKINE1(3*NUMNOD),NLK
-      CHARACTER MESS*40,KEY*ncharkey,TITR*nchartitle,
-     .          STRING*ncharfield,CODE*7
+      CHARACTER MESS*40,CODE*7
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARFIELD) :: STRING
       my_real
      .   BID
 C-----------------------------------------------

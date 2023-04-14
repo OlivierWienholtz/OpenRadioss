@@ -79,6 +79,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE HM_OPTION_READ_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARKEY,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -114,7 +115,11 @@ C-----------------------------------------------
 C     REAL
       my_real
      .       BID
-      CHARACTER MESS*40,KEY*ncharkey
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARKEY) :: KEY
+      CHARACTER(len=NCHARTITLE) :: C1
+      CHARACTER(len=NCHARTITLE) :: TITR
+      
       LOGICAL IS_AVAILABLE
 
       LOGICAL :: CHECK_LAW
@@ -122,8 +127,7 @@ C     REAL
       INTEGER :: LAW_SPH,LAW_SOL
       INTEGER :: ERROR_NUM
       INTEGER :: I1,I2,I3,I4,I5
-      CHARACTER(len=nchartitle) :: C1
-      CHARACTER(len=nchartitle) :: TITR
+
       INTEGER :: USER_PART_SPH,USER_PART_SOL
       INTEGER :: USER_MID_SPH,USER_MID_SOL
       LOGICAL, DIMENSION(NPART) :: TAG_PART
@@ -188,7 +192,7 @@ C         meme identifiant que le noeud.
 C--------------------------------------------------
         IF (KXSP(NISP,I)>ID_LIMIT)THEN
             CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                  I1=KXSP(NISP,I),C1=LINE,C2='/SPHCEL')
+     .                  I1=KXSP(NISP,I),C1='/SPHCEL')
         ENDIF
       ENDDO
 C-------------------------------------
@@ -196,8 +200,6 @@ C-------------------------------------
 C-------------------------------------
        FIRST_SPHRES=NCELL+1
        IF(NSPHRES/=0)THEN
-        KCUR   =KSPHOPT
-        IREC   =KOPTAD(KCUR)-1
         INOD   =ISPHRES
         NBP = 1
 
@@ -357,7 +359,7 @@ C-- Hexa + degenerated penta6
     
        IF(CHECK_LAW) THEN
             DO I=1,ERROR_NUM
-                TITR(1:nchartitle) =''
+                TITR(1:NCHARTITLE) =''
                 CALL FRETITL2(TITR,IPART(LIPART1-LTITR+1,PART_ID_SPH(I)),LTITR-1)
                 USER_PART_SPH = IPART(4,PART_ID_SPH(I))
                 USER_PART_SOL = IPART(4,PART_ID_SOL(I))

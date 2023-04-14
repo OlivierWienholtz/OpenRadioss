@@ -108,6 +108,7 @@ C-----------------------------------------------
       USE OPTIONDEF_MOD
       USE MESSAGE_MOD
       USE SET_SCRATCH_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARFIELD,NCHARKEY,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -172,8 +173,9 @@ C-----------------------------------------------
 C-----------------CREATE_SET_ARRAY------------------------------
 C     Characters
       CHARACTER MESS*40
-      CHARACTER KEYSET*ncharfield,SET_TYPE*ncharfield,KEY*ncharkey,KEY_TYPE*ncharfield
-      CHARACTER TITLE*nchartitle,SET_TITLE*nchartitle,KEYPART*ncharkey,TITLE2*nchartitle
+      CHARACTER(LEN=NCHARFIELD) :: KEYSET,SET_TYPE,KEY_TYPE
+      CHARACTER(LEN=NCHARKEY)   :: KEY,KEYPART
+      CHARACTER(LEN=NCHARTITLE) :: TITLE,SET_TITLE,TITLE2
 C-----------------------------------------------
 C Initialization / SET Dependency build
 C-----------------------------------------------
@@ -212,7 +214,7 @@ C-----------------------------------------------
      .                           OPTION_TITR = SET_TITLE,
      .                           KEYWORD2    = KEY,
      .                           OPT_POS     = IGS )
-        CALL HM_GET_STRING('set_Type' , SET_TYPE ,ncharfield, IS_AVAILABLE)
+        CALL HM_GET_STRING('set_Type' , SET_TYPE ,NCHARFIELD, IS_AVAILABLE)
         CALL HM_GET_INTV  ('iset_Type', ISET_TYPE,IS_AVAILABLE,LSUBMODEL)
 
         ! --------------------
@@ -239,7 +241,7 @@ C-----------------------------------------------
 
            CALL CLAUSE_INIT(CLAUSE)
 
-           CALL HM_GET_STRING_INDEX('KEY_type', KEYSET, J, ncharline, IS_AVAILABLE)
+           CALL HM_GET_STRING_INDEX('KEY_type', KEYSET, J, NCHARFIELD, IS_AVAILABLE)
 
            CALL HM_GET_INT_ARRAY_INDEX('opt_D',OPT_D,J,IS_AVAILABLE,LSUBMODEL)
            CALL HM_GET_INT_ARRAY_INDEX('opt_O',OPT_O,J,IS_AVAILABLE,LSUBMODEL)

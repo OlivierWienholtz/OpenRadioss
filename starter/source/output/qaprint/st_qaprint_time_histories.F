@@ -139,6 +139,7 @@ C   M o d u l e s
 C-----------------------------------------------
         USE QA_OUT_MOD
         USE GROUPDEF_MOD
+        USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -163,7 +164,7 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
         INTEGER I, ID, II, TEMP_INT, MY_TH, NVAR, IAD, K, NNE
         INTEGER, DIMENSION(NTHGROUP) :: IDX, IDS
-        CHARACTER *nchartitle TITR
+        CHARACTER(LEN=NCHARTITLE) :: TITR
         CHARACTER (LEN=255) :: VARNAME
 C
 C
@@ -190,7 +191,7 @@ C
             IF (ID /= 0) THEN
 C          
               ! Time history title
-              TITR(1:nchartitle)=''
+              TITR(1:NCHARTITLE)=''
               CALL FRETITL2(TITR, ITHGRP(NITHGR-LTITR+1,MY_TH), LTITR)
               IF (LEN_TRIM(TITR) /= 0) THEN
                 CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),ID,0.0_8)
@@ -220,7 +221,7 @@ C
               K=0
               DO I=1,NNE
                 ! Title of the object of the time history
-                TITR(1:nchartitle)=''
+                TITR(1:NCHARTITLE)=''
                 CALL FRETITL2(TITR, ITHBUF(ITHGRP(8,MY_TH)+K), 39)
                 IF (LEN_TRIM(TITR) /= 0) THEN
                   CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),0,0.0_8)
@@ -265,7 +266,7 @@ C
               CALL QAPRINT(VARNAME(1:LEN_TRIM(VARNAME)),TEMP_INT,0.0_8)
 C          
               ! Title of the part
-              TITR(1:nchartitle)=''
+              TITR(1:NCHARTITLE)=''
               CALL FRETITL2(TITR,IPART(LIPART1-LTITR+1,II),40)
               IF (LEN_TRIM(TITR) /= 0) THEN
                 CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),ID,0.0_8)

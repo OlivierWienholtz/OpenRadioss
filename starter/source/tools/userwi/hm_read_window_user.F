@@ -40,7 +40,7 @@ Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F
 Chd|        USER_WINDOWS_MOD              ../common_source/modules/user_windows_mod.F
 Chd|====================================================================
       SUBROUTINE HM_READ_WINDOW_USER(USER_WINDOWS, LSUBMODEL,ITAB,
-     *                               X, V, VR, MS, IN)
+     *                               X, V, VR, MS, IN,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
 C   ===================
@@ -63,6 +63,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE USER_WINDOWS_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARKEY,NCHARTITLE,NCHARLINE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -73,27 +74,27 @@ C-----------------------------------------------
 #include      "my_allocate.inc"
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "scr15_c.inc"
-#include      "scr17_c.inc"
 #include      "units_c.inc"
 #include      "userlib.inc"
 #include      "tabsiz_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      TYPE(USER_WINDOWS_),INTENT(INOUT)      :: USER_WINDOWS
-      TYPE(SUBMODEL_DATA),INTENT(IN)          :: LSUBMODEL(*)
-      INTEGER, DIMENSION(NUMNOD),INTENT(IN)   :: ITAB
-      my_real, DIMENSION(3,NUMNOD),INTENT(IN) :: X, V, VR
-      my_real, DIMENSION(NUMNOD),INTENT(IN)   :: MS,IN
+      TYPE(USER_WINDOWS_),INTENT(INOUT)         :: USER_WINDOWS
+      TYPE(SUBMODEL_DATA),INTENT(IN)            :: LSUBMODEL(*)
+      INTEGER, DIMENSION(NUMNOD),INTENT(IN)     :: ITAB
+      my_real, DIMENSION(3,NUMNOD),INTENT(IN)   :: X, V, VR
+      my_real, DIMENSION(NUMNOD),INTENT(IN)     :: MS,IN
+      INTEGER, INTENT(IN)                       :: ROOTNAME_LENGTH
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       CHARACTER(LEN=4096)       :: SCR_FILE_NAME
-      CHARACTER(LEN=ncharline)  :: RLINE
-      CHARACTER (LEN=4)         :: CWIN
-      CHARACTER(LEN=nchartitle) :: TITLE
-      CHARACTER(LEN=ncharkey)   :: KEY
+      CHARACTER(LEN=NCHARLINE)  :: RLINE
+      CHARACTER(LEN=4)          :: CWIN
+      CHARACTER(LEN=NCHARTITLE) :: TITLE
+      CHARACTER(LEN=NCHARKEY)   :: KEY
       LOGICAL                   :: IS_AVAILABLE
       INTEGER ,DIMENSION(100)   :: IUPARAM
       INTEGER NLINES,I,J,STAT,USERWI_ID
@@ -125,16 +126,16 @@ C-----------------------------------------------
 
       ! Create tempo file  
       WRITE(CWIN,'(I4.4)') 1
-      SCR_FILE_NAME='SI'//ROOTNAM(1:ROOTLEN)//'_'//CWIN//'.scr'
+      SCR_FILE_NAME='SI'//TRIM(ROOTNAME)//'_'//CWIN//'.scr'
       SCR_FILE_NAME_LEN=LEN_TRIM(SCR_FILE_NAME)
-      OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=ncharline)
+      OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=NCHARLINE)
       WRITE(30,'(A)') '/USERWI'
 !
       IF (NLINES > 0) THEN 
 
         ! Read & Dump in scratch file
         DO J=1,NLINES   
-         CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, ncharline, IS_AVAILABLE)
+         CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, NCHARLINE, IS_AVAILABLE)
          WRITE(30,FMT='(A)')TRIM(RLINE)
         ENDDO
 
@@ -147,11 +148,11 @@ C-----  memory (user buffer length estimation)
       USER_WINDOWS%NUVAR   = 0
       USER_WINDOWS%NUVARI  = 0
 !
-      CALL ST_USERLIB_USERWIS_INI(ROOTNAM,ROOTLEN,
+      CALL ST_USERLIB_USERWIS_INI(ROOTNAME,ROOTNAME_LENGTH,
      .             IUPARAM ,NUMNOD  ,ITAB,
      .             X       ,V       ,VR       ,MS      ,IN      ,
      .             NUVAR   ,NUVARI  )
-      CALL USER_OUTPUT(IOUT,1,ROOTNAM,ROOTLEN,1)
+      CALL USER_OUTPUT(IOUT,1,ROOTNAME,ROOTNAME_LENGTH,1)
 !
       USER_WINDOWS%NUVAR   = NUVAR
       USER_WINDOWS%NUVARI  = NUVARI
@@ -170,24 +171,24 @@ C-----  memory (user buffer length estimation)
 
 C-----  Scratch file initialisation
       WRITE(CWIN,'(I4.4)') 1
-      SCR_FILE_NAME='SI'//ROOTNAM(1:ROOTLEN)//'_'//CWIN//'.scr'
+      SCR_FILE_NAME='SI'//TRIM(ROOTNAME)//'_'//CWIN//'.scr'
       SCR_FILE_NAME_LEN=LEN_TRIM(SCR_FILE_NAME)
-      OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=ncharline)
+      OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=NCHARLINE)
       WRITE(30,'(A)') '/USERWI'
 
         ! Read & Dump in scratch file
       DO J=1,NLINES   
-         CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, ncharline, IS_AVAILABLE)
+         CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, NCHARLINE, IS_AVAILABLE)
          WRITE(30,FMT='(A)')TRIM(RLINE)
       ENDDO
       CLOSE(UNIT=30)
 !
-      CALL ST_USERLIB_USERWIS(ROOTNAM, ROOTLEN, NUMNOD, ITAB,
+      CALL ST_USERLIB_USERWIS(ROOTNAME, ROOTNAME_LENGTH, NUMNOD, ITAB,
      .                        X, V, VR, MS, IN,
      .                        USER_WINDOWS%NUVAR, USER_WINDOWS%NUVARI, 
      .                        USER_WINDOWS%USER,  USER_WINDOWS%IUSER )
      
-      CALL USER_OUTPUT(IOUT,1,ROOTNAM,ROOTLEN,1)
+      CALL USER_OUTPUT(IOUT,1,ROOTNAME,ROOTNAME_LENGTH,1)
 !
 !---------
       RETURN

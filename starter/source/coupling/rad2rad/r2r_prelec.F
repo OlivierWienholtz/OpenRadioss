@@ -71,6 +71,7 @@ C-----------------------------------------------
       USE HM_OPTION_READ_MOD
       USE INIVOL_ARRAY_MOD
       USE DETONATORS_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARKEY,NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -132,11 +133,14 @@ C-----------------------------------------------
       INTEGER SUB_ID,IDTITL,IDINT,GR_BRIC,NUMC
       INTEGER NTRANS,NNODE_TRANSFORM,NODE_TRANSFORM(6)
       my_real F,NUL_M
-      CHARACTER MESS*40,KEY2*ncharkey,TSENS*40
-      CHARACTER TITR*nchartitle,KEY*ncharkey,STRING*ncharfield      
+      CHARACTER MESS*40,TSENS*40
+      CHARACTER(LEN=NCHARKEY)            :: KEY2 ,KEY
+      CHARACTER(LEN=NCHARTITLE)          :: TITR
+      CHARACTER(LEN=NCHARFIELD)          :: STRING
       INTEGER, DIMENSION(:), ALLOCATABLE :: BUF_TEMP                 
       DATA MESS/'MULTIDOMAIN PREREADING OF OPTIONS'/
       LOGICAL :: IS_AVAILABLE
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C=======================================================================	  	 
 	
 C--------------------------------------------------------------------C
@@ -1377,6 +1381,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1404,7 +1409,8 @@ C-----------------------------------------------
       INTEGER CPT_NOD,CPT_SEG,CPT_CPL,CUR_ID,IAD,CPT_SEG2
       INTEGER MAT_ID,NJET,IJET,N1,N2,N3,WARN
       CHARACTER MESS*40
-      CHARACTER TITR*nchartitle,KEY*ncharkey           
+      CHARACTER (LEN=NCHARTITLE) :: TITR
+      CHARACTER (LEN=NCHARKEY) ::  KEY
       DATA MESS/'INJECTORS '/
       LOGICAL :: IS_AVAILABLE      
 C=======================================================================        

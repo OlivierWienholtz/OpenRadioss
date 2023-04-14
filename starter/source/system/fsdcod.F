@@ -56,6 +56,7 @@ C-----------------------------------------------
       USE INTSTAMP_MOD
       USE TABLE_MOD
       USE SENSOR_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -109,8 +110,7 @@ C-----------------------------------------------
       my_real
      .       , DIMENSION(:), ALLOCATABLE :: STRESS,STRETCH
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       CHARACTER*40 MESS
       CHARACTER*80 MESS1
       DATA IUN/1/
@@ -2254,6 +2254,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE ELBUFDEF_MOD            
       USE ELBUFTAG_MOD 
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -2276,8 +2277,7 @@ C-----------------------------------------------
       INTEGER I, ILAW, J, K, IS, NF,ILAWk
       my_real PUN,RHO_MAX
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL PASSED
       TYPE(MLAW_TAG_), POINTER :: MTAG, MTAGk      
 C-----------------------------------------------

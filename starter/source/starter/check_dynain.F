@@ -30,12 +30,14 @@ Chd|        MY_ORDERS                     ../common_source/tools/sort/my_orders.
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
-      SUBROUTINE CHECK_DYNAIN(IPART,IPARTC,IPARTTG,IXC,IXTG,DYNAIN_CHECK)
+      SUBROUTINE CHECK_DYNAIN(IPART,IPARTC,IPARTTG,IXC,IXTG,DYNAIN_CHECK,
+     *                        ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -45,12 +47,13 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "scr17_c.inc"
-#include      "scr15_c.inc"
 #include      "units_c.inc"
 #include      "scr03_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      INTEGER,INTENT(IN)           :: ROOTNAME_LENGTH
       INTEGER IPART(LIPART1,*), IXC(NIXC,*), IXTG(NIXTG,*),
      .        IPARTC(*), IPARTTG(*)
       INTEGER , INTENT(INOUT) :: DYNAIN_CHECK
@@ -67,7 +70,8 @@ C
      .        CLEFC ,CLEFTG ,INDXC ,INDXTG ,IDWARN ,NELIDCG ,NELIDTGG
       my_real
      .   T0,DT0
-      CHARACTER FILNAM*109, KEYA*80, KEYA2*80 ,CARTE*ncharline
+      CHARACTER FILNAM*109, KEYA*80, KEYA2*80
+      CHARACTER(LEN=NCHARLINE) :: CARTE
       INTEGER :: LEN_TMP_NAME
       CHARACTER(len=4096) :: TMP_NAME
 C-------------------------------------------------------------------------------
@@ -77,14 +81,14 @@ C-------------------------------------------------------------------------------
 C-----------------------------------------------
 C     READING ENGINE FILE
 C-----------------------------------------------   
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_0001.rad'
+      FILNAM=ROOTNAME(1:ROOTNAME_LENGTH)//'_0001.rad'
       TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))    
       LEN_TMP_NAME = INFILE_NAME_LEN+LEN_TRIM(FILNAM)
       OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .     ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
 C
       IF (IO_ERR1/=0) THEN
-         FILNAM=ROOTNAM(1:ROOTLEN)//'D01'
+         FILNAM=ROOTNAME(1:ROOTNAME_LENGTH)//'D01'
          TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))    
          LEN_TMP_NAME = INFILE_NAME_LEN+LEN_TRIM(FILNAM)
          OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),

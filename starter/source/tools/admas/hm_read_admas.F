@@ -90,7 +90,7 @@ C-----------------------------------------------
      .   AMAS,COEFF_R2R
       LOGICAL LOOP_2
 !
-      CHARACTER(nchartitle)  :: TITR,MESS
+      CHARACTER(NCHARTITLE)  :: TITR,MESS
       LOGICAL :: IS_AVAILABLE
 !
       INTEGER, ALLOCATABLE, DIMENSION(:) :: ENTITY_MULTI,IFLAG_MULTI

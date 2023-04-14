@@ -40,6 +40,7 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -70,7 +71,7 @@ C-----------------------------------------------
       INTEGER I,J,L,K,KK,M,N,NSL,NSKEW,IC,
      .   ISPHER,IDIR,P,IG,ID,ICDG,NSL_XTRA,
      .   IKINE1(3*NUMNOD),NRB,NUMSL_TMP
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: TABSL
       INTEGER, DIMENSION(:), ALLOCATABLE :: INDEX
       INTEGER IWORK(70000),IOLD

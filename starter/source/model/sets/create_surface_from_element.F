@@ -46,6 +46,7 @@ C-----------------------------------------------
       USE SETDEF_MOD
       USE MESSAGE_MOD
       USE SET_SCRATCH_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -63,7 +64,7 @@ C-----------------------------------------------
      .  IPART(LIPART1,*),KNOD2ELQ(*),NOD2ELQ(*),IXQ(NIXQ,*)
       my_real
      .  X(3,*)
-      CHARACTER KEYSET*ncharfield
+      CHARACTER(LEN=NCHARFIELD) :: KEYSET
 !
       TYPE (SET_) :: CLAUSE
       TYPE (SET_SCRATCH) ::  DELBUF

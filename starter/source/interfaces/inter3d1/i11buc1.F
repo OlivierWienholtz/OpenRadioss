@@ -49,7 +49,7 @@ C-----------------------------------------------
       USE TRI7BOX 
       USE TRI11   
       USE FRONT_MOD
-
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C============================================================================
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -78,8 +78,7 @@ C     REAL
      .   X(3,*), 
      .   GAP_S(*), GAP_M(*), GAP_S_L(*), GAP_M_L(*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(INTERSURFP) :: INTERCEP(3,NINTER)
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -385,6 +384,7 @@ Chd|====================================================================
      5   NSV   ,MULTIMP,ADDCM,CHAINE,I_MEM,
      6   ID,TITR,IDDLEVEL,DRAD,IT19)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C============================================================================
 C  cette routine est appelee par : ININT3(/inter3d1/inint3.F)
 C----------------------------------------------------------------------------
@@ -417,8 +417,7 @@ C     REAL
      .   X(3,*),XYZM(6,*),DIST,
      .   BUMULT,GAP,TZINF,MAXBOX,MINBOX,DRAD
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

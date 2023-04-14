@@ -39,6 +39,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE INOUTFILE_MOD
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -53,7 +54,8 @@ C-----------------------------------------------
       INTEGER ID,ITABM1(*),ITAG(*),MATRIX_ADD(4,*), CPT_STIFF,CPT_MASS,FLAG
       my_real 
      .        MATRIX(*)
-      CHARACTER PCH_FILE*100,TITR*nchartitle
+      CHARACTER PCH_FILE*100
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

@@ -93,7 +93,8 @@ Chd|====================================================================
      A                  IXS16    ,IXS20   ,ICODE    ,LENGR   ,LENGP   ,
      B                  LENGT    ,ISKEW   ,V        ,VR      ,LENGQ   ,
      C                  MULTI_FVM,BUFMAT  ,NPBY     ,LPBY    ,STACK   ,
-     D                  DRAPE_SH4N ,DRAPE_SH3N,DR       ,DRAPEG)
+     D                  DRAPE_SH4N ,DRAPE_SH3N,DR       ,DRAPEG,
+     E                  ROOTNAME,ROOTLEN)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -104,6 +105,7 @@ C-----------------------------------------------
       USE STATE_INIMAP_MOD
       USE STACK_MOD
       USE DRAPE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -121,7 +123,6 @@ C-----------------------------------------------
 #include      "scr14_c.inc"
 #include      "scr16_c.inc"
 #include      "scr17_c.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
 #include      "sphcom.inc"
 #include      "state_c.inc"
@@ -151,6 +152,8 @@ C-----------------------------------------------
       TYPE (DRAPE_)  :: DRAPE_SH4N(NUMELC_DRAPE), DRAPE_SH3N(NUMELTG_DRAPE)
       TYPE(DRAPEG_) :: DRAPEG
       my_real BUFMAT(*)
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      INTEGER,INTENT(IN) :: ROOTLEN
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -178,7 +181,7 @@ C   OPEN FILE
 C-----------------------------------------------
       IF(ISTATF>=10000)ISTATF=1
       WRITE(CHSTAT,'(I4.4)')ISTATF
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHSTAT//'.sta'
+      FILNAM=TRIM(ROOTNAME)//'_'//CHSTAT//'.sta'
       FILEN = ROOTLEN + 9
       LEN_TMP_NAME = OUTFILE_NAME_LEN + FILEN
       TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:FILEN)
@@ -188,7 +191,7 @@ C-----------------------------------------------
         WRITE(IUGEO,'(2A)')'#RADIOSS STATE FILE ',FILNAM(1:FILEN)
         !   OPEN STRS FILE
         IF(IZIPSTRS/=0) THEN
-          FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHSTAT//'.str'
+          FILNAM=TRIM(ROOTNAME)//'_'//CHSTAT//'.str'
           LEN_TMP_NAME = OUTFILE_NAME_LEN + FILEN
           TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:FILEN)
           DO I=1,LEN_TMP_NAME
@@ -207,14 +210,14 @@ C   /BEGIN + UNITS
 C-----------------------------------------------
       IF(IMACH/=3.OR.IS_FILE_TO_BE_WRITTEN) THEN
           WRITE(IUGEO,'(A)')'/BEGIN'
-          WRITE(IUGEO,'(A)') ROOTNAM(1:ROOTLEN)
+          WRITE(IUGEO,'(A)') TRIM(ROOTNAME)
           WRITE(IUGEO,'(I10,I10)') ST_INVERS, 0
           WRITE(IUGEO,'(1P3E20.13)') FAC_MASS,FAC_LENGTH,FAC_TIME
           WRITE(IUGEO,'(1P3E20.13)') FAC_MASS,FAC_LENGTH,FAC_TIME
         IF(IZIPSTRS > 0) THEN
           WRITE(LINE,'(A)')'/BEGIN'
           CALL STRS_TXT50(LINE,100)
-          WRITE(LINE,'(A)') ROOTNAM(1:ROOTLEN)
+          WRITE(LINE,'(A)') TRIM(ROOTNAME)
           CALL STRS_TXT50(LINE,100)
           WRITE(LINE,'(I10,I10)') ST_INVERS, 0
           CALL STRS_TXT50(LINE,100)
@@ -321,13 +324,15 @@ c
      .                          X        , V        , ITAB  , IPART_STATE, NODTAG,
      .                          IPART    , IPARTS   , IPARTQ, IPARTTG    ,
      .                          IGEO     , IPARG    , IXS   , IXQ        , IXTG  , 
-     .                          ELBUF_TAB, MULTI_FVM, BUFMAT, IPM) 
+     .                          ELBUF_TAB, MULTI_FVM, BUFMAT, IPM        , ROOTNAME,
+     .                          ROOTLEN ) 
         ELSE
           CALL STAT_INIMAP1D_SPMD(
      .                          X        , V        , ITAB  , IPART_STATE, NODTAG,
      .                          IPART    , IPARTS   , IPARTQ, IPARTTG    ,
      .                          IGEO     , IPARG    , IXS   , IXQ        , IXTG  , 
-     .                          ELBUF_TAB, MULTI_FVM, BUFMAT, IPM) 
+     .                          ELBUF_TAB, MULTI_FVM, BUFMAT, IPM        , ROOTNAME,
+     .                          ROOTLEN ) 
         ENDIF 
       !  - inimap2d -  (generic subroutine : SMP or SPMD)
       ELSEIF(IS_STAT_INIMAP2D)THEN
@@ -336,13 +341,15 @@ c
      .                          X        , V        , ITAB  , IPART_STATE, NODTAG,
      .                          IPART    , IPARTS   , IPARTQ, IPARTTG    ,
      .                          IGEO     , IPARG    , IXS   , IXQ        , IXTG  , 
-     .                          ELBUF_TAB, MULTI_FVM, BUFMAT, IPM) 
+     .                          ELBUF_TAB, MULTI_FVM, BUFMAT, IPM        , ROOTNAME,
+     .                          ROOTLEN) 
         ELSE
           CALL STAT_INIMAP2D_SPMD(
      .                          X        , V        , ITAB  , IPART_STATE, NODTAG,
      .                          IPART    , IPARTS   , IPARTQ, IPARTTG    ,
      .                          IGEO     , IPARG    , IXS   , IXQ        , IXTG  , 
-     .                          ELBUF_TAB, MULTI_FVM, BUFMAT, IPM)        
+     .                          ELBUF_TAB, MULTI_FVM, BUFMAT, IPM        , ROOTNAME,
+     .                          ROOTLEN)        
         ENDIF 
       ENDIF                     
 

@@ -47,6 +47,7 @@ C-----------------------------------------------
       USE ELBUFTAG_MOD            
       USE SUBMODEL_MOD
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -73,7 +74,7 @@ C     REAL
       my_real
      .   RTRANS(NTRANSF,*)
       TYPE(SUBMODEL_DATA) LSUBMODEL(*)
-      CHARACTER IDTITL*nchartitle
+      CHARACTER(LEN=NCHARTITLE)              :: IDTITL
       TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP) :: PROP_TAG
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -89,8 +90,7 @@ C     REAL
      .    AN, VX, VY, VZ, THICKT, DT, TMIN, TMAX, ASHEAR,PTHK,CVIS,PUN
       INTEGER ISH3N,IRP
       INTEGER ID,IUN
-      CHARACTER*nchartitle,
-     .   TITR,TITR1
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
       LOGICAL IS_AVAILABLE, IS_ENCRYPTED
 C-----------------------------------------------
 C   D a t a

@@ -40,6 +40,7 @@ C-----------------------------------------------
       USE ELBUFTAG_MOD    
       USE SUBMODEL_MOD        
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -58,7 +59,7 @@ C-----------------------------------------------
      .        IGTYP , IGEO(*)
       my_real GEO(*)
 
-      CHARACTER IDTITL*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: IDTITL
 
       TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP) :: PROP_TAG
       TYPE(SUBMODEL_DATA) LSUBMODEL(*)
@@ -69,8 +70,7 @@ C-----------------------------------------------
      
       my_real
      .    PUN,GAP
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL IS_AVAILABLE, IS_ENCRYPTED
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s

@@ -3362,12 +3362,14 @@ Chd|        SPMD_RBCAST                   source/mpi/generic/spmd_rbcast.F
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
-      SUBROUTINE SECT_INI (NSTRF,SECBUF,NOM_SECT,ISECTR,NSECT,IOLDSECT)
+      SUBROUTINE SECT_INI (NSTRF,SECBUF,NOM_SECT,ISECTR,NSECT,IOLDSECT,ROOTNAME,
+     .                     ROOTLEN)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -3377,7 +3379,6 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "comlock.inc"
 #include      "com08_c.inc"
-#include      "chara_c.inc"
 #include      "warn_c.inc"
 #include      "task_c.inc"
 #include      "com01_c.inc"
@@ -3387,13 +3388,15 @@ C-----------------------------------------------
       INTEGER NSTRF(*),NOM_SECT(*),ISECTR,NSECT,IOLDSECT
       my_real 
      .   SECBUF(*)
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      INTEGER,INTENT(IN) :: ROOTLEN
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,J,IR, N, IR1, IR2, IFILNAM(2548),LROOTLEN,LEN,K0,ID_SEC
       my_real 
      .   TT1, TT2, TT3, TMP(20)
-      CHARACTER FILNAM*500,LCHRUN*2,LCHRUN_P1*2,CH_IDSEC*10
+      CHARACTER FILNAM*500,CHRUN*2,CHRUN_P1*2,CH_IDSEC*10
       LOGICAL FEXIST
       REAL*4 R4
       INTEGER :: LEN_TMP_NAME
@@ -3411,10 +3414,10 @@ C-----------------------------------------------
         K0 = NSTRF(25)
         DO J=1,NSECT
          IF(NSTRF(K0)>=1 .AND. NSTRF(K0)<=10 )THEN
-          WRITE(LCHRUN,'(I2.2)')IRUN 
+          WRITE(CHRUN,'(I2.2)')IRUN 
           LROOTLEN=0 
           DO I=1,500
-c ncharline of starter =500
+c NCHARLINE of starter =500
             FILNAM(I:I)=CHAR(NOM_SECT((J-1)*500+I))
             IF(FILNAM(I:I)/=' ')LROOTLEN=LROOTLEN+1
           ENDDO  
@@ -3427,9 +3430,8 @@ c ncharline of starter =500
          K0  = NSTRF(K0+24)
         ENDDO
         IF(NSTRF(1)>=1 .AND. IOLDSECT == 1)THEN
-Csm  FILNAM=ROOTNAM(1:ROOTLEN)//'SC'//CHRUN
-          WRITE(LCHRUN,'(I2.2)')IRUN      
-          FILNAM=ROOTNAM(1:ROOTLEN)//'SC'//LCHRUN
+          WRITE(CHRUN,'(I2.2)')IRUN      
+          FILNAM=TRIM(ROOTNAME)//'SC'//CHRUN
           LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 4      
           TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+4)
           DO I=1,LEN_TMP_NAME
@@ -3441,10 +3443,10 @@ Csm  FILNAM=ROOTNAM(1:ROOTLEN)//'SC'//CHRUN
           K0 = NSTRF(25)
           DO J=1,NSECT
            IF(NSTRF(K0)>=1 .AND. NSTRF(K0)<=10 )THEN
-            WRITE(LCHRUN,'(I2.2)')IRUN 
+            WRITE(CHRUN,'(I2.2)')IRUN 
             LROOTLEN=0 
             DO I=1,500
-c ncharline of starter =500
+c NCHARLINE of starter =500
               IF(CHAR(NOM_SECT((J-1)*500+I))/=' ')THEN
                 LROOTLEN=LROOTLEN+1
                 FILNAM(LROOTLEN:LROOTLEN)=CHAR(NOM_SECT((J-1)*500+I))
@@ -3452,7 +3454,7 @@ c ncharline of starter =500
             ENDDO 
             IF (LROOTLEN == 0) THEN 
               WRITE(CH_IDSEC,'(I10.10)')NSTRF(K0+23)     
-              FILNAM=ROOTNAM(1:ROOTLEN)//CH_IDSEC//'SC'//LCHRUN
+              FILNAM=TRIM(ROOTNAME)//CH_IDSEC//'SC'//CHRUN
               LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 14      
               TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+14)
               DO I=1,LEN_TMP_NAME
@@ -3461,7 +3463,7 @@ c ncharline of starter =500
               CALL CUR_FIL_C(41+J)
               CALL OPEN_C(IFILNAM,LEN_TMP_NAME,0)
             ELSE 
-              FILNAM=FILNAM(1:LROOTLEN)//'SC'//LCHRUN
+              FILNAM=FILNAM(1:LROOTLEN)//'SC'//CHRUN
               LEN_TMP_NAME = OUTFILE_NAME_LEN + LROOTLEN + 4      
               TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LROOTLEN+4)
               DO I=1,LEN_TMP_NAME
@@ -3480,7 +3482,7 @@ C-----------------------------------------------
        IF(NSTRF(2)>=1)THEN
         LROOTLEN=0
         DO I=1,500
-c ncharline of starter =500
+c NCHARLINE of starter =500
           FILNAM(I:I)=CHAR(NOM_SECT((ISECTR-1)*500+I))
           IF(FILNAM(I:I)/=' ')LROOTLEN=LROOTLEN+1
         ENDDO 
@@ -3544,8 +3546,8 @@ c ncharline of starter =500
         ELSE
           TT1=ZERO
           TT2=ZERO
-          WRITE(LCHRUN,'(I2.2)')IRUN
-          FILNAM=FILNAM(1:LROOTLEN)//'SC'//LCHRUN
+          WRITE(CHRUN,'(I2.2)')IRUN
+          FILNAM=FILNAM(1:LROOTLEN)//'SC'//CHRUN
           LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)  
           TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))
 
@@ -3575,8 +3577,8 @@ c ncharline of starter =500
             IERR=IERR+1
             TSTOP = TT
           ENDIF
-          WRITE(LCHRUN_P1,'(I2.2)')IRUN+1
-          FILNAM=FILNAM(1:LROOTLEN)//'SC'//LCHRUN_P1
+          WRITE(CHRUN_P1,'(I2.2)')IRUN+1
+          FILNAM=FILNAM(1:LROOTLEN)//'SC'//CHRUN_P1
           LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)  
           TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))
 
@@ -3604,8 +3606,8 @@ c ncharline of starter =500
           ENDIF
         ENDIF
 C
-        WRITE(LCHRUN,'(I2.2)')IR1
-        FILNAM=FILNAM(1:LROOTLEN)//'SC'//LCHRUN
+        WRITE(CHRUN,'(I2.2)')IR1
+        FILNAM=FILNAM(1:LROOTLEN)//'SC'//CHRUN
         LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)  
         TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))
 
@@ -4583,7 +4585,7 @@ C-----------------------------------------------
      .   KR21,KR22,NBINTER,IEXTRA
       my_real 
      .   TT1, TT2, TT3
-      CHARACTER FILNAM*12,LCHRUN*2
+      CHARACTER FILNAM*12,CHRUN*2
       LOGICAL FEXIST
       REAL*4 R4
       INTEGER :: LEN_TMP_NAME
@@ -4629,8 +4631,8 @@ C test EOF-------------------------------------------------------------------
             ENDDO
             DOWHILE(TT3<=TTT.AND.IR<100)
               IR=IR+1
-              WRITE(LCHRUN,'(I2.2)')IR
-              FILNAM=FILNAM(1:LROOTLEN)//'SC'//LCHRUN
+              WRITE(CHRUN,'(I2.2)')IR
+              FILNAM=FILNAM(1:LROOTLEN)//'SC'//CHRUN
               LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM) 
               TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))
               INQUIRE(FILE=TMP_NAME(1:LEN_TMP_NAME),EXIST=FEXIST)
@@ -4659,8 +4661,8 @@ C test EOF-------------------------------------------------------------------
               NSTRF(3)=IEXTRA
               GOTO 100
             ENDIF
-            WRITE(LCHRUN,'(I2.2)')IR1
-            FILNAM=FILNAM(1:LROOTLEN)//'SC'//LCHRUN
+            WRITE(CHRUN,'(I2.2)')IR1
+            FILNAM=FILNAM(1:LROOTLEN)//'SC'//CHRUN
             LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM) 
             TMP_NAME(1:LEN_TMP_NAME)=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))
             INQUIRE(FILE=TMP_NAME(1:LEN_TMP_NAME),EXIST=FEXIST)
@@ -4859,7 +4861,7 @@ C-----------------------------------------------
      .   KR21,KR22,NBINTER,IEXTRA, ADDSEC(2*NSECT)
       my_real 
      .   TT1, TT2, TT3, BUFCOM(3*NSECT+7), SECBUFG(24*NNODT)
-      CHARACTER FILNAM*12,LCHRUN*2
+      CHARACTER FILNAM*12,CHRUN*2
       LOGICAL FEXIST
       REAL*4 R4
 
@@ -4918,8 +4920,8 @@ C test EOF-------------------------------------------------------------------
             ENDDO
             DOWHILE(TT3<=TTT.AND.IR<100)
               IR=IR+1
-              WRITE(LCHRUN,'(I2.2)')IR
-              FILNAM=FILNAM(1:LROOTLEN)//'SC'//LCHRUN
+              WRITE(CHRUN,'(I2.2)')IR
+              FILNAM=FILNAM(1:LROOTLEN)//'SC'//CHRUN
               INQUIRE(FILE=FILNAM,EXIST=FEXIST)
 
               IF(.NOT.FEXIST) THEN
@@ -4947,8 +4949,8 @@ C test EOF-------------------------------------------------------------------
               NSTRF(3)=IEXTRA
               GOTO 100
             ENDIF
-            WRITE(LCHRUN,'(I2.2)')IR1
-            FILNAM=FILNAM(1:LROOTLEN)//'SC'//LCHRUN
+            WRITE(CHRUN,'(I2.2)')IR1
+            FILNAM=FILNAM(1:LROOTLEN)//'SC'//CHRUN
             LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)      
             TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))
             INQUIRE(FILE=TMP_NAME(1:LEN_TRIM(TMP_NAME)),EXIST=FEXIST)

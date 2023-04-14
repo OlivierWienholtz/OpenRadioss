@@ -98,7 +98,7 @@ Chd|====================================================================
       SUBROUTINE RDRESB( AF               ,IAF      ,LVARREA      ,XDP             ,IRUNN      ,
      .                   MULTI_FVM        ,H3D_DATA ,MATPARAM_TAB ,GROUP_PARAM_TAB ,PINCH_DATA , 
      .                   ALE_CONNECTIVITY ,T_MONVOL ,SENSORS      ,EBCS_TAB        ,DYNAIN_DATA,
-     .                   USER_WINDOWS     ,OUTPUT   ,INTERFACES   ,LOADS           )
+     .                   USER_WINDOWS     ,OUTPUT   ,INTERFACES   ,LOADS           ,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -133,6 +133,7 @@ C-----------------------------------------------
       USE INTERFACES_MOD
       USE SENSOR_MOD
       USE LOADS_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -188,6 +189,7 @@ C-----------------------------------------------
       TYPE(INTERFACES_)     ,INTENT(INOUT)                 :: INTERFACES
       TYPE(SENSORS_)        ,INTENT(INOUT)                 :: SENSORS
       TYPE(LOADS_)          ,INTENT(INOUT)                 :: LOADS
+      TYPE(NAMES_AND_TITLES_),INTENT(INOUT)                :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -1254,7 +1256,7 @@ C--------------------------------------
 C FXBODY (moved from radioss2.F)
 C--------------------------------------
       IF (NFXBODY>0) THEN
-         CALL FXBRESB()
+         CALL FXBRESB(NAMES_AND_TITLES%ROOTNAME)
       ENDIF
 C--------------------------------------
 C EIGEN MODES (moved from radioss2.F)
@@ -1401,12 +1403,13 @@ Chd|        TMPENVF                       source/system/tmpenv_c.c
 Chd|        FXB_MOD                       share/modules/fxb_mod.F       
 Chd|        SCRATCHFILE_MOD               share/modules/scratchfiles_mod.F
 Chd|====================================================================
-      SUBROUTINE FXBRESB()
+      SUBROUTINE FXBRESB(ROOTNAME)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE SCRATCHFILE_MOD
       USE FXB_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1418,8 +1421,11 @@ C-----------------------------------------------
 #include      "scr05_c.inc"
 #include      "units_c.inc"
 #include      "fxbcom.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
+C-----------------------------------------------
+C   D u m m y   A r g u m e n t s
+C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -1487,8 +1493,8 @@ C Lecture des fichiers de modes et de contraintes
       CALL MY_GETPID(MY_PID)
       WRITE(CPID,'(I10.10)') MY_PID
       WRITE(CISPMD,'(I6.6)') ISPMD
-      IFXM_FN=TMPDIR(1:TLEN)//'/'//'25_'//ROOTN(1:LENROOTN)//'_'//CPID//'_'//CISPMD//'.tmp'
-      IFXS_FN=TMPDIR(1:TLEN)//'/'//'26_'//ROOTN(1:LENROOTN)//'_'//CPID//'_'//CISPMD//'.tmp'
+      IFXM_FN=TMPDIR(1:TLEN)//'/'//'25_'//TRIM(ROOTNAME)//'_'//CPID//'_'//CISPMD//'.tmp'
+      IFXS_FN=TMPDIR(1:TLEN)//'/'//'26_'//TRIM(ROOTNAME)//'_'//CPID//'_'//CISPMD//'.tmp'
       LEN_IFXM_FN=LEN_TRIM(IFXM_FN)
       LEN_IFXS_FN=LEN_TRIM(IFXS_FN)
 
@@ -1538,12 +1544,13 @@ Chd|        TMPENVF                       source/system/tmpenv_c.c
 Chd|        EIG_MOD                       share/modules/eig_mod.F       
 Chd|        SCRATCHFILE_MOD               share/modules/scratchfiles_mod.F
 Chd|====================================================================
-      SUBROUTINE EIGRREST()
+      SUBROUTINE EIGRREST(ROOTNAME)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE EIG_MOD
       USE SCRATCHFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1555,8 +1562,11 @@ C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "scr05_c.inc"
 #include      "eigcom.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
+C-----------------------------------------------------------------
+C   D u m m y   A r g u m e n t s
+C-----------------------------------------------------------------
+      CHARACTER(LEN=LROOTNAME), INTENT(IN)  :: ROOTNAME
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -1593,7 +1603,7 @@ C Lecture du fichier de modes additionnels
       WRITE(CISPMD,'(I6.6)') ISPMD
       TLEN=4096
       CALL TMPENVF(TMPDIR,TLEN)
-      IEIGM_FN=TMPDIR(1:TLEN)//'/'//'27_'//ROOTN(1:LENROOTN)//'_'//CPID//'_'//CISPMD//'.tmp'
+      IEIGM_FN=TMPDIR(1:TLEN)//'/'//'27_'//TRIM(ROOTNAME)//'_'//CPID//'_'//CISPMD//'.tmp'
       LEN_IEIGM_FN=LEN_TRIM(IEIGM_FN)
       OPEN(UNIT=IEIGM,FILE=TRIM(IEIGM_FN),ACCESS='DIRECT',RECL=RCLEN)
       USE_IEIGM = 1

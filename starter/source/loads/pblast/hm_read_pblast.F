@@ -69,6 +69,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -77,7 +78,6 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "param_c.inc"
-#include      "scr17_c.inc"
 #include      "com04_c.inc"
 #include      "units_c.inc"
 #include      "sysunit.inc"
@@ -100,9 +100,9 @@ C-----------------------------------------------
       LOGICAL :: IS_AVAILABLE,lFOUND, IS_AVAILABLE_TSTOP, calculate, BOOL_COORD, BOOL_SKIP_CALC
       LOGICAL :: BOOL_UNDERGROUND_CURRENT_LOAD, BOOL_UNDERGROUND_CURRENT_SEG
       
-      CHARACTER*ncharline :: MSGOUT1 
-      CHARACTER*ncharline :: MSGOUT2
-      CHARACTER TITR*nchartitle  
+      CHARACTER(LEN=NCHARLINE)  :: MSGOUT1 
+      CHARACTER(LEN=NCHARLINE)  :: MSGOUT2
+      CHARACTER(LEN=NCHARTITLE) :: TITR  
        
       my_real XDET,YDET,ZDET,TDET,WTNT,PMIN
       my_real Dx,Dy,Dz, Z, W13,PHI_DB, DNORM,BOUND1,BOUND2,LAMBDA,cos_theta,T_A

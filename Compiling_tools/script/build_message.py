@@ -49,7 +49,7 @@ for line in f_in:
      count=count+1
 
 # write number of lines in array
-headline='      CHARACTER*ncharline MESSAGESDATA('+str(count)+')\n'
+headline='      CHARACTER(LEN=NCHARLINE) MESSAGESDATA('+str(count)+')\n'
 f_out.write(headline)
 
 #rewind iput file and proceed with writing

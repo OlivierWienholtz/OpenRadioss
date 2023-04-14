@@ -54,20 +54,17 @@ C============================================================================
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD       
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE,NCHARKEY,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
 C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "nchar_c.inc"
-C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER ,INTENT(OUT) :: OPTION_ID,UNIT_ID
-      CHARACTER*(ncharkey),INTENT(OUT) :: KEYWORD1,KEYWORD2,KEYWORD3,KEYWORD4
-      CHARACTER*(nchartitle),INTENT(OUT) :: OPTION_TITR
+      CHARACTER*(NCHARKEY),INTENT(OUT) :: KEYWORD1,KEYWORD2,KEYWORD3,KEYWORD4
+      CHARACTER*(NCHARTITLE),INTENT(OUT) :: OPTION_TITR
       OPTIONAL ::
      .   OPTION_ID,UNIT_ID,KEYWORD1,KEYWORD2,KEYWORD3,KEYWORD4,OPTION_TITR
 C-----------------------------------------------
@@ -75,7 +72,7 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,CPT,CPT1,CPT2,IOK,S_KEYWORD,S_TITR_TMP,
      .        TMP_OPTION_ID,TMP_UNIT_ID,TMP_SUBMODEL_INDEX,MY_POSITION
-      CHARACTER*ncharline KEYWORD,TITR_TMP
+      CHARACTER(LEN=NCHARLINE) :: KEYWORD,TITR_TMP
 C-----------------------------------------------
       KEYWORD=''
       TMP_OPTION_ID = 0
@@ -100,7 +97,7 @@ C--------------------------------------------------
       CPT2 = 2 
       IOK = 0
 
-      DO WHILE (CPT < ncharline .AND. IOK == 0)
+      DO WHILE (CPT < NCHARLINE .AND. IOK == 0)
         IF(KEYWORD(CPT:CPT) == '/' .OR. KEYWORD(CPT:CPT) == ' ') THEN
           CPT2 = CPT
           IOK = 1
@@ -110,7 +107,7 @@ C--------------------------------------------------
       IF(PRESENT(KEYWORD1)) KEYWORD1(1:CPT2-CPT1) = KEYWORD(CPT1:MIN((CPT2-1),S_KEYWORD))
       CPT1 = CPT2+1
       IOK = 0
-      DO WHILE (CPT < ncharline .AND. IOK == 0)
+      DO WHILE (CPT < NCHARLINE .AND. IOK == 0)
         IF(KEYWORD(CPT:CPT) == '/' .OR. KEYWORD(CPT:CPT) == ' ') THEN
           CPT2 = CPT
           IOK = 1
@@ -120,7 +117,7 @@ C--------------------------------------------------
       IF(PRESENT(KEYWORD2)) KEYWORD2(1:CPT2-CPT1) = KEYWORD(CPT1:MIN((CPT2-1),S_KEYWORD))
       CPT1 = CPT2+1
       IOK = 0
-      DO WHILE (CPT < ncharline .AND. IOK == 0)
+      DO WHILE (CPT < NCHARLINE .AND. IOK == 0)
         IF(KEYWORD(CPT:CPT) == '/' .OR. KEYWORD(CPT:CPT) == ' ') THEN
           CPT2 = CPT
           IOK = 1
@@ -130,7 +127,7 @@ C--------------------------------------------------
       IF(PRESENT(KEYWORD3)) KEYWORD3(1:CPT2-CPT1) = KEYWORD(CPT1:MIN((CPT2-1),S_KEYWORD))
       CPT1 = CPT2+1
       IOK = 0
-      DO WHILE (CPT < ncharline .AND. IOK == 0)
+      DO WHILE (CPT < NCHARLINE .AND. IOK == 0)
         IF(KEYWORD(CPT:CPT) == '/' .OR. KEYWORD(CPT:CPT) == ' ') THEN
           CPT2 = CPT
           IOK = 1

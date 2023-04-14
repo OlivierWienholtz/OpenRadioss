@@ -55,6 +55,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE UNITAB_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------      
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -73,12 +74,11 @@ C-----------------------------------------------
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER IFLAG ,NPFRICORTH
       INTEGER IPART(LIPART1,*) ,PFRICORTH(*),IREPFORTH(*),TAGPRT_FRIC(*),
-     .        ISKN(LISKN,*) !,IDFRICORIENT(*)
+     .        ISKN(LISKN,*)
 
       my_real
      .   PHIFORTH(*) ,VFORTH(3,*) ,SKEW(LSKEW,*) ,RTRANS(NTRANSF,*)
 
-c      CHARACTER*ncharline ,  TITFRICORIENT(*)
       TYPE(INTBUF_FRIC_STRUCT_) INTBUF_FRIC_TAB(*)
 C-----------------------------------------------
       TYPE (GROUP_)  , DIMENSION(NGRPART) :: IGRPART
@@ -90,8 +90,7 @@ C-----------------------------------------------
      .      FLAGP ,FLAGGRP ,GRPART ,IDPART ,N ,KK ,IDTGRS ,IPL ,J ,IP ,
      .      IPG ,SUB_ID ,NINPUT ,NL 
       my_real AN ,VX ,VY ,VZ ,PHI 
-      CHARACTER*nchartitle,
-     .   TITR 
+      CHARACTER(LEN=NCHARTITLE) :: TITR 
       LOGICAL IS_AVAILABLE        
 C
 C=======================================================================

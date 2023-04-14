@@ -143,7 +143,6 @@ C-----------------------------------------------
 #include      "scr23_c.inc"
 #include      "param_c.inc"
 #include      "units_c.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
 #include      "spmd_c.inc"
 #include      "impl1_c.inc"

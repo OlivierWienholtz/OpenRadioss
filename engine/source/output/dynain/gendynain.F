@@ -50,7 +50,7 @@ Chd|====================================================================
      3                PM       ,GEO      , IPARTC ,IPARTTG  ,LENG     ,
      4                LENGC    ,LENGTG   , WEIGHT ,NODGLOB  ,THKE     ,               
      5                NPBY     ,LPBY     , STACK  ,DRAPE_SH4N ,DRAPE_SH3N , 
-     6                DYNAIN_DATA,DRAPEG) 
+     6                DYNAIN_DATA,DRAPEG ,ROOTNAME,ROOTLEN) 
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -60,6 +60,7 @@ C-----------------------------------------------
       USE STACK_MOD
       USE DRAPE_MOD  
       USE STATE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -72,7 +73,6 @@ C-----------------------------------------------
 #include      "param_c.inc"
 #include      "units_c.inc"
 #include      "scr17_c.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
@@ -90,6 +90,8 @@ C-----------------------------------------------
       TYPE (DRAPE_)  :: DRAPE_SH4N(NUMELC_DRAPE),DRAPE_SH3N(NUMELTG_DRAPE)
       TYPE (DRAPEG_) :: DRAPEG
       TYPE (DYNAIN_DATABASE), INTENT(INOUT) :: DYNAIN_DATA
+      CHARACTER(LEN=LROOTNAME),INTENT(IN)   :: ROOTNAME
+      INTEGER,INTENT(IN)   :: ROOTLEN
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -115,7 +117,7 @@ C-----------------------------------------------
       IF(DYNAIN_DATA%IDYNAINF>=10000)DYNAIN_DATA%IDYNAINF=1
       WRITE(CHSTAT,'(I4.4)')DYNAIN_DATA%IDYNAINF
       IF(DYNAIN_DATA%ZIPDYNAIN==0) THEN ! Not zipped file
-        FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHSTAT//'.dynain'
+        FILNAM=TRIM(ROOTNAME)//'_'//CHSTAT//'.dynain'
         FILEN = ROOTLEN + 12
         LEN_TMP_NAME = OUTFILE_NAME_LEN + FILEN
         TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:FILEN)
@@ -124,7 +126,7 @@ C-----------------------------------------------
            WRITE(IUDYNAIN,'(2A)')'$RADIOSS DYNAIN FILE ',FILNAM(1:FILEN)
         END IF
       ELSE ! zipped file
-        FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHSTAT//'.dynain'
+        FILNAM=TRIM(ROOTNAME)//'_'//CHSTAT//'.dynain'
         FILEN = ROOTLEN + 12
         LEN_TMP_NAME = OUTFILE_NAME_LEN + FILEN
         TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:FILEN)

@@ -43,6 +43,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD 
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -77,7 +78,7 @@ C     REAL
      .   LR1,LR2,FTHK,C1,C2,C3,
      .   FACP, SCALEACP
 C
-      CHARACTER TITR*nchartitle,LINESAVE*ncharline     
+      CHARACTER(LEN=NCHARLINE) :: TITR,LINESAVE
       LOGICAL :: IS_AVAILABLE
       IS_AVAILABLE = .FALSE.
 C=================================================================================

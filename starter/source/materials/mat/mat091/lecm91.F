@@ -33,7 +33,8 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE UNITAB_MOD
-      USE MESSAGE_MOD                 
+      USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C----------------------------------------------------------------
 C  I M P L I C I T   T Y P E S 
 C----------------------------------------------------------------
@@ -51,14 +52,14 @@ C----------------------------------------------------------------
       INTEGER, DIMENSION(MAXFUNC) :: IFUNC
       my_real  UPARAM(MAXUPARAM),PARMAT(*)
       INTEGER ID
-      CHARACTER*nchartitle, TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
 C     REAL
       my_real
-     .   BULK, VIS, YOUNG, ANU, SSP,HH,SIGY,
-     .   FAC_M, FAC_L, FAC_T, FAC_C
+     .   BULK, VIS, YOUNG, ANU, SSP,HH,SIGY,FAC_M, FAC_L, FAC_T, FAC_C 
+       CHARACTER(LEN=NCHARLINE) :: LINE
 C=======================================================================
 C R E A D I N G
 C=======================================================================       

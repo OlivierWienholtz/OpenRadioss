@@ -44,6 +44,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE SENSOR_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -51,7 +52,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr17_c.inc"
 #include      "com04_c.inc"
 #include      "units_c.inc"
 #include      "submod_c.inc"
@@ -60,8 +60,8 @@ C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER ,INTENT(IN) :: SENS_ID
       INTEGER ,DIMENSION(3,*) ,INTENT(IN) :: LACCELM
-      CHARACTER TITR*nchartitle
-      TYPE (SENSOR_STR_) :: SENSOR_PTR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      TYPE (SENSOR_STR_)        :: SENSOR_PTR
       TYPE (SUBMODEL_DATA) ,DIMENSION(NSUBMOD) :: LSUBMODEL
       TYPE (UNIT_TYPE_)    ,INTENT(IN) ::UNITAB 
 C-----------------------------------------------
@@ -69,9 +69,10 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER :: I,J,LEN,NACC,NPARIS,NPARRS,NVAR,SENS_TYPE
       my_real :: TDEL
-      INTEGER ,DIMENSION(6) :: ACC_ID,IACC,IDIR
-      my_real ,DIMENSION(6) :: ACC,TMIN
-      CHARACTER DIR(6)*ncharkey,DIRACC*ncharkey
+      INTEGER ,DIMENSION(6)   :: ACC_ID,IACC,IDIR
+      my_real ,DIMENSION(6)   :: ACC,TMIN
+      !
+      CHARACTER(LEN=NCHARKEY) ::  DIR(6),DIRACC
       LOGICAL :: IS_AVAILABLE
 C--------------------------------
 C     ACCELEROMETER BASED SENSOR
@@ -83,32 +84,32 @@ c--------------------------------------------------
       CALL HM_GET_INTV  ('NACCEL1',NACC      ,IS_AVAILABLE,LSUBMODEL)
 c  acc1
       CALL HM_GET_INTV  ('IACC1'  ,ACC_ID(1) ,IS_AVAILABLE,LSUBMODEL)
-      CALL HM_GET_STRING('DIR1'   ,DIR(1)    ,ncharfield,IS_AVAILABLE)
+      CALL HM_GET_STRING('DIR1'   ,DIR(1)    ,NCHARFIELD,IS_AVAILABLE)
       CALL HM_GET_FLOATV('Tomin1' ,ACC(1)    ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('Tmin1'  ,TMIN(1)   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
 c  acc2
       CALL HM_GET_INTV  ('IACC2'  ,ACC_ID(2) ,IS_AVAILABLE,LSUBMODEL)
-      CALL HM_GET_STRING('DIR2'   ,DIR(2)    ,ncharfield,IS_AVAILABLE)
+      CALL HM_GET_STRING('DIR2'   ,DIR(2)    ,NCHARFIELD,IS_AVAILABLE)
       CALL HM_GET_FLOATV('Tomin2' ,ACC(2)    ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('Tmin2'  ,TMIN(2)   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
 c  acc3
       CALL HM_GET_INTV  ('IACC3'  ,ACC_ID(3) ,IS_AVAILABLE,LSUBMODEL)
-      CALL HM_GET_STRING('DIR3'   ,DIR(3)    ,ncharfield,IS_AVAILABLE)
+      CALL HM_GET_STRING('DIR3'   ,DIR(3)    ,NCHARFIELD,IS_AVAILABLE)
       CALL HM_GET_FLOATV('Tomin3' ,ACC(3)    ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('Tmin3'  ,TMIN(3)   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
 c  acc4
       CALL HM_GET_INTV  ('IACC4'  ,ACC_ID(4) ,IS_AVAILABLE,LSUBMODEL)
-      CALL HM_GET_STRING('DIR4'   ,DIR(4)    ,ncharfield,IS_AVAILABLE)
+      CALL HM_GET_STRING('DIR4'   ,DIR(4)    ,NCHARFIELD,IS_AVAILABLE)
       CALL HM_GET_FLOATV('Tomin4' ,ACC(4)    ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('Tmin4'  ,TMIN(4)   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
 c  acc5
       CALL HM_GET_INTV  ('IACC5'  ,ACC_ID(5) ,IS_AVAILABLE,LSUBMODEL)
-      CALL HM_GET_STRING('DIR5'   ,DIR(5)    ,ncharfield,IS_AVAILABLE)
+      CALL HM_GET_STRING('DIR5'   ,DIR(5)    ,NCHARFIELD,IS_AVAILABLE)
       CALL HM_GET_FLOATV('Tomin5' ,ACC(5)    ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('Tmin5'  ,TMIN(5)   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
 c  acc6
       CALL HM_GET_INTV  ('IACC6'  ,ACC_ID(6) ,IS_AVAILABLE,LSUBMODEL)
-      CALL HM_GET_STRING('DIR6'   ,DIR(6)    ,ncharfield,IS_AVAILABLE)
+      CALL HM_GET_STRING('DIR6'   ,DIR(6)    ,NCHARFIELD,IS_AVAILABLE)
       CALL HM_GET_FLOATV('Tomin6' ,ACC(6)    ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('Tmin6'  ,TMIN(6)   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
 c--------------------------------------------------

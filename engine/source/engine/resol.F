@@ -585,7 +585,7 @@ Chd|====================================================================
      L  XCELL, XFACE, NE_NERCVOIS, NE_NESDVOIS, NE_LERCVOIS, NE_LESDVOIS,IBCSCYC  ,LBCSCYC,
      M  T_MONVOL,ID_GLOBAL_VOIS,FACE_VOIS,TAGSLV_RBY,DYNAIN_DATA,FCONT_MAX,EBCS_TAB,DIFFUSION,
      N  KLOADPINTER,LOADPINTER,IN0 ,DGAPLOADINT,DRAPEG,USER_WINDOWS,OUTPUT,INTERFACES,
-     O  DT         ,LOADS     )
+     O  DT         ,LOADS     , NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C----------------------------------------------- 
@@ -664,6 +664,7 @@ C-----------------------------------------------
       USE DEBUG_CHKSM_MOD ,  ONLY : SPMD_FLUSH_ACCEL
       USE DT_MOD
       USE FORINT_MOD
+      USE NAMES_AND_TITLES_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -707,7 +708,6 @@ C-----------------------------------------------
 #include      "timeri_c.inc"
 #include      "couple_c.inc"
 #include      "rad2r_c.inc"
-#include      "chara_c.inc"
 #include      "lagmult.inc"
 #include      "warn_c.inc"
 #include      "impl1_c.inc"
@@ -895,6 +895,7 @@ c
       TYPE(OUTPUT_),INTENT(INOUT)                        :: OUTPUT
       TYPE (INTERFACES_) ,INTENT(INOUT)                  :: INTERFACES
       TYPE (DT_) ,INTENT(INOUT)                          :: DT
+      TYPE(NAMES_AND_TITLES_),INTENT(INOUT)              :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -2064,7 +2065,8 @@ C
      3   IGRBRIC ,IGRQUAD  ,IGRSH4N  ,IGRSH3N  ,IGRTRUSS   ,
      4   IGRBEAM ,IGRSPRING,IGRPART  ,FORNEQS  ,INT7ITIED,
      5   FXVEL_FGEO,FAILWAVE,NLOC_DMG,PINCH_DATA ,SLLOADP,
-     6   TAGSLV_RBY,NFNCA2  ,NFTCA2  ,IN0 ,SORT_COMM,STACK,OUTPUT )
+     6   TAGSLV_RBY,NFNCA2  ,NFTCA2  ,IN0 ,SORT_COMM,STACK,OUTPUT,
+     7   NAMES_AND_TITLES )
 
 
 !$OMP END PARALLEL
@@ -2086,7 +2088,7 @@ C===============================================================================
        CALL CHECK_ALE_COMM(IPARG,ELBUF_TAB,GLOBAL_ACTIVE_ALE_ELEMENT)
 C     End Initialisations //
        IF(NADMESH/=0.AND.IDEL7NG>=1) IDEL7NOK = 0
-C     THERMAL TIME STEP : we don't check incompatible kinematic conditions anymore
+C     THERMAL TIME STEP : we do not check incompatible kinematic conditions anymore
 c      we constraint all DDLs
        IF(IDT_THERM == 1) THEN
           CALL BCSDTTH_COPY(ICODT, ICODR, ICODT0, ICODR0 ,1 )
@@ -2592,9 +2594,9 @@ C---------------------------------------------------------------------
               ELSE
                  SIZ = 0
               END IF
-              CALL SPMD_COLLECTM(TAGNOD_SMS,ITAB,WEIGHT,NODGLOB,SIZ)
+              CALL SPMD_COLLECTM(TAGNOD_SMS,ITAB,WEIGHT,NODGLOB,SIZ,NAMES_AND_TITLES)
           ELSE
-            CALL COLLECTM(TAGNOD_SMS,ITAB,WEIGHT,NODGLOB)
+            CALL COLLECTM(TAGNOD_SMS,ITAB,WEIGHT,NODGLOB,NAMES_AND_TITLES)
           END IF
       END IF
 C---------------------------------------------------------------------
@@ -2980,7 +2982,7 @@ C-----------------------------------------------
       IF(IMON>0) CALL STARTIME(6,1)
       IF(IMONM > 0) CALL STARTIME(47,1)
 C
-      CALL MANCTR(SENSORS,H3D_DATA)
+      CALL MANCTR(SENSORS,H3D_DATA,NAMES_AND_TITLES)
 C----------------------------
 C       MOVING SKEW  [MONO THREAD]
 C----------------------------------
@@ -5152,7 +5154,7 @@ C===============================================================================
         IF ( NCYCLE>=DEBSTART .AND.
      .       MOD(NCYCLE-DEBSTART,RSTFREQ)==0 ) THEN
             CALL SPMD_COLLECT_NLOCAL(NLOC_DMG%FNL(:,1),NLOC_DMG%L_NLOC ,NLOC_DMG%NNOD,
-     .                               NLOC_DMG%POSI    ,NLOC_DMG,SIZ,NODGLOB,ITAB     )
+     .                               NLOC_DMG%POSI    ,NLOC_DMG,SIZ,NODGLOB,ITAB,NAMES_AND_TITLES )
         ENDIF
       ENDIF
 
@@ -5283,9 +5285,9 @@ C---------------------------------------------------------------------
              ELSE
                SIZ = 0
              END IF
-              CALL SPMD_COLLECT(A,ITAB,WEIGHT,NODGLOB,SIZ)
+              CALL SPMD_COLLECT(A,ITAB,WEIGHT,NODGLOB,SIZ,NAMES_AND_TITLES)
            ELSE
-             CALL COLLECT(A,ITAB,WEIGHT,NODGLOB)
+             CALL COLLECT(A,ITAB,WEIGHT,NODGLOB,NAMES_AND_TITLES)
            END IF
         END IF
       END IF
@@ -5515,7 +5517,7 @@ C   MADYMO_DEL is globalized with SPMD_ALLGLOB_ISUM9
 C   if Positive, all domains send the info during Time Step exchange
 C   
 C   --------------------------------------------------------
-C   Don't communicate IDEL7NOK if already done. (IDEL7NG >0)
+C   Do not communicate IDEL7NOK if already done. (IDEL7NG >0)
 C  ---------------------------------------------------------
 
         MADYMO_DEL_GLOBAL=0
@@ -7059,9 +7061,9 @@ C---------------------------------------------------------------------
              ELSE
                SIZ = 0
              END IF
-             CALL SPMD_COLLECTT(TEMP,ITAB,WEIGHT,NODGLOB,SIZ)
+             CALL SPMD_COLLECTT(TEMP,ITAB,WEIGHT,NODGLOB,SIZ,NAMES_AND_TITLES)
           ELSE
-             CALL COLLECTT(TEMP,ITAB,WEIGHT,NODGLOB)
+             CALL COLLECTT(TEMP,ITAB,WEIGHT,NODGLOB,NAMES_AND_TITLES)
           END IF
         END IF
       END IF
@@ -8492,7 +8494,7 @@ C Regular animation
      r   FANI(1,NFNCA2+1),FANI(1,NFTCA2+1),IBCL        ,ILOADP         ,LLOADP        ,
      s   LOADP         ,TAGNCONT       ,LOADP_HYD_INTER,FORC           ,DRAPEG        ,
      t   USER_WINDOWS  ,OUTPUT         ,DT             ,FSAVSURF       ,NSEG_LOADP    ,
-     u   TABLE         ,LOADS          ) 
+     u   TABLE         ,LOADS          ,NAMES_AND_TITLES) 
 C
         IF((MSTOP == 1 .AND. ICTLSTOP == 0) .OR. MSTOP == 2 .OR. DT2<=ZERO)THEN
           CALL SORTIE_ERROR(
@@ -9143,7 +9145,7 @@ C===============================================================================
             END IF
             IF ( NCYCLE>=DEBSTART .AND.
      .           MOD(NCYCLE-DEBSTART,RSTFREQ)==0 ) THEN
-                CALL SPMD_COLLECT_MULTI_FVM(IXS,MULTI_FVM)
+                CALL SPMD_COLLECT_MULTI_FVM(IXS,MULTI_FVM,NAMES_AND_TITLES)
             ENDIF
         ENDIF
       ENDIF
@@ -9304,7 +9306,7 @@ C--------------------------------------------------------
      .                 H3D_DATA  , INTBUF_FRIC_TAB,SUBSETS,MATPARAM_TAB,GROUP_PARAM_TAB,
      .                 PINCH_DATA, ALE_CONNECTIVITY, T_MONVOL,
      .                 SENSORS   , EBCS_TAB   ,DYNAIN_DATA ,USER_WINDOWS,OUTPUT        ,
-     .                 INTERFACES, LOADS      )
+     .                 INTERFACES, LOADS      ,NAMES_AND_TITLES)
 
           IF (NFLOW>0) CALL NFWREST(IFLOW, RFLOW)
           CALL FVWREST()
@@ -9574,7 +9576,7 @@ C--------------------------------------------------------
      .                 H3D_DATA   ,INTBUF_FRIC_TAB ,SUBSETS   ,MATPARAM_TAB,GROUP_PARAM_TAB,
      .                 PINCH_DATA ,ALE_CONNECTIVITY, T_MONVOL ,
      .                 SENSORS    ,EBCS_TAB        ,DYNAIN_DATA,USER_WINDOWS,OUTPUT        ,
-     .                 INTERFACES ,LOADS           )
+     .                 INTERFACES ,LOADS           ,NAMES_AND_TITLES)
 
         IF (NFLOW>0) CALL NFWREST(IFLOW, RFLOW)
         CALL FVWREST()
@@ -9659,7 +9661,7 @@ C
      .           ACCESS='SEQUENTIAL',
      .           FORM='FORMATTED',STATUS='UNKNOWN')
             WRITE(ICHECKD, FMT='(3A, I1)')
-     .           '/RERUN/',ROOTNAM(1:ROOTLEN),'/',IRUN
+     .           '/RERUN/',TRIM(NAMES_AND_TITLES%ROOTNAME),'/',IRUN
             CLOSE(ICHECKD)
           ENDIF
           IF(WMCHECK==1.AND.NCYCLE/=1)THEN
@@ -9712,7 +9714,7 @@ C--------------------------------------------------------
      .                    H3D_DATA   ,INTBUF_FRIC_TAB,SUBSETS     ,MATPARAM_TAB,GROUP_PARAM_TAB,
      .                    PINCH_DATA ,ALE_CONNECTIVITY, T_MONVOL ,
      .                    SENSORS    ,EBCS_TAB      ,DYNAIN_DATA ,USER_WINDOWS,OUTPUT         ,
-     .                    INTERFACES ,LOADS         )
+     .                    INTERFACES ,LOADS,NAMES_AND_TITLES         )
 
               IF (NFLOW>0) CALL NFWREST(IFLOW, RFLOW)
               CALL FVWREST()
@@ -9798,9 +9800,9 @@ C
      3          IXR,IXS,KXIG3D,IPM,
      4          IGEO,GEO,POIN_UMP,CPUTIME_MP,
      5          NBR_GPMP,CPUTIME_MP_GLOB,TAB_UMP,PM,
-     6          BUFMAT,TABMP_L ,TAB_MAT )
+     6          BUFMAT,TABMP_L ,TAB_MAT,NAMES_AND_TITLES )
         IF(IDDWSTAT/=0) THEN
-         CALL PRINTIMEG(IPARG,PM,IPM,IXC,IXTG,IXS)
+         CALL PRINTIMEG(IPARG,PM,IPM,IXC,IXTG,IXS,NAMES_AND_TITLES)
         ENDIF
       ENDIF  
 C

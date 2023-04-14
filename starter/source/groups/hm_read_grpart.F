@@ -47,6 +47,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE GROUPDEF_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -78,8 +79,11 @@ C-----------------------------------------------
      .        LIST_IGR(NGRPRT),UID,KK
       my_real
      . BID
-      CHARACTER TITR*nchartitle,KEY*ncharkey,KEY2*ncharkey,MES*40
-      CHARACTER*nchartitle,TITR1
+      !
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
+      CHARACTER(LEN=NCHARKEY)   :: KEY,KEY2
+      CHARACTER(LEN=40)         :: MES
+      !
       LOGICAL IS_AVAILABLE, IS_ENCRYPTED
 C-----------------------------------------------
       DATA MES/' PART GROUP'/

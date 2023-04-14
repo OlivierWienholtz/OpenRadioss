@@ -46,6 +46,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE HM_OPTION_READ_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -68,7 +69,9 @@ C-----------------------------------------------
       INTEGER I,ID,N,IWRITE,IERR0,LEN,I1,J,K,IREELM,IREELL,IREELT,
      .        IERR1,ID_OPT(NUNIT0+1),IS_M_STRING,IS_L_STRING,IS_T_STRING
       my_real  FAC,UNITE,BID,M_UNIT,L_UNIT,T_UNIT
-      CHARACTER KEY*ncharfield,KEY1*ncharline, CFAC*ncharfield, CUNIT
+      CHARACTER(LEN=NCHARFIELD) :: KEY,CFAC
+      CHARACTER CUNIT
+      CHARACTER(LEN=NCHARLINE) :: KEY1
       CHARACTER*20 FIELD1,FIELD2,FIELD3
       CHARACTER*20 FIELD11(NUNIT0+NSUBMOD),FIELD22(NUNIT0+NSUBMOD),FIELD33(NUNIT0+NSUBMOD),
      .             KEYMSUB,KEYLSUB,KEYTSUB,KEYMISUB,KEYLISUB,KEYTISUB
@@ -110,7 +113,7 @@ C
       L_UNIT = ZERO
       T_UNIT = ZERO    
       IERR1 = 1
-      LEN = ncharfield*2
+      LEN = NCHARFIELD*2
       ID_OPT(1:NUNIT0) = 0
 C     Chaque unite globale doit etre definie une seule fois
 C     (input vers <= 90)
@@ -168,7 +171,7 @@ C
      .                       KEYWORD2 = KEY)
 c
          UNIT_NAME = ''
-         CALL HM_GET_STRING('UNIT_NAME',UNIT_NAME,2*ncharfield,IS_AVAILABLE)
+         CALL HM_GET_STRING('UNIT_NAME',UNIT_NAME,2*NCHARFIELD,IS_AVAILABLE)
          IF(UNIT_NAME /= 'LENGTH' .AND. UNIT_NAME /= 'MASS' .AND. UNIT_NAME /= 'TIME') THEN
            IERR0  = 1
            NUNITS = NUNITS + 1
@@ -176,19 +179,19 @@ c
           
            CALL HM_GET_INTV('IS_M_STRING',IS_M_STRING,IS_AVAILABLE,LSUBMODEL)
            IF(IS_M_STRING == 1) THEN
-             CALL HM_GET_STRING('MUNIT_S',FIELD1,2*ncharfield,IS_AVAILABLE)
+             CALL HM_GET_STRING('MUNIT_S',FIELD1,2*NCHARFIELD,IS_AVAILABLE)
            ELSE
              CALL HM_GET_FLOATV_WITHOUT_UID('MUNIT',M_UNIT,IS_AVAILABLE)
            ENDIF
            CALL HM_GET_INTV('IS_L_STRING',IS_L_STRING,IS_AVAILABLE,LSUBMODEL)
            IF(IS_L_STRING == 1) THEN
-             CALL HM_GET_STRING('LUNIT_S',FIELD2,2*ncharfield,IS_AVAILABLE)
+             CALL HM_GET_STRING('LUNIT_S',FIELD2,2*NCHARFIELD,IS_AVAILABLE)
            ELSE
              CALL HM_GET_FLOATV_WITHOUT_UID('LUNIT',L_UNIT,IS_AVAILABLE)
            ENDIF
            CALL HM_GET_INTV('IS_T_STRING',IS_T_STRING,IS_AVAILABLE,LSUBMODEL)
            IF(IS_T_STRING == 1) THEN
-             CALL HM_GET_STRING('TUNIT_S',FIELD3,2*ncharfield,IS_AVAILABLE)
+             CALL HM_GET_STRING('TUNIT_S',FIELD3,2*NCHARFIELD,IS_AVAILABLE)
            ELSE
              CALL HM_GET_FLOATV_WITHOUT_UID('TUNIT',T_UNIT,IS_AVAILABLE)
            ENDIF
@@ -314,12 +317,12 @@ C---
         I   = 1                                   
         J   = 0
 C       Skip leading spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYM(I:I) /= ' ') EXIT
           I=I+1
         ENDDO
 C       Read, skip trailing spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYM(I:I) == ' ') EXIT
           J=J+1
           I=I+1                                           
@@ -339,12 +342,12 @@ C---
         I   = 1                                   
         J   = 0
 C       Skip leading spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYL(I:I) /= ' ') EXIT
           I=I+1
         ENDDO
 C       Read, skip trailing spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYL(I:I) == ' ') EXIT
           J=J+1
           I=I+1                                           
@@ -364,12 +367,12 @@ C---
         I   = 1                                   
         J   = 0
 C       Skip leading spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYT(I:I) /= ' ') EXIT
           I=I+1
         ENDDO
 C       Read, skip trailing spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYT(I:I) == ' ') EXIT
           J=J+1
           I=I+1                                           
@@ -403,12 +406,12 @@ C---
         I   = 1                                   
         J   = 0
 C       Skip leading spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYMI(I:I) /= ' ') EXIT
           I=I+1
         ENDDO
 C       Read, skip trailing spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYMI(I:I) == ' ') EXIT
           J=J+1
           I=I+1                                           
@@ -428,12 +431,12 @@ C---
         I   = 1                                   
         J   = 0
 C       Skip leading spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYLI(I:I) /= ' ') EXIT
           I=I+1
         ENDDO
 C       Read, skip trailing spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYLI(I:I) == ' ') EXIT
           J=J+1
           I=I+1                                           
@@ -453,12 +456,12 @@ C---
         I   = 1                                   
         J   = 0
 C       Skip leading spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYTI(I:I) /= ' ') EXIT
           I=I+1
         ENDDO
 C       Read, skip trailing spaces
-        DO WHILE (I <= 2*ncharfield)
+        DO WHILE (I <= 2*NCHARFIELD)
           IF (KEYTI(I:I) == ' ') EXIT
           J=J+1
           I=I+1                                           

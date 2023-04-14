@@ -45,6 +45,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE SENSOR_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -62,7 +63,7 @@ C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER ,INTENT(IN) :: SENS_ID
       INTEGER ,DIMENSION(3,*) ,INTENT(IN) :: LACCELM
-      CHARACTER (len=nchartitle) TITR
+      CHARACTER (len=NCHARTITLE) TITR
       TYPE (SENSOR_STR_) ,INTENT(INOUT) :: SENSOR_PTR
       TYPE (SUBMODEL_DATA) ,DIMENSION(NSUBMOD) :: LSUBMODEL
       TYPE (UNIT_TYPE_)    ,INTENT(IN) ::UNITAB 
@@ -73,7 +74,7 @@ C-----------------------------------------------
      .   NPOINT,NPARIS,NPARRS,NVAR
       my_real :: TDEL,PERIOD,HIC_CRIT,DEF_GRAVITY,GRAVITY,TMIN,
      .   FAC_GRAV,Time_Unit
-      CHARACTER(len=ncharkey) :: DIR
+      CHARACTER(len=NCHARKEY) :: DIR
       LOGICAL :: IS_AVAILABLE
       DATA DEF_GRAVITY/9.80665/
 C--------------------------------
@@ -89,7 +90,7 @@ card1
       CALL HM_GET_FLOATV('Tdelay' ,TDEL   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
 card2
       CALL HM_GET_INTV  ('IACC1'  ,ACC_ID ,IS_AVAILABLE,LSUBMODEL)
-      CALL HM_GET_STRING('DIR '   ,DIR    ,ncharfield,IS_AVAILABLE)
+      CALL HM_GET_STRING('DIR '   ,DIR    ,NCHARFIELD,IS_AVAILABLE)
 card3
       CALL HM_GET_FLOATV('HIC_Period'  ,PERIOD   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('HIC_Value'   ,HIC_CRIT ,IS_AVAILABLE,LSUBMODEL,UNITAB)

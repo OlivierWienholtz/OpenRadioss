@@ -34,6 +34,10 @@ Chd|        TRACE_PILE                    source/system/trace_back.F
 Chd|====================================================================
       SUBROUTINE TRACE_IN1(MY_CHAR,ILEN)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------        
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -44,22 +48,21 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "units_c.inc"
 #include      "warn_c.inc"
-#include      "scr17_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER*ncharline MY_CHAR
+      CHARACTER(LEN=NCHARLINE) MY_CHAR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER ILEN
-      CHARACTER*ncharline LINE1
+      CHARACTER(LEN=NCHARLINE) LINE1
       INTEGER TRACE_PILE
       EXTERNAL TRACE_PILE
       INTEGER NIVEAU_PILE
 C-----------------------------------------------
       IF(ITRACE/=1)RETURN
-      WRITE(LINE1,'(A)')MY_CHAR(1:MIN(ILEN,ncharline))
+      WRITE(LINE1,'(A)')MY_CHAR(1:MIN(ILEN,NCHARLINE))
       NIVEAU_PILE = TRACE_PILE(1)
       IF(NIVEAU_PILE>=NIVEAU_MAX)THEN
         WRITE(IOUT,'(A)')
@@ -92,6 +95,10 @@ Chd|        TRACE_PILE                    source/system/trace_back.F
 Chd|====================================================================
       SUBROUTINE TRACE_IN(NSUB,ITAB,ATAB)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------        
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -110,8 +117,8 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      CHARACTER*ncharline LINE1
-      CHARACTER*ncharline LINES( NSUB_MAX )
+      CHARACTER(LEN=NCHARLINE) :: LINE1
+      CHARACTER(LEN=NCHARLINE) ::  LINES( NSUB_MAX )
       INTEGER TRACE_PILE,LL( NSUB_MAX ) ,TYP( NSUB_MAX )
       EXTERNAL TRACE_PILE
       INTEGER NIVEAU_PILE
@@ -315,6 +322,10 @@ Chd|        TRACE_PILE                    source/system/trace_back.F
 Chd|====================================================================
       SUBROUTINE TRACE_OUT(NSUB)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------        
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -327,12 +338,12 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER TRACE_PILE
-      CHARACTER(LEN=ncharline) :: LINE1
+      CHARACTER(LEN=NCHARLINE) :: LINE1
       EXTERNAL TRACE_PILE
       INTEGER NIVEAU_PILE
 C-----------------------------------------------
       IF(ITRACE/=1)RETURN
-      LINE1(1:ncharline)=' '
+      LINE1(1:NCHARLINE)=' '
       CALL TRACE_PRINT(LINE1,NSUB,-1)
       NIVEAU_PILE = TRACE_PILE(-1)
 C-----------------------------------------------
@@ -350,6 +361,10 @@ Chd|        TRACE_PILE                    source/system/trace_back.F
 Chd|====================================================================
       SUBROUTINE TRACE_OUT1()
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------        
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -362,9 +377,9 @@ C-----------------------------------------------
       EXTERNAL TRACE_PILE
       INTEGER NIVEAU_PILE
       INTEGER NSUB,IW
-      CHARACTER(LEN=ncharline) :: LINE1
+      CHARACTER(LEN=NCHARLINE) :: LINE1
 C-----------------------------------------------
-      LINE1(1:ncharline)=' '
+      LINE1(1:NCHARLINE)=' '
       IF(ITRACE/=1)RETURN
       NIVEAU_PILE = TRACE_PILE(-1)
       NSUB=TRACE_PILE(0)
@@ -423,6 +438,10 @@ Chd|        TRACE_PRINT                   source/system/trace_back.F
 Chd|====================================================================
       SUBROUTINE TRACE_CF(SIGNAL,IW)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------        
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -433,10 +452,10 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      CHARACTER*ncharline LINE1
+      CHARACTER(LEN=NCHARLINE) LINE1
       INTEGER I
 C-----------------------------------------------
-      DO I=1,ncharline
+      DO I=1,NCHARLINE
         LINE1(I:I)=' '
       END DO
       CALL TRACE_PRINT(LINE1,SIGNAL,IW)
@@ -457,6 +476,10 @@ Chd|        TRACE_PILE                    source/system/trace_back.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE TRACE_PRINT(LINE1,NS_SIGNAL,IW)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------        
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
       USE MESSAGE_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
@@ -471,7 +494,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER*ncharline LINE1
+      CHARACTER(LEN=NCHARLINE) :: LINE1
       INTEGER NS_SIGNAL,IW
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -480,13 +503,13 @@ C-----------------------------------------------
       EXTERNAL TRACE_PILE
       INTEGER NIVEAU_PILE
       INTEGER CHECK_PILE(0:NIVEAU_MAX) 
-      CHARACTER*ncharline BLANC
-      CHARACTER*ncharline TEXT(0:NIVEAU_MAX)
+      CHARACTER(LEN=NCHARLINE) :: BLANC
+      CHARACTER(LEN=NCHARLINE) :: TEXT(0:NIVEAU_MAX)
       INTEGER I,IP,IL,NLIGNES,IT
       DATA CHECK_PILE/0,NIVEAU_MAX*0/
       SAVE TEXT,CHECK_PILE
 C-----------------------------------------------
-      DO I=1,ncharline
+      DO I=1,NCHARLINE
         BLANC(I:I)=' '
       END DO
       NIVEAU_PILE = TRACE_PILE(0)
@@ -496,8 +519,8 @@ C------------------------------------------------------------------------
 C       Ajout d'une ligne a TEXT (1 ou plusieurs X par descente de pile)
 C------------------------------------------------------------------------
         TEXT(NIVEAU_PILE)(1:NIVEAU_PILE)=BLANC(1:NIVEAU_PILE)
-        TEXT(NIVEAU_PILE)(NIVEAU_PILE+1:ncharline)=
-     .            LINE1(1:ncharline-NIVEAU_PILE)
+        TEXT(NIVEAU_PILE)(NIVEAU_PILE+1:NCHARLINE)=
+     .            LINE1(1:NCHARLINE-NIVEAU_PILE)
         CHECK_PILE(NIVEAU_PILE) = NS_SIGNAL
       ELSEIF(IW==-1) THEN
 C------------------------------------------

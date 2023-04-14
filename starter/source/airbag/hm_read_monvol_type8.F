@@ -121,7 +121,7 @@ C-----------------------------------------------
       my_real, DIMENSION(:), ALLOCATABLE :: AVENT, BVENT, TVENT, TSTOPE, DPDEF, DTPDEF,
      .     FPORT, FPORP, FPORA, FPORT1, FPORP1, FPORA1, FVDP, CLEAK
       my_real :: TTFIRE
-      CHARACTER(LEN = nchartitle) :: TITR1
+      CHARACTER(LEN = NCHARTITLE) :: TITR1
       my_real :: MI, RHOI, TI2, ESPECI, CPA, CPB, CPC, CPD, CPE, CPF, MW_TMP, RMWG, 
      .     CPG, CVG, GAMA, SHOL
       LOGICAL lFOUND

@@ -35,9 +35,13 @@ Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F
 Chd|====================================================================
       SUBROUTINE HM_READ_PROP33_FREE_JNT(IOUT, ITYP, SKFLAG, PARGEO,IS_ENCRYPTED,
      .                       UNITAB,IUNIT,ID,TITR,LSUBMODEL)
+C-----------------------------------------------
+C   M o d u l e s 
+C-----------------------------------------------
       USE UNITAB_MOD
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -63,8 +67,7 @@ C-----------------------------------------------
       my_real PARGEO(*) 
 
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL IS_ENCRYPTED
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(*)
 C=======================================================================

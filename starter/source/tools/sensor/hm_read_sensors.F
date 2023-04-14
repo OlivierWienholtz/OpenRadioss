@@ -62,7 +62,8 @@ Chd|====================================================================
       SUBROUTINE HM_READ_SENSORS(
      .           SENSORS   ,LACCELM   ,ITABM1    ,IPART     ,LGAUGE    ,
      .           SUBSET    ,NSETS     ,IGRSURF   ,IGRNOD    ,BUFSF     ,
-     .           SKEW      ,ISKWN     ,UNITAB    ,LSUBMODEL ,HM_NSENS  )
+     .           SKEW      ,ISKWN     ,UNITAB    ,LSUBMODEL ,HM_NSENS  ,
+     .           NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------  
@@ -74,6 +75,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE SENSOR_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -99,9 +101,10 @@ C-----------------------------------------------
       INTEGER ,DIMENSION(LIPART1,*) ,INTENT(IN) :: IPART
       my_real ,DIMENSION(LSKEW,*) :: SKEW
       my_real ,DIMENSION(*)       :: BUFSF
-      TYPE (SENSORS_) ,INTENT(INOUT) ,TARGET   :: SENSORS
+      TYPE (NAMES_AND_TITLES_),INTENT(IN)            :: NAMES_AND_TITLES
+      TYPE (SENSORS_) ,INTENT(INOUT) ,TARGET         :: SENSORS
       TYPE (SURF_)       ,DIMENSION(NSURF+NSETS)     :: IGRSURF
-      TYPE (GROUP_)      ,DIMENSION(NGRNOD)    :: IGRNOD
+      TYPE (GROUP_)      ,DIMENSION(NGRNOD)          :: IGRNOD
       TYPE (SUBSET_)     ,DIMENSION(NSUBS)     :: SUBSET
       TYPE (SUBMODEL_DATA) ,DIMENSION(NSUBMOD) :: LSUBMODEL
       TYPE (UNIT_TYPE_)  ,INTENT(IN) ::UNITAB 
@@ -114,8 +117,9 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER ISEN,IUNIT,IFLAGUNIT,NS,TYP,UNIT_ID,SENS_ID
       my_real :: BID
-      CHARACTER TITR*nchartitle,KEY*40,MESS*40
-      INTEGER ,DIMENSION(:) ,ALLOCATABLE   :: SID
+      CHARACTER(LEN=NCHARTITLE)          :: TITR
+      CHARACTER(LEN=40)                  :: KEY,MESS
+      INTEGER ,DIMENSION(:) ,ALLOCATABLE :: SID
       TYPE (SENSOR_STR_)    ,POINTER :: SENSOR_PTR
       DATA MESS/'SENSOR DEFINITION                       '/
 C=======================================================================
@@ -246,7 +250,7 @@ c
 
             CALL READ_SENSOR_USER(HM_NSENS ,ISEN    ,TITR,
      .           UNITAB    ,LSUBMODEL      ,KEY     ,UNIT_ID ,SENS_ID ,
-     .           SENSOR_PTR)
+     .           SENSOR_PTR,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
             SENSOR_PTR%SENS_ID = SENS_ID
 c---
           CASE DEFAULT

@@ -149,7 +149,7 @@ Chd|====================================================================
      4                  LLOADP   ,FAC      ,SENSORS     ,TAGNCONT    ,LOADP_HYD_INTER,
      5                  XFRAME   ,FORC     ,AR          ,CSEFRIC     ,CSEFRICG  ,
      6                  CSEFRIC_STAMP,CSEFRICG_STAMP    ,TABLE       ,IFRAME    ,
-     7                  LOADS    )
+     7                  LOADS        ,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -173,6 +173,7 @@ C-----------------------------------------------
       USE TABLE_MOD
       USE LOADS_MOD
       USE MATPARAM_DEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -194,7 +195,6 @@ C-----------------------------------------------
 #include      "scr16_c.inc"
 #include      "scr17_c.inc"
 #include      "scr23_c.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
 #include      "spmd_c.inc"
 #include      "filescount_c.inc"
@@ -280,6 +280,7 @@ C-----------------------------------------------
       my_real , INTENT(IN) :: AR(SAR)
       my_real  , INTENT(IN) :: CSEFRIC(NINEFRIC,S_EFRICINT) ,CSEFRICG(S_EFRIC),
      .                         CSEFRIC_STAMP(NINEFRIC_STAMP,S_EFRICINTG) ,CSEFRICG_STAMP(S_EFRICG)
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -308,7 +309,7 @@ C-----------------------------------------------
       SAVE CBUF,ICBUF
 
       CHARACTER*80 STR, MES*30, CAUX,TITL*100, H3DTITLE
-      CHARACTER*ncharline KEYWORD
+      CHARACTER(LEN=NCHARLINE) :: KEYWORD
       CHARACTER CH_H3D*4,FILNAM*100, CHANIM1*4
       INTEGER I, NBF, NBPART, MAGIC, J, IFUNC, FILEN, NPSOL,NSENSOR,
      .        NODCUT,NELCUT,LENR,LENI,LENCUT,IXEL,
@@ -572,9 +573,9 @@ C*******************************************************************************
 C BUILD H3D FILE
 C**********************************************************************************************
       IF (ISPMD==0) THEN
-        FILNAM=ROOTNAM(1:ROOTLEN)//'.h3d'
-        FILEN = ROOTLEN + 4
-        LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + 4
+        FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'.h3d'
+        FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 4
+        LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + 4
         TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))
 C
 c**********************************************************************************************
@@ -674,11 +675,11 @@ c*******************************************************************************
 C OPEN H3D FILE
 C**********************************************************************************************
             WRITE(CH_H3D,'(I4.4)')IRUN
-            FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CH_H3D//'.h3d'
+            FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CH_H3D//'.h3d'
             LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)
             TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))
             H3D_DATA%IH3D = 1
-            FILEN = ROOTLEN + 9
+            FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 9
             IS_H3D_USED = .TRUE.
 C
             WRITE(RADVERS,'(A,A)') 'Radioss ',VERS

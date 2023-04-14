@@ -53,8 +53,11 @@ Chd|        ANCMSG                        source/output/message/message.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE KINSET(IK,NODE,IKINE,IDIR,ISK,IKINE1)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------      
       USE MESSAGE_MOD
-C
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -75,7 +78,7 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       CHARACTER*200 TYPE
       CHARACTER*20 DIRECT
-      CHARACTER*ncharline ERR_CATEGORY_TMP
+      CHARACTER(LEN=NCHARLINE) :: ERR_CATEGORY_TMP
 
       INTEGER JWARN, ISKWT, ISKWR, ITRAN, IROTA, NK, I,
      .        JDIR(7), KDIR(7,3),LTYPE, LTYPEB, LDIRECT

@@ -40,6 +40,7 @@ Chd|====================================================================
      .       F1X  ,F1Y  ,F1Z  ,F2X  ,F2Y  ,F2Z  ,NSIGI,SIGSP,NSIGS,
      .       SIGI ,IXS  ,X    ,JHBE ,PT   ,NEL  ,ISOLNOD)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -79,8 +80,7 @@ C     REAL
       my_real
      .   SK(6),A(9),B(9)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------------------------------
 C     Repere orthotrope
 C     Stockage de Transpose(G) tq Xortho = Transpose(G) Xcvt

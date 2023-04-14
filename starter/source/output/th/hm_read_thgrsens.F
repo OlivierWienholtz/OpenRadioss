@@ -51,6 +51,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE SENSOR_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -85,7 +86,7 @@ C-----------------------------------------------
      .        OK,IGRS,NSU,K,L,JREC,CONT,IAD0,IADV,NTRI,
      .        IFITMP,IADFIN,NVAR,M,N,IAD1,IAD2,ISK,IPROC,ITITLE(LTITR),
      .        IDS,IDSMAX
-      CHARACTER TITR*nchartitle,ID_TXT*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR,ID_TXT
       LOGICAL, DIMENSION(:), ALLOCATABLE :: FOUND
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------

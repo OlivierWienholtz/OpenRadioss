@@ -44,6 +44,7 @@ Chd|====================================================================
 #ifndef HYPERMESH_LIB
       USE MESSAGE_MOD
 #endif
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
@@ -73,8 +74,7 @@ C     REAL
      .   XFIC(3,*)
 C--------GAP_N(1,*) stock temporarily characteristic length for Pen_max
       INTEGER ID,IPEN0
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

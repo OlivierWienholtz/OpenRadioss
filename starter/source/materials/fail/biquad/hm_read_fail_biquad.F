@@ -61,6 +61,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD 
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD 
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,7 +83,7 @@ C OUTPUT ARGUMENTS
       INTEGER,INTENT(INOUT) :: NUPARAM,NUVAR,NFUNC
       INTEGER,INTENT(INOUT) :: IFUNC(MAXFUNC)
       my_real,INTENT(INOUT) :: UPARAM(MAXUPARAM)
-      CHARACTER, INTENT(IN) :: TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE), INTENT(IN) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

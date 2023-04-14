@@ -1178,6 +1178,10 @@ Chd|-- calls ---------------
 Chd|====================================================================
       SUBROUTINE WRITE_IOUT(LINE,LEN1)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include "implicit_f.inc"
@@ -1186,13 +1190,10 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include "units_c.inc"
 C-----------------------------------------------
-#ifndef ncharline
-#define ncharline 500
-#endif
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER(len=ncharline)  LINE
+      CHARACTER(len=NCHARLINE)  LINE
       INTEGER LEN1
 C-----------------------------------------------
 

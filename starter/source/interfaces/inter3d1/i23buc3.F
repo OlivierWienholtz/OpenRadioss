@@ -53,6 +53,7 @@ Chd|====================================================================
      8   LB4   ,LC1   ,LC2    ,LC3,LC4,
      9   N11   ,N21   ,N31    ,PENE    )
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -84,8 +85,7 @@ C     REAL
      .   DIST,BUMULT,GAP,TZINF,MAXBOX,MINBOX,GAPMIN,GAPMAX,
      .   MARGEREF, GAP_M(*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, DIMENSION(MVSIZ), INTENT(IN) ::PROV_N,PROV_E
       INTEGER, DIMENSION(MVSIZ), INTENT(IN) :: IX1,IX2,IX3,IX4,NSVG
       my_real, DIMENSION(MVSIZ), INTENT(IN) :: X1,X2,X3,X4

@@ -56,7 +56,7 @@ C-----------------------------------------------
       INTEGER ISU,I,J,K,ERR,NSEG,ELTYP,ELEM,P,
      .        L_SLIN,ID,TYPE,LEVEL,NSEG_R2R_ALL,
      .        NSEG_R2R_SHARE,NOD,ITITLE(LTITR),NSEG_L(NSLIN)
-      CHARACTER(LEN=nchartitle) :: TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, ALLOCATABLE, DIMENSION (:)  ::  IGRSLIN_L
 C-----------------------------------------------
 !=======================================================================

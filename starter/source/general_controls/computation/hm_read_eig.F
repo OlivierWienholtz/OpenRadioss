@@ -45,6 +45,7 @@ C-----------------------------------------------
       USE HM_OPTION_READ_MOD
       USE UNITAB_MOD
       USE RANDOM_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -65,7 +66,9 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, IE,N, IG, IGU1, IGU2, NNI, ID,  NM,M, SUB_INDEX
-      CHARACTER TITR*nchartitle,KEY*ncharkey,MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=40)         :: MESS
       LOGICAL IS_AVAILABLE
 C
       DATA MESS/'EIGEN AND STATIC MODES COMPUTATION      '/
@@ -163,6 +166,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE RANDOM_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -196,7 +200,9 @@ C-----------------------------------------------
      .        NBNO, NBMO, II, IPRSP, IMLS, IFLAGUNIT,LEN_MODFILE,MAXL
       my_real
      .        CUTFREQ, SHIFTINI, TOL, FAC_T,FAC_FRE
-      CHARACTER TITR*nchartitle, STRING*ncharfield, CODE*7,
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARFIELD) ::  STRING
+      CHARACTER CODE*7,
      .          CTYPE*33, CPRE*17, NWLINE*100, MESS*40, MODFILE*2148,
      .          CIMLS*3 ,CPRSP*4,MODFILE_TMP*2148
       INTEGER, ALLOCATABLE :: NODES(:)
@@ -571,6 +577,7 @@ Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE EIGRLINE(IFIC, NWLINE, ID,TITR)                     
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -580,8 +587,7 @@ C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER IFIC, ID
       CHARACTER NWLINE*100
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

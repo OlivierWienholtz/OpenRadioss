@@ -43,6 +43,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE QA_OUT_MOD
       USE R2R_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -145,8 +146,8 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, II, MY_ID, MY_RBODY, MY_CONSTRAINT, MY_NODE, MY_RWALL, POSI(NRWALL+1),
      .        MY_MERGE, TNSL, K, NS, MY_FXBODY
-      CHARACTER *nchartitle TITR
-      CHARACTER (LEN=255) :: VARNAME
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=255)        :: VARNAME
       DOUBLE PRECISION TEMP_DOUBLE
       INTEGER IADS
 C-----------------------------------------------
@@ -263,7 +264,7 @@ C-----------------------------------------------
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
 C         and Imptemp ID is not stored 
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_CONSTRAINT,0.0_8)
           ELSE
@@ -297,7 +298,7 @@ C-----------------------------------------------
       IF (MYQAKEY('/IMPDISP')) THEN
         DO MY_CONSTRAINT=1,NIMPDISP
 C
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_CONSTRAINT,0.0_8)
           ELSE
@@ -331,7 +332,7 @@ C-----------------------------------------------
       IF (MYQAKEY('/IMPVEL')) THEN
         DO MY_CONSTRAINT=NIMPDISP+1,NIMPDISP+NIMPVEL
 C
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_CONSTRAINT,0.0_8)
           ELSE
@@ -367,7 +368,7 @@ C-----------------------------------------------
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
 C         and Impvel ID is not stored 
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_CONSTRAINT,0.0_8)
           ELSE
@@ -403,7 +404,7 @@ C-----------------------------------------------
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
 C         and Impflux ID is not stored 
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_CONSTRAINT,0.0_8)
           ELSE
@@ -437,7 +438,7 @@ C-----------------------------------------------
       IF (MYQAKEY('/BCS/LAGMUL')) THEN
         DO MY_CONSTRAINT=1,NBCSLAG
 C
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           MY_ID = IBCSLAG(5,MY_CONSTRAINT)
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_ID,0.0_8)
@@ -464,7 +465,7 @@ C-----------------------------------------------
       IF (MYQAKEY('/BCS/CYCLIC')) THEN
         DO MY_CONSTRAINT=1,NBCSCYC
 C
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           MY_ID = IBCSCYC(4,MY_CONSTRAINT)
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_ID,0.0_8)
@@ -504,7 +505,7 @@ C
           DO II = 1,NRWALL
 C
             MY_RWALL = IDX(II)
-            TITR(1:nchartitle)=''
+            TITR(1:NCHARTITLE)=''
             CALL FRETITL2(TITR,NOM_OPT(LNOPT1-LTITR+1,MY_RWALL),LTITR)
             MY_ID = NOM_OPT(1,MY_RWALL + INOM_OPT(5))
             IF (LEN_TRIM(TITR) /= 0) THEN
@@ -633,7 +634,7 @@ C-----------------------------------------------
       IF (MYQAKEY('/SPHBCS')) THEN
         DO MY_CONSTRAINT=1,NSPCOND
 CC
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           MY_ID = ISPCOND(4,MY_CONSTRAINT)
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_ID,0.0_8)
@@ -869,7 +870,7 @@ C
           DO II = 1,NFXBODY
 C
             MY_FXBODY = IDXFX(II)
-            TITR(1:nchartitle)=''
+            TITR(1:NCHARTITLE)=''
             CALL FRETITL2(TITR,NOM_OPT(LNOPT1-LTITR+1,INOM_OPT(11)+MY_FXBODY),LTITR)
             MY_ID = NOM_OPT(1,INOM_OPT(11)+MY_FXBODY)
             IF (LEN_TRIM(TITR) /= 0) THEN

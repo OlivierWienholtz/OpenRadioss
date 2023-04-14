@@ -74,6 +74,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE OPTIONDEF_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -128,10 +129,12 @@ C-----------------------------------------------
       MY_REAL
      .        XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX,BID,FAC_L
       INTEGER, DIMENSION(:),ALLOCATABLE :: BUFTMP2
-      CHARACTER TITR*nchartitle,KEY*ncharkey,MESS*40,KEY2*ncharkey
       INTEGER, DIMENSION(:),ALLOCATABLE :: BUFBOX
-      CHARACTER*nchartitle,
-     .   TITR1
+      !
+      CHARACTER(LEN=NCHARTITLE):: TITR,TITR1
+      CHARACTER(LEN=NCHARKEY) :: KEY,KEY2
+      CHARACTER(LEN=40)       :: MESS
+      !
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s

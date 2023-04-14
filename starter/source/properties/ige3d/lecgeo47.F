@@ -29,6 +29,7 @@ Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE LECG47(IIN   ,IOUT ,PARGEO,IGEO,KNOT,IAD_KNOT)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -67,6 +68,7 @@ C-----------------------------------------------
      .        I,NKNOT1,NKNOT2,NKNOT3,RAFRULE
       my_real
      .   R5(5)
+      CHARACTER(LEN=NCHARLINE) :: LINE,KLINE
 C=======================================================================
       READ(IIN,ERR=999,FMT='(A)')LINE
       READ(LINE,ERR=999,FMT=FMT_2I) INTRULE,RAFRULE

@@ -42,6 +42,7 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE SETDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -59,7 +60,7 @@ C-----------------------------------------------
      .        BUFTMPSURF(*),IPARTS(*),SH4TREE(*),SH3TREE(*),
      .        IPART(LIPART1,*),KNOD2ELQ(*),NOD2ELQ(*),IXQ(NIXQ,*)
       INTEGER IEXT,NSEG,IAD_SURF,OPT_O
-      CHARACTER KEYSET*ncharfield
+      CHARACTER(LEN=NCHARFIELD) :: KEYSET
       my_real
      .   X(3,*)
 !

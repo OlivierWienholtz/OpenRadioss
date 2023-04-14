@@ -65,6 +65,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE OUTPUTS_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -109,8 +110,8 @@ C-----------------------------------------------
       my_real
      .    X1,X2,X3,XMIN,YMIN,ZMIN,XMAX,YMAX,ZMAX,FAC_L,
      .    W
-      CHARACTER LLINE*ncharline, KEY*ncharfield
-      CHARACTER MOT1*ncharfield
+      CHARACTER(LEN=NCHARLINE)  :: LLINE
+      CHARACTER(LEN=NCHARFIELD) ::  KEY, MOT1
       INTEGER, DIMENSION(:), ALLOCATABLE :: SUB_NOD,UID_NOD,ITAB_TMP,ITABM1_TMP
       REAL*8, DIMENSION(:,:), ALLOCATABLE :: HM_X
       my_real, DIMENSION(:,:), ALLOCATABLE ::

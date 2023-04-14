@@ -152,7 +152,8 @@ Chd|====================================================================
      3  IGRBRIC ,IGRQUAD  ,IGRSH4N  ,IGRSH3N  ,IGRTRUSS   ,
      4  IGRBEAM ,IGRSPRING,IGRPART  ,FORNEQS  ,INT7ITIED ,
      5  FXVEL_FGEO,FAILWAVE,NLOC_DMG,PINCH_DATA,SLLOADP  ,
-     6  TAGSLV_RBY,NFNCA2 ,NFTCA2  ,IN0  ,SORT_COMM,STACK,OUTPUT)
+     6  TAGSLV_RBY,NFNCA2 ,NFTCA2  ,IN0  ,SORT_COMM,STACK,OUTPUT,
+     7  NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -176,6 +177,7 @@ C-----------------------------------------------
       USE OUTPUTS_MOD
       USE ALEMUSCL_MOD , only:ALEMUSCL_Param
       USE OUTPUT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -317,7 +319,8 @@ C-----------------------------------------------
       TYPE(sorting_comm_type), DIMENSION(NINTER), INTENT(inout) :: SORT_COMM   ! structure for interface sorting comm
       TYPE (STACK_PLY) :: STACK
 C-----------------------------------------------
-      TYPE(OUTPUT_),INTENT(INOUT)    :: OUTPUT
+      TYPE(OUTPUT_),INTENT(INOUT)       :: OUTPUT
+      TYPE(NAMES_AND_TITLES_), INTENT(IN) :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -438,7 +441,7 @@ C
      3                  FR_ELEM,ADDCNEL,CNEL,IXC,IPARG,ICODT,ICODR,
      4                  IBFV,D,RBY,NPBY,XDP,STIFN,STIFR,DD_R2R_ELEM,
      5                  SDD_R2R_ELEM,WEIGHT_MD,ILENXV,NUMSPH_GLO_R2R,
-     6                  FLG_SPHINOUT_R2R,IPARI,NLOC_DMG)
+     6                  FLG_SPHINOUT_R2R,IPARI,NLOC_DMG,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH)
         END IF
 C
         NFIA = NUMNOD*MIN(1,ANIM_V(4)+OUTP_V(4)+H3D_DATA%N_VECT_CONT)
@@ -651,7 +654,8 @@ C----------------------------------------------------------
             IF (NSTRF(K0) >= 100 ) ISECTR = I
             K0=NSTRF(K0+24)
           ENDDO
-          CALL SECT_INI(NSTRF,SECBUF,NOM_SECT,ISECTR,NSECT,IOLDSECT)
+          CALL SECT_INI(NSTRF,SECBUF,NOM_SECT,ISECTR,NSECT,IOLDSECT,NAMES_AND_TITLES%ROOTNAME,
+     .                  NAMES_AND_TITLES%ROOTNAME_LENGTH)
         ENDIF
 C-----------------------------------------------------
 C  SQRT H1, H2, H3 for shell elements

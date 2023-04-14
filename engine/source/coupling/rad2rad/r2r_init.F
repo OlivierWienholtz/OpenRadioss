@@ -64,7 +64,7 @@ Chd|====================================================================
      3                    FR_ELEM,ADDCNEL,CNEL,IXC,IPARG,ICODT,ICODR,
      4                    IBFV,DX,RBY,NPBY,XDP,STIFN,STIFR,DD_R2R_ELEM,
      5                    SDD_R2R_ELEM,WEIGHT_MD,ILENXV,NUMSPH_GLO_R2R,
-     6                    FLG_SPHINOUT_R2R,IPARI,NLOC_DMG)
+     6                    FLG_SPHINOUT_R2R,IPARI,NLOC_DMG,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -72,6 +72,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE MESSAGE_MOD
       USE NLOCAL_REG_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------       
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -79,7 +80,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "chara_c.inc"
+
 #include      "com01_c.inc"
 #include      "com04_c.inc"
 #include      "com06_c.inc"
@@ -107,6 +108,8 @@ C     REAL
      .              
       DOUBLE PRECISION XDP(3,*)      
 !
+      CHARACTER(LEN=LROOTNAME),INTENT(IN)         :: ROOTNAME
+      INTEGER,INTENT(IN)                          :: ROOTNAME_LENGTH
       TYPE (GROUP_)  , TARGET, DIMENSION(NGRNOD)  :: IGRNOD
       TYPE(NLOCAL_STR_), TARGET, INTENT(IN)  :: NLOC_DMG
 C-----------------------------------------------
@@ -158,13 +161,13 @@ C------Cas SMP initialization---------------c
        MY_ALLOCATE(NBDOF_NL,NR2RLNK)
        NBDOF_NL(1:NR2RLNK) = 0
 C
-       DO I = 1, ROOTLEN
-           IROOT(I) = ICHAR(ROOTNAM(I:I))
+       DO I = 1, ROOTNAME_LENGTH
+           IROOT(I) = ICHAR(ROOTNAME(I:I))
        END DO	
 C----- Connection of first socket-----------c
        IF (ISPMD==0) THEN
          SOCKET(1)=SOCK0 
-         CALL SEND_SOCK_INIT_C(IROOT,ROOTLEN,ISPMD,SOCKET(1),NTHREAD,NSPMD)
+         CALL SEND_SOCK_INIT_C(IROOT,ROOTNAME_LENGTH,ISPMD,SOCKET(1),NTHREAD,NSPMD)
        ENDIF
 C----- Synchronisation of the process - transfer of hostname     
        IF (NSPMD>1) CALL SPMD_R2R_SYNC(ADDR)       
@@ -182,7 +185,7 @@ C----- Connection of socket of threads--------c
          END DO       
        ENDIF                            	       
 C----- Initialize Fifos        		       
-       CALL OPENFIFO_C(IROOT,ROOTLEN,R2R_FDW,R2R_FDR,SOCKET(1),ISPMD,NTHREAD,PPID)       
+       CALL OPENFIFO_C(IROOT,ROOTNAME_LENGTH,R2R_FDW,R2R_FDR,SOCKET(1),ISPMD,NTHREAD,PPID)       
 C----- set signal catch  
        CALL GET_IBUF_C(R2R_IPID,1)
 C----- send link interface data
@@ -382,15 +385,15 @@ C------Allocation of common arrays
        MY_ALLOCATE(NLLNK,NR2RLNK)        
 C--------------------------------------- 
                     
-       DO I = 1, ROOTLEN
-         IROOT(I) = ICHAR(ROOTNAM(I:I))
+       DO I = 1, ROOTNAME_LENGTH
+         IROOT(I) = ICHAR(ROOTNAME(I:I))
        END DO 
  
        IF(ISPMD==0) THEN      	 
 C----- Initialize Sockets
        ALLOCATE(SOCKET(NTHREAD))
        SOCKET(1)=SOCK0	   
-       CALL SEND_SOCK_INIT_C(IROOT,ROOTLEN,ISPMD,SOCKET(1),
+       CALL SEND_SOCK_INIT_C(IROOT,ROOTNAME_LENGTH,ISPMD,SOCKET(1),
      1    NTHREAD,NSPMD)
        ENDIF
 C----- Synchronisation of the process - transfer of hostname     
@@ -401,8 +404,8 @@ C----- ----- ----- ----- ----- -----
          CALL CONNECTION_SOCK_C(ITSK-1,SOCKET(ITSK),ADDR)       
        END DO               
 C----- Initialize Fifos 
-        CALL OPENFIFO_C(IROOT,ROOTLEN,R2R_FDW,R2R_FDR,SOCKET(1),ISPMD,NTHREAD,PPID)
-        CALL OPENSEM_C(IROOT,ROOTLEN,ISPMD,NTHREAD,PPID)
+        CALL OPENFIFO_C(IROOT,ROOTNAME_LENGTH,R2R_FDW,R2R_FDR,SOCKET(1),ISPMD,NTHREAD,PPID)
+        CALL OPENSEM_C(IROOT,ROOTNAME_LENGTH,ISPMD,NTHREAD,PPID)
 C----- set signal catch
         CALL GET_IBUF_C(R2R_IPID,1)	
 C----- send link interface data
@@ -423,7 +426,7 @@ C----- Connect Sockets
          CALL CONNECTION_SOCK_C(NUM_SOCK-1,SOCKET(ITSK),ADDR)
        END DO
        CALL SPMD_IBCAST(PPID,PPID,1,1,0,2)
-       CALL OPENSEM_C(IROOT,ROOTLEN,ISPMD,NTHREAD,PPID)	                         
+       CALL OPENSEM_C(IROOT,ROOTNAME_LENGTH,ISPMD,NTHREAD,PPID)	                         
        ENDIF
         
 C----- ----- ----- ----- ----- -----         	       

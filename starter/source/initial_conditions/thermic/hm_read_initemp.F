@@ -48,6 +48,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -55,7 +56,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr17_c.inc"
 #include      "com01_c.inc"
 #include      "com04_c.inc"
 C-----------------------------------------------
@@ -75,7 +75,10 @@ C-----------------------------------------------
      .        FLAG_FMT,FLAG_FMT_TMP,IFIX_TMP,UID,TYP,NOD,NODSYS,NB_LINE
       my_real
      .  TEMP0
-      CHARACTER MESS*40,LLINE*ncharline,TITR*nchartitle,KEY*ncharkey
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARLINE)  :: LLINE
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY
       LOGICAL IS_AVAILABLE
       my_real, DIMENSION(:), ALLOCATABLE :: LIST_TEMP0
       INTEGER, DIMENSION(:), ALLOCATABLE :: LIST_NOD

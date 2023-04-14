@@ -48,6 +48,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C============================================================================
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,7 +83,9 @@ C-----------------------------------------------
       PARAMETER (MAXFUNC  = 100)   
       INTEGER ,DIMENSION(MAXFUNC)   :: IFUNC
       my_real ,DIMENSION(MAXPARAM)  :: UPARAM
-      CHARACTER TITR*nchartitle,KEY*ncharkey
+      !
+      CHARACTER(LEN=NCHARTITLE)     :: TITR
+      CHARACTER(LEN=NCHARKEY)       :: KEY
 c======================================================================-       
       VISC_TAG(:)%NUVAR = 0
 c

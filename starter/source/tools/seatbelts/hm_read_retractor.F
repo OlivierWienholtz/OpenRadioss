@@ -54,6 +54,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,11 +83,13 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER ,DIMENSION(NRETRACTOR) :: RET_ID
-      INTEGER               :: I,J,K,ID, UID, NODE_ID, EL_ID, IERR1
-      INTEGER               :: NODE1,NODE2,EL_LOC,BID,ISENS(2),IFUNC(3),IFUNC_LOC(3),TENS_TYP,MID,MTYP
-      my_real               :: FORCE,ELEM_SIZE,DIST1,DIST2,DIST3,PULL,YSCALE1,XSCALE1,XSCALE1_UNIT,YSCALE1_UNIT
-      my_real               :: YSCALE2,XSCALE2,XSCALE2_UNIT,YSCALE2_UNIT,XX,DXDY,GET_U_FUNC,ALEA_MAX,TOLE_2
-      CHARACTER             :: TITR*nchartitle, KEY2*ncharkey,MESS*40
+      INTEGER                   :: I,J,K,ID, UID, NODE_ID, EL_ID, IERR1
+      INTEGER                   :: NODE1,NODE2,EL_LOC,BID,ISENS(2),IFUNC(3),IFUNC_LOC(3),TENS_TYP,MID,MTYP
+      my_real                   :: FORCE,ELEM_SIZE,DIST1,DIST2,DIST3,PULL,YSCALE1,XSCALE1,XSCALE1_UNIT,YSCALE1_UNIT
+      my_real                   :: YSCALE2,XSCALE2,XSCALE2_UNIT,YSCALE2_UNIT,XX,DXDY,GET_U_FUNC,ALEA_MAX,TOLE_2
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY2
+      CHARACTER(LEN=40)         :: MESS
       LOGICAL :: IS_AVAILABLE
       EXTERNAL GET_U_FUNC
 C-----------------------------------------------

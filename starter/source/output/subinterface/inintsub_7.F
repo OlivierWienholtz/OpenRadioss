@@ -43,6 +43,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD  
       USE INTBUFDEF_MOD
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -67,8 +68,7 @@ C-----------------------------------------------
       INTEGER I,J,K,JGRN,ISU,ISU1,ISU2,
      .   JSUB, KSUB, NNE, IS, ISV, CUR, ID1,
      .   NEXT, IM, KM, JAD, IN, II, N,STAT,K1,K2,INOD,IFNRT
-      CHARACTER*nchartitle,
-     .   TITR,TITR1
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
 C-----------------------------------------------
       TYPE (GROUP_)  , DIMENSION(NGRNOD)  :: IGRNOD
       TYPE (SURF_)   , DIMENSION(NSURF)   :: IGRSURF

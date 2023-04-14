@@ -166,10 +166,11 @@ Chd|====================================================================
      .   FXBIPM   , FXBNOD  , NODLOCAL, IPARG   , FXBELM ,
      .   FXBNOD_L , FXBMOD_L, FXBELM_L, FXBSIG_L, PROC   ,
      .   FXBMOD   , FXBSIG  , FXBIPM_L, FXBGRVI,
-     .   FXBGRVI_L, LENNOD_L,ITASK)
+     .   FXBGRVI_L, LENNOD_L,ITASK,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
-C-----------------------------------------------    
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -179,7 +180,6 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "scr15_c.inc"
 #include      "param_c.inc"
 #include      "units_c.inc"
 #include      "units_fxbody_c.inc"
@@ -193,6 +193,8 @@ C-----------------------------------------------
      .        FXBGRVI_L(*), LENNOD_L
       my_real
      .        FXBMOD_L(*), FXBSIG_L(*), FXBMOD(*), FXBSIG(*)
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME
+      INTEGER, INTENT(IN) :: ROOTNAME_LENGTH
 C-----------------------------------------------
 C   F u n c t i o n
 C-----------------------------------------------
@@ -223,8 +225,8 @@ c initially was set in starter0, but re-set here for multi threading compatibili
       IFXS_L = 28000 
 
       WRITE(CIT,'(I4.4)')ITASK
-      SCR_FILE_NAME ='SCR_FXM_'//ROOTNAM(1:ROOTLEN)//'_'//CIT(1:4)//'.scr'
-      SCR_FILE_NAME2='SCR_FXS_'//ROOTNAM(1:ROOTLEN)//'_'//CIT(1:4)//'.scr'
+      SCR_FILE_NAME ='SCR_FXM_'//TRIM(ROOTNAME)//'_'//CIT(1:4)//'.scr'
+      SCR_FILE_NAME2='SCR_FXS_'//TRIM(ROOTNAME)//'_'//CIT(1:4)//'.scr'
 
       OPEN(UNIT=IFXM_L+ITASK,FILE=TRIM(SCR_FILE_NAME),ACCESS='DIRECT',RECL=RCLEN)
       OPEN(UNIT=IFXS_L+ITASK,FILE=TRIM(SCR_FILE_NAME2),ACCESS='DIRECT',RECL=RCLEN)

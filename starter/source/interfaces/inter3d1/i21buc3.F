@@ -54,6 +54,7 @@ Chd|====================================================================
      9   LC2 ,LC3    ,LC4    ,PENE   ,PROV_N ,
      1   PROV_E,N11  ,N21    ,N31    ,DGAPLOAD)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -86,8 +87,7 @@ C     REAL
      .   MARGEREF
       my_real , INTENT(IN) :: DGAPLOAD ,DRAD
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, DIMENSION(MVSIZ), INTENT(IN) ::PROV_N,PROV_E
       INTEGER, DIMENSION(MVSIZ), INTENT(IN) :: IX1,IX2,IX3,IX4,NSVG
       my_real, DIMENSION(MVSIZ), INTENT(IN) :: X1,X2,X3,X4

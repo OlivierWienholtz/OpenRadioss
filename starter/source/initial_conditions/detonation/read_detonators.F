@@ -53,6 +53,7 @@ C-----------------------------------------------
       USE HM_OPTION_READ_MOD
       USE SUBMODEL_MOD
       USE DETONATORS_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -81,13 +82,13 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      INTEGER              :: I, MAT, J, NPCM, NPEM, N1,N2,ID,I1,I2,I3,I4,I5,I6,K,IGU,IGS,JJ
-      INTEGER              :: IUNIT, UID
-      INTEGER              :: IFLAGUNIT
-      INTEGER              :: DET_ID,STAT
-      CHARACTER*40         :: MESS
-      CHARACTER*ncharkey   :: KEY, KEY2
-      INTEGER              :: NDETPS,NDETSG,NECRAN,NDETPL,NDETCORD,NDET, SBURN
+      INTEGER                 :: I, MAT, J, NPCM, NPEM, N1,N2,ID,I1,I2,I3,I4,I5,I6,K,IGU,IGS,JJ
+      INTEGER                 :: IUNIT, UID
+      INTEGER                 :: IFLAGUNIT
+      INTEGER                 :: DET_ID,STAT
+      CHARACTER*40            :: MESS
+      CHARACTER(LEN=NCHARKEY) :: KEY, KEY2
+      INTEGER                 :: NDETPS,NDETSG,NECRAN,NDETPL,NDETCORD,NDET, SBURN
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------

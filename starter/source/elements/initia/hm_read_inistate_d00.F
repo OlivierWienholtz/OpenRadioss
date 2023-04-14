@@ -68,6 +68,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE HM_OPTION_READ_MOD
       USE MAPPING_OPTION_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -146,15 +147,15 @@ C-----------------------------------------------
       INTEGER, DIMENSION(:), ALLOCATABLE :: KSYSUSRTG ,KSYSUSRS,INDEXS,ITRIS,
      . KSYSUSRQ,INDEXQ,ITRIQ,IES2IPARG
 
-      CHARACTER KEY2*ncharkey,KEY3*ncharkey
-      CHARACTER*nchartitle,TITR,TITR1  
-      CHARACTER*15,KEYWORD 
+      CHARACTER(LEN=NCHARKEY)   :: KEY2,KEY3
+      CHARACTER(LEN=NCHARTITLE) ::TITR,TITR1  
+      CHARACTER(LEN=15)         :: KEYWORD 
 C-----------------------------------------------
       EXTERNAL UEL2SYS
       INTEGER  UEL2SYS
 C-----------------------------------------------
       LOGICAL IS_AVAILABLE,GLOB
-      CHARACTER KEY*ncharkey
+      CHARACTER(LEN=NCHARKEY) :: KEY
       INTEGER  NB_INIBRI,NB_INISHE,NB_INISH3,NB_ELEMENTS,ID_ELEM,
      . ELT,ELTP,INI,K0,NB_INITRUSS,NB_INIBEAM,NB_INISPRI,NB_INIQUA,
      . SUB_INDEX,IDOUB,ISTRSF,ISTRSFG,ISTRAF,ISTRAFG,ISTAT

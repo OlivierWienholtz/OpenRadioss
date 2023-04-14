@@ -26,21 +26,24 @@ Chd|-- called by -----------
 Chd|        FREFORM                       source/input/freform.F        
 Chd|-- calls ---------------
 Chd|====================================================================
-      SUBROUTINE REDKEY1(KEY,KEY0,NKEY,CARTE,IKEY,IR)
+      SUBROUTINE REDKEY1(KEY,KEY0,NKEY,CARTE,IKEY,IR,ROOTNAME,ROOTNAME_LENGTH,GOT_INPUT)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
 C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "chara_c.inc"
-C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER NKEY, IKEY, IR, IOK
-      CHARACTER CARTE*ncharline
+      CHARACTER (LEN=NCHARLINE) :: CARTE
       CHARACTER KEY(*)*5, KEY0(NKEY)*5
+      CHARACTER(LEN=LROOTNAME), INTENT(INOUT) :: ROOTNAME
+      INTEGER,  INTENT(INOUT) :: ROOTNAME_LENGTH
+      INTEGER, INTENT(IN)     :: GOT_INPUT
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -50,19 +53,21 @@ C-----------------------------------------------
       IR=0
 C
       IKEYO=IKEY
-      DO 5 J=1,9
-      KEYO(J)=KEY(J)
-   5  KEY(J)=' '
+      DO J=1,9
+        KEYO(J)=KEY(J)
+        KEY(J)=' '
+      ENDDO
+
       JK=0
-      DO 10 I=1,ncharline
-      IF(CARTE(I:I)=='/')THEN
-       JK=JK+1
-       J=0
-      ELSEIF(CARTE(I:I)/=' ')THEN
-       J=J+1
-       IF(J<=5)KEY(JK)(J:J)=CARTE(I:I)
-      ENDIF
- 10   CONTINUE
+      DO I=1,NCHARLINE
+         IF(CARTE(I:I)=='/')THEN
+             JK=JK+1
+             J=0
+         ELSEIF(CARTE(I:I)/=' ')THEN
+             J=J+1
+             IF(J<=5)KEY(JK)(J:J)=CARTE(I:I)
+         ENDIF
+      ENDDO
 C
       DO 100 I=1,NKEY
       IKEY=I
@@ -80,21 +85,21 @@ C
 
       IF(IKEY==1.OR.IKEY==58)THEN  
        IF (GOT_INPUT == 0.OR.IKEY==58) THEN
-        DO 410 I=5,ncharline
+        DO 410 I=5,NCHARLINE
         IF(IOK==0.AND.CARTE(I:I)=='/')THEN
          IOK = 1
         ELSEIF(IOK==1.AND.CARTE(I:I)=='/')THEN
-         ROOTLEN = J
+            ROOTNAME_LENGTH = J
          RETURN
         ELSEIF(IOK==1.AND.CARTE(I:I)/=' ')THEN
          J=J+1
 
-         IF(J<=80)ROOTNAM(J:J)=CARTE(I:I)
+         IF(J<=80)ROOTNAME(J:J)=CARTE(I:I)
         ENDIF
  410    CONTINUE
+        ROOTNAME_LENGTH = LEN_TRIM(ROOTNAME)
        ELSE
-        ROOTNAM(1:LENROOTN)=ROOTN(1:LENROOTN)
-        ROOTLEN = LENROOTN
+!        ROOTNAME and ROOTNAME_LENGTH defined from command line argument 
        ENDIF
       ENDIF
 C

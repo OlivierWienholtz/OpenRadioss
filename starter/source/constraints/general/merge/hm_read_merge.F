@@ -95,6 +95,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -135,7 +136,9 @@ C-----------------------------------------------
      .        TAG1(NRBYKIN),TAG2(NRBYKIN)
       INTEGER TABBOUCLE(NRBYKIN+1), IDBOUCLE, LEVEL
       CHARACTER MYSTRING*100,MYLOOP*200
-      CHARACTER MESS*40,MESS2*40,TITR*nchartitle,KEY2*ncharkey
+      CHARACTER MESS*40,MESS2*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY) :: KEY2
       TYPE(RBMERGE_), DIMENSION(:), ALLOCATABLE :: RBMERGE
       INTEGER, DIMENSION(NUMNOD) :: ITAG, WORK
       INTEGER IWORK(70000)
@@ -709,6 +712,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE RBMERGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -747,7 +751,8 @@ C     REAL
       INTEGER NBSECONDARY, IDIR, IKINE1(3*NUMNOD), NSL, NSL_XTRA
       INTEGER, DIMENSION(NUMNOD) :: ITAG 
       INTEGER, DIMENSION(NXTRA_NODE) :: LIST_XTRA 
-      CHARACTER MESS*40,TITR*nchartitle    
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 !   RBMERGE(IRBM)%ID   :: Rigid body identifier
 !   RBMERGE(IRBM)%NBSECONDARY   :: Number of SECONDARY rigid body

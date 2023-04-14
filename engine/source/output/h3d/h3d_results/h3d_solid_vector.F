@@ -55,6 +55,7 @@ C-----------------------------------------------
       USE STACK_MOD       
       USE H3D_MOD  
       USE MULTI_FVM_MOD
+      USE NAMES_AND_TITLES_MOD  ,ONLY: NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -68,7 +69,6 @@ C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "scr14_c.inc"
 #include      "param_c.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -83,7 +83,7 @@ C-----------------------------------------------
      .   IUVAR_INPUT,SFANI_CELL
       TYPE (ELBUF_STRUCT_), DIMENSION(NGROUP), TARGET :: ELBUF_TAB
       TYPE (STACK_PLY) :: STACK
-      CHARACTER*ncharline KEYWORD
+      CHARACTER(LEN=NCHARLINE) KEYWORD
       my_real, INTENT(IN) :: FANI_CELL(SFANI_CELL)
       TYPE (H3D_DATABASE) :: H3D_DATA
       TYPE (MULTI_FVM_STRUCT), INTENT(IN) :: MULTI_FVM

@@ -31,7 +31,11 @@ Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE LGMINI_RBY(NPBYL  ,LPBYL  ,RBYL   ,MASS   ,INER   ,
      .                      X      ,V      ,VR     ,ITAB   ,NOM_OPT)
+C-----------------------------------------------
+C   M o d u l e s 
+C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C----------------------------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -57,8 +61,7 @@ C-----------------------------------------------
       my_real
      .        RX,RY,RZ,MASRB
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C======================================================================|
       TNSL = 0
       DO N=1,NRBYLAG

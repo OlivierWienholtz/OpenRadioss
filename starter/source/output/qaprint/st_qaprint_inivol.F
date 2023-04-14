@@ -37,28 +37,25 @@ C-----------------------------------------------
         USE GROUPDEF_MOD
         USE INIVOL_DEF_MOD
         USE INIVOL_ARRAY_MOD
+        USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
-C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
 C
 C--------------------------------------------------
 C   L o c a l   V a r i a b l e s
-C-----------------------------------------------
+C--------------------------------------------------
       LOGICAL :: OK_QA
       CHARACTER (LEN=255) :: VARNAME
       INTEGER KK,JJ
       INTEGER ID,IPARTFILL,NBCONTY
       INTEGER IPHASE,ICUMU ,IFILL
       DOUBLE PRECISION VFRAC 
-      CHARACTER*nchartitle TITLE
+      CHARACTER(LEN=NCHARTITLE) :: TITLE
       DOUBLE PRECISION TEMP_DOUBLE      
 C-----------------------------------------------
 C   S o u r c e   L i n e s

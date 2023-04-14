@@ -61,6 +61,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C----------------------------------------------------------
 C      XELEM ELEMENT READ
 C----------------------------------------------------------
@@ -105,6 +106,7 @@ C-----------------------------------------------
       my_real
      .   BID 
       INTEGER, DIMENSION(:), ALLOCATABLE :: SUB_XELEM,IDEX,IDGU
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------

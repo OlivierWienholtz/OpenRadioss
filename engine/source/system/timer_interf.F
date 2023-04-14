@@ -26,26 +26,29 @@ Chd|-- called by -----------
 Chd|-- calls ---------------
 Chd|        METRIC_MOD                    ../common_source/modules/metric_mod.F
 Chd|====================================================================
-      SUBROUTINE OPEN_INTERF_TIME(ISPMD)
+      SUBROUTINE OPEN_INTERF_TIME(ISPMD,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE METRIC_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include    "implicit_f.inc"
-#include    "chara_c.inc"
-
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER :: ISPMD
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
 C-----------------------------------------------
       INTEGER I, J
       CHARACTER FILNAM*100
       CHARACTER PROCNAM*4
 C-----------------------------------------------
        WRITE(PROCNAM,'(I4.4)')ISPMD+1
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//PROCNAM//'.int'
-       OPEN(unit=4999,file=FILNAM(1:ROOTLEN+15),action='write',
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//PROCNAM//'.int'
+       OPEN(unit=4999,file=FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+15),action='write',
      .          ACCESS='SEQUENTIAL',
      .         FORM='FORMATTED',STATUS='UNKNOWN')
       END SUBROUTINE

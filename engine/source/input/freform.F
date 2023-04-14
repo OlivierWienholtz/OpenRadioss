@@ -81,8 +81,10 @@ Chd|        SENSOR_MOD                    share/modules/sensor_mod.F
 Chd|        STATE_MOD                     ../common_source/modules/state_mod.F
 Chd|        TH_MOD                        share/modules/th_mod.F        
 Chd|====================================================================
-      SUBROUTINE FREFORM(IRUNN,IRFL,IRFE,H3D_DATA,FLAG_CST_AMS,DYNAIN_DATA,
-     .                   SENSORS,DT,OUTPUT)
+      SUBROUTINE FREFORM(IRUNN        ,IRFL        ,IRFE             ,H3D_DATA,
+     *                   FLAG_CST_AMS ,DYNAIN_DATA,
+     .                   SENSORS,DT   ,OUTPUT ,
+     *                   NAMES_AND_TITLES ,GOT_INPUT, RUNN)
 C-----------------------------------------------
 C   D e s c r i p t i o n
 C-----------------------------------------------
@@ -103,6 +105,7 @@ C-----------------------------------------------
       USE SENSOR_MOD
       USE DT_MOD
       USE OUTPUT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -111,11 +114,13 @@ C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER IRUNN, IRFL, IRFE, FLAG_CST_AMS
-      TYPE(H3D_DATABASE), INTENT(INOUT) :: H3D_DATA
-      TYPE (DYNAIN_DATABASE), INTENT(INOUT) :: DYNAIN_DATA
+      INTEGER,INTENT(INOUT) :: GOT_INPUT,RUNN
+      TYPE(H3D_DATABASE), INTENT(INOUT)      :: H3D_DATA
+      TYPE(DYNAIN_DATABASE), INTENT(INOUT)   :: DYNAIN_DATA
       TYPE (SENSORS_), INTENT(INOUT) :: SENSORS
       TYPE (DT_), INTENT(INOUT) :: DT
       TYPE(OUTPUT_), INTENT(INOUT) :: OUTPUT !< output structure
+      TYPE(NAMES_AND_TITLES_),INTENT(INOUT)  :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
@@ -133,7 +138,6 @@ C-----------------------------------------------
 #include      "statr_c.inc"
 #include      "cong1_c.inc"
 #include      "cong2_c.inc"
-#include      "chara_c.inc"
 #include      "scrfs_c.inc"
 #include      "parit_c.inc"
 #include      "couple_c.inc"
@@ -148,6 +152,7 @@ C-----------------------------------------------
 #include      "ddspmd_c.inc"
 #include      "sms_c.inc"
 #include      "scr_thermal_c.inc"
+#include      "filescount_c.inc"
 C-----------------------------------------------
 C   L o c a l   P a r a m e t e r s
 C-----------------------------------------------
@@ -188,12 +193,12 @@ C-----------------------------------------------
      .   A1, A2, A3, VM, DTFACA,DTMINA, vt, TMP,DTFAC_AMS,
      .   LAMBDA,L_TYPE
       CHARACTER KEY(9)*5, TITLE*81, KEY1*5, KEY2*5,KEY3*5,   CH4*4, KEY4*5, KEY5*5, StrIAL*32
-      CHARACTER(LEN=ncharline) :: KEYA
-      CHARACTER(LEN=ncharline) :: CARTE,KEYW,MOT1,LINE
-      CHARACTER(LEN=ncharkey), DIMENSION(9) :: KEY_H3D
+      CHARACTER(LEN=NCHARLINE) :: KEYA
+      CHARACTER(LEN=NCHARLINE) :: CARTE,KEYW,MOT1,LINE
+      CHARACTER(LEN=NCHARKEY), DIMENSION(9) :: KEY_H3D
       CHARACTER(LEN=5), DIMENSION(NKEY) :: KEY0
       CHARACTER(LEN=5), DIMENSION(24)  ::  KEYALE
-      CHARACTER(len=ncharline) :: STRING_RESTART
+      CHARACTER(len=NCHARLINE) :: STRING_RESTART
       LOGICAL :: lFOUND
       REAL(KIND=8) :: DTHIS0
       REAL(KIND=8), DIMENSION(9) :: DTHIS01
@@ -261,19 +266,17 @@ C-----------------------------------------------
       KEY3=" "
       KEY4=" "
       
-      CALL OPEN_F_SCRATCH_FILE(IUSC1,2,ROOTN,LENROOTN,IUSC1_FN)
+      CALL OPEN_F_SCRATCH_FILE(IUSC1,2,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH,IUSC1_FN)
       LEN_IUSC1_FN=LEN_TRIM(IUSC1_FN)
 
-      CALL OPEN_F_SCRATCH_FILE(IUSC2,1,ROOTN,LENROOTN,IUSC2_FN)
+      CALL OPEN_F_SCRATCH_FILE(IUSC2,1,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH,IUSC2_FN)
       LEN_IUSC2_FN=LEN_TRIM(IUSC2_FN)
 
 C warning IBM/MPI does not support REWIND with STDIN !
       IUSC_TMP=60
-      CALL OPEN_F_SCRATCH_FILE(IUSC_TMP,1,ROOTN,LENROOTN,IUSCTMP_FN)
+      CALL OPEN_F_SCRATCH_FILE(IUSC_TMP,1,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH,IUSCTMP_FN)
       LEN_IUSCTMP_FN=LEN_TRIM(IUSCTMP_FN)
 C
-      ROOTNAM=' '
-      ROOTLEN = 0
       IERR=0
       NCT=0
       J1 = 0
@@ -319,12 +322,11 @@ C     DT_CTRL_COMPATIBILITY(3) = 1 -> if /DT/CST_AMS is present
       ALE%GLOBAL%IDT_ALE     = 0
 C     FLAG for Hybrid CST + AMS
       FLAG_CST_AMS = 0
-                 
 C---------------------------------------------------
 C     ENUMERATION OF CARDS BY OPTION
 C---------------------------------------------------
-   10 READ(ISTDI,'(A)',END=20) KEYA(1:ncharline)
-        WRITE(IUSC_TMP,'(A)') KEYA(1:ncharline)
+   10 READ(ISTDI,'(A)',END=20) KEYA(1:NCHARLINE)
+        WRITE(IUSC_TMP,'(A)') KEYA(1:NCHARLINE)
         IF(KEYA(1:4)=='/END')GOTO 20
         NCT=NCT+1
         IF(KEYA(1:1)=='#')GOTO 10
@@ -447,7 +449,7 @@ C---------------------------------------------------
             WRITE(IUSC1,REC=IKOLD,FMT='(17A,I10)')'/',(KEY(I),'/',I=1,8),NBC
           ENDIF
           IS_PREVKEYA_NCHARKEY = 0
-          CALL REDKEY1(KEY,KEY0,NKEY,KEYA,IKEY,IR)
+          CALL REDKEY1(KEY,KEY0,NKEY,KEYA,IKEY,IR,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH,GOT_INPUT)
           IF(IR/=0) CYCLE
           NBC=0
           IKOLD=IKAD(IKEY)
@@ -507,7 +509,7 @@ C than we print out a message.
         IRUNN = RUNN
        ENDIF
 C
-       IF(ROOTLEN==0) THEN
+       IF(NAMES_AND_TITLES%ROOTNAME_LENGTH==0) THEN
         CALL ANCMSG(MSGID=194,ANMODE=ANINFO)
         IERR=IERR+1
        ENDIF
@@ -707,7 +709,6 @@ C-----------------------
         CALL ANCMSG(MSGID=197,ANMODE=ANINFO)
         IERR=IERR+1
       ENDIF
-      
 C-----------------------
 C     /STOP
 C-----------------------
@@ -776,18 +777,17 @@ C-----------------------
       IF(DMTMXK==ZERO)DMTMXK=EP20
       IF(DMNMXK==ZERO)DMNMXK=EP20
       IF(DEMXK==ZERO) DEMXK =EP20
-
 C--------------------------
 C     /RUN
 C--------------------------  
       IF (MCHECK == 0) THEN          
         IKEY=KRUN
         IRUNN=1
-        CHRUN0='  '
+        NAMES_AND_TITLES%CHRUN0='  '
         IF(IKAD(IKEY)/=IKAD(IKEY+1))THEN
           IRUNN=0
-          READ(IUSC1,REC=IKAD(IKEY),FMT='(7X,A4,2X,I5,1X,A1)',ERR=9990)CH4,IRUNN,CHRUN0(2:2)
-          IF(CHRUN0(2:2)/=' ')CHRUN0(1:1)='_'
+          READ(IUSC1,REC=IKAD(IKEY),FMT='(7X,A4,2X,I5,1X,A1)',ERR=9990)CH4,IRUNN,NAMES_AND_TITLES%CHRUN0(2:2)
+          IF(NAMES_AND_TITLES%CHRUN0(2:2)/=' ')NAMES_AND_TITLES%CHRUN0(1:1)='_'
           CALL WRIUSC2(IKAD(IKEY)+1,1,KEY0(IKEY))
           READ(IUSC2,*)TSTOP0
         ENDIF
@@ -806,7 +806,7 @@ C--------------------------
           IRUNN = RUNN
           IF (IRUNN == 0) IRUNN = 1
         ENDIF
-        IF(ROOTLEN==0) THEN
+        IF(NAMES_AND_TITLES%ROOTNAME_LENGTH==0) THEN
          CALL ANCMSG(MSGID=194,ANMODE=ANINFO)
          IERR=IERR+1
         ENDIF
@@ -827,9 +827,8 @@ C--------------------------
       ELSE
        TITLE=' '
       ENDIF
-      WRITE(IIN,'(2A,I2.2,A)')ROOTNAM(1:ROOTLEN),'D',IRUNN,TITLE
-      WRITE(CHRUN,'(I4.4)')IRUNN
-      
+      WRITE(IIN,'(2A,I2.2,A)')TRIM(NAMES_AND_TITLES%ROOTNAME),'D',IRUNN,TITLE
+      WRITE(NAMES_AND_TITLES%CHRUN,'(I4.4)')IRUNN
 C-----------------------
 C   /NEGVOL  (SMSTR: INEG_V=1;STOP: INEG_V=0)
 C--------------------------------------------------------
@@ -1564,7 +1563,7 @@ C--------------------------
         !    /RFILE/
         !    NCYCLE
             RESTART_FILE = 1
-            READ(IUSC1,REC=IKAD(IKEY),FMT='(7X,I5)',ERR=9990)MULTIREST
+            READ(IUSC1,REC=IKAD(IKEY),FMT='(7X,I5)',ERR=9990) MULTIREST
             CALL WRIUSC2(IKAD(IKEY)+1,1,KEY0(IKEY))
             READ(IUSC2,*,ERR=9990,END=9990)NCRST
             IRLTYP=0
@@ -2547,7 +2546,7 @@ C-----------------------
           IF(KEY3=='REF')THEN
             IMVW_REF = 1
             K = K + 1
-            READ(IUSC1,REC=IKAD(IKEY)+K,FMT='(5X,A)',ERR=9990)IMVW_REFPATH
+            READ(IUSC1,REC=IKAD(IKEY)+K,FMT='(5X,A)',ERR=9990)NAMES_AND_TITLES%IMVW_REFPATH
           ELSEIF(KEY3=='ANIM')THEN
             IF(KEY4=='TH')THEN
               IMVW=1

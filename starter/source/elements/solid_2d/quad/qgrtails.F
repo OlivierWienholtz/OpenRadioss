@@ -49,6 +49,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE INIVOL_DEF_MOD
       USE INIVOL_ARRAY_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------M
 C            A R G U M E N T S
 C-----------------------------------------------
@@ -104,7 +105,7 @@ C-----------------------------------------------
      .   NGP(NSPMD+1),ICPRE,NMTV_MAX,IPARTR2R,ISMST,TAG_INVOL,
      .   JALE_FROM_MAT,JALE_FROM_PROP
       INTEGER ID,MFT,ILOC,JJ
-      CHARACTER*nchartitle, TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL lFOUND
 C--------------------------------------------------------------
 C         BORNAGE DES GROUPES DE MVSIZ

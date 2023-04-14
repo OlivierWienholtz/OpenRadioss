@@ -51,6 +51,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -88,9 +89,10 @@ C-----------------------------------------------
       INTEGER I,J,K,K1,K2,NOD, NCUR, NOSKEW, ISENS,NLD0,NN,IGU,IGS,
      .        UID,IAD,NS,IWA,ID,NUM0,IFLAGUNIT,COMPT,SUB_INDEX,IDIR
       INTEGER NNB
-      CHARACTER MESS*40, XYZ*ncharfield,
-     .          X*1, Y*1, Z*1, XX*2, YY*2, ZZ*2
-      CHARACTER TITR*nchartitle
+      CHARACTER MESS*40
+      CHARACTER X*1, Y*1, Z*1, XX*2, YY*2, ZZ*2
+      CHARACTER(LEN=NCHARFIELD) :: XYZ
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
@@ -153,7 +155,7 @@ C--------------------------------------------------
 C EXTRACT DATAS (STRING VALUES)
 C--------------------------------------------------
         XYZ = ''
-        CALL HM_GET_STRING('rad_dir',XYZ,ncharfield,IS_AVAILABLE)
+        CALL HM_GET_STRING('rad_dir',XYZ,NCHARFIELD,IS_AVAILABLE)
 C--------------------------------------------------
 C EXTRACT DATAS (INTEGER VALUES)
 C--------------------------------------------------
@@ -243,7 +245,7 @@ C-----------
          CALL ANCMSG(MSGID=54,
      .               ANMODE=ANINFO,
      .               MSGTYPE=MSGERROR,
-     .               C1=KLINE)
+     .               C1='CLOAD')
         ENDIF
         NUM=NUM+NN
         DO J=NN,1,-1

@@ -50,7 +50,8 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE ELBUFDEF_MOD            
-      USE MESSAGE_MOD             
+      USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -127,7 +128,7 @@ C-----------------------------------------------
      .   FAC, XT, YT, ZT
 C-----
       TYPE(G_BUFEL_) ,POINTER :: GBUF 
-      CHARACTER*nchartitle , TITR
+      CHARACTER(LEN=NCHARTITLE) ::  TITR
 C-----------------------------------------------
 C   S o u r c e  L i n e s
 C=======================================================================

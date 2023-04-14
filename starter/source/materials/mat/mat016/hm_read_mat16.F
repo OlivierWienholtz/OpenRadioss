@@ -48,6 +48,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE MATPARAM_DEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -63,10 +64,10 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER*nchartitle ,INTENT(IN) :: TITR
-      INTEGER, INTENT(IN) :: MAT_ID
-      INTEGER, DIMENSION(NPROPMI) ,INTENT(INOUT) :: IPM
-      my_real, DIMENSION(NPROPM)  ,INTENT(INOUT) :: PM
+      CHARACTER(LEN=NCHARTITLE) ,INTENT(IN)        :: TITR
+      INTEGER, INTENT(IN)                          :: MAT_ID
+      INTEGER, DIMENSION(NPROPMI) ,INTENT(INOUT)   :: IPM
+      my_real, DIMENSION(NPROPM)  ,INTENT(INOUT)   :: PM
       my_real, DIMENSION(LUNIT,NUNITS) ,INTENT(IN) :: UNITAB
       TYPE(SUBMODEL_DATA), DIMENSION(NSUBMOD),INTENT(IN) :: LSUBMODEL
       TYPE(MLAW_TAG_), INTENT(INOUT) :: MTAG

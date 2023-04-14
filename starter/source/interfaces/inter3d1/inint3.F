@@ -149,6 +149,7 @@ C-----------------------------------------------
       USE INTBUF_FRIC_MOD
       USE GROUPDEF_MOD
       USE ALE_CONNECTIVITY_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -194,8 +195,7 @@ C-----------------------------------------------
      .   THK(*),THK_PART(*), LELX(*), FILLSOL(*),
      .   PM_STACK(*)
       my_real, TARGET ::  X(3*NUMNOD)
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(INTERSURFP) :: INTERCEP(3,NINTER)
       TYPE(INTBUF_STRUCT_) INTBUF_TAB
       TYPE(INTBUF_FRIC_STRUCT_) INTBUF_FRIC_TAB(*)

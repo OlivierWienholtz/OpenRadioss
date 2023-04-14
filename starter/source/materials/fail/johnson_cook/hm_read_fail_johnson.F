@@ -58,6 +58,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -76,7 +77,6 @@ C NFUNC    |  1      | I | W | SIZE OF IFUNC =< MAXFUNC
 C FAIL_ID  |  1      | I | W | ID OF FAILURE CRITERIA
 C----------+---------+---+---+--------------------------------------------
 #include      "units_c.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -86,10 +86,10 @@ C INPUT ARGUMENTS
      .                               ILAW
       TYPE(SUBMODEL_DATA),INTENT(IN) ::LSUBMODEL(*)
 C MODIFIED ARGUMENT
-      INTEGER,INTENT(INOUT)        ::IFUNC(MAXFUNC),NFUNC,IXFEM
-      my_real,INTENT(INOUT)        ::UPARAM(MAXUPARAM)
-      INTEGER,INTENT(INOUT)        ::NUPARAM,NUVAR
-      CHARACTER, INTENT(IN)        ::TITR*nchartitle
+      INTEGER,INTENT(INOUT)                 :: IFUNC(MAXFUNC),NFUNC,IXFEM
+      my_real,INTENT(INOUT)                 :: UPARAM(MAXUPARAM)
+      INTEGER,INTENT(INOUT)                 :: NUPARAM,NUVAR
+      CHARACTER(LEN=NCHARTITLE), INTENT(IN) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

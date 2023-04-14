@@ -38,6 +38,7 @@ Chd|====================================================================
       USE UNITAB_MOD
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -62,8 +63,7 @@ C-----------------------------------------------
       INTEGER IOUT,ITYP,IUNIT
       my_real PARGEO(*)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE):: TITR
       LOGICAL IS_ENCRYPTED
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(*)
 C=======================================================================

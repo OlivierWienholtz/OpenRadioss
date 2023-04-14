@@ -58,6 +58,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE ALE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -131,7 +132,7 @@ C-----------------------------------------------
       my_real, DIMENSION(:), ALLOCATABLE :: THK_TMP,PM_TEMP
       my_real, DIMENSION(:), ALLOCATABLE :: EANI_TEMP,GEO_TEMP
       CHARACTER MESS*40
-      CHARACTER OPT*ncharkey,KEY*ncharkey
+      CHARACTER(LEN=NCHARKEY) :: OPT,KEY
       DATA MESS/'MULTIDOMAIN INITIALIZATION'/
       DATA IUN/1/
 C===================================================================================

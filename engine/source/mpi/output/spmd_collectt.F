@@ -20,8 +20,6 @@ Copyright>
 Copyright>        As an alternative to this open-source version, Altair also offers Altair Radioss
 Copyright>        software under a commercial license.  Contact Altair to discuss further if the
 Copyright>        commercial version may interest you: https://www.altair.com/radioss/.
-
-C
 Chd|====================================================================
 Chd|  SPMD_COLLECTT                 source/mpi/output/spmd_collectt.F
 Chd|-- called by -----------
@@ -29,7 +27,11 @@ Chd|        RESOL                         source/engine/resol.F
 Chd|-- calls ---------------
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|====================================================================
-      SUBROUTINE SPMD_COLLECTT(TEMP, ITAB, WEIGHT,NODGLOB,SIZP0)
+      SUBROUTINE SPMD_COLLECTT(TEMP, ITAB, WEIGHT,NODGLOB,SIZP0,NAMES_AND_TITLES)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD  ,ONLY:NAMES_AND_TITLES_
       USE INOUTFILE_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
@@ -48,11 +50,11 @@ C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "task_c.inc"
 #include      "spmd_c.inc"
-#include      "chara_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER ITAB(*),WEIGHT(*),NODGLOB(*),SIZP0
       my_real
      .        TEMP(*)
@@ -77,7 +79,7 @@ C-----------------------------------------------
 C   S o u r c e  L i n e s
 C-----------------------------------------------
       WRITE(CYCLENUM,'(I7.7)')NCYCLE
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//CYCLENUM//'.tdb'
+      FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//CYCLENUM//'.tdb'
 
       LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)
       TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM)) 
@@ -85,7 +87,7 @@ C-----------------------------------------------
       OPEN(UNIT=IDBG8,FILE=TMP_NAME(1:LEN_TMP_NAME),ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
 
-      FILEN = ROOTLEN+17
+      FILEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
       IF (ISPMD/=0) THEN
         N = 0
         DO I = 1, NUMNOD

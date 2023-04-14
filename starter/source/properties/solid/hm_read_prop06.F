@@ -73,6 +73,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE MESSAGE_MOD
       USE MULTI_FVM_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -104,7 +105,7 @@ C
       my_real,INTENT(INOUT) :: GEO(NPROPG)
       my_real,INTENT(IN) :: RTRANS(NTRANSF,NRTRANS)
 C
-      CHARACTER,INTENT(IN) :: IDTITL*nchartitle
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN) :: IDTITL
 C
       TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP),INTENT(INOUT) :: PROP_TAG
       TYPE(MULTI_FVM_STRUCT),INTENT(IN) :: MULTI_FVM

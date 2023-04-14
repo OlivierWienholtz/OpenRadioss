@@ -28,12 +28,13 @@ Chd|-- calls ---------------
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
-      SUBROUTINE READ_ENGINE_DTMIN(DTMIN)
+      SUBROUTINE READ_ENGINE_DTMIN(DTMIN,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -41,10 +42,11 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr15_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
+      INTEGER, INTENT(IN)                        :: ROOTNAME_LENGTH  ! INPUT deck rootname length
       my_real , INTENT(OUT) :: DTMIN 
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -60,17 +62,17 @@ C-----------------------------------------------
       IO_ERR1=0
       DTMIN = ZERO
 C-----------------------------------------------   
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_0001.rad'
+      FILNAM=TRIM(ROOTNAME)//'_0001.rad'
 
-      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTLEN+9)
-      LEN_TMP_NAME = INFILE_NAME_LEN+ROOTLEN+9
+      TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTNAME_LENGTH+9)
+      LEN_TMP_NAME = INFILE_NAME_LEN+ROOTNAME_LENGTH+9
       OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .        ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
 C
       IF (IO_ERR1/=0) THEN
-         FILNAM=ROOTNAM(1:ROOTLEN)//'D01'
-         TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTLEN+3)
-         LEN_TMP_NAME = INFILE_NAME_LEN+ROOTLEN+3
+         FILNAM=TRIM(ROOTNAME)//'D01'
+         TMP_NAME=INFILE_NAME(1:INFILE_NAME_LEN)//FILNAM(1:ROOTNAME_LENGTH+3)
+         LEN_TMP_NAME = INFILE_NAME_LEN+ROOTNAME_LENGTH+3
          OPEN(UNIT=71,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .        ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
       ENDIF      

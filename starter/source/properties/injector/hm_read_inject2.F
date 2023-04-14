@@ -49,6 +49,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -67,10 +68,10 @@ C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER IGEO(*)
-      INTEGER ,INTENT(IN) :: IGTYP,PROP_ID,IPM(NPROPMI,NUMMAT),NPC(*)
-      my_real, INTENT(IN) :: PLD(*),PM(NPROPM,NUMMAT)
-      my_real, INTENT(INOUT) ::  GEO(*)
-      CHARACTER IDTITL*nchartitle
+      INTEGER ,INTENT(IN)       :: IGTYP,PROP_ID,IPM(NPROPMI,NUMMAT),NPC(*)
+      my_real, INTENT(IN)       :: PLD(*),PM(NPROPM,NUMMAT)
+      my_real, INTENT(INOUT)    ::  GEO(*)
+      CHARACTER(LEN=NCHARTITLE) :: IDTITL
       TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP) :: PROP_TAG
       TYPE(SUBMODEL_DATA),INTENT(IN)::LSUBMODEL(*)
 C-----------------------------------------------

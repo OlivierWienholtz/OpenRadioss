@@ -60,6 +60,10 @@ C     SET_LIST      List of sorted SETs
 C     SET           SET Structure / ACTIV Flag will be defined for /SET/COLLECT
 C===========================================================================================
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARFIELD,NCHARKEY,NCHARTITLE
+C-----------------------------------------------
 C   D e f i n i t i o n s 
 C-----------------------------------------------
 #include      "set_def.inc"
@@ -77,7 +81,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -101,8 +104,9 @@ C-----------------------------------------------
 C-----------------------------------------------
 C     Characters
       CHARACTER MESS*40
-      CHARACTER KEYSET*ncharfield,SET_TYPE*ncharfield,KEY*ncharkey,KEY_TYPE*ncharfield
-      CHARACTER TITLE*nchartitle,SET_TITLE*nchartitle,KEYPART*ncharkey,TITLE2*nchartitle
+      CHARACTER(LEN=NCHARFIELD) :: KEYSET,SET_TYPE,KEY_TYPE
+      CHARACTER(LEN=NCHARKEY)   :: KEY, KEYPART
+      CHARACTER(LEN=NCHARTITLE) :: TITLE,SET_TITLE,TITLE2
 C-----------------------------------------------
       IDEBUG=0
 
@@ -177,7 +181,7 @@ C-----------------------------------------------
      .                           KEYWORD2    = KEY)
 
 
-        CALL HM_GET_STRING('set_Type' , SET_TYPE ,ncharfield, IS_AVAILABLE)
+        CALL HM_GET_STRING('set_Type' , SET_TYPE ,NCHARFIELD, IS_AVAILABLE)
         CALL HM_GET_INTV  ('iset_Type', ISET_TYPE,IS_AVAILABLE,LSUBMODEL)
 
         CALL HM_GET_INTV('clausesmax',CLAUSES_MAX,IS_AVAILABLE,LSUBMODEL)
@@ -188,7 +192,7 @@ C-----------------------------------------------
           !  Parse all clauses find SET clauses 
           ! -------------------------
           DO J=1,CLAUSES_MAX  ! max KEY's of the current /SET
-             CALL HM_GET_STRING_INDEX('KEY_type', KEYSET, J, ncharline, IS_AVAILABLE)
+             CALL HM_GET_STRING_INDEX('KEY_type', KEYSET, J, NCHARFIELD, IS_AVAILABLE)
   
              CALL HM_GET_INT_ARRAY_INDEX('opt_D',OPT_D,J,IS_AVAILABLE,LSUBMODEL)
              CALL HM_GET_INT_ARRAY_INDEX('opt_O',OPT_O,J,IS_AVAILABLE,LSUBMODEL)

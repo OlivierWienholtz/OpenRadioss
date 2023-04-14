@@ -62,6 +62,7 @@ C-----------------------------------------------
       USE H3D_INC_MOD        
       USE TABLE_MOD        
       USE LOADS_MOD        
+      USE NAMES_AND_TITLES_MOD  ,ONLY: NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -74,7 +75,6 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
 #include      "param_c.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -93,7 +93,7 @@ C-----------------------------------------------
       my_real
      .   FAC(LFACLOAD,NLOADP),XFRAME(NXFRAME,*),FORC(*)
       TYPE (ELBUF_STRUCT_), DIMENSION(NGROUP), TARGET :: ELBUF_TAB
-      CHARACTER*ncharline KEYWORD
+      CHARACTER(LEN=NCHARLINE) KEYWORD
       TYPE (SENSOR_STR_) ,DIMENSION(NSENSOR) ,INTENT(IN) :: SENSOR_TAB
       TYPE (H3D_DATABASE) :: H3D_DATA
       TYPE (LOADS_)   , INTENT(IN) :: LOADS
@@ -538,6 +538,7 @@ C-----------------------------------------------
       USE H3D_INC_MOD        
       USE LOADS_MOD        
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD  ,ONLY: NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -549,7 +550,6 @@ C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "com08_c.inc"
 #include      "tabsiz_c.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   E x t e r n a l  F u n c t i o n s
 C-----------------------------------------------
@@ -563,7 +563,7 @@ C-----------------------------------------------
       INTEGER  ,INTENT(IN) :: NSENSOR
       my_real
      .   SKIN_SCALAR(*),TF(*),X(3,*),V(3,*)
-      CHARACTER*ncharline KEYWORD
+      CHARACTER(LEN=NCHARLINE) KEYWORD
       TYPE (H3D_DATABASE) :: H3D_DATA
       INTEGER , DIMENSION(NUMSKINP0), INTENT(IN) ::  IMAPSKP
       INTEGER

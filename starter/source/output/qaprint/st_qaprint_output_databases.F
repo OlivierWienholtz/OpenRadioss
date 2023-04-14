@@ -32,6 +32,7 @@ C============================================================================
 C   M o d u l e s
 C-----------------------------------------------
       USE QA_OUT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -56,7 +57,7 @@ C--------------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, ID, II, TEMP_INT
-      CHARACTER *nchartitle TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       CHARACTER (LEN=255) :: VARNAME
       DOUBLE PRECISION TEMP_DOUBLE
       LOGICAL :: OK_QA
@@ -67,7 +68,7 @@ C-----------------------------------------------
       IF (OK_QA) THEN
         DO II = 1, NACCELM
 C
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           ID = NOM_OPT(1, INOM_OPT(1) + II)
           CALL FRETITL2(TITR, NOM_OPT(LNOPT1-LTITR+1, INOM_OPT(1) + II), LTITR)
           IF(LEN_TRIM(TITR)/=0)THEN
@@ -96,7 +97,7 @@ C-----------------------------------------------
 C       
        IF (NBGAUGE > 0) THEN 
         DO II = 1, NBGAUGE
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           ID = NOM_OPT(1, INOM_OPT(27) + II)
           CALL FRETITL2(TITR, NOM_OPT(LNOPT1-LTITR+1, INOM_OPT(27) + II), LTITR)
           IF(LEN_TRIM(TITR)/=0)THEN

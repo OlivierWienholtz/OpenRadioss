@@ -54,7 +54,11 @@ Chd|====================================================================
      9      LB1 ,LB2    ,LB3    ,LB4    ,LC1    ,
      1      LC2 ,LC3    ,LC4    ,PENE   ,PROV_N ,
      2      PROV_E,N11  ,N21    ,N31    ,DGAPLOAD)
+C-----------------------------------------------
+C   M o d u l e
+C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -101,8 +105,7 @@ C     REAL
      .   GAPMIN, GAPMAX, MARGE, GAPSMX, BGAPSMX, DEPTH, XM0(3,*), DRAD
       my_real , INTENT(IN) :: DGAPLOAD
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

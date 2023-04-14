@@ -85,6 +85,7 @@ C-----------------------------------------------
       USE ELBUFDEF_MOD   
       USE DETONATORS_MOD   
       USE ALE_CONNECTIVITY_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -135,7 +136,7 @@ C-----------------------------------------------
      .   FILL,DTEL,UPARAM,TEMP
 C
       INTEGER ID
-      CHARACTER*nchartitle, TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C=======================================================================
       TMP(1:NEL)=ZERO
       EPL(1:NEL)=ZERO

@@ -53,6 +53,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -87,8 +88,8 @@ C-----------------------------------------------
      .        L_XYZ,SUBID,NOSUB,NODENUM(NFXVEL0)
       INTEGER ,DIMENSION(3*NUMNOD) :: IKINE1
       LOGICAL IS_AVAILABLE
-      CHARACTER(ncharfield)  :: XYZ
-      CHARACTER(nchartitle)  :: TITR,MESS
+      CHARACTER(NCHARFIELD)  :: XYZ
+      CHARACTER(NCHARTITLE)  :: TITR,MESS
       INTEGER ,DIMENSION(:),ALLOCATABLE  :: IACCIDS
       CHARACTER(2)           :: X,Y,Z,XX,YY,ZZ
       my_real :: FAC1,FAC2,FAC3,FACX,FSCAL_T,FSCAL_A,BID
@@ -152,7 +153,7 @@ C--------------------------------------------------
 C EXTRACT DATA (STRING VALUES)
 C--------------------------------------------------
         CALL HM_GET_INTV('curveid'        ,FCT_ID  ,IS_AVAILABLE,LSUBMODEL)
-        CALL HM_GET_STRING('rad_dir'      ,XYZ     ,ncharfield,IS_AVAILABLE)
+        CALL HM_GET_STRING('rad_dir'      ,XYZ     ,NCHARFIELD,IS_AVAILABLE)
         CALL HM_GET_INTV('inputsystem'    ,INP_ID  ,IS_AVAILABLE,LSUBMODEL)
         CALL HM_GET_INTV('rad_sensor_id'  ,SENS_ID ,IS_AVAILABLE,LSUBMODEL)
         CALL HM_GET_INTV('entityid'       ,GRN     ,IS_AVAILABLE,LSUBMODEL)

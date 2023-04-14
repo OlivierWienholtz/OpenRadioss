@@ -42,6 +42,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -51,7 +52,6 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "sysunit.inc"
-#include      "scr17_c.inc"
 #include      "units_c.inc"
 #include      "submod_c.inc"
 C-----------------------------------------------
@@ -59,19 +59,19 @@ C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER, INTENT(IN) :: ID
-      CHARACTER(LEN = nchartitle) :: TITR
+      CHARACTER(LEN = NCHARTITLE) :: TITR
       INTEGER, DIMENSION(NPROPMI), INTENT(INOUT) :: IPM
       my_real, DIMENSION(NPROPM), INTENT(INOUT) :: PM
       TYPE(SUBMODEL_DATA), DIMENSION(NSUBMOD), INTENT(IN) :: LSUBMODEL
-      CHARACTER(LEN = ncharline), INTENT(IN) :: KEY2
+      CHARACTER(LEN=NCHARLINE), INTENT(IN) :: KEY2
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       my_real
      .   MW, CPA, CPB, CPC, CPD, CPE, CPF, CV,
      .   FAC_L, FAC_T, FAC_M, R_IGC1, FAC_CP, FAC
-      CHARACTER(LEN = ncharline) :: KEY, USERGAS_NAME, KEY2_TRIM
-      CHARACTER(LEN = 20) :: GASTYPE
+      CHARACTER(LEN=NCHARLINE) :: KEY, USERGAS_NAME, KEY2_TRIM
+      CHARACTER(LEN=20) :: GASTYPE
       INTEGER :: IGAS, IMOLE
       LOGICAL :: IS_AVAILABLE, IS_ENCRYPTED
 C-----------------------------------------------
@@ -144,7 +144,7 @@ C-----------------------------------------------
      .           I1 = ID, C1 = TITR)
          END IF
       CASE(4)
-         CALL HM_GET_STRING('GAS', USERGAS_NAME, ncharfield, IS_AVAILABLE)         
+         CALL HM_GET_STRING('GAS', USERGAS_NAME, NCHARFIELD, IS_AVAILABLE)         
          IF (USERGAS_NAME(1:3) == 'N2O') THEN
             GASTYPE = 'Nitrous oxide'
             MW = 0.04401

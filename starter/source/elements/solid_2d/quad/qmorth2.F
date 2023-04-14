@@ -34,6 +34,7 @@ Chd|====================================================================
      .                   RY   ,RZ   ,SY   ,SZ, 
      .                   E1Y  ,E1Z  ,E2Y  ,E2Z)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -66,8 +67,7 @@ C     REAL
      .   G11,G22,G33,G12,G21,G23,G32,G13,G31
       my_real
      .   SK(6)
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------------------------------
 C     Repere orthotrope
 C=======================================================================

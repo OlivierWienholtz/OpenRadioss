@@ -44,6 +44,7 @@ C-----------------------------------------------
       USE ELBUFTAG_MOD            
       USE MESSAGE_MOD 
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
 C   ===================
@@ -70,12 +71,12 @@ C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
-      INTEGER, INTENT(IN)                          :: MAT_ID
+      INTEGER, INTENT(IN)                            :: MAT_ID
       INTEGER, INTENT(INOUT)                         :: NUPARAM,NUVAR,NFUNC
       INTEGER, DIMENSION(NPROPMI) ,INTENT(INOUT)     :: IPM
       my_real, DIMENSION(NPROPM)  ,INTENT(INOUT)     :: PM     
-      CHARACTER(nchartitle) ,INTENT(IN)            :: TITR
-      TYPE(SUBMODEL_DATA), DIMENSION(*),INTENT(IN) :: LSUBMODEL
+      CHARACTER(LEN=NCHARTITLE) ,INTENT(IN)          :: TITR
+      TYPE(SUBMODEL_DATA), DIMENSION(*),INTENT(IN)   :: LSUBMODEL
       TYPE(MLAW_TAG_), INTENT(INOUT) :: MTAG
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s

@@ -33,7 +33,8 @@ Chd|        SENSOR_MOD                    share/modules/sensor_mod.F
 Chd|        STATE_MOD                     ../common_source/modules/state_mod.F
 Chd|====================================================================
       SUBROUTINE LECINP(IRUN,IRFL,IRFE,H3D_DATA,FLAG_CST_AMS,DYNAIN_DATA,
-     .                  SENSORS ,DT, OUTPUT )
+     .                  SENSORS ,DT, OUTPUT , NAMES_AND_TITLES,
+     *                  GOT_INPUT,RUNN)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -42,6 +43,7 @@ C-----------------------------------------------
       USE SENSOR_MOD
       USE DT_MOD
       USE OUTPUT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -49,13 +51,15 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      INTEGER,INTENT(IN)    :: GOT_INPUT
+      INTEGER,INTENT(INOUT) :: RUNN
       INTEGER IRUN, IRFL, IRFE,FLAG_CST_AMS
       TYPE(H3D_DATABASE), INTENT(INOUT) :: H3D_DATA
       TYPE(DYNAIN_DATABASE), INTENT(INOUT) :: DYNAIN_DATA
       TYPE(SENSORS_), INTENT(INOUT) :: SENSORS
       TYPE (DT_), INTENT(INOUT) :: DT
       TYPE(OUTPUT_), INTENT(INOUT) :: OUTPUT !< output structure
-
+      TYPE(NAMES_AND_TITLES_),INTENT(INOUT) :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
@@ -65,7 +69,6 @@ C-----------------------------------------------
 #include      "scr18_c.inc"
 #include      "scrnoi_c.inc"
 #include      "scrcut_c.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -85,7 +88,7 @@ C
 C
       IFREEF=1
       CALL FREFORM(IRUN,IRFL,IRFE,H3D_DATA,FLAG_CST_AMS,DYNAIN_DATA,
-     .             SENSORS,DT,OUTPUT)
+     .             SENSORS,DT,OUTPUT,NAMES_AND_TITLES,GOT_INPUT,RUNN)
 C
       REWIND IIN
 C

@@ -39,10 +39,13 @@ Chd|-- calls ---------------
 Chd|====================================================================
       MODULE INIVOL_DEF_MOD
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
+C-----------------------------------------------
 C   m y _ r e a l
 C-----------------------------------------------
 #include      "my_real.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D e r i v e d   T y p e   D e f i n i t i o n s
 C-----------------------------------------------
@@ -58,7 +61,7 @@ C-----------------------------------------------
         TYPE INIVOL_
           INTEGER   :: ID ! - INIVOL IDENTIFIER
           INTEGER   :: SIPHASE          
-          CHARACTER :: TITLE*nchartitle ! INIVOL title
+          CHARACTER(LEN=NCHARTITLE) :: TITLE ! INIVOL title
           INTEGER   :: NBCONTY ! NUMBER of INIVOL containers
           INTEGER, DIMENSION(:),ALLOCATABLE :: SURFCONTY ! Surface defining containers of the INIVOL
           INTEGER   :: IPARTFILL ! INIVOL part to be filled

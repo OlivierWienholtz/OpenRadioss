@@ -46,6 +46,7 @@ C-----------------------------------------------
       USE STACK_MOD
       USE ANIM_MOD
       USE SENSOR_MOD
+      USE NAMES_AND_TITLES_MOD , ONLY : NCHARLINE,NCHARKEY,LINE120
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -59,7 +60,6 @@ C-----------------------------------------------
 #include      "scr06_c.inc"
 #include      "scr14_c.inc"
 #include      "scrcut_c.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -74,9 +74,10 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, IDX, NBC, K, IKEY, N1, N2, N3, ITYP,IADG, J,NTITLE,IUS, IXITKEY
-      CHARACTER  TITLE*72, KEY2*ncharkey, KEY3*ncharkey, KEY4*ncharkey, KEY5*ncharkey,
-     .           KEY6*ncharkey,KEY7*ncharkey, KEY8*ncharkey, CARTE*ncharline,TITLE2*80,
-     .           LINE*line120
+      CHARACTER  TITLE*72, TITLE2*80
+      CHARACTER(LEN=LINE120)   :: LINE
+      CHARACTER(LEN=NCHARKEY)  :: KEY2, KEY3, KEY4, KEY5,KEY6,KEY7, KEY8
+      CHARACTER(LEN=NCHARLINE) :: CARTE
       my_real X0,Y0,Z0,VNX,VNY,VNZ,V0
 C-----------------------------------------------
       IKEY              = KANIM

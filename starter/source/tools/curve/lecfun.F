@@ -30,7 +30,11 @@ Chd|        FRETITL2                      source/starter/freform.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE CHKFUNCT(NFUNCT,NPC,NOM_OPT)
+C-----------------------------------------------
+C   M o d u l e s 
+C-----------------------------------------------
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -49,8 +53,7 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,L,NPTS,IDFUNCT
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C     REAL
 C======================================================================|
       L=1   

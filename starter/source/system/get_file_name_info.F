@@ -32,6 +32,10 @@ Chd|====================================================================
      *                              ROOTNAME,LENR,
      *                              RUNN,FVERS,IS_DYNA)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------  
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -39,8 +43,9 @@ C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       CHARACTER INPUT*256
-      CHARACTER ROOTNAME*80
-      INTEGER LENI,LENR,RUNN,FVERS,IS_DYNA
+      CHARACTER(LEN=LROOTNAME),INTENT(OUT) :: ROOTNAME
+      INTEGER,INTENT(OUT)                  :: LENR
+      INTEGER LENI,RUNN,FVERS,IS_DYNA
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

@@ -50,6 +50,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE,NCHARFIELD,NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -85,7 +86,6 @@ C-----------------------------------------------
      .   CPT_PART,NB_RANDOM,I_SEED,DISTRIB(50),
      .   II,NB_INTERV,N,IOK,SEED,SEED_RANDOM,
      .   ITYP,L,I_PERTURB_VAR,IGRPRTS,SIZEY
-      CHARACTER TITR*nchartitle,KEY*ncharkey,MES*40
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: TAB_PART
       INTEGER, DIMENSION(:),   ALLOCATABLE :: A_SEED
       INTEGER, DIMENSION(1:8) :: DT_SEED
@@ -93,10 +93,15 @@ C-----------------------------------------------
      . MEAN,SD,MEAN_INPUT,SD_INPUT,MAX_DISTRIB,TEMP,MIN_VALUE,
      . MAX_VALUE,INTERV,VALUE,MAX_VALUE1,MINVAL,MAXVAL,BID
       my_real, DIMENSION(:), ALLOCATABLE :: ARRAY
+
+      CHARACTER(LEN=NCHARTITLE)   :: TITR
+      CHARACTER(LEN=NCHARKEY)     :: KEY
+      CHARACTER(LEN=2*NCHARFIELD) :: CHVAR
+      CHARACTER(LEN=40)           :: MES,MESS
       CHARACTER*100 CHAR(100)
       CHARACTER*100 CHAR1(100)
       CHARACTER*100 CHAR2
-      CHARACTER MESS*40,CHVAR*(2*ncharfield)
+
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
@@ -133,7 +138,7 @@ c
 C
         ! Reading the number of the Group of Part + the perturbed variable
         CALL HM_GET_INTV('grpart_ID'    ,IGRPRTS ,IS_AVAILABLE,LSUBMODEL) 
-        CALL HM_GET_STRING('chvar',CHVAR   ,2*ncharfield,IS_AVAILABLE)
+        CALL HM_GET_STRING('chvar',CHVAR   ,2*NCHARFIELD,IS_AVAILABLE)
         IF (CHVAR(1:4) == 'dens' .OR. CHVAR(1:4) == 'DENS') I_PERTURB_VAR = 1
 c
         ! Checking the perturbed variable
@@ -233,7 +238,7 @@ C
         ! Reading the number of the Group of Part + the perturbed variable
         CALL HM_GET_INTV('grpart_ID' ,IGRPRTS ,IS_AVAILABLE,LSUBMODEL)
         QP_IPERTURB(I,5) = IGRPRTS
-        CALL HM_GET_STRING('chvar',CHVAR   ,2*ncharfield,IS_AVAILABLE)
+        CALL HM_GET_STRING('chvar',CHVAR   ,2*NCHARFIELD,IS_AVAILABLE)
         IF (CHVAR(1:4) == 'dens' .OR. CHVAR(1:4) == 'DENS') QP_IPERTURB(I,6) = 1
 c
         ! Checking solid part group

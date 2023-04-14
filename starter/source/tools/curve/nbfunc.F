@@ -38,6 +38,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -50,14 +51,15 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr17_c.inc"
 #include      "submod_c.inc"
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,IT,ID,NPARAM,NPT,NFUNCT0,IBID,NTABLE0,NTABLE1,NTABLETOT
 C     REAL
-      CHARACTER TITR*nchartitle,KEY*ncharfield,MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARFIELD) :: KEY
+      CHARACTER(LEN=40)         :: MESS 
       DATA MESS/' FUNCTION COUNTING                      '/
       INTEGER :: IFUN,N1
       LOGICAL :: IS_AVAILABLE

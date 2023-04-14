@@ -124,6 +124,7 @@ C-----------------------------------------------
       USE ELBUFDEF_MOD            
       USE MESSAGE_MOD
       USE NLOCAL_REG_MOD
+      USE NAMES_AND_TITLES_MOD , ONLY : NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -141,7 +142,6 @@ C-----------------------------------------------
 #include      "impl1_c.inc"
 #include      "timeri_c.inc"
 #include      "scr18_c.inc"
-#include      "nchar_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -239,7 +239,7 @@ C----
 !
       CHARACTER OPTION*256
       INTEGER SIZE
-      CHARACTER IUSER_KEY*ncharline
+      CHARACTER(LEN=NCHARLINE) IUSER_KEY
 C=======================================================================
       GBUF   => ELBUF_TAB(NG)%GBUF           
       LBUF   => ELBUF_TAB(NG)%BUFLY(ILAY)%LBUF(IPTR,IPTS,IPTT)

@@ -62,6 +62,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -107,6 +108,7 @@ C-----------------------------------------------
      .   BID 
       CHARACTER MESS*40, MESS2*40
       INTEGER, DIMENSION(:), ALLOCATABLE :: SUB_SOL
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C-----------------------------------------------
 C   E x t e r n a l  F u n c t i o n s
 C-----------------------------------------------
@@ -820,6 +822,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -887,7 +890,7 @@ C--------------------------------------------------
 C--------------------------------------------------
         IF (IXS(11,I)>ID_LIMIT) THEN
           CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                I1=IXS(11,I),C1=LINE,C2='/SOLID')
+     .                I1=IXS(11,I),C1='/SOLID')
         ENDIF
 C
         IF (IPART(2,IPARTS(I)) > 0) THEN
@@ -935,7 +938,7 @@ C
           NSPHDIR=IGEO(37,IPART(2,IPARTS(I)))
           IF (IXS(11,I)>ID_LIMIT) THEN
             CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                  I1=IXS(11,I),C1=LINE,C2='/SOLID')
+     .                  I1=IXS(11,I),C1='/SOLID')
           ENDIF
           NT=0
           DO IT=1,NSPHDIR
@@ -964,7 +967,7 @@ C--------------------------------------------------
           NSPHDIR=IGEO(37,IPARTS(I-NUMBRICK))
           IF (IXS(11,I)>ID_LIMIT) THEN
             CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                  I1=IXS(11,I),C1=LINE,C2='/SOLID')
+     .                  I1=IXS(11,I),C1='/SOLID')
           ENDIF
           NT=0
           DO IT=1,NSPHDIR

@@ -45,7 +45,8 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
-      USE ELBUFTAG_MOD            
+      USE ELBUFTAG_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C============================================================================
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -71,7 +72,8 @@ C-----------------------------------------------
       INTEGER :: ITH,IMAT,ILAW, JTHE,NTHERM_ST,IFUNC_ALPHA,MAT_ID,I
       INTEGER ,DIMENSION(NUMMAT) :: ITHERM_FOR
       my_real ::  FSCAL_ALPHA
-      CHARACTER TITR*nchartitle,KEY*80
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=80)         :: KEY
       LOGICAL IS_AVAILABLE
 C=======================================================================
 

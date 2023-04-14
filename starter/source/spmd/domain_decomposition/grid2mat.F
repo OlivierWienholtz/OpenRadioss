@@ -64,10 +64,11 @@ Chd|====================================================================
      5  ITAB  ,IPART  ,IPARTC  ,IPARTG ,IPARTS  ,
      6  POIN_PART_SHELL,POIN_PART_TRI,POIN_PART_SOL,
      7  MID_PID_SHELL,MID_PID_TRI,MID_PID_SOL,T_MONVOL,
-     8  EBCS_TAG_CELL_SPMD,NPBY,LPBY)
+     8  EBCS_TAG_CELL_SPMD,NPBY,LPBY,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
       USE MESSAGE_MOD
       USE R2R_MOD
       USE CLUSTER_MOD
@@ -90,7 +91,6 @@ C-----------------------------------------------
 #include      "scr12_c.inc"
 #include      "param_c.inc"
 #include      "units_c.inc"
-#include      "scr15_c.inc"
 #include      "scr05_c.inc"
 #include      "scr17_c.inc"
 #include      "scr23_c.inc"
@@ -133,7 +133,9 @@ C-----------------------------------------------
       TYPE(MONVOL_STRUCT_), DIMENSION(NVOLU), INTENT(IN) :: T_MONVOL
       INTEGER,INTENT(IN) :: EBCS_TAG_CELL_SPMD(NUMELQ+NUMELTG+NUMELS)
       INTEGER, DIMENSION(NNPBY,*), INTENT(in) :: NPBY
-      INTEGER, DIMENSION(*), INTENT(in) :: LPBY
+      INTEGER, DIMENSION(*), INTENT(IN)   :: LPBY
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      INTEGER, INTENT(IN)                 :: ROOTNAME_LENGTH
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -349,13 +351,13 @@ C poids sous forme reel pour compatibilite RSB ancienne
         WD(I) = 0.
       ENDDO
       ELEMD = 0
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_0001.rad'
-      OPEN(UNIT=71,FILE=FILNAM(1:ROOTLEN+9),
+      FILNAM=TRIM(ROOTNAME)//'_0001.rad'
+      OPEN(UNIT=71,FILE=FILNAM(1:ROOTNAME_LENGTH+9),
      .   ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
 C
       IF (IO_ERR1/=0) THEN
-         FILNAM=ROOTNAM(1:ROOTLEN)//'D01'
-         OPEN(UNIT=71,FILE=FILNAM(1:ROOTLEN+3),
+         FILNAM=TRIM(ROOTNAME)//'D01'
+         OPEN(UNIT=71,FILE=FILNAM(1:ROOTNAME_LENGTH+3),
      .      ACCESS='SEQUENTIAL',STATUS='OLD',IOSTAT=IO_ERR1)
       ENDIF
 C
@@ -3519,7 +3521,12 @@ Chd|-- called by -----------
 Chd|        LECTUR                        source/starter/lectur.F       
 Chd|-- calls ---------------
 Chd|====================================================================
-      SUBROUTINE PRELEC_DDW(FILNAM,LEN_FILNAM,MARQUEUR3)
+      SUBROUTINE PRELEC_DDW(FILNAM,LEN_FILNAM,MARQUEUR3,ROOTNAME,
+     *                      ROOTNAME_LENGTH) 
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -3529,11 +3536,12 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "param_c.inc"
-#include      "scr15_c.inc"
 #include      "scr17_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      INTEGER, INTENT(IN)                 :: ROOTNAME_LENGTH
       LOGICAL MARQUEUR3
 C Dynamical User Library
       CHARACTER FILNAM*512
@@ -3542,8 +3550,9 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER MARQUEUR,MARQUEUR2
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C-----------------------------------------------     
-      FILNAM  =ROOTNAM(1:ROOTLEN)//'_0001.ddw'
+      FILNAM  =ROOTNAME(1:ROOTNAME_LENGTH)//'_0001.ddw'
       LEN_FILNAM=LEN_TRIM(FILNAM)         
       LINE=' '
       MARQUEUR2 = 0
@@ -3588,6 +3597,10 @@ Chd|-- calls ---------------
 Chd|====================================================================
       SUBROUTINE LEC_DDW(FILNAM,LEN_FILNAM,TAB_UMP_OLD,CPUTIME_MP_OLD)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -3607,6 +3620,7 @@ C Dynamical User Library
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
+      CHARACTER(LEN=NCHARLINE) :: LINE
       INTEGER J
 C-----------------------------------------------       
 C     Lecture des poids couple Mat/Prop
@@ -3635,6 +3649,10 @@ Chd|-- calls ---------------
 Chd|====================================================================
       SUBROUTINE PRELEC_DDW_POIN(FILNAM,LEN_FILNAM)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -3652,6 +3670,7 @@ C Dynamical User Library
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------   
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C     Lecture du pointer
       OPEN(UNIT=30,FILE=FILNAM(1:LEN_FILNAM),FORM='FORMATTED')
          LINE = ' '
@@ -3670,6 +3689,10 @@ Chd|        LECTUR                        source/starter/lectur.F
 Chd|-- calls ---------------
 Chd|====================================================================
       SUBROUTINE LEC_DDW_POIN(FILNAM,LEN_FILNAM,POIN_UMP_OLD)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+        USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -3690,6 +3713,7 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------   
       INTEGER I
+      CHARACTER(LEN=NCHARLINE) :: LINE
 C-----------------------------------------------   
 C     Lecture du pointer 
       OPEN(UNIT=30,FILE=FILNAM(1:LEN_FILNAM),FORM='FORMATTED')

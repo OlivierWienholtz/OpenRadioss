@@ -50,6 +50,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE ALE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARKEY,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -67,7 +68,7 @@ C-----------------------------------------------
      .   STFAC,AREASL,UNITAB(*)
       my_real
      .   FRIGAP(*),I2RUPT(*)
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
       TYPE (GROUP_)  ,TARGET, DIMENSION(NGRNOD)  :: IGRNOD
       TYPE (SURF_)   ,TARGET , DIMENSION(NSURF)  :: IGRSURF
@@ -90,7 +91,7 @@ C-----------------------------------------------
       my_real
      .   STARTT,STOPT,KTHE,VISC,DNMAX,DTMAX,SCAL_F,
      .   SCAL_SR,SCAL_D,ALPHA,AREA,F_UNIT,SR_UNIT,D_UNIT
-      CHARACTER KEY1*ncharkey
+      CHARACTER(LEN=NCHARKEY) :: KEY1
 !
       INTEGER, DIMENSION(:), POINTER :: INGR2USR
       LOGICAL IS_AVAILABLE, IS_ENCRYPTED

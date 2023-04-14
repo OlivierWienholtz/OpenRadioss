@@ -71,6 +71,7 @@ C-----------------------------------------------
       USE SURF_MOD
       USE HM_OPTION_READ_MOD
       USE MAPPING_OPTION_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -120,10 +121,12 @@ C-----------------------------------------------
       my_real
      .        XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX,BID,FAC_L,
      .        DIAM,XP1,YP1,ZP1,XP2,YP2,ZP2
-      CHARACTER TITR*nchartitle,KEY*ncharkey,MESS*40,KEY2*ncharkey
+     !
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1,STRING
+      CHARACTER(LEN=NCHARKEY)   :: KEY,KEY2
+      CHARACTER(LEN=40)         :: MESS
+    !
       INTEGER, DIMENSION(:),ALLOCATABLE :: BUFBOX, BUFTMP, INDX,TAGT ,TAGP
-      CHARACTER*nchartitle,
-     .   TITR1,STRING
       LOGICAL :: FLAG_GRBRIC
       INTEGER :: MODE, NENTITY
       TYPE(PART_TYPE), DIMENSION(:), ALLOCATABLE :: SURF_ELM
@@ -322,7 +325,6 @@ C-------------------------
      .                          KEYWORD3    = KEY2)
             NN = 0
             NSEG=0
-            KLINE=LINE
             IF(KEY(1:3) == 'BOX'.AND. NBBOX > 0)THEN
               NSEG=0
               IADBOX = 1
@@ -404,7 +406,6 @@ C=======================================================================
      .                          KEYWORD2    = KEY   ,
      .                          KEYWORD3    = KEY2)
             NSEG=0
-            KLINE=LINE
             IF (KEY(1:4) == 'PART'.OR.KEY(1:6) == 'SUBSET'.OR. KEY(1:3) == 'MAT' .OR.KEY(1:4) == 'PROP') THEN
               IF (FLAG == 1) THEN ! NSEG counted at FLAG = 0
                 NSEG0 = IGRSLIN(IGS)%NSEG

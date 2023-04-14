@@ -52,6 +52,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE UNITAB_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -89,9 +90,9 @@ C-----------------------------------------------
       INTEGER ,DIMENSION(3*NUMNOD) :: IKINE1
       my_real :: YSCALE,TSTART,TSTOP,XSCALE,FSCAL_T,FSCAL_V
       CHARACTER(2)           :: X,Y,Z,XX,YY,ZZ
-      CHARACTER(ncharfield)  :: XYZ
-      CHARACTER(ncharkey)    :: KEY
-      CHARACTER(nchartitle)  :: TITR,MESS
+      CHARACTER(NCHARFIELD)  :: XYZ
+      CHARACTER(NCHARKEY)    :: KEY
+      CHARACTER(NCHARTITLE)  :: TITR,MESS
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
@@ -153,7 +154,7 @@ c--------------------------------------------------
         CALL HM_GET_INTV('rad_system_input_type'   ,SYS_TYPE ,IS_AVAILABLE,LSUBMODEL)
 c        
         CALL HM_GET_INTV  ('curveid'       ,FCT_ID   ,IS_AVAILABLE,LSUBMODEL)
-        CALL HM_GET_STRING('rad_dir'       ,XYZ      ,ncharfield,IS_AVAILABLE)
+        CALL HM_GET_STRING('rad_dir'       ,XYZ      ,NCHARFIELD,IS_AVAILABLE)
         CALL HM_GET_INTV  ('skew_ID'       ,SKEW_ID  ,IS_AVAILABLE,LSUBMODEL)
         CALL HM_GET_INTV  ('rad_sensor_id' ,SENS_ID  ,IS_AVAILABLE,LSUBMODEL)
         CALL HM_GET_INTV  ('entityid'      ,GRN      ,IS_AVAILABLE,LSUBMODEL)

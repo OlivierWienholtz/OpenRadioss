@@ -41,6 +41,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARKEY,NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -48,7 +49,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr17_c.inc"
 #include      "submod_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
@@ -56,8 +56,7 @@ C-----------------------------------------------
       INTEGER  ITAB(*),ITABM1(*),ISUBMOD(*)
       INTEGER  SID,NNOD,FLAG,NN
       CHARACTER MESS(*)
-      CHARACTER*nchartitle,
-     .   TITR,TITR1
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
       TYPE(SUBMODEL_DATA) LSUBMODEL(*)
 C-----------------------------------------------
       TYPE (GROUP_),TARGET  :: IGRNOD
@@ -67,7 +66,9 @@ C-----------------------------------------------
       INTEGER I,J,K,ISU,IDNOD,INUM,JREC,NTAG,CTAG,CUR_SUBMOD,ISELECT,IOK,
      .        ID,IDU,NBNODES,NENTITY,KK,JJ,NBCNODES
       INTEGER  TAGS(0:NSUBMOD),J10(10)
-      CHARACTER KEY*ncharkey,CART*ncharline,VERS_IN*ncharfield
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=NCHARFIELD) :: VERS_IN
+      CHARACTER(LEN=NCHARLINE)  :: CART
       INTEGER,DIMENSION(:),ALLOCATABLE :: LIST_ENTITY
       INTEGER, DIMENSION(:), ALLOCATABLE :: TAGNODSUB
       LOGICAL IS_AVAILABLE
@@ -182,6 +183,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARKEY,NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -197,8 +199,7 @@ C-----------------------------------------------
       INTEGER  NIX,SID,NEL,NUMEL,IELT,FLAG,NN,IGS
       INTEGER  ISUBMOD(*),IX(NIX,*)
       CHARACTER MESS(*)
-      CHARACTER*nchartitle,
-     .   TITR,TITR1
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
       TYPE(SUBMODEL_DATA) LSUBMODEL(NSUBMOD)
 C-----------------------------------------------
       TYPE (GROUP_) IGRELEM(*)
@@ -207,7 +208,9 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,J,K,ISU,IDEL,INUM,TAG,CUR_SUBMOD,ISELECT,IOK, ID,IDU,ELEMTYPE,KK,JJ
       INTEGER  TAGS(0:NSUBMOD)
-      CHARACTER KEY*ncharkey,CART*ncharline,VERS_IN*ncharfield
+      CHARACTER(LEN=NCHARKEY)  :: KEY
+      CHARACTER(LEN=NCHARLINE) :: CART
+      CHARACTER(LEN=NCHARFIELD) :: VERS_IN
       INTEGER, DIMENSION(:), ALLOCATABLE :: TAGELEMSUB
       LOGICAL IS_AVAILABLE, IS_ENCRYPTED
       INTEGER,DIMENSION(:),ALLOCATABLE :: LIST_ELEM

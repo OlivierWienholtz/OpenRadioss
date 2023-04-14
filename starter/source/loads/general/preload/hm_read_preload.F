@@ -47,6 +47,8 @@ C-----------------------------------------------
       USE SENSOR_MOD
       USE HM_OPTION_READ_MOD    
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
+
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -84,7 +86,8 @@ C-----------------------------------------------
       my_real
      .   TDEB,TFIN, LOADVAL,
      .   X1,Y1,Z1,X2,Y2,Z2,X3,Y3,Z3,N3,AREA(NPRELOAD)
-      CHARACTER MESS*40,TITR*nchartitle
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------

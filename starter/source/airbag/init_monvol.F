@@ -69,6 +69,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE MONVOL_STRUCT_MOD
       USE SENSOR_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C     I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -153,9 +154,9 @@ C     REAL
       my_real
      .     SFBULK, SFMIN, SFMOUTT, SFMOUTP, SFP0, SFPMAX
 C     
-      CHARACTER MESS*40,KEY*ncharkey,TITR*nchartitle,
-     .     TITRSURF*nchartitle,TITR1*nchartitle,
-     .     TITR2*nchartitle,TITR3*nchartitle
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARKEY) :: KEY
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITRSURF,TITR1,TITR2,TITR3
       CHARACTER*10 MONVOLTYP(11)
       CHARACTER*20 VENTTITLE
       INTEGER :: NB_TETRA, NB_VERTICES, NB_EXTRA_VERTICES

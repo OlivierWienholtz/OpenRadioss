@@ -67,7 +67,7 @@ C-----------------------------------------------
       INTEGER NOM_OPT(LNOPT1),ID,TYP,UID
       TYPE (MULTI_FVM_STRUCT), INTENT(INOUT) :: MULTI_FVM
       TYPE (SURF_)   ,TARGET,  DIMENSION(NSURF)   :: IGRSURF
-      CHARACTER*nchartitle, INTENT(IN) :: TITR
+      CHARACTER(LEN=NCHARTITLE), INTENT(IN) :: TITR
       TYPE(SUBMODEL_DATA) LSUBMODEL(NSUBMOD)  
       TYPE(t_ebcs_monvol), INTENT(INOUT) :: EBCS
 C-----------------------------------------------

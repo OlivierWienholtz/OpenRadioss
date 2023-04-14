@@ -33,6 +33,7 @@ C-----------------------------------------------
 C   M o d u l e s
 C----------------------------------------------- 
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -49,8 +50,7 @@ C-----------------------------------------------
       INTEGER I,J,ID,IGU,NENTITY,GRTYPE,TRI,GRPGRP,LEVEL,R2R_ALL,
      .        R2R_SHARE,L_GROUP,ENTITY,
      .       NENTITY_L(NGR)
-      CHARACTER TITR*40
-!      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 !
       L_GROUP = 0
@@ -132,7 +132,7 @@ C-----------------------------------------------
       INTEGER I,J,ID,IGU,NENTITY,GRTYPE,TRI,GRPGRP,LEVEL,R2R_ALL,
      .        R2R_SHARE,L_GROUP,ERR,ITITLE(40),ENTITY,NENTITY_L
       CHARACTER TITR*40
-!      CHARACTER TITR*nchartitle
+!      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER LTITR
 C-----------------------------------------------
 !
@@ -237,7 +237,7 @@ C-----------------------------------------------
       my_real
      .        CODE
       CHARACTER TITR*40
-!      CHARACTER TITR*nchartitle
+!      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
       L_GROUP = 0
 !

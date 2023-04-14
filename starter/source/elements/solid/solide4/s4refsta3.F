@@ -51,6 +51,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE ELBUFDEF_MOD            
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,8 +83,7 @@ C-----------------------------------------------
       INTEGER I,II, N, JHBE, IGTYP, ITRS, ISTRA, IPID, IBID,
      .        NITSAV,JJ(6)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER MAT(MVSIZ), PID(MVSIZ), NGL(MVSIZ),
      .    IX1(MVSIZ), IX2(MVSIZ), IX3(MVSIZ), IX4(MVSIZ)
       DOUBLE PRECISION

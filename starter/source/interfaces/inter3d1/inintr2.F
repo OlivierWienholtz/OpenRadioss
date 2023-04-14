@@ -61,6 +61,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE INTBUFDEF_MOD
       USE INTBUFSCRATCH_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C============================================================================
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -104,8 +105,7 @@ C-----------------------------------------------
       INTEGER N, JINSCR, NINT, NTY,NRTM,NRTM0,
      .        NRTM_SH,INTPLY,KFI,ILEV,SWITCH,NSN,NREMN(NINTER),NINT2
       INTEGER ID,I,K,J1,J2
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C=======================================================================
 C
 C     SWITCH OF INTERF2 SPOTFLAG26 TO SPOTFLAG25 IF POSSIBLE 

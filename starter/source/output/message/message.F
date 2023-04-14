@@ -859,7 +859,11 @@ Chd|====================================================================
      .                  C5    ,C6    ,C7    ,C8    ,C9    ,
      .                  PRMODE )
 c     .                  PRMODE,IOPTION, IOPTION_TYPE) 
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE MESSAGE_MOD2
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
 C-----------------------------------------------
 C Usage sample :
 C      USE MESSAGE_MOD
@@ -930,10 +934,10 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER             IBUF(20)
       my_real             RBUF(10)
-      CHARACTER*ncharline CBUF(10)
+      CHARACTER(LEN=NCHARLINE) :: CBUF(10)
 C
-      CHARACTER*ncharline TMPLINE,MYFMT,TMPBUF
-      CHARACTER*ncharline TMPOUT,TMPIN,TMPIN2,TMPIN3
+      CHARACTER(LEN=NCHARLINE) ::TMPLINE,MYFMT,TMPBUF
+      CHARACTER(LEN=NCHARLINE) ::TMPOUT,TMPIN,TMPIN2,TMPIN3
       CHARACTER*20 CMSGTYPE
       CHARACTER*15 CTYPE
       INTEGER ITYPE,ILINE,I,I0,J,J0,SBUFMSG(2),IFILE,IOLD,
@@ -945,15 +949,15 @@ C
       my_real
      *        REAL_TMP
       INTEGER NCOUNT,ID_NUM,KEY_LEN
-      CHARACTER*ncharline KEY
-      CHARACTER*ncharline BUFMSG(2,100),BUFFMT(2,100),CHAR_TMP
+      CHARACTER(LEN=NCHARLINE) :: KEY
+      CHARACTER(LEN=NCHARLINE) :: BUFMSG(2,100),BUFFMT(2,100),CHAR_TMP
       CHARACTER*2304 OPTION_NAME_DYNA,DYNA_TITLE
       INTEGER S_OPTION_NAME_DYNA,SDYNA_TITLE,DYNA_ID
 C
       INTEGER, DIMENSION(:), ALLOCATABLE :: TMP_INTEGER
       my_real, DIMENSION(:), ALLOCATABLE :: TMP_REAL
-      CHARACTER*ncharline, DIMENSION(:), ALLOCATABLE :: TMP_CHAR
-      CHARACTER*ncharline, DIMENSION(:), ALLOCATABLE :: TMP_I
+      CHARACTER(LEN=NCHARLINE), DIMENSION(:), ALLOCATABLE :: TMP_CHAR
+      CHARACTER(LEN=NCHARLINE), DIMENSION(:), ALLOCATABLE :: TMP_I
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: ITRI
       INTEGER, DIMENSION(:), ALLOCATABLE :: INDEX,MES_DOUBLE
 C-----------------------------------------------
@@ -1217,7 +1221,7 @@ C
                     ISAV=I
                     I=I+1
                     IF (DYNA_MESSAGE == 1) THEN          ! Treatment ignored when DYNA_MESSAGE=0 / Native Rd Deck
-                      CALL MESS_EXTRACT_FORMAT(TMPLINE(I:ncharline),LEN_TRIM(TMPLINE(I:ncharline)),NCOUNT,ID_NUM,KEY,KEY_LEN)  ! format is %iXX="/KEY" XX=1-11
+                      CALL MESS_EXTRACT_FORMAT(TMPLINE(I:NCHARLINE),LEN_TRIM(TMPLINE(I:NCHARLINE)),NCOUNT,ID_NUM,KEY,KEY_LEN)  ! format is %iXX="/KEY" XX=1-11
                       I=I+NCOUNT
                       OPTION_NAME_DYNA=' ' 
                       S_OPTION_NAME_DYNA=1
@@ -1493,10 +1497,10 @@ c   MESSAGE SUMMARY
 c-----------------------------------------------------------
 c
         MYFMT='(A,X,A)' 
-	IF(MSGTYPE == 0) THEN 
-	  WRITE(RES_CHECK,MYFMT) 'M_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
-	ELSEIF(MSGTYPE == 1) THEN
-	  WRITE(RES_CHECK,MYFMT) 'W_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
+        IF(MSGTYPE == 0) THEN 
+            WRITE(RES_CHECK,MYFMT) 'M_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
+        ELSEIF(MSGTYPE == 1) THEN
+            WRITE(RES_CHECK,MYFMT) 'W_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
 	ELSEIF(MSGTYPE == 2) THEN
 	  WRITE(RES_CHECK,MYFMT) 'E_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
 	ENDIF
@@ -1513,9 +1517,9 @@ c
 	ELSE
 	  WRITE(RES_CHECK,MYFMT) 'TITLE=',''
 	ENDIF
-	MYFMT='(A,I10,X)'
-	WRITE(RES_CHECK,MYFMT) 'ID_MES=',MSGID
-	WRITE(RES_CHECK,MYFMT) 'NB_REPET=',NBREPET
+       MYFMT='(A,I10,X)'
+      	WRITE(RES_CHECK,MYFMT) 'ID_MES=',MSGID
+       	WRITE(RES_CHECK,MYFMT) 'NB_REPET=',NBREPET
 C
         CMSGTYPE=' '
         IF (MSGTYPE==0) THEN
@@ -1665,7 +1669,7 @@ C                WRITE(CTYPE,'(A,/)')"DESCRIPTION : "
                     I=I+1
                     IF(DYNA_MESSAGE == 1) THEN
 
-                      CALL MESS_EXTRACT_FORMAT(TMPLINE(I:ncharline),LEN_TRIM(TMPLINE(I:ncharline)),NCOUNT,ID_NUM,KEY,KEY_LEN)  ! format is %iXX="/KEY" XX=1-11
+                      CALL MESS_EXTRACT_FORMAT(TMPLINE(I:NCHARLINE),LEN_TRIM(TMPLINE(I:NCHARLINE)),NCOUNT,ID_NUM,KEY,KEY_LEN)  ! format is %iXX="/KEY" XX=1-11
 
                       I=I+NCOUNT
                       IOLD=I
@@ -1794,11 +1798,11 @@ c          WRITE(RES_MES,'(A)') TMPIN
 c        ENDDO
 c140     CONTINUE
 c        CLOSE (UNIT=RES_TMP,STATUS='DELETE')
-	REWIND RES_TMP
-	CLOSE (UNIT=RES_MES)
-	ITMP = RES_MES
-	RES_MES = RES_TMP
-	RES_TMP = ITMP
+         REWIND RES_TMP
+         CLOSE (UNIT=RES_MES)
+         ITMP = RES_MES
+         RES_MES = RES_TMP
+         RES_TMP = ITMP
 
        ENDIF
       ELSE                  ! PRMODE Was not set / No Message Stacking.
@@ -1807,30 +1811,30 @@ C
 c-----------------------------------------------------------
 c   MESSAGE SUMMARY
 c-----------------------------------------------------------
-	MYFMT='(A,X,A)'
-	IF(MSGTYPE == 0) THEN 
-	  WRITE(RES_CHECK,MYFMT) 'M_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
-	ELSEIF(MSGTYPE == 1) THEN
-	  WRITE(RES_CHECK,MYFMT) 'W_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
-	ELSEIF(MSGTYPE == 2) THEN
-	  WRITE(RES_CHECK,MYFMT) 'E_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
-	ENDIF
-	MYFMT='(A,I10,X)' 
-	WRITE(RES_CHECK,MYFMT) 'OPTION_TYPE=',0
-	IF(PRESENT(I1))THEN
-	  WRITE(RES_CHECK,MYFMT) 'OPTION_ID=',I1
-	ELSE
-	  WRITE(RES_CHECK,MYFMT) 'OPTION_ID=',0
-	ENDIF
-	MYFMT='(A,X,A)'
-	IF(PRESENT(C1))THEN
-	  WRITE(RES_CHECK,MYFMT) 'TITLE=',C1(1:LEN_TRIM(C1))
-	ELSE
-	  WRITE(RES_CHECK,MYFMT) 'TITLE=',''
-	ENDIF
-	MYFMT='(A,I10,X)'
-	WRITE(RES_CHECK,MYFMT) 'ID_MES=',MSGID
-	WRITE(RES_CHECK,MYFMT) 'NB_REPET=',1
+        MYFMT='(A,X,A)'
+        IF(MSGTYPE == 0) THEN 
+            WRITE(RES_CHECK,MYFMT) 'M_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
+        ELSEIF(MSGTYPE == 1) THEN
+            WRITE(RES_CHECK,MYFMT) 'W_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
+        ELSEIF(MSGTYPE == 2) THEN
+           WRITE(RES_CHECK,MYFMT) 'E_OPTION=',ERR_CATEGORY(1:LEN_TRIM(ERR_CATEGORY))
+        ENDIF
+        MYFMT='(A,I10,X)' 
+        WRITE(RES_CHECK,MYFMT) 'OPTION_TYPE=',0
+        IF(PRESENT(I1))THEN
+           WRITE(RES_CHECK,MYFMT) 'OPTION_ID=',I1
+        ELSE
+	         WRITE(RES_CHECK,MYFMT) 'OPTION_ID=',0
+        ENDIF
+           MYFMT='(A,X,A)'
+        IF(PRESENT(C1))THEN
+         WRITE(RES_CHECK,MYFMT) 'TITLE=',C1(1:LEN_TRIM(C1))
+        ELSE
+         WRITE(RES_CHECK,MYFMT) 'TITLE=',''
+        ENDIF
+        MYFMT='(A,I10,X)'
+        WRITE(RES_CHECK,MYFMT) 'ID_MES=',MSGID
+        WRITE(RES_CHECK,MYFMT) 'NB_REPET=',1
 C   
         CMSGTYPE=' '
         IF (MSGTYPE==0) THEN
@@ -2130,7 +2134,7 @@ c CONVERTER messages ( line with error sent by onverter)
                       ISAV=I
                       I=I+1
                       IF(DYNA_MESSAGE == 1) THEN
-                        CALL MESS_EXTRACT_FORMAT(TMPLINE(I:ncharline),LEN_TRIM(TMPLINE(I:ncharline)),NCOUNT,ID_NUM,KEY,KEY_LEN)  ! format is %iXX="/KEY" XX=1-11
+                        CALL MESS_EXTRACT_FORMAT(TMPLINE(I:NCHARLINE),LEN_TRIM(TMPLINE(I:NCHARLINE)),NCOUNT,ID_NUM,KEY,KEY_LEN)  ! format is %iXX="/KEY" XX=1-11
                         I=I+NCOUNT
                         IOLD=I
                         OPTION_NAME_DYNA=' ' 
@@ -2155,7 +2159,7 @@ c CONVERTER messages ( line with error sent by onverter)
                     TMPOUT=TMPOUT(1:INDXTMPOUT)//TMPBUF(1:BUFLEN)
                     INDXTMPOUT=INDXTMPOUT+BUFLEN
                     BUFLEN=0
-                    INDXTMPOUT=MIN(INDXTMPOUT,ncharline)
+                    INDXTMPOUT=MIN(INDXTMPOUT,NCHARLINE)
                   END IF
                 END DO                
                 IF (IOLD<=I) THEN
@@ -2166,11 +2170,11 @@ c CONVERTER messages ( line with error sent by onverter)
                     TMPOUT=TMPOUT(1:INDXTMPOUT)//TMPBUF(1:BUFLEN)
                     INDXTMPOUT=INDXTMPOUT+BUFLEN
                     BUFLEN=0
-                    INDXTMPOUT=MIN(INDXTMPOUT,ncharline)
+                    INDXTMPOUT=MIN(INDXTMPOUT,NCHARLINE)
                   END IF
                 END IF
               ENDIF
-              INDXTMPOUT=MIN(INDXTMPOUT,ncharline)
+              INDXTMPOUT=MIN(INDXTMPOUT,NCHARLINE)
               IF (INDXTMPOUT>0) THEN
 C               do not write title on stdo in case ANINFO_BLIND_2
                IF(NO_PRINT == 0)THEN                              ! NO_PRINT is set to 1 when %i is found & 
@@ -2271,6 +2275,10 @@ Chd|-- calls ---------------
 Chd|====================================================================
       SUBROUTINE MESS_EXTRACT_FORMAT(TMPLINE,LINE_SIZE,NCOUNT,ID_NUM,KEY,KEY_LEN) 
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------        
+        USE NAMES_AND_TITLES_MOD ,ONLY: NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -2282,7 +2290,7 @@ C-----------------------------------------------
 
       INTEGER, INTENT(OUT)                        :: NCOUNT         ! format length
       INTEGER, INTENT(OUT)                        :: ID_NUM         ! processed ID indice
-      CHARACTER, INTENT(OUT),DIMENSION(ncharline) :: KEY            ! output string with option type
+      CHARACTER, INTENT(OUT),DIMENSION(NCHARLINE) :: KEY            ! output string with option type
       INTEGER, INTENT(OUT)                        :: KEY_LEN        ! output string with option type
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s

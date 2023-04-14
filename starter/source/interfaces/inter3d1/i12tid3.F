@@ -35,6 +35,7 @@ Chd|====================================================================
      3                   ID  , TITR
      .                   )
       USE MESSAGE_MOD 
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   D e s c r i p t i o n
 C-----------------------------------------------
@@ -54,7 +55,7 @@ C-----------------------------------------------
       INTEGER,INTENT(IN)    :: IRECT(4,*) , MSR(*), NSV(*), ILOC(*), IRTL(*),ITAB(*)
       my_real,INTENT(IN)    :: X(3,NUMNOD), ALP
       my_real,INTENT(INOUT) :: CRST(2,*)
-      CHARACTER*nchartitle,INTENT(INOUT) :: TITR
+      CHARACTER(LEN=NCHARTITLE),INTENT(INOUT) :: TITR
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------

@@ -51,6 +51,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE TRI7BOX
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,8 +83,7 @@ C     REAL
      .   BGAPSMX
       my_real , INTENT(IN) :: DRAD, DGAPLOAD
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       my_real :: LENGTH_TRESHOLD
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s

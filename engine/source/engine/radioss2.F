@@ -157,7 +157,8 @@ Chd|        TIME_MOD                      share/modules/time_mod.F
 Chd|        UNITS_MOD                     share/modules/units_mod.F     
 Chd|        USER_INTERFACE_MOD            share/modules/user_interface_mod.F
 Chd|====================================================================
-      SUBROUTINE RADIOSS2(IDATA,MIDATA,RDATA,MRDATA) 
+      SUBROUTINE RADIOSS2(IDATA ,MIDATA   ,RDATA,MRDATA,NAMES_AND_TITLES,
+     *                    PATH  ,GOT_PATH ,PATH_LENGTH,INPUT,GOT_INPUT,INPUT_LENGTH )       
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -206,6 +207,8 @@ C-----------------------------------------------
       USE INTERFACES_MOD
       USE DT_MOD
       USE LOADS_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
+
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -240,7 +243,6 @@ C-----------------------------------------------
 #include      "scr20_c.inc"
 #include      "scr23_c.inc"
 #include      "scr_fac_c.inc"
-#include      "chara_c.inc"
 #include      "task_c.inc"
 #include      "warn_c.inc"
 #include      "parit_c.inc"
@@ -262,6 +264,10 @@ C-----------------------------------------------
       INTEGER MRDATA,MIDATA
       INTEGER IDATA(*)
       my_real RDATA(*)
+      TYPE(NAMES_AND_TITLES_),INTENT(INOUT) :: NAMES_AND_TITLES
+      CHARACTER(LEN=2048),INTENT(IN)        :: PATH
+      CHARACTER(LEN=256),INTENT(IN)         :: INPUT
+      INTEGER,INTENT(IN)                    :: GOT_PATH ,PATH_LENGTH,GOT_INPUT,INPUT_LENGTH
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -273,7 +279,7 @@ C-----------------------------------------------
      .        I40A,I40B,I40G,I78N,IO_ERR,LEN_G,LEN_M, IAD1, IAD2, IAD3,
      .        IUN,IFUN, ITH, I76ATH(9), IFIL, IO_ERRL,
      .        RADIOSSV,RADFLEXV,RDFLEXCOMP,ABFV,ABFCOMP,IFILABF,
-     .        NB_OF_FILES,N_FAIL,IP,IRUNN_BIS,IFILTITL
+     .        NB_OF_FILES,N_FAIL,IP,IRUNN_BIS,IFILTITL,RUNN
       INTEGER OMP_GET_THREAD_NUM,LONG,LONG_TMP,
      .        LENV,FVERS,LFNAME,NB_INDEX_ABF
       CHARACTER FILNAM*100, VERSDP*36,CHRUNM1*2, INPUTNAM*100,
@@ -378,7 +384,7 @@ c      DATA VERSIO(2)/'VERSION 5.2main,                    '/
       WRITE(VERSIO(2),'(A)') '                                    '
       WRITE(VERSIO(2),'(A,A,A)') 'VERSION ',VERS(1:LENV),','
 CRVERS for version in MADCL
-      RVERS(1:LENV)=VERS(1:LENV)
+      NAMES_AND_TITLES%VERS(1:LENV)=VERS(1:LENV)
 C------------------------------------------------------------------
 C Constant initialization
        CALL INICONSTANT
@@ -557,19 +563,19 @@ C--------------------------------------------------
       IF (GOT_INPUT == 1) THEN
 C Get input numer & run number
 
-        CALL GET_FILE_NAME_INFO(INPUT,LENINPUT,
-     *                          ROOTN,LENROOTN,
+        CALL GET_FILE_NAME_INFO(INPUT,INPUT_LENGTH,
+     *                          NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH,
      *                          RUNN,FVERS)
 
 C Open input file for reading
          ISTDI = 80
-         INPUTNAM(1:LENINPUT)=INPUT(1:LENINPUT)
+         INPUTNAM(1:INPUT_LENGTH)=INPUT(1:INPUT_LENGTH)
          IF (GOT_PATH==1)THEN
-           FNAME=PATH(1:LENPATH)//INPUTNAM(1:LENINPUT)
+           FNAME=TRIM(PATH)//INPUTNAM(1:INPUT_LENGTH)
          ELSE
-           FNAME(1:LENINPUT) = INPUTNAM(1:LENINPUT)
+           FNAME(1:INPUT_LENGTH) = INPUTNAM(1:INPUT_LENGTH)
          ENDIF
-         LFNAME=LENINPUT+LENPATH
+         LFNAME=INPUT_LENGTH+PATH_LENGTH
 
 C Save Filename with path for use in user library
          RAD_INPUTNAME(1:LFNAME)=FNAME(1:LFNAME)
@@ -584,7 +590,7 @@ c
         BOOL_C = 0
         IF(OUTFILE_BOOL) BOOL_C = 1
 
-        CALL LF_CONVERT_C_FLAT(GOT_INPUT,ROOTN,LENROOTN,FNAME,LFNAME,
+        CALL LF_CONVERT_C_FLAT(GOT_INPUT,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH,FNAME,LFNAME,
      .                         INAME, IERR,1024,LEN_TMP_NAME,TMP_NAME,
      .                         LEN_TMP_NAME2,TMP_NAME2)
 
@@ -618,13 +624,13 @@ C--------------------------------------------------
       HVISC=HALF
       HVLIN=ZERO
 C--------------------------------------------------
-      CALL OPEN_F_SCRATCH_FILE(8,1,ROOTN,LENROOTN,IINFNA)
+      CALL OPEN_F_SCRATCH_FILE(8,1,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH,IINFNA)
 
       IF ( GOT_INPUT == 0)THEN
        IF (ISPMD/=0) THEN
 C redirect IOUT to tmp file  fichier temporaire when SPMD on pi <> 0
          IOUT = IUSC4
-         CALL OPEN_F_SCRATCH_FILE(IOUT,1,ROOTN,LENROOTN,IUSC4_FNAM)
+         CALL OPEN_F_SCRATCH_FILE(IOUT,1,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH,IUSC4_FNAM)
          LEN_IUSC4_FNAM=LEN_TRIM(IUSC4_FNAM)
 
          WRITE(UNIT=IOUT,IOSTAT=IOS,FMT='(A)')
@@ -638,7 +644,7 @@ C redirect IOUT to tmp file  fichier temporaire when SPMD on pi <> 0
       ELSE
        IF (ISPMD/=0) THEN
          IOUT = IUSC4
-         CALL OPEN_F_SCRATCH_FILE(IOUT,1,ROOTN,LENROOTN,IUSC4_FNAM)
+         CALL OPEN_F_SCRATCH_FILE(IOUT,1,NAMES_AND_TITLES%ROOTNAME,NAMES_AND_TITLES%ROOTNAME_LENGTH,IUSC4_FNAM)
          LEN_IUSC4_FNAM=LEN_TRIM(IUSC4_FNAM)
          WRITE(UNIT=IOUT,IOSTAT=IOS,FMT='(A)')
        ENDIF
@@ -647,7 +653,7 @@ C------------------------------------------------
 C     Standard input reading
 C------------------------------------------------
       CALL LECINP(IRUNN,IRFL,IRFE,H3D_DATA,FLAG_CST_AMS,DYNAIN_DATA,
-     .            SENSORS,DT,OUTPUT)
+     .            SENSORS,DT,OUTPUT, NAMES_AND_TITLES,GOT_INPUT,RUNN)
       NFSKYI=5
       IF(KDTINT==0 )NFSKYI=4
       
@@ -656,8 +662,8 @@ C --------------------------------
 C when stdi indirection is used need to rebuild Engine input deck
 C For dynamical user libraries
 C --------------------------------
-      WRITE(CHRUN,'(I2.2)')IRUNN
-      RAD_INPUTNAME=ROOTNAM(1:ROOTLEN)//'D'//CHRUN
+      WRITE(NAMES_AND_TITLES%CHRUN,'(I2.2)')IRUNN
+      RAD_INPUTNAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'D'//NAMES_AND_TITLES%CHRUN
       LEN_RAD_INPUTNAME=LEN_TRIM(RAD_INPUTNAME)
       ENDIF
 C------------------------------------------------
@@ -670,9 +676,9 @@ C------------------------------------------------
 C       Create info, hist, monitor, progress and tpl files for writing implicit nonlinear solver information
         IF (IMPL_S>ZERO.AND.ILINE==ZERO.AND.SOLVNFO>ZERO) THEN
           ISOLPGRS = 666666
-          FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.progress'
-          LEN_TMP_NAME = OUTFILE_NAME_LEN+ROOTLEN+14
-          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+14)          
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.progress'
+          LEN_TMP_NAME = OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+14
+          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+14)          
           OPEN(UNIT=ISOLPGRS,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .         ACCESS='SEQUENTIAL',
      .         FORM='FORMATTED',STATUS='UNKNOWN')
@@ -683,16 +689,16 @@ C       Create info, hist, monitor, progress and tpl files for writing implicit 
           WRITE(ISOLPGRS,'(I4)') 0
           CALL FLUSH(ISOLPGRS)       
           ISOLMNTR = 66666
-          FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.monitor'
-          LEN_TMP_NAME = OUTFILE_NAME_LEN+ROOTLEN+13
-          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+13)          
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.monitor'
+          LEN_TMP_NAME = OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+13
+          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+13)          
           OPEN(UNIT=ISOLMNTR,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .         ACCESS='SEQUENTIAL',
      .         FORM='FORMATTED',STATUS='UNKNOWN')         
           ISOLHIST = 66
-          FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_implicit.hist'
-          LEN_TMP_NAME = OUTFILE_NAME_LEN+ROOTLEN+19
-          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+19)          
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_implicit.hist'
+          LEN_TMP_NAME = OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+19
+          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+19)          
           OPEN(UNIT=ISOLHIST,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .         ACCESS='SEQUENTIAL',
      .         FORM='FORMATTED',STATUS='UNKNOWN')
@@ -716,34 +722,34 @@ C       Create info, hist, monitor, progress and tpl files for writing implicit 
 1007      FORMAT(A,',',A,',',A,',',A,',',A,',',A,',',A,',',A,',',A,
      .           ',',A,',',A,',',A,',',A,',',A,',',A)     
           ISOLINFO = 666
-          FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_implicit.info'
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_implicit.info'
           INPUTNAM='CHECK_DATA'
-          LEN_TMP_NAME = OUTFILE_NAME_LEN+ROOTLEN+19
-          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+19)  
+          LEN_TMP_NAME = OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+19
+          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+19)  
           OPEN(UNIT=ISOLINFO,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .         ACCESS='SEQUENTIAL',
      .         FORM='FORMATTED',STATUS='UNKNOWN')    
           ISOLTPL = 6666
-          FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_implicit.tpl'
-          LEN_TMP_NAME = OUTFILE_NAME_LEN+ROOTLEN+18
-          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+18)  
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_implicit.tpl'
+          LEN_TMP_NAME = OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+18
+          TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+18)  
           INPUTNAM='CHECK_DATA'
           OPEN(UNIT=ISOLTPL,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .         ACCESS='SEQUENTIAL',
      .         FORM='FORMATTED',STATUS='UNKNOWN')
-          FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_implicit'
-          WRITE(ISOLTPL,1004) FILNAM(1:ROOTLEN+14)
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_implicit'
+          WRITE(ISOLTPL,1004) FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+14)
           WRITE(ISOLTPL,1005)
-          FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_implicit.hist'
-          WRITE(ISOLTPL,1006) FILNAM(1:ROOTLEN+19)
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_implicit.hist'
+          WRITE(ISOLTPL,1006) FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+19)
           IOFF1 = 'Off'
           IOFF2 = 'Off'
           IOFF3 = 'Off'
           IF (NITOL == 1 .OR. NITOL == 12 .OR. NITOL == 13 .OR. NITOL == 123) IOFF1 = 'On'
           IF (NITOL == 0 .OR. NITOL == 2 .OR. NITOL == 12 .OR. NITOL == 23 .OR. NITOL == 123) IOFF2 = 'On'
           IF (NITOL == 3 .OR. NITOL == 13 .OR. NITOL == 23 .OR. NITOL == 123) IOFF3 = 'On'
-          FILNAM=ROOTNAM(1:ROOTLEN)
-          CALL WRITE_TPL_FILE(FILNAM(1:ROOTLEN),IOFF1,IOFF2,IOFF3)
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)
+          CALL WRITE_TPL_FILE(FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH),IOFF1,IOFF2,IOFF3)
 1004      FORMAT('*DefineReport(',A,', PLOT_FILE_1)')
 1005      FORMAT('    *Id("HyperWorks", "Report")')           
 1006      FORMAT('    *Parameter(PLOT_FILE_1, PLOT_FILE_1, FILENAME, "*", "',
@@ -751,12 +757,12 @@ C       Create info, hist, monitor, progress and tpl files for writing implicit 
         ENDIF
       ENDIF
         IF(IOUT==0)IOUT=7
-        WRITE(CHRUN,'(I4.4)')IRUNN
+        WRITE(NAMES_AND_TITLES%CHRUN,'(I4.4)')IRUNN
         IF(MCHECK/=0)THEN
          IF(ISPMD==0) THEN
-            FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.out'
-            LEN_TMP_NAME = OUTFILE_NAME_LEN+ROOTLEN+9
-            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+9)
+            FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.out'
+            LEN_TMP_NAME = OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+9
+            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+9)
             INPUTNAM='CHECK_DATA'
             OPEN(UNIT=IOUT,FILE=TMP_NAME(1:LEN_TMP_NAME),ACCESS='SEQUENTIAL',FORM='FORMATTED',STATUS='UNKNOWN')
 
@@ -765,45 +771,45 @@ C       Create info, hist, monitor, progress and tpl files for writing implicit 
               READ(IOUT,'(A)',END = 1000,IOSTAT=IO_ERRL)LINE
             ENDDO
  1000      BACKSPACE(IOUT)
-           WRITE(IOUT,'(1X,A)')FILNAM(1:ROOTLEN+9)
+           WRITE(IOUT,'(1X,A)')FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+9)
            WRITE(PROCNAM,'(I4.4)')ISPMD
-           FILNAM =ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//PROCNAM//'.rst'
-           LEN = ROOTLEN + 14
+           FILNAM =TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//PROCNAM//'.rst'
+           LEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 14
          ENDIF
          WRITE(PROCNAM,'(I4.4)')ISPMD+1
-         FILNAM =ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//PROCNAM//'.rst'
-         LEN = ROOTLEN + 14
+         FILNAM =TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//PROCNAM//'.rst'
+         LEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 14
         ELSE
          IF (ISPMD==0) THEN
            WRITE(CHR_OLD,'(I2.2)')IRUNN
-           FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.out'
+           FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.out'
 
            IF (GOT_INPUT == 0)THEN
-             INPUTNAM=ROOTNAM(1:ROOTLEN)//'D'//CHR_OLD
+             INPUTNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'D'//CHR_OLD
              IF(INVERS>=50)
-     .       INPUTNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.rad'
+     .       INPUTNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.rad'
            ELSE
-             INPUTNAM(1:LENINPUT)=INPUT(1:LENINPUT)
+             INPUTNAM(1:INPUT_LENGTH)=INPUT(1:INPUT_LENGTH)
            ENDIF
-           LEN_TMP_NAME = OUTFILE_NAME_LEN+ROOTLEN+9
-           TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+9)
+           LEN_TMP_NAME = OUTFILE_NAME_LEN+NAMES_AND_TITLES%ROOTNAME_LENGTH+9
+           TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+9)
            OPEN(UNIT=IOUT,FILE=TMP_NAME(1:LEN_TMP_NAME),
      .       ACCESS='SEQUENTIAL',
      .       FORM='FORMATTED',STATUS='UNKNOWN')
 C
-           WRITE(IOUT,'(1X,A)')FILNAM(1:ROOTLEN+9)
+           WRITE(IOUT,'(1X,A)')FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+9)
          ENDIF
          WRITE(CHRU_M1,'(I4.4)')IRUNN-1
          WRITE(PROCNAM,'(I4.4)')ISPMD
-         FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRU_M1//'_'//PROCNAM
-         LEN = ROOTLEN+10
+         FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRU_M1//'_'//PROCNAM
+         LEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+10
 C
          WRITE(CHRU_M1,'(I4.4)')IRUNN-1
          WRITE(PROCNAM,'(I4.4)')ISPMD+1
-          FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRU_M1//'_'//PROCNAM
-          LEN = ROOTLEN+10
-         IF(CHRUN0(1:1)=='_')THEN
-           FILNAM=FILNAM(1:LEN)//CHRUN0
+          FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRU_M1//'_'//PROCNAM
+          LEN = NAMES_AND_TITLES%ROOTNAME_LENGTH+10
+         IF(NAMES_AND_TITLES%CHRUN0(1:1)=='_')THEN
+           FILNAM=FILNAM(1:LEN)//NAMES_AND_TITLES%CHRUN0
            LEN = LEN+2
          ENDIF
          FILNAM=FILNAM(1:LEN)//'.rst'
@@ -831,9 +837,9 @@ C
 C
       IF (ISPMD==0) THEN
         CALL  RADIOSS_TITLE(IOUT ,CPUNAM,ARCHTITLE,
-     *                      FILNAM,ROOTLEN,CHRUN,IRESP,0)
+     *                      FILNAM,NAMES_AND_TITLES%ROOTNAME_LENGTH,NAMES_AND_TITLES%CHRUN,IRESP,0)
         CALL  RADIOSS_TITLE(ISTDO,CPUNAM,ARCHTITLE,
-     *                      FILNAM,ROOTLEN,CHRUN,IRESP,1)
+     *                      FILNAM,NAMES_AND_TITLES%ROOTNAME_LENGTH,NAMES_AND_TITLES%CHRUN,IRESP,1)
       ENDIF
 C------------------------------------------------------------------
 C     IGNORE CORE
@@ -847,7 +853,8 @@ C     .rst file reading 1
 C------------------------------------------------
       CALL RDRESA(ITSTV1 ,LHEADER ,LVARINT ,LVARREA ,PRADIOS ,
      .            PRESFIL, MULTI_FVM, H3D_DATA,
-     .            PINCH_DATA,DYNAIN_DATA,INTERFACES,SENSORS,LOADS)
+     .            PINCH_DATA,DYNAIN_DATA,INTERFACES,SENSORS,LOADS,
+     .            NAMES_AND_TITLES)
 C------------------------------------------------
 C     Test of .rst file compatibility
 C------------------------------------------------
@@ -1000,15 +1007,13 @@ c
       GLOBAL_COMP_TIME%ENGINE_TIME(1:IRUNN) = ZERO
       GLOBAL_COMP_TIME%RUN_NBR = IRUNN
       GLOBAL_COMP_TIME%RST_NAME(1:1000)=''
-      GLOBAL_COMP_TIME%RST_NAME=
-     .   ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_0001.rst'
-c
+      GLOBAL_COMP_TIME%RST_NAME=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_0001.rst'
       CALL RDRESB(AF                ,IAF      ,LVARREA      ,XDP             ,IRUNN     , 
      .            MULTI_FVM        ,H3D_DATA  ,MATPARAM_TAB ,GROUP_PARAM_TAB ,PINCH_DATA,
      .            ALE_CONNECTIVITY ,T_MONVOL  ,SENSORS      ,EBCS_TAB        ,DYNAIN_DATA,
-     .            USER_WINDOWS     ,OUTPUT    ,INTERFACES   ,LOADS           )
+     .            USER_WINDOWS     ,OUTPUT    ,INTERFACES   ,LOADS           ,NAMES_AND_TITLES)
 
-      IF (NSPMD > 1)  CALL SPMD_RST_CHECK()
+      IF (NSPMD > 1)  CALL SPMD_RST_CHECK(NAMES_AND_TITLES)
 c----------
 
       IF (IMACH==3) NSPROC=1
@@ -1539,7 +1544,7 @@ C------------------------------------------------
      F              IGRPART,TAG_SKINS6,ICFIELD,LCFIELD,TAGSLV_RBY,
      G              MDS_LABEL,MDS_OUTPUT_TABLE,MDS_NMAT,MAX_DEPVAR,
      H              MDS_NDEPSVAR,STACK,IBCL,ILOADP,LLOADP,SENSORS,
-     I              DYNAIN_DATA,DT ,LOADS ,OUTPUT)
+     I              DYNAIN_DATA,DT ,LOADS ,OUTPUT,NAMES_AND_TITLES )
 
 C------------------------------------------------
 C Close & Delete scratch file
@@ -1643,10 +1648,10 @@ C------------------------------------------------
       IF (ISPMD==0) THEN
         IF(TH_VERS>=40)THEN
          WRITE(CHR_OLD,'(I2.2)')IRUNN
-         FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//CHR_OLD
+         FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//CHR_OLD
          LONG= 3
          IF(TH_VERS>=50)THEN
-          FILNAMTH=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.thy'
+          FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.thy'
           LONG = 9
          ENDIF
           IUNIT=IUHIS
@@ -1658,18 +1663,18 @@ C------------------------------------------------
      3                 SUBSETS ,OUTPUT%TH%ITHGRP  ,OUTPUT%TH%ITHBUF  ,IGEO,
      4                 IPM     ,IPART   ,LIPART1  ,8,
      5                 12      ,ITFORM  ,ITHFLAG ,ITHVAR,
-     6                 IFILTITL,OUTPUT%TH%SITHBUF)
+     6                 IFILTITL,OUTPUT%TH%SITHBUF,NAMES_AND_TITLES)
           WA(1:SWA) = ZERO
 C   Multiple th files
             IF(NTHGRP01(1)/=0)THEN
               WRITE(CHR_OLD,'(I2.2)')IRUNN
               FILTH  = CHR_OLD
               FILTH(3:3)= ABC(1)
-              FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//FILTH
+              FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//FILTH
               LONG = 4
               IF(TH_VERS>=50) THEN
-               FILNAMTH=ROOTNAM(1:ROOTLEN)
-     .             //'_'//CHRUN//'_'//ABC(1)//'.thy'
+               FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)
+     .             //'_'//NAMES_AND_TITLES%CHRUN//'_'//ABC(1)//'.thy'
                LONG = 11
               ENDIF
               IUNIT= IUHI(1)
@@ -1688,11 +1693,10 @@ C   Multiple th files
               WRITE(CHR_OLD,'(I2.2)')IRUNN
               FILTH  = CHR_OLD
               FILTH(3:3)= ABC(2)
-              FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//FILTH
+              FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//FILTH
               LONG = 4
               IF(TH_VERS>=50) THEN
-               FILNAMTH=ROOTNAM(1:ROOTLEN)
-     .             //'_'//CHRUN//'_'//ABC(2)//'.thy'
+               FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//ABC(2)//'.thy'
                LONG = 11
               ENDIF
               IUNIT= IUHI(2)
@@ -1704,18 +1708,17 @@ C   Multiple th files
      3                   SUBSETS ,OUTPUT%TH%ITHGRPB ,OUTPUT%TH%ITHBUFB ,IGEO ,
      4                   IPM     ,IPART(1+LIPART1*(NPART+NTHPART)+2*(NPART+NTHPART)),2,1,
      5                   1       ,AFORM(2)          ,ITHFLAG          ,ITHVAR,
-     6                   IFILTITL,OUTPUT%TH%SITHBUFB)
+     6                   IFILTITL,OUTPUT%TH%SITHBUFB,NAMES_AND_TITLES)
             END IF
 
             IF(NTHGRP01(3)/=0)THEN
               WRITE(CHR_OLD,'(I2.2)')IRUNN
               FILTH  = CHR_OLD
               FILTH(3:3)= ABC(3)
-              FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//FILTH
+              FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//FILTH
               LONG = 4
               IF(TH_VERS>=50) THEN
-               FILNAMTH=ROOTNAM(1:ROOTLEN)
-     .             //'_'//CHRUN//'_'//ABC(3)//'.thy'
+               FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//ABC(3)//'.thy'
                LONG = 11
               ENDIF
               IUNIT= IUHI(3)
@@ -1727,18 +1730,17 @@ C   Multiple th files
      3                   SUBSETS ,OUTPUT%TH%ITHGRPC ,OUTPUT%TH%ITHBUFC ,IGEO ,
      4                   IPM     ,IPART(1+LIPART1*(NPART+NTHPART)+4*(NPART+NTHPART)) ,2 ,1,
      5                   1       ,AFORM(3)          ,ITHFLAG           ,ITHVAR,
-     6                   IFILTITL,OUTPUT%TH%SITHBUFC)
+     6                   IFILTITL,OUTPUT%TH%SITHBUFC,NAMES_AND_TITLES)
             END IF
 
             IF(NTHGRP01(4)/=0)THEN
               WRITE(CHR_OLD,'(I2.2)')IRUNN
               FILTH  = CHR_OLD
               FILTH(3:3)= ABC(4)
-              FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//FILTH
+              FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//FILTH
               LONG = 4
               IF(TH_VERS>=50) THEN
-               FILNAMTH=ROOTNAM(1:ROOTLEN)
-     .             //'_'//CHRUN//'_'//ABC(4)//'.thy'
+               FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//ABC(4)//'.thy'
                LONG = 11
               ENDIF
               IUNIT= IUHI(4)
@@ -1750,18 +1752,17 @@ C   Multiple th files
      3                   SUBSETS ,OUTPUT%TH%ITHGRPD ,OUTPUT%TH%ITHBUFD ,IGEO,
      4                   IPM     ,IPART(1+LIPART1*(NPART+NTHPART)+6*(NPART+NTHPART)) ,2 ,1,
      5                   1       ,AFORM(4)          ,ITHFLAG           ,ITHVAR,
-     6                   IFILTITL ,OUTPUT%TH%SITHBUFD)
+     6                   IFILTITL ,OUTPUT%TH%SITHBUFD,NAMES_AND_TITLES)
             END IF
 
             IF(NTHGRP01(5)/=0)THEN
               WRITE(CHR_OLD,'(I2.2)')IRUNN
               FILTH  = CHR_OLD
               FILTH(3:3)= ABC(5)
-              FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//FILTH
+              FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//FILTH
               LONG = 4
               IF(TH_VERS>=50) THEN
-               FILNAMTH=ROOTNAM(1:ROOTLEN)
-     .             //'_'//CHRUN//'_'//ABC(5)//'.thy'
+               FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//ABC(5)//'.thy'
                LONG = 11
               ENDIF
               IUNIT= IUHI(5)
@@ -1773,18 +1774,17 @@ C   Multiple th files
      3                   SUBSETS ,OUTPUT%TH%ITHGRPE ,OUTPUT%TH%ITHBUFE ,IGEO,
      4                   IPM     ,IPART(1+LIPART1*(NPART+NTHPART)+8*(NPART+NTHPART)),2,1,
      5                   1       ,AFORM(5)          ,ITHFLAG           ,ITHVAR,
-     6                   IFILTITL,OUTPUT%TH%SITHBUFE)
+     6                   IFILTITL,OUTPUT%TH%SITHBUFE,NAMES_AND_TITLES)
             END IF
 
             IF(NTHGRP01(6)/=0)THEN
               WRITE(CHR_OLD,'(I2.2)')IRUNN
               FILTH  = CHR_OLD
               FILTH(3:3)= ABC(6)
-              FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//FILTH
+              FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//FILTH
               LONG = 4
               IF(TH_VERS>=50) THEN
-               FILNAMTH=ROOTNAM(1:ROOTLEN)
-     .             //'_'//CHRUN//'_'//ABC(6)//'.thy'
+               FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//ABC(6)//'.thy'
                LONG = 11
               ENDIF
               IUNIT= IUHI(6)
@@ -1796,18 +1796,17 @@ C   Multiple th files
      3                   SUBSETS ,OUTPUT%TH%ITHGRPF ,OUTPUT%TH%ITHBUFF ,IGEO ,
      4                   IPM     ,IPART(1+LIPART1*(NPART+NTHPART)+10*(NPART+NTHPART)),2,1,
      5                   1       ,AFORM(6)          ,ITHFLAG           ,ITHVAR,
-     6                   IFILTITL,OUTPUT%TH%SITHBUFF)
+     6                   IFILTITL,OUTPUT%TH%SITHBUFF,NAMES_AND_TITLES)
             END IF
 
             IF(NTHGRP01(7)/=0)THEN
               WRITE(CHR_OLD,'(I2.2)')IRUNN
               FILTH  = CHR_OLD
               FILTH(3:3)= ABC(7)
-              FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//FILTH
+              FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//FILTH
               LONG = 4
               IF(TH_VERS>=50) THEN
-               FILNAMTH=ROOTNAM(1:ROOTLEN)
-     .             //'_'//CHRUN//'_'//ABC(7)//'.thy'
+               FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//ABC(7)//'.thy'
                LONG = 11
               ENDIF
               IUNIT= IUHI(7)
@@ -1819,18 +1818,17 @@ C   Multiple th files
      3                   SUBSETS ,OUTPUT%TH%ITHGRPG ,OUTPUT%TH%ITHBUFG ,IGEO ,
      4                   IPM,IPART(1+LIPART1*(NPART+NTHPART)+12*(NPART+NTHPART)),2,1,
      5                   1       ,AFORM(7)          ,ITHFLAG           ,ITHVAR,
-     6                   IFILTITL,OUTPUT%TH%SITHBUFG )
+     6                   IFILTITL,OUTPUT%TH%SITHBUFG,NAMES_AND_TITLES )
             END IF
 
             IF(NTHGRP01(8)/=0)THEN
               WRITE(CHR_OLD,'(I2.2)')IRUNN
               FILTH  = CHR_OLD
               FILTH(3:3)= ABC(8)
-              FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//FILTH
+              FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//FILTH
               LONG = 4
               IF(TH_VERS>=50) THEN
-               FILNAMTH=ROOTNAM(1:ROOTLEN)
-     .             //'_'//CHRUN//'_'//ABC(8)//'.thy'
+               FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//ABC(8)//'.thy'
                LONG = 11
               ENDIF
               IUNIT= IUHI(8)
@@ -1842,18 +1840,17 @@ C   Multiple th files
      3                   SUBSETS  ,OUTPUT%TH%ITHGRPH ,OUTPUT%TH%ITHBUFH ,IGEO,
      4                   IPM      ,IPART(1+LIPART1*(NPART+NTHPART)+14*(NPART+NTHPART)),2,1,
      5                   1       ,AFORM(8)           ,ITHFLAG           ,ITHVAR,
-     6                   IFILTITL,OUTPUT%TH%SITHBUFH)
+     6                   IFILTITL,OUTPUT%TH%SITHBUFH,NAMES_AND_TITLES)
             END IF
 
             IF(NTHGRP01(9)/=0)THEN
               WRITE(CHR_OLD,'(I2.2)')IRUNN
               FILTH  = CHR_OLD
               FILTH(3:3)= ABC(9)
-              FILNAMTH=ROOTNAM(1:ROOTLEN)//'T'//FILTH
+              FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//FILTH
               LONG = 4
               IF(TH_VERS>=50) THEN
-               FILNAMTH=ROOTNAM(1:ROOTLEN)
-     .             //'_'//CHRUN//'_'//ABC(9)//'.thy'
+               FILNAMTH=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//ABC(9)//'.thy'
                LONG = 11
               ENDIF
               IUNIT= IUHI(9)
@@ -1865,7 +1862,7 @@ C   Multiple th files
      3                   SUBSETS ,OUTPUT%TH%ITHGRPI ,OUTPUT%TH%ITHBUFI ,IGEO,
      4                   IPM     ,IPART(1+LIPART1*(NPART+NTHPART)+16*(NPART+NTHPART)),2,1,
      5                   1       ,AFORM(9)          ,ITHFLAG           ,ITHVAR,
-     6                   IFILTITL,OUTPUT%TH%SITHBUFI)
+     6                   IFILTITL,OUTPUT%TH%SITHBUFI,NAMES_AND_TITLES)
             END IF
         ELSE
           WRITE(CHR_OLD,'(I2.2)')IRUNN
@@ -1873,13 +1870,13 @@ C   Multiple th files
      1           IPARG ,IXS ,IXQ ,IXC ,IXT ,
      2           IXP ,IXR ,WA  ,ITAB ,PM  ,
      3           NPBYL ,IXTG ,IRFE    ,LACCELM ,
-     4           IPARI ,IPART ,OUTPUT%TH%ITHGRP ,OUTPUT%TH%ITHBUF ,CHR_OLD)
+     4           IPARI ,IPART ,OUTPUT%TH%ITHGRP ,OUTPUT%TH%ITHBUF ,CHR_OLD,NAMES_AND_TITLES)
         ENDIF
 
         IF(NABFILE /= 0) THEN
 #ifdef DNC
           IF(ABFILE(1) /=0)THEN
-            FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.tmp'
+            FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.tmp'
             LONG_TMP = 9
             IFILABF = 11
             ITHFLAG = 10
@@ -1888,17 +1885,17 @@ C   Multiple th files
      3                    SUBSETS       ,OUTPUT%TH%ITHGRP ,OUTPUT%TH%ITHBUF ,IGEO,
      4                    IPM           ,IPART            ,LIPART1          ,8,
      5                    12            ,ITHVAR           ,ITHFLAG )
-            FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.abf'
+            FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.abf'
             LONG = 9
-            LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+            LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTNAMES_AND_TITLES%ROOTNAME_LENGTHLEN+LONG)
 
-            LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-            TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
-            DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
+            LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+            TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
+            DO I=1,LEN_TMP_NAME!NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG
               IFILNAM(I)=ICHAR(TMP_NAME(I:I))
             ENDDO
-            DO I=1,LEN_TMP_NAME2!ROOTLEN+LONG_TMP
+            DO I=1,LEN_TMP_NAME2!NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP
               IFILNAM_TMP(I)=ICHAR(TMP_NAME2(I:I))
             ENDDO            
 C            NB_INDEX_ABF = MAX(2147483647,NINT((TSTOP-TT)/DTABF(1))+1)
@@ -1911,7 +1908,7 @@ C           avoid SIGFPE
           ENDIF
 c
           IF(NTHGRP01(1)/=0 .AND. ABFILE(2) /=0)THEN
-              FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_a.tmp'
+              FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_a.tmp'
               LONG_TMP = 11
               IFILABF = 12
               IFIL= IUNIT
@@ -1921,18 +1918,18 @@ c
      3                      SUBSETS       ,OUTPUT%TH%ITHGRPA ,OUTPUT%TH%ITHBUFA ,IGEO,
      4                      IPM           ,IPART(1+LIPART1*(NPART+NTHPART))     ,2,1,
      5                      1             ,ITHVAR            ,ITHFLAG)
-              FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_a.abf'
+              FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_a.abf'
               LONG = 11
-              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+              LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)
 
-              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
-              DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
+              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
+              DO I=1,LEN_TMP_NAME!NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG
                 IFILNAM(I)=ICHAR(TMP_NAME(I:I))
               ENDDO
               
-              DO I=1,LEN_TMP_NAME2!ROOTLEN+LONG_TMP
+              DO I=1,LEN_TMP_NAME2!NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP
                 IFILNAM_TMP(I)=ICHAR(TMP_NAME2(I:I))
               ENDDO
               NB_INDEX_ABF = NINT((TSTOP-TT)/DTABF(2))+1
@@ -1941,7 +1938,7 @@ c
           END IF
           
           IF(NTHGRP01(2)/=0 .AND. ABFILE(3) /=0)THEN
-              FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_b.tmp'
+              FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_b.tmp'
               LONG_TMP = 11
               IFILABF = 13
               IFIL= IUNIT
@@ -1951,19 +1948,19 @@ c
      3                      SUBSETS       ,OUTPUT%TH%ITHGRPB,OUTPUT%TH%ITHBUFB ,IGEO,
      4                      IPM           ,IPART(1+LIPART1*(NPART+NTHPART)+2*(NPART+NTHPART)),2,1,
      5                      1             ,ITHVAR           ,ITHFLAG)
-              FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_b.abf'
+              FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_b.abf'
               LONG = 11
-              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+              LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)
 
-              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
+              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
 
-              DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
+              DO I=1,LEN_TMP_NAME !ROOTLEN+LONG
                 IFILNAM(I)=ICHAR(TMP_NAME(I:I))
               ENDDO
               
-              DO I=1,LEN_TMP_NAME2!ROOTLEN+LONG_TMP
+              DO I=1,LEN_TMP_NAME2 !ROOTLEN+LONG_TMP
                 IFILNAM_TMP(I)=ICHAR(TMP_NAME2(I:I))
               ENDDO
               NB_INDEX_ABF = NINT((TSTOP-TT)/DTABF(3))+1
@@ -1972,7 +1969,7 @@ c
           END IF
           
           IF(NTHGRP01(3)/=0 .AND. ABFILE(4) /=0)THEN
-              FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_c.tmp'
+              FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_c.tmp'
               LONG_TMP = 11
               IFILABF = 14
               IFIL= IUNIT
@@ -1982,18 +1979,18 @@ c
      3                      SUBSETS       ,OUTPUT%TH%ITHGRPC   ,OUTPUT%TH%ITHBUFC ,IGEO,
      4                      IPM           ,IPART               ,2 ,1,
      5                      1             ,ITHVAR              ,ITHFLAG)
-              FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_c.abf'
+              FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_c.abf'
               LONG = 11
-              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+              LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)
 
-              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
-              DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
+              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
+              DO I=1,LEN_TMP_NAME!NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG
                 IFILNAM(I)=ICHAR(TMP_NAME(I:I))
               ENDDO
               
-              DO I=1,LEN_TMP_NAME2!ROOTLEN+LONG_TMP
+              DO I=1,LEN_TMP_NAME2!NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP
                 IFILNAM_TMP(I)=ICHAR(TMP_NAME2(I:I))
               ENDDO
               NB_INDEX_ABF = NINT((TSTOP-TT)/DTABF(4))+1
@@ -2002,7 +1999,7 @@ c
           END IF
           
           IF(NTHGRP01(4)/=0 .AND. ABFILE(5) /=0)THEN
-              FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_d.tmp'
+              FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_d.tmp'
               LONG_TMP = 11
               IFILABF = 15
               IFIL= IUNIT
@@ -2012,13 +2009,13 @@ c
      3                       SUBSETS       ,OUTPUT%TH%ITHGRPD   ,OUTPUT%TH%ITHBUFD ,IGEO,
      4                       IPM           ,IPART   ,2     ,1   ,
      5                       1             ,ITHVAR  ,ITHFLAG)
-              FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_d.abf'
+              FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_d.abf'
               LONG = 11
-            LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+            LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)
 
-            LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-            TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
+            LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+            TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
             DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
               IFILNAM(I)=ICHAR(TMP_NAME(I:I))
               ENDDO
@@ -2030,7 +2027,7 @@ c
      .                      IFILNAM_TMP,LEN_TMP_NAME2,NB_INDEX_ABF)
             END IF
             IF(NTHGRP01(5)/=0 .AND. ABFILE(6) /=0)THEN
-              FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_e.tmp'
+              FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_e.tmp'
               LONG_TMP = 11
               IFILABF = 16
               IFIL= IUNIT
@@ -2040,13 +2037,13 @@ c
      3                       SUBSETS       ,OUTPUT%TH%ITHGRPE ,OUTPUT%TH%ITHBUFE ,IGEO,
      4                       IPM           ,IPART             ,2     ,1     ,
      5                       1             ,ITHVAR            ,ITHFLAG)
-              FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_e.abf'
+              FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_e.abf'
               LONG = 11
-            LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+            LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)
 
-            LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-            TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
+            LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+            TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
             DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
               IFILNAM(I)=ICHAR(TMP_NAME(I:I))
               ENDDO
@@ -2059,7 +2056,7 @@ c
           END IF
 
           IF(NTHGRP01(6)/=0 .AND. ABFILE(7) /=0)THEN
-              FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_f.tmp'
+              FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_f.tmp'
               LONG_TMP = 11
               IFILABF = 17
               IFIL= IUNIT
@@ -2069,13 +2066,13 @@ c
      3                      SUBSETS ,OUTPUT%TH%ITHGRPF,OUTPUT%TH%ITHBUFF,IGEO    ,
      4                      IPM   ,IPART   ,2     ,1     ,
      5                      1   ,ITHVAR,ITHFLAG)
-              FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_f.abf'
+              FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_f.abf'
               LONG = 11
-            LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+            LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+            TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)
 
-            LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-            TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
+            LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+            TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
             DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
               IFILNAM(I)=ICHAR(TMP_NAME(I:I))
               ENDDO
@@ -2088,7 +2085,7 @@ c
           END IF
 
           IF(NTHGRP01(7)/=0 .AND. ABFILE(8) /=0)THEN
-              FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_g.tmp'
+              FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_g.tmp'
               LONG_TMP = 11
               IFILABF = 18
               IFIL= IUNIT
@@ -2099,13 +2096,13 @@ c
      4                      IPM     ,IPART   ,2     ,1     ,
      5                      1       ,ITHVAR,ITHFLAG)
      
-              FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_g.abf'
+              FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_g.abf'
               LONG = 11
-              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+              LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)
 
-              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
+              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
               
               DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
                 IFILNAM(I)=ICHAR(TMP_NAME(I:I))
@@ -2121,7 +2118,7 @@ c
           END IF
 
           IF(NTHGRP01(8)/=0 .AND. ABFILE(9) /=0)THEN
-              FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_h.tmp'
+              FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_h.tmp'
               LONG_TMP = 11
               IFILABF = 19
               IFIL= IUNIT
@@ -2133,13 +2130,13 @@ c
      4                      IPM   ,IPART  ,2                  ,1     ,
      5                      1     ,ITHVAR ,ITHFLAG )
      
-              FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_h.abf'
+              FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_h.abf'
               LONG = 11
-              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+              LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)
 
-              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
+              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
               
               DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
                 IFILNAM(I)=ICHAR(TMP_NAME(I:I))
@@ -2155,7 +2152,7 @@ c
           END IF
             
           IF(NTHGRP01(9)/=0 .AND. ABFILE(10) /=0)THEN
-              FILNAMABF_TMP=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_i.tmp'
+              FILNAMABF_TMP=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_i.tmp'
               LONG_TMP = 11
               IFILABF = 20
               IFIL= IUNIT
@@ -2166,13 +2163,13 @@ c
      4                      IPM           ,IPART(1+LIPART1*(NPART+NTHPART)+16*(NPART+NTHPART)),2,1,
      5                      1             ,ITHVAR                                ,ITHFLAG)
      
-              FILNAMABF=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_i.abf'
+              FILNAMABF=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_i.abf'
               LONG = 11
-              LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN + LONG        
-              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:ROOTLEN+LONG)
+              LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG        
+              TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG)
 
-              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + ROOTLEN + LONG_TMP        
-              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:ROOTLEN+LONG_TMP)
+              LEN_TMP_NAME2 = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH + LONG_TMP        
+              TMP_NAME2=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAMABF_TMP(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+LONG_TMP)
               DO I=1,LEN_TMP_NAME!ROOTLEN+LONG
                 IFILNAM(I)=ICHAR(TMP_NAME(I:I))
               ENDDO
@@ -2234,7 +2231,7 @@ C---------------------------------------------------------------------
      .                   FORNEQS      ,MATPARAM_TAB    ,GROUP_PARAM_TAB ,PINCH_DATA ,ALE_CONNECTIVITY,
      .                   DRAPE_SH4N   ,DRAPE_SH3N      ,T_MONVOL        ,SENSORS    ,EBCS_TAB        ,
      .                   DIFFUSION    ,SEGVAR          ,DYNAIN_DATA     ,DRAPEG     ,USER_WINDOWS    ,
-     .                   OUTPUT       ,INTERFACES      ,DT              ,LOADS      )
+     .                   OUTPUT       ,INTERFACES      ,DT              ,LOADS      ,NAMES_AND_TITLES)
 C---------------------------------------------------------------------
       CURRENT_RUN = GLOBAL_COMP_TIME%RUN_NBR
       CALL SPMD_REDUCE_DB(GLOBAL_COMP_TIME%ENGINE_TIME(CURRENT_RUN),RESULT,1,0,"MAX ")

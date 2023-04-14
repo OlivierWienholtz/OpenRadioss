@@ -48,7 +48,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
-c
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -64,7 +64,6 @@ C     REAL
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr17_c.inc"
 #include      "units_c.inc"
 #include      "submod_c.inc"
 #include      "sysunit.inc"
@@ -88,7 +87,10 @@ C     REAL
      .        DIMENSION(:),ALLOCATABLE :: XV1, XSTOR1, XSTOR2
       my_real,
      .        DIMENSION(:,:),ALLOCATABLE :: XV2
-      CHARACTER TITR*nchartitle, MESS*40, KEY*ncharfield
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARFIELD) :: KEY
+C
       DATA MESS/' FUNCTION & TABLE DEFINITION            '/
       LOGICAL :: IS_ENCRYPTED, IS_AVAILABLE
 C======================================================================|

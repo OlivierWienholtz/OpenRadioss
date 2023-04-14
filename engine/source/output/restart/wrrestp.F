@@ -104,7 +104,7 @@ Chd|====================================================================
      .           H3D_DATA      ,INTBUF_FRIC_TAB,SUBSET,MATPARAM_TAB,GROUP_PARAM_TAB,
      .           PINCH_DATA    ,ALE_CONNECTIVITY, T_MONVOL,
      .           SENSORS       ,EBCS_TAB  ,DYNAIN_DATA,USER_WINDOWS,OUTPUT,
-     .           INTERFACES    ,LOADS     )
+     .           INTERFACES    ,LOADS     ,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -141,6 +141,7 @@ C-----------------------------------------------
       USE ALE_MOD
       USE OUTPUT_MOD
       USE INTERFACES_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,LTITLE
 C ecriture restart pour version spmd
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
@@ -173,14 +174,13 @@ c     TYPE (CLUSTER_) ,DIMENSION(NCLUSTER) :: CLUSTER
       TYPE(INTERFACES_)     ,INTENT(IN)                   :: INTERFACES
       TYPE(SENSORS_)        ,INTENT(IN)                   :: SENSORS
       TYPE(LOADS_)          ,INTENT(IN)                   :: LOADS
+      TYPE(NAMES_AND_TITLES_),INTENT(IN)                  :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "chara_c.inc"
 #include      "couple_c.inc"
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "com05_c.inc"
 #include      "com06_c.inc"
 #include      "com_xfem1.inc"
 #include      "intstamp_c.inc"
@@ -205,6 +205,7 @@ C-----------------------------------------------
 #include      "sphcom.inc"
 #include      "thermal_c.inc"
 #include      "inter18.inc"
+#include      "filescount_c.inc"
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -227,6 +228,7 @@ C-----------------------------------------------
       INTEGER, DIMENSION(NVOLU) :: NTRI
       INTEGER :: II, NS_DIFF, ITMP
       INTEGER :: MY_SIZE
+      INTEGER,DIMENSION(LTITLE) :: ITITLE
 C-----------------------------------------------
       DATA IJK/'I','J','K','L','M','N','O','P','Q','R',
      .         'S','T','U','V','W','X','Y','Z','A','B',
@@ -289,11 +291,11 @@ C     OPEN
 C--------------------------------------
       WRITE(CHRUNR,'(I4.4)')IRUN
       WRITE(PROCNAM,'(I4.4)')ISPMD+1
-        FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUNR//'_'//PROCNAM
+        FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRUNR//'_'//PROCNAM
       WRITE(PLAST,'(I4.4)')NSPMD
-      FILNAMG=ROOTNAM(1:ROOTLEN)//'_'//CHRUNR//'_[0001-'//PLAST//']'
-      LENG = ROOTLEN+17
-      LEN = ROOTLEN + 10
+      FILNAMG=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//CHRUNR//'_[0001-'//PLAST//']'
+      LENG = NAMES_AND_TITLES%ROOTNAME_LENGTH+17
+      LEN = NAMES_AND_TITLES%ROOTNAME_LENGTH + 10
       FILNAMR = FILNAM
       IFIL = 2
       IF(ICH/=0)IFIL = 41
@@ -328,9 +330,12 @@ C--------------------------------------
       END DO
       CALL WRITE_C_C(IFILNAM,LEN)
 C--------------------------------------
-C     ECRITURE DU TEXTE
+C     write TITLE
 C--------------------------------------
-      CALL WRITE_I_C(TEXT,LCOM05)
+      DO I=1,LTITLE
+          ITITLE = ICHAR( NAMES_AND_TITLES%TITLE(I:I) )
+      ENDDO
+      CALL WRITE_I_C(ITITLE,LTITLE)
 C--------------------------------------
 C     ECRITURE DU HEADER.
 C--------------------------------------

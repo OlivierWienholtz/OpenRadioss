@@ -37,6 +37,7 @@ C============================================================================
 C   M o d u l e s
 C-----------------------------------------------
       USE QA_OUT_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -132,7 +133,7 @@ C-----------------------------------------------
       INTEGER I,IS,IPRE, MY_ID, MY_LOAD,J,K0,NSMAX,NS,LPRELOADTAB,
      .        IDS(NSPHIO),IDX(NSPHIO),II,MY_SPHIO,LVAD(NSPHIO),
      .        IADSPHIO_1,IADSPHIO_2,FIRST,LAST
-      CHARACTER *nchartitle TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       CHARACTER (LEN=255) :: VARNAME
       DOUBLE PRECISION TEMP_DOUBLE
       LOGICAL :: OK_QA 
@@ -144,7 +145,7 @@ C-----------------------------------------------
         DO MY_LOAD=1,NLOADC
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),ICFIELD(9,MY_LOAD),0.0_8)
           ELSE
@@ -204,7 +205,7 @@ C-----------------------------------------------
         DO MY_LOAD=IOPT_FIRST,IOPT_LAST
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),ILOADP(2,MY_LOAD),0.0_8)
           ELSE
@@ -273,7 +274,7 @@ C-----------------------------------------------
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
 C         and Cload ID is not stored 
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_LOAD,0.0_8)
           ELSE
@@ -309,7 +310,7 @@ C-----------------------------------------------
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
 C         and Pload ID is not stored 
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_LOAD,0.0_8)
           ELSE
@@ -345,7 +346,7 @@ C-----------------------------------------------
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
 C         and Radiation ID is not stored 
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_LOAD,0.0_8)
           ELSE
@@ -381,7 +382,7 @@ C-----------------------------------------------
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
 C         and Convev ID is not stored 
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_LOAD,0.0_8)
           ELSE
@@ -416,7 +417,7 @@ C-----------------------------------------------
         DO MY_LOAD=1,NGRAV
 C
 C         Title of the option was not stored in NOM_OPT ... TBD
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           MY_ID=IGRV(5,MY_LOAD)
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),MY_ID,0.0_8)
@@ -462,7 +463,7 @@ C
 
           DO IPRE = 1,NUMPRELOAD
 c
-            TITR(1:nchartitle)=''
+            TITR(1:NCHARTITLE)=''
             IF(LEN_TRIM(TITR)/=0)THEN
               CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),IPRE,0.0_8)
             ELSE
@@ -564,7 +565,7 @@ C
           DO II = 1,NSPHIO
 C
             MY_SPHIO = IDX(II)
-            TITR(1:nchartitle)=''
+            TITR(1:NCHARTITLE)=''
             CALL FRETITL2(TITR,NOM_OPT(LNOPT1-LTITR+1,INOM_OPT(22) + MY_SPHIO),LTITR)
             MY_ID = NOM_OPT(1,INOM_OPT(22)+MY_SPHIO)
             IF (LEN_TRIM(TITR) /= 0) THEN

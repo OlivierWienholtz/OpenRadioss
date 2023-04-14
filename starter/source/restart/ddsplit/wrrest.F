@@ -368,7 +368,12 @@ Chd|====================================================================
      .   FXBDEP   , FXBVIT   , FXBACC   , FXBELM_L, FXBSIG_L,
      .   FXBGRVI_L, FXBGRVR_L, LENNOD_L , LENMOD_L, LENGLM_L,
      .   LENCP_L  , LENLM_L  , LENFLS_L , LENDLS_L, LENELM_L,
-     .   LENSIG_L , LENGRVI_L, LENGRVR_L, LEN_AM,   ITASK)
+     .   LENSIG_L , LENGRVI_L, LENGRVR_L, LEN_AM,   ITASK,
+     .   ROOTNAME , ROOTNAME_LENGTH)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -378,7 +383,6 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "scr05_c.inc"
-#include      "scr15_c.inc"
 #include      "units_fxbody_c.inc"
 #include      "fxbcom.inc"
 C-----------------------------------------------
@@ -392,6 +396,8 @@ C-----------------------------------------------
      .        FXBCPS_L(*), FXBLM_L(*), FXBFLS_L(*), FXBDLS_L(*),
      .        FXBDEP(*), FXBVIT(*), FXBACC(*), FXBSIG_L(*),
      .        FXBGRVR_L(*) 
+      INTEGER, INTENT(IN)                  :: ROOTNAME_LENGTH  ! INPUT deck rootname length
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -515,12 +521,12 @@ C Ecriture des fichiers de modes et de contraintes
 
       ! Delete scratch file IFXM_L+ITASK
       WRITE(CIT,'(I4.4)')ITASK
-      SCR_FILE_NAME ='SCR_FXM_'//ROOTNAM(1:ROOTLEN)//'_'//CIT(1:4)//'.scr'
+      SCR_FILE_NAME ='SCR_FXM_'//TRIM(ROOTNAME)//'_'//CIT(1:4)//'.scr'
       FILE_LEN=LEN_TRIM(SCR_FILE_NAME)
       CALL DELETE_USER_FILE(SCR_FILE_NAME,FILE_LEN)
 
       ! Delete scratch file IFXS_L+ITASK
-      SCR_FILE_NAME2='SCR_FXS_'//ROOTNAM(1:ROOTLEN)//'_'//CIT(1:4)//'.scr'
+      SCR_FILE_NAME2='SCR_FXS_'//TRIM(ROOTNAME)//'_'//CIT(1:4)//'.scr'
       FILE_LEN=LEN_TRIM(SCR_FILE_NAME2)
       CALL DELETE_USER_FILE(SCR_FILE_NAME2,FILE_LEN)
 C

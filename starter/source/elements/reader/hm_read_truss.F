@@ -57,6 +57,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C---------------------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -149,7 +150,7 @@ C--------------------------------------------------
 
           IF (IXT(5,I)>ID_LIMIT) THEN
             CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                  I1=IXT(5,I),C1=LINE,C2='/TRUSS')
+     .                  I1=IXT(5,I),C1='/TRUSS')
           ENDIF
 
           DO J=2,3           

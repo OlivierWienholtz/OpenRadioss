@@ -75,7 +75,8 @@ Chd|====================================================================
      .                  BUFGEO,LBUFGEO   ,ISKN ,IGEO ,IPM    ,
      .                  NPC   ,PLD   ,UNITAB ,RTRANS,LSUBMODEL  ,
      .                  PROP_TAG ,IPART ,KNOT,IDRAPEID,STACK_INFO,
-     .                  NUMGEO_STACK,NPROP_STACK, MULTI_FVM,IADBUF)
+     .                  NUMGEO_STACK,NPROP_STACK, MULTI_FVM,IADBUF,
+     .                  NAMES_AND_TITLES)
 C============================================================================
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
@@ -92,6 +93,7 @@ C-----------------------------------------------
       USE MULTI_FVM_MOD
       USE HM_OPTION_READ_MOD
       USE ALE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NCHARLINE,NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -122,6 +124,7 @@ C-----------------------------------------------
       TYPE(PROP_TAG_) , DIMENSION(0:MAXPROP) :: PROP_TAG
       TYPE(STACK_INFO_ ) , DIMENSION (NPROP_STACK) :: STACK_INFO
       TYPE(MULTI_FVM_STRUCT) :: MULTI_FVM
+      TYPE(NAMES_AND_TITLES_),INTENT(INOUT)  :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -141,9 +144,13 @@ C-----------------------------------------------
      .        CPT1,SUB_INDEX
       my_real FN, FT, DX, ANGL,PUN,HTEST,HCLOS,CVIS,RBID,VX,VY,VZ,
      .        FAC_L,FAC_T,FAC_M, TMIN,TMAX,DT,THICKT,IERREL,DN_P,ZSHIFT,PTHK
-      CHARACTER IDTITL*ncharline, MESS*40,KEY*ncharline, KEY2*ncharkey,
-     .          STRING*ncharfield,TITR1*nchartitle,
-     .          CHROT*7,SOLVERKEYWORD*ncharline
+      CHARACTER(LEN=7*NCHARLINE)  :: CHROT
+      CHARACTER(LEN=40) :: MESS
+      CHARACTER(LEN=NCHARLINE)  :: KEY,SOLVERKEYWORD
+      CHARACTER(LEN=NCHARKEY)   :: KEY2
+      CHARACTER(LEN=NCHARFIELD) :: STRING  
+      CHARACTER(LEN=NCHARTITLE) :: TITR1
+      CHARACTER(LEN=NCHARTITLE) :: IDTITL
       DATA NSHELL /0/, NSHSUP /0/, NSHINF /0/
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
@@ -576,7 +583,8 @@ C-----------------------------
      1        IGTYP    ,PROP_ID ,IDTITL  ,KEY      ,GEO(1,I),
      2        IGEO(1,I),LBUFGEO ,BUFGEO  ,IADBUF   ,UNITAB,
      3        ISKN     ,KNOT    ,IAD_KNOT,PROP_TAG ,LSUBMODEL,
-     4        RTRANS   ,SUB_ID  ,IUNIT   ,SUB_INDEX)
+     4        RTRANS   ,SUB_ID  ,IUNIT   ,SUB_INDEX,NAMES_AND_TITLES)
+    
          
         END SELECT ! SELECT CASE(IGTYP)
 c

@@ -1988,8 +1988,12 @@ Chd|        PRINTTET10                    source/system/timer.F
 Chd|        PRINTTET4                     source/system/timer.F         
 Chd|        PRINTTRIANGLES                source/system/timer.F         
 Chd|====================================================================
-      SUBROUTINE PRINTIMEG(IPARG,PM,IPM,IXC,IXTG,IXS)
+      SUBROUTINE PRINTIMEG(IPARG,PM,IPM,IXC,IXTG,IXS,NAMES_AND_TITLES)
 C     routine d'affichage des timers
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -2002,14 +2006,14 @@ C-----------------------------------------------
 C-----------------------------------------------
 #include	"com01_c.inc"
 #include	"task_c.inc"
-#include        "units_c.inc"
-#include        "param_c.inc"
-#include        "chara_c.inc"
-#include        "scr19_c.inc"
-#include        "ddspmd_c.inc"
+#include  "units_c.inc"
+#include  "param_c.inc"
+#include  "scr19_c.inc"
+#include  "ddspmd_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER IPARG(NPARG,*),IXC(NIXC,*),IXTG(NIXTG,*),
      .     IPM(NPROPMI,*),IXS(NIXS,*)
       my_real
@@ -2042,10 +2046,10 @@ C
       TIMMAT = 0.
 C   ouverture du fichier DDW
       WRITE(PROCNAM,'(I4.4)')ISPMD+1
-      FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//PROCNAM//'.ddw2'
+      FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//PROCNAM//'.ddw2'
       OPEN(UNIT=66,FILE=FILNAM,ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
-      FILEN=ROOTLEN+14 
+      FILEN=NAMES_AND_TITLES%ROOTNAME_LENGTH+14 
 C  
 C   preparation de la ponderation
 C  
@@ -3129,8 +3133,11 @@ Chd|====================================================================
      3          IXR,IXS,KXIG3D,IPM,
      4          IGEO,GEO,POIN_UMP,CPUTIME_MP,
      5          NBR_GPMP,CPUTIME_MP_GLOB,TAB_UMP,PM,
-     6          BUFMAT,TABMP_L,TAB_MAT )
-C     
+     6          BUFMAT,TABMP_L,TAB_MAT,NAMES_AND_TITLES )    
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -3163,8 +3170,7 @@ C     Mat + Prop timers
       INTEGER, DIMENSION(7,TAILLE) :: TAB_UMP
       my_real, DIMENSION(TAILLE) :: CPUTIME_MP
       my_real, DIMENSION(NBR_GPMP,NSPMD+1):: CPUTIME_MP_GLOB
-      
-      
+      TYPE(NAMES_AND_TITLES_), INTENT(IN)    :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -3397,7 +3403,7 @@ c                   POIDS_REF(K)= TAB_MAT_PROP(MID,PID,INDI3)
       ENDDO
 C
       CALL PRINTIME_MP(TAILLE,TAB_UMP,CPUTIME_MP2,POIN_UMP,T1,ELEM_MP,
-     .                 CPUTIME_MP,POIDS_REF)
+     .                 CPUTIME_MP,POIDS_REF,NAMES_AND_TITLES)
  
       RETURN
       END
@@ -3410,8 +3416,12 @@ Chd|        CUMULTIME_MP                  source/system/timer.F
 Chd|-- calls ---------------
 Chd|====================================================================
       SUBROUTINE PRINTIME_MP(TAILLE,TAB_UMP,CPUTIME_MP2,POIN_UMP,T1,
-     .                       ELEM_MP,CPUTIME_MP,POIDS_REF)
-C     routine d'ecriture des timers
+     .                       ELEM_MP,CPUTIME_MP,POIDS_REF,NAMES_AND_TITLES)
+C     TIMER WRITING ROUTINES
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -3426,7 +3436,6 @@ C-----------------------------------------------
 #include    "com04_c.inc"
 #include    "task_c.inc"
 #include    "units_c.inc"
-#include    "chara_c.inc"
 #include    "scr19_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
@@ -3439,6 +3448,7 @@ C-----------------------------------------------
       INTEGER, DIMENSION(TAILLE) :: ELEM_MP
       my_real, DIMENSION(TAILLE) :: POIDS_REF
       my_real, DIMENSION(TAILLE) :: CPUTIME_MP
+      TYPE(NAMES_AND_TITLES_), INTENT(IN)    :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -3452,10 +3462,10 @@ C-----------------------------------------------
 
       IF(ISPMD==0) THEN
 C ro ouverture du fichier DDW proc = 0 
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'.ddw'
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'.ddw'
        OPEN(UNIT=66,FILE=FILNAM,ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
-       FILEN=ROOTLEN+14 
+       FILEN=NAMES_AND_TITLES%ROOTNAME_LENGTH+14 
 
        WRITE(66,'(A)') 'DOMAIN DECOMPOSITION ANALYSIS FILE '
        WRITE(66,'(A)') '---------------------------------- '
@@ -3496,10 +3506,10 @@ C ro ouverture du fichier DDW proc = 0
 C ro ouverture du fichier DDW par proc
       IF(IDDWSTAT/=0) THEN
        WRITE(PROCNAM,'(I4.4)')ISPMD+1
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_'//CHRUN//'_'//PROCNAM//'.ddw'
+       FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'_'//NAMES_AND_TITLES%CHRUN//'_'//PROCNAM//'.ddw'
        OPEN(UNIT=67,FILE=FILNAM,ACCESS='SEQUENTIAL',
      .                  FORM='FORMATTED',STATUS='UNKNOWN')
-       FILEN=ROOTLEN+14 
+       FILEN=NAMES_AND_TITLES%ROOTNAME_LENGTH+14 
 
        WRITE(67,'(A)') 'DOMAIN DECOMPOSITION ANALYSIS FILE '
        WRITE(67,'(A)') '---------------------------------- '

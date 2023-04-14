@@ -48,6 +48,7 @@ C-----------------------------------------------
       USE ELBUFTAG_MOD            
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -56,18 +57,17 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "param_c.inc"
-#include      "scr17_c.inc"
 #include      "units_c.inc"
 #include      "sysunit.inc"
 #include      "submod_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER, INTENT(INOUT) :: JTHE,MFI,IDF
-      CHARACTER*nchartitle ,INTENT(IN) :: TITR
-      INTEGER, INTENT(IN) :: MAT_ID
-      INTEGER, DIMENSION(NPROPMI) ,INTENT(INOUT) :: IPM
-      my_real, DIMENSION(NPROPM)  ,INTENT(INOUT) :: PM
+      INTEGER, INTENT(INOUT)                       :: JTHE,MFI,IDF
+      CHARACTER(LEN=NCHARTITLE) ,INTENT(IN)        :: TITR
+      INTEGER, INTENT(IN)                          :: MAT_ID
+      INTEGER, DIMENSION(NPROPMI) ,INTENT(INOUT)   :: IPM
+      my_real, DIMENSION(NPROPM)  ,INTENT(INOUT)   :: PM
       my_real, DIMENSION(LUNIT,NUNITS) ,INTENT(IN) :: UNITAB
       TYPE(SUBMODEL_DATA), DIMENSION(NSUBMOD),INTENT(IN) :: LSUBMODEL
       TYPE(MLAW_TAG_), INTENT(INOUT) :: MTAG
@@ -81,7 +81,7 @@ C-----------------------------------------------
      .   TMAX, G, C1, RHO, UNIT, STATUS, FORM, XNR, XNT, T0, P0, DPDR,
      .   XKL, XLAMB, ATOM, SIG, XKMAX, RHO0, DYDZ,RHOR,EPS0_UNIT
 
-      CHARACTER(ncharline) ::  FILE, VIDE
+      CHARACTER(LEN=NCHARLINE) ::  FILE, VIDE
 !
       LOGICAL :: IS_AVAILABLE,IS_ENCRYPTED
 C=======================================================================
@@ -91,8 +91,6 @@ C=======================================================================
 !-----------------------
       CALL HM_OPTION_IS_ENCRYPTED(IS_ENCRYPTED)
 !-----------------------
-C License Flag
-      LIDFS = 0
       VIDE=
      .'                                                                '
 !     LINE 1
@@ -110,7 +108,7 @@ C License Flag
 !     LINE 4
       CALL HM_GET_FLOATV('MAT_E0'       ,E0         ,IS_AVAILABLE, LSUBMODEL, UNITAB)
 !     LINE 5
-      CALL HM_GET_STRING('SSAM301'      ,FILE       ,ncharline ,IS_AVAILABLE)
+      CALL HM_GET_STRING('SSAM301'      ,FILE       ,NCHARLINE ,IS_AVAILABLE)
 !     LINE 6
       CALL HM_GET_FLOATV('MAT_SRC'      ,CC         ,IS_AVAILABLE, LSUBMODEL, UNITAB)
       CALL HM_GET_FLOATV('MAT_SRP'      ,EPS0       ,IS_AVAILABLE, LSUBMODEL, UNITAB)
@@ -219,7 +217,7 @@ C
 !     SESAM504
 !-------------
 !     LINE 7
-      CALL HM_GET_STRING('SSAM504'      ,FILE       ,ncharline ,IS_AVAILABLE)
+      CALL HM_GET_STRING('SSAM504'      ,FILE       ,NCHARLINE ,IS_AVAILABLE)
 !     LINE 8
       CALL HM_GET_FLOATV('K_Lor'        ,XKL        ,IS_AVAILABLE, LSUBMODEL, UNITAB)
       CALL HM_GET_FLOATV('MAT_Lamda'    ,XLAMB      ,IS_AVAILABLE, LSUBMODEL, UNITAB)
@@ -266,7 +264,7 @@ C
 !     SESAM502
 !-------------
 !     LINE 9
-      CALL HM_GET_STRING('SSAM502'      ,FILE       ,ncharline ,IS_AVAILABLE)
+      CALL HM_GET_STRING('SSAM502'      ,FILE       ,NCHARLINE ,IS_AVAILABLE)
 !     LINE 10
       CALL HM_GET_FLOATV('Sigma_k'      ,SIG        ,IS_AVAILABLE, LSUBMODEL, UNITAB)
 !

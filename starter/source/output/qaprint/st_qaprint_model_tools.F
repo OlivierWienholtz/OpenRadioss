@@ -45,6 +45,7 @@ C-----------------------------------------------
       USE TABLE_MOD
       USE SENSOR_MOD
       USE FUNC2D_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -131,7 +132,7 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,J,IAD,OPT_ID,NDIM,NY,NOTABLE
       CHARACTER(LEN=255)         :: VARNAME
-      CHARACTER(LEN=nchartitle)  :: TITR, TEMP_STRING
+      CHARACTER(LEN=NCHARTITLE)  :: TITR, TEMP_STRING
       DOUBLE PRECISION TEMP_DOUBLE
       INTEGER :: TEMP_INTEGER
       INTEGER :: ISECT, K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, KR0
@@ -286,8 +287,8 @@ C-----------------------------------------------
           ELSE
             CALL QAPRINT('SECTION_NO_NAME',OPT_ID,0.0_8)
           END IF
-          DO J=1,ncharline
-            TEMP_STRING(J:J)=CHAR( NOM_SECT( (ISECT-1)*ncharline+J ))
+          DO J=1,NCHARLINE
+            TEMP_STRING(J:J)=CHAR( NOM_SECT( (ISECT-1)*NCHARLINE+J ))
           ENDDO
           IF (LEN_TRIM(TEMP_STRING) > 0) THEN
              CALL QAPRINT( TRIM(TEMP_STRING), 0 , 0.0_8)
@@ -474,7 +475,7 @@ C         Title of the option was not stored in NOM_OPT FOR TABLES ONLY FOR FUNC
 
         DO II=1, NTABLE
           IAD = IDX(II)
-          TITR(1:nchartitle)=''
+          TITR(1:NCHARTITLE)=''
           IF(LEN_TRIM(TITR)/=0)THEN
             CALL QAPRINT(TITR(1:LEN_TRIM(TITR)),IAD,0.0_8)
           ELSE
@@ -520,7 +521,7 @@ C-----------------------------------------------
          CALL QUICKSORT_I2(IDS, IDX, 1, NFUNCT)
          DO II = 1, NFUNCT
             IAD = IDX(II)
-            TITR(1:nchartitle) = ''
+            TITR(1:NCHARTITLE) = ''
             ID = NOM_OPT(1, INOM_OPT(20) + IAD)
             CALL FRETITL2(TITR, NOM_OPT(LNOPT1-LTITR+1, INOM_OPT(20) + IAD), LTITR)
             LENTITR=LEN_TRIM(TITR) 

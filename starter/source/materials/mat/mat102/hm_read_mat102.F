@@ -64,6 +64,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD      
       USE SUBMODEL_MOD
       USE MATPARAM_DEF_MOD          
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -85,7 +86,7 @@ C-----------------------------------------------
       INTEGER, INTENT(INOUT)          :: ISRATE,IMATVIS,NFUNC,MAXFUNC,MAXUPARAM,NUPARAM,NUVAR
       TYPE(MLAW_TAG_),INTENT(INOUT)   :: MTAG
       INTEGER,INTENT(IN)              :: MAT_ID
-      CHARACTER*nchartitle,INTENT(IN) :: TITR
+      CHARACTER(LEN=NCHARTITLE),INTENT(IN) :: TITR
       TYPE(SUBMODEL_DATA),INTENT(IN)  :: LSUBMODEL(*)
       TYPE(MATPARAM_STRUCT_) ,INTENT(INOUT) :: MATPARAM
 C-----------------------------------------------
@@ -94,8 +95,8 @@ C-----------------------------------------------
       my_real   :: E,NU,C,PSTAR,AMAX,G, DELTA,STIFINT,PMIN,BID,PHI_DEG
       my_real   :: A0,A1,A2,RHO0,RHOR
   
-      CHARACTER :: STRING*ncharfield
-      CHARACTER ::  KEY*nchartitle,KEYNET*ncharfield      
+      CHARACTER(LEN=NCHARFIELD) :: STRING,KEYNET
+      CHARACTER(LEN=NCHARTITLE) :: KEY
       INTEGER   :: IFORM
       
       DOUBLE PRECISION :: PHI,K,ALPHA

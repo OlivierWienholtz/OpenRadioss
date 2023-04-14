@@ -58,7 +58,7 @@ Chd|====================================================================
      E                  NMNT      ,KXIG3D   ,IXIG3D  ,KNOD2ELQ ,NOD2ELQ  ,
      F                  SEGQUADFR,TAGPRT_FRIC,INTBUF_FRIC_TAB  ,IPARTT   ,
      G                  IPARTP    ,IPARTX   ,IPARTR  ,NSN_MULTI_CONNEC,T2_NB_CONNEC,
-     H                  ICODE     ,ISKEW    )
+     H                  ICODE     ,ISKEW    ,ROOTNAME,ROOTNAME_LENGTH)
 C============================================================================
 C-----------------------------------------------
 C   M o d u l e s
@@ -73,6 +73,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE INOUTFILE_MOD
       USE ALE_CONNECTIVITY_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -85,7 +86,6 @@ C-----------------------------------------------
 #include      "param_c.inc"
 #include      "scr05_c.inc"
 #include      "scr12_c.inc"
-#include      "scr15_c.inc"
 #include      "units_c.inc"
 #include      "scr17_c.inc"
 C-----------------------------------------------
@@ -116,9 +116,11 @@ C-----------------------------------------------
       TYPE(SCRATCH_STRUCT_) INSCR(*)
       TYPE(INTBUF_FRIC_STRUCT_) INTBUF_FRIC_TAB(*)
 C-----------------------------------------------
-      TYPE (GROUP_)  , DIMENSION(NGRBRIC)  :: IGRBRIC
-      TYPE (SURF_)   , DIMENSION(NSURF)    :: IGRSURF
+      TYPE (GROUP_)  , DIMENSION(NGRBRIC)     :: IGRBRIC
+      TYPE (SURF_)   , DIMENSION(NSURF)       :: IGRSURF
       TYPE(t_ale_connectivity), INTENT(INOUT) :: ALE_CONNECTIVITY
+      INTEGER, INTENT(IN)                     :: ROOTNAME_LENGTH  ! INPUT deck rootname length
+      CHARACTER(LEN=LROOTNAME),INTENT(IN)     :: ROOTNAME         ! INPUT deck rootname
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -128,8 +130,7 @@ C-----------------------------------------------
      .        NREMN(NINTER),NREMN_OLD(NINTER),IEDG,IEDGN,ST2_CONNEC,
      .        REMNODE_SIZE,LEN_FILNAM,REMNODE_SIZE_EDG,IREMNODE_EDG
       CHARACTER*(2148) FILNAM
-      CHARACTER*nchartitle,
-     .        TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, DIMENSION(:),ALLOCATABLE :: REMNODE,KREMNODE,T2_ADD_CONNEC,T2_CONNEC
       
       INTEGER :: NS
@@ -294,8 +295,8 @@ C--- IREM_I2 treatment has been removed at end of ININTR2 to take into account
 C---- the compaction of type2 w/ Itetra10=2  
 C
       IF(IWRN/=0) THEN
-        LEN_FILNAM = OUTFILE_NAME_LEN + ROOTLEN + 6
-        FILNAM = OUTFILE_NAME(1:OUTFILE_NAME_LEN)//ROOTNAM(1:ROOTLEN)//'.coord'
+        LEN_FILNAM = OUTFILE_NAME_LEN + ROOTNAME_LENGTH + 6
+        FILNAM = OUTFILE_NAME(1:OUTFILE_NAME_LEN)//TRIM(ROOTNAME)//'.coord'
         OPEN(UNIT=IOU2,FILE=FILNAM(1:LEN_FILNAM),STATUS='UNKNOWN',
      .       FORM='FORMATTED')
         WRITE(IOU2,'(2A)')'#--1---|---2---|---3---|---4---|',

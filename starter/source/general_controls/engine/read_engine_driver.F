@@ -31,7 +31,7 @@ Chd|        GROUPDEF_MOD                  ../common_source/modules/groupdef_mod.
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|        SUBMODEL_MOD                  share/modules1/submodel_mod.F 
 Chd|====================================================================
-       SUBROUTINE READ_ENGINE_DRIVER(IGRPART,IS_DYNA,NB_DYNA_INCLUDE)
+       SUBROUTINE READ_ENGINE_DRIVER(IGRPART,IS_DYNA,NB_DYNA_INCLUDE,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -39,6 +39,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE UNITAB_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -48,10 +49,11 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "com_engcards_c.inc"
-#include      "scr15_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
+      INTEGER, INTENT(IN)                        :: ROOTNAME_LENGTH  ! INPUT deck rootname length
       TYPE(GROUP_)  ,DIMENSION(NGRPART) :: IGRPART
       INTEGER,INTENT(IN)::IS_DYNA
       INTEGER,INTENT(IN)::NB_DYNA_INCLUDE
@@ -70,8 +72,8 @@ C-----------------------------------------------
          FILNAM  = 'DYNA_INCLUDE_0001.rad'
          LEN_FILNAM=21
        ELSE
-         FILNAM  =ROOTNAM(1:ROOTLEN)//'_0001.rad'
-         LEN_FILNAM=ROOTLEN+9
+         FILNAM  = TRIM(ROOTNAME)//'_0001.rad'
+         LEN_FILNAM=ROOTNAME_LENGTH+9
        ENDIF
        CALL CPP_MODEL_OPEN_FILE(FILNAM,LEN_FILNAM)
 C--------------------------------------------------

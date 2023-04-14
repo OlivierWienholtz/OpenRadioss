@@ -34,6 +34,7 @@ Chd|====================================================================
      .                   STIFR, X, V     ,MS    ,IN   ,
      .                    RBYM, IRBYM ,LCRBM,NOM_OPT)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C=======================================================================
 C    RBY    EN SORTIE DE INIRBY
 C a voir 
@@ -78,8 +79,7 @@ C     REAL
      .   MASRB,DD,TOL, II1,II2,II3,II4,II5,II6,II7,II8,II9,
      .   RBY(20)
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C
       TOL=ONE+EM04
       KK = 0

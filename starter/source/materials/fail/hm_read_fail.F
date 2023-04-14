@@ -82,7 +82,7 @@ Chd|        TABLE_MOD                     share/modules1/table_mod.F
 Chd|====================================================================
       SUBROUTINE HM_READ_FAIL(FAIL_TAG,FAILWAVE,NLOC_DMG,IPM     ,PM       ,
      .                        BUFMAT  ,BUFLEN  ,IADBUF  ,UNITAB  ,LSUBMODEL,
-     .                        NRUPT   ,NVAR_FAIL,TABLE  )
+     .                        NRUPT   ,NVAR_FAIL,TABLE  ,ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -94,6 +94,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARLINE,NCHARTITLE
 C============================================================================
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -125,19 +126,22 @@ C-----------------------------------------------
       TYPE(SUBMODEL_DATA),INTENT(IN) ::LSUBMODEL(*)
       INTEGER, DIMENSION(MAXLAW,NRUPT),INTENT(INOUT)    :: NVAR_FAIL 
       INTEGER,INTENT(IN)                                :: NRUPT 
-      TYPE(TTABLE) TABLE(NTABLE)    
+      TYPE(TTABLE) TABLE(NTABLE)   
+      INTEGER, INTENT(IN)                        :: ROOTNAME_LENGTH  ! INPUT deck rootname length
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname 
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,J,K,N,NF,NFUNC,NUVAR,MAXPARAM,IMID,MAT_ID,FAIL_ID,ILAW,
      .   NUVARG,ILOC,IRUP,IFAILWAVE,UNIT_ID,IXFEM,HM_NBFAIL,IUNIT,IFLAGUNIT
-      CHARACTER KEY*20,MESS*40,TITR*nchartitle
+      CHARACTER KEY*20,MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C----------------------------------      
       PARAMETER (MAXPARAM = 1000) 
       INTEGER ,DIMENSION(MAXFUNC)       :: IFUNC
       my_real ,DIMENSION(MAXPARAM)      :: UPARAM
       my_real UNITAB_SUB(4)
-      CHARACTER IUSER_KEY*ncharline
+      CHARACTER(LEN=NCHARLINE) IUSER_KEY
 C----------------------------------      
       LOGICAL    :: IS_AVAILABLE,IS_ID_LINE
 C----------------------------------      
@@ -424,7 +428,8 @@ c---
      .                               NUVAR,IFUNC,MAXFUNC,NFUNC,
      .                               LSUBMODEL,
      .                               UNITAB_SUB,
-     .                               MAT_ID)
+     .                               MAT_ID,
+     .                               ROOTNAME,ROOTNAME_LENGTH)
 c---
             CASE(7)
               CALL HM_READ_FAIL_FLD(

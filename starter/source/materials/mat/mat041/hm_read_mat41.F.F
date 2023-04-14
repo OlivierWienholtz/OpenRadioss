@@ -69,6 +69,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE SUBMODEL_MOD
       USE MATPARAM_DEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -89,8 +90,7 @@ C-----------------------------------------------
       my_real   UPARAM(MAXUPARAM),STIFINT
 
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(SUBMODEL_DATA),INTENT(IN) ::LSUBMODEL(*)
       my_real, DIMENSION(NPROPM), INTENT(INOUT) :: PM     
       TYPE(MATPARAM_STRUCT_) ,INTENT(INOUT) :: MATPARAM

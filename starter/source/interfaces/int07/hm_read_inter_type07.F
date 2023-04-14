@@ -57,6 +57,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE UNITAB_MOD
       USE SENSOR_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -76,7 +77,7 @@ C-----------------------------------------------
      .   STFAC,XFILTR
       my_real
      .   FRIGAP(*),FRIC_P(*),TF(*)
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(INTBUF_FRIC_STRUCT_) INTBUF_FRIC_TAB(*)
       TYPE(SUBMODEL_DATA) LSUBMODEL(*)
 C-----------------------------------------------
@@ -109,7 +110,7 @@ C-----------------------------------------------
      .   PERCENT_SIZE,PENMAX,PENMIN,VISC,VISCF,FPENMAX,DTMIN,
      .   RSTH,TINT, XTHE, FRAD, DRAD,XFRICTH,FHEATS,FHEATM,
      .   EDG_ANGL,VISCFLUID,SIGMAXADH,VISCADHFACT,XTHE_UNIT
-      CHARACTER KEY1*ncharkey
+      CHARACTER(LEN=NCHARKEY) :: KEY1
       LOGICAL IS_AVAILABLE
 !
       INTEGER, DIMENSION(:), POINTER :: INGR2USR

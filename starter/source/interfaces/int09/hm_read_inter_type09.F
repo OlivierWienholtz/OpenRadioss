@@ -44,6 +44,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -63,7 +64,7 @@ C-----------------------------------------------
      .   STFAC
       my_real
      .   FRIGAP(*)
-      CHARACTER TITR*nchartitle,TITR1*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       TYPE(SUBMODEL_DATA), DIMENSION(NSUBMOD), INTENT(IN) :: LSUBMODEL
 C-----------------------------------------------
@@ -80,8 +81,7 @@ C-----------------------------------------------
      .   IBC1, IBC2, IBC3,IBC1M, IBC2M, IBC3M,INTKG
       my_real
      .   FRIC,GAP,STARTT,STOPT,FHEAT,STENS,VISC
-      CHARACTER MESS*40, MSGTITL*nchartitle
-      CHARACTER OPT*ncharkey,KEY*ncharkey,KEY1*ncharkey
+      CHARACTER(LEN=40) :: MESS*40
 !
       INTEGER, DIMENSION(:), POINTER :: INGR2USR
       LOGICAL :: IS_AVAILABLE

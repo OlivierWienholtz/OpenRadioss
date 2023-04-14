@@ -41,7 +41,8 @@ Chd|        STATE_MOD                     ../common_source/modules/state_mod.F
 Chd|====================================================================
       SUBROUTINE RDRESA(ITSTV1 , LHEADER, LVARINT, LVARREA, PRADIOS,
      .                  PRESFIL,MULTI_FVM,H3D_DATA,
-     .                  PINCH_DATA,DYNAIN_DATA,INTERFACES,SENSORS,LOADS)
+     .                  PINCH_DATA,DYNAIN_DATA,INTERFACES,SENSORS,LOADS,
+     .                  NAMES_AND_TITLES )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -54,6 +55,7 @@ C-----------------------------------------------
       USE INTERFACES_MOD
       USE SENSOR_MOD
       USE LOADS_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,LTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -64,23 +66,23 @@ C-----------------------------------------------
 #include      "r4r8_p.inc"
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "com05_c.inc"
 #include      "scr03_c.inc"
 #include      "scr14_c.inc"
 #include      "warn_c.inc"
 #include      "units_c.inc"
 C-----------------------------------------------------------------
 C   D u m m y   A r g u m e n t s
-C-----------------------------------------------
+C-----------------------------------------------------------------
       INTEGER ITSTV1, LHEADER, LVARINT, LVARREA, PRADIOS,
      .        PRESFIL
-      TYPE(MULTI_FVM_STRUCT) :: MULTI_FVM
-      TYPE(H3D_DATABASE) :: H3D_DATA
-      TYPE(PINCH) :: PINCH_DATA
-      TYPE (DYNAIN_DATABASE),INTENT(INOUT) :: DYNAIN_DATA
-      TYPE (INTERFACES_)    ,INTENT(INOUT) :: INTERFACES
-      TYPE (SENSORS_)       ,INTENT(INOUT) :: SENSORS
-      TYPE (LOADS_)         ,INTENT(INOUT) :: LOADS
+      TYPE(MULTI_FVM_STRUCT)                 :: MULTI_FVM
+      TYPE(H3D_DATABASE)                     :: H3D_DATA
+      TYPE(PINCH)                            :: PINCH_DATA
+      TYPE(DYNAIN_DATABASE),INTENT(INOUT)    :: DYNAIN_DATA
+      TYPE(INTERFACES_)   , INTENT(INOUT)    :: INTERFACES
+      TYPE (SENSORS_)       ,INTENT(INOUT)   :: SENSORS
+      TYPE (LOADS_)         ,INTENT(INOUT)   :: LOADS
+      TYPE(NAMES_AND_TITLES_), INTENT(INOUT) :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -89,6 +91,7 @@ C-----------------------------------------------
       PARAMETER (LMXHEAD=100)
       PARAMETER (LMXVINT=4000)     
       INTEGER   TABHEAD(LMXHEAD),TABVINT(LMXVINT)
+      INTEGER,DIMENSION(LTITLE) :: ITITLE
       my_real
      .        PROBINT
 C-----------------------------------------------
@@ -99,7 +102,10 @@ C-----------------------------------------------
 C     LECTURE TEXTE
 C-----------------------------------------------
       CALL CUR_FIL_C(0)
-      CALL READ_I_C(TEXT,LCOM05)
+      CALL READ_I_C(ITITLE,LTITLE)
+      DO I=1,LTITLE
+         NAMES_AND_TITLES%TITLE(I:I) = CHAR(ITITLE(I))
+      ENDDO
 C-----------------------------------------------
 C     LECTURE DE L'ENTETE
 C-----------------------------------------------

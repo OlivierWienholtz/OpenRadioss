@@ -48,6 +48,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE MATPARAM_DEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
 C   ===================
@@ -75,7 +76,7 @@ C-----------------------------------------------
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER, INTENT(IN)                          :: ID
       TYPE(SUBMODEL_DATA), DIMENSION(*),INTENT(IN) :: LSUBMODEL
-      CHARACTER*nchartitle ,INTENT(IN)             :: TITR
+      CHARACTER(LEN=NCHARTITLE) ,INTENT(IN)        :: TITR
 c
       INTEGER, INTENT(INOUT)                         :: ISRATE
       my_real, DIMENSION(100)       ,INTENT(INOUT)   :: PARMAT     

@@ -35,8 +35,11 @@ Chd|====================================================================
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,NAMES_AND_TITLE_INIT
+      USE MESSAGE_MOD
       USE INOUTFILE_MOD
       USE DYNLIB_MOD
+      USE ARRET_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -44,7 +47,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "chara_c.inc"
+#include      "my_allocate.inc"
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -58,6 +61,9 @@ C-----------------------------------------------
       INTEGER LFNAME
       INTEGER DUM_IERR
       INTEGER :: DYN_LIB_MODE
+      CHARACTER(LEN=2048):: PATH
+      CHARACTER(LEN=256) :: INPUT
+      INTEGER GOT_INPUT,GOT_PATH,PATH_LENGTH,INPUT_LENGTH
 C-----------------------------------------------
 C attention IBM/MPI ne supporte pas de REWIND sur STDIN !
 C     La lecture du fichier D01 pour detection de l'option /MADYMO/ON
@@ -65,14 +71,19 @@ C     n'est pas autorisee en SPMD.
 C     => A modifier si cette option doit etre supportee en SPMD ../..
       INTEGER ISTDI
       CHARACTER KEYA*80
+C------------------------------------------------
+      CALL NAMES_AND_TITLE_INIT(NAMES_AND_TITLES)            ! Initialize Names & titles structure
 C----------------------------------------------
-C Parametres argument de run
+C Command line argument parameters.
 C 
+      GOT_PATH   = 0
+      PATH_LENGTH= 0
+C
       ALLOCATE( DLIB_STRUCT(NBR_DLIB) )
       DYN_LIB_MODE = 0
       CALL INIT_DYN_LIB_STRUC(DYN_LIB_MODE)
-      CALL EXECARGCHECK(GOT_INPUT, INPUT, LENINPUT,
-     *                  GOT_PATH,  PATH,  LENPATH )
+      CALL EXECARGCHECK(GOT_INPUT, INPUT, INPUT_LENGTH,
+     *                  GOT_PATH,  PATH, PATH_LENGTH )
 
 !     ----------------------------
 !     if -infile or outfile cdl are used, then one needs to change $TMPDIR 
@@ -90,7 +101,8 @@ C     allocation minimale (en cas d'absence de couplage MADYMO).
        RDATA(I)=ZERO
       ENDDO
 C-----------------------------------------------
-      CALL RADIOSS2(IDATA, MIDATA, RDATA, MRDATA)
+      CALL RADIOSS2(IDATA, MIDATA   ,RDATA, MRDATA,NAMES_AND_TITLES,
+     *              PATH,  GOT_PATH ,PATH_LENGTH,INPUT,GOT_INPUT,INPUT_LENGTH)
 C-----------------------------------------------
 9999  CONTINUE
       RETURN

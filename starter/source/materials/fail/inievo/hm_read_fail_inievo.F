@@ -50,6 +50,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE TABLE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -82,7 +83,7 @@ C MODIFIED ARGUMENT
       INTEGER,INTENT(INOUT)          :: IFUNC(MAXFUNC),NFUNC
       my_real,INTENT(INOUT)          :: UPARAM(MAXUPARAM)
       INTEGER,INTENT(OUT)            :: NUPARAM,NUVAR
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(TTABLE) TABLE(NTABLE)   
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s

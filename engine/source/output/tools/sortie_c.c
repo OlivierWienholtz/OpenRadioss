@@ -320,22 +320,18 @@ static FILE *UCompressedGZCreate (fileName)
   int     p[2], fdc;
   int     hProcess, fdStdIn,fdStdOut;
   FILE   *compressedFile, *nonCompressedFile;
-
   if ((fdc = open (fileName, O_WRONLY | O_CREAT, 0666)) == -1) {
-    fprintf (stderr, 
-"UCompressedFCreate: cannot open file %s for creation!\n",fileName);
+    fprintf (stderr, "UCompressedFCreate: cannot open file %s for creation!\n",fileName);
     return NULL;
   }
 
   if (!(nonCompressedFile = fdopen (fdc, "w"))) {
-    fprintf (stderr, 
-"UCompressedFCreate: cannot fdopen file %s for creation!\n", fileName);
+    fprintf (stderr, "UCompressedFCreate: cannot fdopen file %s for creation!\n", fileName);
     return NULL;
   }
 
   if (_pipe (p, 512, O_NOINHERIT ) == -1) {
-    fprintf (stderr, 
-"UCompressedFCreate: cannot open pipe for compression... sorry file won't be compressed!\n");
+    fprintf (stderr, "UCompressedFCreate: cannot open pipe for compression... sorry file won't be compressed!\n");
     return nonCompressedFile;
   }
 
@@ -363,14 +359,13 @@ static FILE *UCompressedGZCreate (fileName)
    close(fdStdIn);
 
   if(hProcess == -1) {
-      fprintf (stderr, 
-"UCompressedFCreate: cannot spawn to execute gzip... sorry file won't be compressed!\n");
+      fprintf (stderr, "UCompressedFCreate: cannot spawn to execute gzip... sorry file won't be compressed!\n");
       return nonCompressedFile;
     }
   else{
       if (!(compressedFile = fdopen (p[1], "w"))) {
-	fprintf (stderr, "UCompressedFCreate: cannot fdopen pipe!\n");
-	return NULL;
+           fprintf (stderr, "UCompressedFCreate: cannot fdopen pipe!\n");
+           return NULL;
       }
       close (p[0]);
 	  fclose(nonCompressedFile);
@@ -454,20 +449,17 @@ static FILE *UCompressedZCreate (fileName)
   FILE   *compressedFile, *nonCompressedFile;
 
   if ((fdc = open (fileName, O_WRONLY | O_CREAT, 0666)) == -1) {
-    fprintf (stderr, 
-"UCompressedFCreate: cannot open file %s for creation!\n",fileName);
+    fprintf (stderr, "UCompressedFCreate: cannot open file %s for creation!\n",fileName);
     return NULL;
   }
 
   if (!(nonCompressedFile = fdopen (fdc, "w"))) {
-    fprintf (stderr, 
-"UCompressedFCreate: cannot fdopen file %s for creation!\n", fileName);
+    fprintf (stderr, "UCompressedFCreate: cannot fdopen file %s for creation!\n", fileName);
     return NULL;
   }
 
   if (_pipe (p, 512, O_NOINHERIT ) == -1) {
-    fprintf (stderr, 
-"UCompressedFCreate: cannot open pipe for compression... sorry file won't be compressed!\n");
+    fprintf (stderr, "UCompressedFCreate: cannot open pipe for compression... sorry file won't be compressed!\n");
     return nonCompressedFile;
   }
 
@@ -490,8 +482,7 @@ static FILE *UCompressedZCreate (fileName)
    close(fdStdIn);
 
   if(hProcess == -1) {
-      fprintf (stderr, 
-"UCompressedFCreate: cannot spawn to execute compress... sorry file won't be compressed!\n");
+      fprintf (stderr, "UCompressedFCreate: cannot spawn to execute compress... sorry file won't be compressed!\n");
       return nonCompressedFile;
     }
   else{
@@ -590,8 +581,7 @@ FILE   *UCompressedFOpen (fileName, type, suffix)
     else if (!strcmp (type, "r"))
       return UCompressedZRead (fileName);
     else
-      fprintf (stderr, 
-"UCompressedFOpen: error, can be used only for \"r\" or \"w\" modes!\n");
+      fprintf (stderr, "UCompressedFOpen: error, can be used only for \"r\" or \"w\" modes!\n");
     break;
   case GZSUFFIX:
     if (!strcmp (type, "w"))
@@ -599,8 +589,7 @@ FILE   *UCompressedFOpen (fileName, type, suffix)
     else if (!strcmp (type, "r"))
       return UCompressedGZRead (fileName);
     else
-      fprintf (stderr, 
-"UCompressedFOpen: error, can be used only for \"r\" or \"w\" modes!\n");
+      fprintf (stderr, "UCompressedFOpen: error, can be used only for \"r\" or \"w\" modes!\n");
     break;
   }
   return NULL;
@@ -670,18 +659,18 @@ int *ifil,*len,*mod;
         }
         else if (*mod==4)  /* ouverture read Z */
         {
-	    filnam[i++]='.';
-	    filnam[i++]='Z';
-	    filnam[i++]='\0';
-            curfile=UCompressedFOpen(filnam,"r",ZSUFFIX);
+          filnam[i++]='.';
+          filnam[i++]='Z';
+          filnam[i++]='\0';
+          curfile=UCompressedFOpen(filnam,"r",ZSUFFIX);
         }
         else if (*mod==6)  /* ouverture write Z */
         {
-	    filnam[i++]='.';
-	    filnam[i++]='g';
-	    filnam[i++]='z';
-	    filnam[i++]='\0';
-            curfile=UCompressedFOpen(filnam,"w",GZSUFFIX);
+          filnam[i++]='.';
+          filnam[i++]='g';
+          filnam[i++]='z';
+          filnam[i++]='\0';
+          curfile=UCompressedFOpen(filnam,"w",GZSUFFIX);
         }
         else if (*mod==7)  /* ouverture read Z */
         {

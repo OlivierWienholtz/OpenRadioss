@@ -49,6 +49,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD        
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -78,7 +79,10 @@ C-----------------------------------------------
      .        NOSYS, J,IGR,IGRS,K,
      .        NCELL,
      .        ILEV, NY
-      CHARACTER MESS*40,TITR*nchartitle,KEY*ncharkey,DIR*ncharfield
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARKEY)   :: KEY
+      CHARACTER(LEN=NCHARFIELD) :: DIR
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
@@ -127,7 +131,7 @@ C--------------------------------------------------
 C--------------------------------------------------
 C EXTRACT DATAS (STRING)
 C--------------------------------------------------
-          CALL HM_GET_STRING('rad_dir',DIR,ncharfield,IS_AVAILABLE)
+          CALL HM_GET_STRING('rad_dir',DIR,NCHARFIELD,IS_AVAILABLE)
 C
           IF(DIR(1:1)=='X')THEN
             IC=1

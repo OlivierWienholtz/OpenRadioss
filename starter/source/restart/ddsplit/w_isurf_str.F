@@ -75,7 +75,7 @@ C-----------------------------------------------
         INTEGER :: NSEG_R2R_SHARE
         INTEGER, DIMENSION(LTITR) :: ITITLE
         INTEGER, DIMENSION(NSURF) :: NSEG_L
-        CHARACTER(LEN=nchartitle) :: TITR
+        CHARACTER(LEN=NCHARTITLE) :: TITR
         INTEGER, ALLOCATABLE, DIMENSION (:)  ::  IGRSURF_L
 
         INTEGER :: JJ

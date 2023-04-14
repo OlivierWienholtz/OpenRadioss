@@ -44,6 +44,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD 
       USE ELBUFTAG_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e sXM
 C-----------------------------------------------
@@ -60,7 +61,7 @@ C-----------------------------------------------
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER, INTENT(IN) :: MAT_ID,MAXUPARAM,MAXFUNC
       my_real, DIMENSION(NPROPM) ,INTENT(INOUT) :: PM     
-      CHARACTER*nchartitle ,INTENT(IN) :: TITR
+      CHARACTER(LEN=NCHARTITLE) ,INTENT(IN) :: TITR
       INTEGER, INTENT(INOUT) :: ISRATE,IFUNC(MAXFUNC)
       INTEGER, INTENT(INOUT)   :: NUPARAM,NFUNC
       my_real, DIMENSION(MAXUPARAM) ,INTENT(INOUT) :: UPARAM

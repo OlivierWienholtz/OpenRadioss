@@ -759,8 +759,13 @@ Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE NEWDBL2(INDEX,NLIST,LIST,ILIST,TAB,ERRID,STATUS,
      .                   NOM_OPT)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
       USE MESSAGE_MOD
-C      TEST LES N0 DOUBLES
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
+C-----------------------------------------------
+C      Test if entities have double IDs
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -776,7 +781,7 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I, ID,IDM, IWORK(70000),ID1
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------
 C TRI DE LIST EN ORDRE CROISSANT
 C-----------------------

@@ -51,6 +51,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -91,10 +92,10 @@ C-----------------------------------------------
      . MEAN,STDEV,MEAN_INPUT,SD_INPUT,MAX_DISTRIB,TEMP,MIN_VALUE,
      . MAX_VALUE,INTERV,VALUE,MAX_VALUE1,MINVAL,MAXVAL,BID
       my_real, DIMENSION(:), ALLOCATABLE :: ARRAY
-      CHARACTER TITR*nchartitle
-      CHARACTER*100 KEY1,KEY2
-      CHARACTER PARAM*ncharkey
-      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=100)        :: KEY1,KEY2
+      CHARACTER(LEN=NCHARKEY)   :: PARAM
+      CHARACTER(LEN=40)         :: MESS
       LOGICAL IS_AVAILABLE
       DATA MESS/'PERTURBATION DEFINITION            '/
 C=======================================================================
@@ -198,7 +199,7 @@ card1
           CALL HM_GET_INTV  ('Idistri'   ,I_METHOD ,IS_AVAILABLE,LSUBMODEL)
 card2
           CALL HM_GET_INTV  ('fail_ID'   ,FAIL_ID  ,IS_AVAILABLE,LSUBMODEL)
-          CALL HM_GET_STRING('parameter' ,PARAM    ,ncharkey,IS_AVAILABLE)
+          CALL HM_GET_STRING('parameter' ,PARAM    ,NCHARKEY,IS_AVAILABLE)
 c--------------------------------------------
 c         Input check
 c--------------------------------------------

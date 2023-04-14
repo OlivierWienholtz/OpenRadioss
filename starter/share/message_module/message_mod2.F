@@ -28,12 +28,16 @@ Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|-- calls ---------------
 Chd|====================================================================
       MODULE MESSAGE_MOD2
-#include "nchar_c.inc"
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
+C-----------------------------------------------
       TYPE TMESSAGE
-C message size
+      ! message size
         INTEGER SMESSAGE
-        CHARACTER*ncharline,DIMENSION(:), ALLOCATABLE :: MESSAGE
-C dimension : size
+        CHARACTER(LEN=ncharline),DIMENSION(:), ALLOCATABLE :: MESSAGE
+      ! dimension : size
       END TYPE TMESSAGE
 c
 C dimensions : size,title(=1)/desc(=2)
@@ -72,8 +76,8 @@ C
       PARAMETER (MSG_CUMU=0)
       PARAMETER (MSG_PRINT=1)
 
-      CHARACTER*ncharline, DIMENSION(:), ALLOCATABLE :: MESSAGESFILE
-      CHARACTER*ncharline ERR_CATEGORY
+      CHARACTER(LEN=ncharline), DIMENSION(:), ALLOCATABLE :: MESSAGESFILE
+      CHARACTER(LEN=ncharline) :: ERR_CATEGORY
       INTEGER SMESSAGESFILE
 
       INTEGER NCHAROUT

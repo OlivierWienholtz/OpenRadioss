@@ -46,6 +46,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -78,8 +79,9 @@ C-----------------------------------------------
 C     REAL
       my_real
      .   BID, F5(5), TIME, FUNCT
-      CHARACTER TITR*nchartitle, MESS*40, KEY*ncharfield,
-     .          TITR1*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR, TITR1
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARFIELD) :: KEY
       DATA MESS/' FUNCTION & TABLE DEFINITION            '/
       LOGICAL :: IS_ENCRYPTED, IS_AVAILABLE
 C======================================================================|

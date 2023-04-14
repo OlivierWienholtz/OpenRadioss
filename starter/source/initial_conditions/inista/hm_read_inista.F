@@ -40,6 +40,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -48,11 +49,10 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "scr03_c.inc"
-#include      "scr17_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      CHARACTER S0FILE*ncharline
+      CHARACTER(LEN=NCHARLINE),INTENT(INOUT) :: S0FILE
       INTEGER ISIGI,IOUTP_FMT,IROOTYY_R
       TYPE(SUBMODEL_DATA) LSUBMODEL(*)
 C-----------------------------------------------
@@ -76,7 +76,7 @@ C
         CALL HM_OPTION_READ_KEY(LSUBMODEL) 
 C
         ! Read card
-        CALL HM_GET_STRING('ISRTY',S0FILE   ,ncharline   ,IS_AVAILABLE)
+        CALL HM_GET_STRING('ISRTY',S0FILE   ,NCHARLINE   ,IS_AVAILABLE)
         SIZ = LEN_TRIM(S0FILE)
         CALL HM_GET_INTV('IBAL'   ,IB       ,IS_AVAILABLE,LSUBMODEL)  
         CALL HM_GET_INTV('IOUTYY' ,IOUTP_FMT,IS_AVAILABLE,LSUBMODEL)  

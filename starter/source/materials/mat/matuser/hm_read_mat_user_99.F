@@ -42,7 +42,8 @@ Chd|====================================================================
      .                          NUVAR ,IFUNC,MAXFUNC,NFUNC,
      .                          PARMAT,USERBUF,
      .                          LSUBMODEL,
-     .                          PM )
+     .                          PM ,ROOTNAME    , 
+     .                          ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   ROUTINE DESCRIPTION :
 C   ===================
@@ -65,6 +66,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE LAW_USER
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARTITLE,NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -72,7 +74,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr15_c.inc"
 #include      "scr17_c.inc"
 #include      "param_c.inc"
 #include      "units_c.inc"
@@ -91,14 +92,16 @@ C-----------------------------------------------
       my_real, DIMENSION(MAXUPARAM)   :: UPARAM
       my_real, DIMENSION(NPROPM) ,INTENT(INOUT)   :: PM
       TYPE(ULAWBUF) :: USERBUF
-      CHARACTER IUSER_KEY*ncharline
+      CHARACTER(LEN=NCHARLINE)             :: IUSER_KEY
+      INTEGER, INTENT(IN)                  :: ROOTNAME_LENGTH  ! INPUT deck rootname length
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       CHARACTER(LEN=4096) :: SCR_FILE_NAME
-      CHARACTER(LEN=ncharline) :: RLINE
+      CHARACTER(LEN=NCHARLINE) :: RLINE
       CHARACTER (LEN=4) :: CLAW
-      CHARACTER(LEN=nchartitle) :: TITLE
+      CHARACTER(LEN=NCHARTITLE) :: TITLE
       LOGICAL :: IS_AVAILABLE
       INTEGER NLINES,J,MAT_ID
       INTEGER SCR_FILE_NAME_LEN
@@ -125,7 +128,7 @@ C-----------------------------------------------
 
         ! Rho & Rho0_r are read out of user laws
         J=1
-        CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, 1, ncharline, IS_AVAILABLE)
+        CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, 1, NCHARLINE, IS_AVAILABLE)
         READ(RLINE,ERR=999,FMT=FMT_2F)RHO0,RHOR
 
         PM(1)=RHOR
@@ -133,18 +136,18 @@ C-----------------------------------------------
 
         ! Create tempo file  
         WRITE(CLAW,'(I4.4)')ILAW
-        SCR_FILE_NAME='SI'//ROOTNAM(1:ROOTLEN)//'_'//CLAW//'.scr'
+        SCR_FILE_NAME='SI'//TRIM(ROOTNAME)//'_'//CLAW//'.scr'
         SCR_FILE_NAME_LEN=LEN_TRIM(SCR_FILE_NAME)
-        OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=ncharline)
+        OPEN(UNIT=30,FILE=TRIM(SCR_FILE_NAME),FORM='FORMATTED',RECL=NCHARLINE)
 
         ! Read & Dump in scratch file
         DO J=2,NLINES   
-         CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, ncharline, IS_AVAILABLE)
+         CALL HM_GET_STRING_INDEX('arraydatalines', RLINE, J, NCHARLINE, IS_AVAILABLE)
          WRITE(30,FMT='(A)')TRIM(RLINE)
         ENDDO
         CLOSE(UNIT=30)
 
-        CALL ST_USERLIB_LECM99(ILAW,ROOTNAM,ROOTLEN,IUSER_LAW , 
+        CALL ST_USERLIB_LECM99(ILAW,ROOTNAME,ROOTNAME_LENGTH,IUSER_LAW , 
      .                         UPARAM,MAXUPARAM,
      .                         NUPARAM,NUVAR ,IFUNC      ,MAXFUNC,NFUNC   ,
      .                         PARMAT ,USERBUF)
@@ -153,7 +156,7 @@ C-----------------------------------------------
         TITLE = TRIM(TITLE)
         CALL ST_GET_USERBUF_VAR(MAT_ID,TITLE)
 
-        CALL USER_OUTPUT(IOUT,ILAW,ROOTNAM,ROOTLEN,1)
+        CALL USER_OUTPUT(IOUT,ILAW,ROOTNAME,ROOTNAME_LENGTH,1)
       ELSE
          ! Error MESSAGE_Mess
       ENDIF
@@ -162,8 +165,6 @@ C-----------------------------------------------
  999  CALL ANCMSG(MSGID=55,
      .            ANMODE=ANINFO,
      .            MSGTYPE=MSGERROR,
-     .            C1=KEY0(KCUR),
-     .            C2=KLINE,
-     .            C3=LINE)
+     .            C1='USER MAT')
       CALL ARRET(2)
       END

@@ -51,6 +51,8 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE PINCHTYPE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
+
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -84,7 +86,8 @@ C-----------------------------------------------
       INTEGER N1,N2,N3,N4
       my_real
      .   FCX,FCY,FAC_FCX,FAC_FCY
-      CHARACTER MESS*40,TITR*nchartitle
+      CHARACTER(LEN=40)         :: MESS
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s

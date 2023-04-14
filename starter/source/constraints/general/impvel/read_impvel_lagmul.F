@@ -53,6 +53,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
       USE UNITAB_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -93,9 +94,9 @@ C-----------------------------------------------
       INTEGER ,DIMENSION(3*NUMNOD) :: IKINE1
       my_real :: XSCALE,YSCALE,FSCAL_T,FSCAL_V,T0,DMIN,DIST,
      .   XI,YI,ZI,XF,YF,ZF,TSTART,TSTOP
-      CHARACTER(ncharkey)    :: KEY
-      CHARACTER(ncharfield)  :: XYZ
-      CHARACTER(nchartitle)  :: TITR,MESS 
+      CHARACTER(NCHARKEY)    :: KEY
+      CHARACTER(NCHARFIELD)  :: XYZ
+      CHARACTER(NCHARTITLE)  :: TITR,MESS 
       CHARACTER(2)           :: X,Y,Z,XX,YY,ZZ
       LOGICAL IS_AVAILABLE
 C-----------------------------------------------
@@ -151,7 +152,7 @@ c--------------------------------------------------
 c       READ STRING VALUES from /IMPVEL/LAGMUL
 c--------------------------------------------------        
         CALL HM_GET_INTV  ('curveid'   ,FCT1_ID,IS_AVAILABLE,LSUBMODEL)
-        CALL HM_GET_STRING('rad_dir'   ,XYZ      ,ncharfield,IS_AVAILABLE)
+        CALL HM_GET_STRING('rad_dir'   ,XYZ      ,NCHARFIELD,IS_AVAILABLE)
         CALL HM_GET_INTV  ('inputsystem'    ,SKEW_ID,IS_AVAILABLE,LSUBMODEL)
         CALL HM_GET_INTV  ('entityid'       ,GRNOD_ID    ,IS_AVAILABLE,LSUBMODEL)
 c        

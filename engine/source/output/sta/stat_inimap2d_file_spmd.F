@@ -43,7 +43,8 @@ Chd|====================================================================
      .                        X        , V        , ITAB  , IPART_STATE, NODTAG,
      .                        IPART    , IPARTS   , IPARTQ, IPARTTG    ,
      .                        IGEO     , IPARG    , IXS   , IXQ        , IXTG  , 
-     .                        ELBUF_TAB, MULTI_FVM, BUFMAT, IPM)
+     .                        ELBUF_TAB, MULTI_FVM, BUFMAT, IPM        , ROOTNAME,
+     .                        ROOTLEN)
 C-----------------------------------------------
 C   Description
 C-----------------------------------------------
@@ -60,6 +61,7 @@ C-----------------------------------------------
       USE MULTI_FVM_MOD
       USE MESSAGE_MOD
       USE INOUTFILE_MOD 
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -75,20 +77,20 @@ C-----------------------------------------------
 #include      "scr17_c.inc"
 #include      "task_c.inc"
 #include      "units_c.inc"
-#include      "chara_c.inc"
 #include      "mmale51_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER,INTENT(IN) :: ITAB(NUMNOD), IPART(LIPART1,*),IGEO(NPROPGI,NUMGEO), IXS(NIXS,NUMELS), IPART_STATE(NPART),
-     .                        IPARG(NPARG,*),IXQ(NIXQ,NUMELQ),IXTG(NIXTG,NUMELTG)
-      INTEGER, INTENT(INOUT) :: NODTAG(NUMNOD),
-     .                          IPM(NPROPMI,*)
+     .                      IPARG(NPARG,*),IXQ(NIXQ,NUMELQ),IXTG(NIXTG,NUMELTG)
+      INTEGER, INTENT(INOUT) :: NODTAG(NUMNOD),IPM(NPROPMI,*)
       INTEGER, TARGET :: IPARTS(*),IPARTQ(*),IPARTTG(*)
       my_real,INTENT(IN) :: X(3,NUMNOD),V(3,NUMNOD)
       my_real, INTENT(IN), TARGET :: BUFMAT(*)
       TYPE (ELBUF_STRUCT_), DIMENSION(NGROUP), TARGET, INTENT(IN) :: ELBUF_TAB
-      TYPE(MULTI_FVM_STRUCT), INTENT(IN) :: MULTI_FVM      
+      TYPE(MULTI_FVM_STRUCT), INTENT(IN) :: MULTI_FVM
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      INTEGER,INTENT(IN) :: ROOTLEN
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -692,8 +694,8 @@ C-----------------------------------------------
         NBMAT = STATE_INIMAP_BUF(1)%NSUBMAT
         WRITE(CHSTAT,'(I4.4)')STATE_INIMAP_CALL_NUMBER
         
-        FILNAM=ROOTNAM(1:ROOTLEN)//'_2D_'//CHSTAT//'.inimap'
-        SHORTNAME=ROOTNAM(1:ROOTLEN)//'_2D_'//CHSTAT//'.inimap'
+        FILNAM=TRIM(ROOTNAME)//'_2D_'//CHSTAT//'.inimap'
+        SHORTNAME=TRIM(ROOTNAME)//'_2D_'//CHSTAT//'.inimap'
         LEN = ROOTLEN+11+4
         LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN
         TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN)

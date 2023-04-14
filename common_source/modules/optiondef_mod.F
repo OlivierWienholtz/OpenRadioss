@@ -83,8 +83,11 @@ Chd|        OPTION_MOD                    starter/share/modules1/options_mod.F
 Chd|-- calls ---------------
 Chd|====================================================================
       MODULE OPTIONDEF_MOD
+C-----------------------------------------------
+C   M o d u l e s
+C----------------------------------------------- 
+            USE NAMES_AND_TITLES_MOD  ,ONLY: NCHARTITLE
 !----------------------------------------------------------------------- 
-#include "nchar_c.inc"
 #include "my_real.inc"
 !-----------------------------------------------------------------------
 !--------------
@@ -99,7 +102,7 @@ Chd|====================================================================
 !--------------
       TYPE INICRACK_
         INTEGER   :: ID ! - INICRACK IDENTIFIER
-        CHARACTER :: TITLE*nchartitle ! INICRACK title
+        CHARACTER(LEN=NCHARTITLE) :: TITLE ! INICRACK title
         INTEGER   :: NSEG  ! - INICRACK NUMBER OF SEGMENTS
 !
         TYPE (SEG_) ,DIMENSION(:) ,ALLOCATABLE :: SEG     ! SEGMENTS OF INICRACK
@@ -117,7 +120,7 @@ Chd|====================================================================
 !--------------
       TYPE ADMAS_
         INTEGER   :: ID ! - ADMAS IDENTIFIER
-        CHARACTER :: TITLE*nchartitle ! ADMAS title
+        CHARACTER(LEN=NCHARTITLE) :: TITLE ! ADMAS title
         INTEGER   :: TYPE ! ADMAS type
 !                    = 0 ! Mass is added to each node of node group
 !                    = 1 ! Mass/N is added to each node of node group.
@@ -143,7 +146,7 @@ Chd|====================================================================
 !--------------
       TYPE BOX_
         INTEGER   :: ID ! - BOX IDENTIFIER
-        CHARACTER :: TITLE*nchartitle ! BOX title
+        CHARACTER(LEN=NCHARTITLE) :: TITLE ! BOX title
         INTEGER   :: ISKBOX ! BOX SKEW_ID (RECTA + CYLIN)
         INTEGER   :: NOD1 ! FIRST NODE for box limit definition  - N1 -
         INTEGER   :: NOD2 ! SECOND NODE for box limit definition - N2 -

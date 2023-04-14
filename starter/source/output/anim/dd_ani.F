@@ -39,11 +39,13 @@ Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod
 Chd|====================================================================
       SUBROUTINE DD_ANI(X     ,IXS   ,IXQ  ,IXC  ,
      .                  IXT   ,IXP   ,IXR  ,IXTG ,
-     .                  IPARG ,KXSP  ,IXSP )
+     .                  IPARG ,KXSP  ,IXSP ,ROOTNAME,
+     .                  ROOTNAME_LENGTH )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -53,7 +55,6 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "scr15_c.inc"
 #include      "param_c.inc"
 #include      "units_c.inc"
 #include      "sphcom.inc"
@@ -64,6 +65,8 @@ C-----------------------------------------------
      .   X(*)
       INTEGER IXS(*),IXQ(*),IXC(*),KXSP(NISP,*),IXSP(KVOISPH,*),
      .        IXTG(*),IXT(*),IXP(*),IXR(*),IPARG(NPARG,*)
+      CHARACTER(LEN=LROOTNAME), INTENT(IN) :: ROOTNAME
+      INTEGER, INTENT(IN) :: ROOTNAME_LENGTH
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -114,8 +117,8 @@ C   OPEN FILE
 C-----------------------------------------------
       IANIM=0
       WRITE(CHANIM,'(I3.3)')IANIM
-      FILNAM=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//ROOTNAM(1:ROOTLEN)//'A'//CHANIM
-      FILEN = ROOTLEN + 4 + OUTFILE_NAME_LEN
+      FILNAM=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//TRIM(ROOTNAME)//'A'//CHANIM
+      FILEN = ROOTNAME_LENGTH + 4 + OUTFILE_NAME_LEN
 C
       DO 1 I=1,FILEN
  1    CTEXT(I)=ICHAR(FILNAM(I:I))

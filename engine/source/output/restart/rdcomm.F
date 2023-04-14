@@ -109,7 +109,6 @@ C-----------------------------------------------
 #include      "spmd_c.inc"
 #include      "fxbcom.inc"
 #include      "eigcom.inc"
-#include      "chara_c.inc"
 #include      "flowcom.inc"
 #include      "impl1_c.inc"
 #include      "tabsiz_c.inc"
@@ -124,6 +123,7 @@ C-----------------------------------------------
 #include      "drape_c.inc"
 #include      "ige3d_c.inc"
 #include      "thermal_c.inc"
+#include      "filescount_c.inc"
 C----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

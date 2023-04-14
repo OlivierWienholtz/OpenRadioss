@@ -71,6 +71,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE SENSOR_MOD
       USE INTERFACES_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -92,7 +93,7 @@ C-----------------------------------------------
      .   STFAC,XFILTR,AREASL
       my_real
      .   FRIGAP(*),FRIC_P(*),I2RUPT(*),TF(*)
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE(INTBUF_FRIC_STRUCT_) INTBUF_FRIC_TAB(*)
       TYPE (SENSORS_) ,INTENT(IN) :: SENSORS
 C-----------------------------------------------
@@ -113,10 +114,9 @@ C-----------------------------------------------
       INTEGER 
      .   NTYP,UID,IFLAGUNIT,FLAG_FMT,FLAG_FMT_TMP,IERR1,
      .   SUB_ID,IFIX_TMP,ID_TYPE19
-      CHARACTER KEY*ncharkey
-      LOGICAL IS_AVAILABLE
+      CHARACTER(LEN=NCHARKEY) :: KEY
 !
-
+      LOGICAL IS_AVAILABLE
 C=======================================================================
 C     INTERFACES FOR SOLID AND STRUCTURE READING ROUTINES
 C=======================================================================

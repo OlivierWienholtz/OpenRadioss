@@ -63,6 +63,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE GROUPDEF_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARTITLE,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -115,8 +116,10 @@ C-----------------------------------------------
      .   NODTAG(NUMNOD)
       my_real
      .   DELTAT,ALPHA,FAC_T,A,B,C,D,E,F,POS,R
-      CHARACTER MESS*40,TITR*nchartitle,CHAR8*ncharline
-      CHARACTER KEY2*ncharfield
+      CHARACTER MESS*40
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      CHARACTER(LEN=NCHARLINE)  :: CHAR8
+      CHARACTER(LEN=NCHARFIELD) :: KEY2
       my_real
      .   BID, XM, YM, ZM, X1, Y1, Z1, X2, Y2, Z2, NORM,
      .   X3, Y3, Z3, N3, PNOR1, PNOR2, PNORM1, DET, DET1, DET2, DET3
@@ -173,12 +176,12 @@ C
         CALL HM_GET_INTV('Axis_Node_N3', NSTRF(K0+5), IS_AVAILABLE, LSUBMODEL)  
         CALL HM_GET_INTV('ISAVE', NSTRF(K0), IS_AVAILABLE, LSUBMODEL)  
 
-        CALL HM_GET_STRING('file_name', CHAR8, ncharline, IS_AVAILABLE)
+        CALL HM_GET_STRING('file_name', CHAR8, NCHARLINE, IS_AVAILABLE)
         ILEN=LEN(CHAR8)
         ILEN=LEN_TRIM(CHAR8)
         ILEN=MAX(0,ILEN)
-        IF(ILEN >= 0 .AND. ILEN < ncharline)THEN
-          DO K=ILEN+1,ncharline
+        IF(ILEN >= 0 .AND. ILEN < NCHARLINE)THEN
+          DO K=ILEN+1,NCHARLINE
             CHAR8(K:K)=' '
           ENDDO       
         ENDIF
@@ -230,8 +233,8 @@ C
      .                C1=TITR)
         ENDIF
 
-        DO J=1,ncharline
-          NOM_SECT((I-1)*ncharline+J) = ICHAR(CHAR8(J:J))
+        DO J=1,NCHARLINE
+          NOM_SECT((I-1)*NCHARLINE+J) = ICHAR(CHAR8(J:J))
         ENDDO
 
 

@@ -37,11 +37,12 @@ Chd|====================================================================
       SUBROUTINE HIST13(IPARG ,IXS  ,IXQ  ,IXC    ,IXT    ,
      2                  IXP   ,IXR  ,IWA  ,ITAB   ,PM     ,
      3                  NPBY  ,IXTG ,IRFE ,LACCELM,
-     4                  IPARI ,IPART,ITHGRP ,ITHBUF,CHRUN_OLD)
+     4                  IPARI ,IPART,ITHGRP ,ITHBUF,CHRUN_OLD,NAMES_AND_TITLES)
 C=======================================================================
 C   OLD TH V3 RADIOSS INPUT V3 or V4
 C=======================================================================
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,LTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -50,7 +51,6 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
-#include      "com05_c.inc"
 #include      "com10_c.inc"
 #include      "units_c.inc"
 #include      "param_c.inc"
@@ -59,7 +59,6 @@ C-----------------------------------------------
 #include      "scr13_c.inc"
 #include      "scr17_c.inc"
 #include      "scrfs_c.inc"
-#include      "chara_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -72,6 +71,7 @@ C-----------------------------------------------
 
       my_real PM(NPROPM,NUMMAT)
       CHARACTER CHRUN_OLD*2
+      TYPE(NAMES_AND_TITLES_),INTENT(IN)  :: NAMES_AND_TITLES
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -104,17 +104,17 @@ C-----------------------------------------------
           IF(ITYP==101)NINTERS = NINTERS + NN
       ENDDO
 C
-      FILNAM=ROOTNAM(1:ROOTLEN)//'T'//CHRUN_OLD
+      FILNAM=TRIM(NAMES_AND_TITLES%ROOTNAME)//'T'//CHRUN_OLD
 C
-      WRITE(CARD,'(20A4)')TEXT
+      CARD(1:LTITLE) = NAMES_AND_TITLES%TITLE(1:LTITLE)
       READ(CARD,'(20A4)')TITLE
 C      ICODE=3017
 C      ICODE=3023
       ICODE=3030
 C      ICODE=3040
 C
-      LEN_TMP_NAME = OUTFILE_NAME_LEN + ROOTLEN+3
-      TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+3) 
+      LEN_TMP_NAME = OUTFILE_NAME_LEN + NAMES_AND_TITLES%ROOTNAME_LENGTH+3
+      TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+3) 
 
       IF(ITFORM==0)THEN
        OPEN(UNIT=IUHIS,FILE=TMP_NAME(1:LEN_TMP_NAME),
@@ -150,10 +150,10 @@ C
         WRITE(IUHIS)ICODE,TITLE
       ELSEIF(ITFORM==1)THEN
         CH8=STRI(ICODE)
-        WRITE(IUHIS,'(A)')FILNAM(1:ROOTLEN+3)
+        WRITE(IUHIS,'(A)')FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+3)
         WRITE(IUHIS,'(2A)')CH8,CARD(1:72)
       ELSEIF(ITFORM==2)THEN
-        WRITE(IUHIS,'(2A)')FILNAM(1:ROOTLEN+3),' FORMAT'
+        WRITE(IUHIS,'(2A)')FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+3),' FORMAT'
         WRITE(IUHIS,'(A,I5,A,I5,A)')EOR,1,'I',72,'C'
         WRITE(IUHIS,'(I5,A)')ICODE,CARD(1:72)
       ELSEIF(ITFORM==3)THEN

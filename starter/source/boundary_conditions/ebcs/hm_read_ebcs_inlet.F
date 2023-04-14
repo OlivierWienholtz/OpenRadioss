@@ -47,6 +47,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE EBCS_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -67,11 +68,11 @@ C-----------------------------------------------
       INTEGER NOM_OPT(LNOPT1),ID,TYP,UID
       TYPE (MULTI_FVM_STRUCT), INTENT(INOUT) :: MULTI_FVM
       TYPE (SURF_)   ,TARGET,  DIMENSION(NSURF)   :: IGRSURF
-      CHARACTER, INTENT(IN) :: TITR*nchartitle
-      CHARACTER :: OPT*ncharkey
+      CHARACTER(LEN=NCHARTITLE), INTENT(IN) :: TITR
+      CHARACTER(LEN=NCHARKEY) :: OPT
       TYPE(SUBMODEL_DATA) LSUBMODEL(NSUBMOD)
       LOGICAL IS_AVAILABLE,IS_ENCRYPTED
-      CHARACTER,INTENT(IN) :: KEY2*ncharkey
+      CHARACTER(LEN=NCHARKEY),INTENT(IN) :: KEY2
       TYPE(t_ebcs_inlet), INTENT(INOUT) :: EBCS
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -82,7 +83,8 @@ C-----------------------------------------------
      .        CHECK_CUMUL_VF(2)
       my_real
      .   C,PRES,RHO,LCAR,R1,R2,ENER,VX,VY,VZ, ALPHA
-      CHARACTER MESS*40,KEY*ncharkey,chain*9, chain1*64
+      CHARACTER MESS*40,chain*9, chain1*64
+      CHARACTER(LEN=NCHARKEY) :: KEY
       EXTERNAL NGR2USR
       LOGICAL FOUND
       INTEGER, DIMENSION(:), POINTER :: INGR2USR

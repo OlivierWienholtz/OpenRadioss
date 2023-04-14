@@ -28,18 +28,19 @@ Chd|-- calls ---------------
 Chd|====================================================================
       SUBROUTINE REDKEY2(KEY2,LK2,KEY0,NKEY,CARTE,IKEY)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD , ONLY : NCHARLINE
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
 C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "nchar_c.inc"
-C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER LK2, NKEY, IKEY
-      CHARACTER KEY2*80, CARTE*ncharline 
+      CHARACTER KEY2*80
+      CHARACTER(LEN=NCHARLINE) :: CARTE
       CHARACTER KEY0(NKEY)*5
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -50,7 +51,7 @@ C-----------------------------------------------
       KEY1=' '
       KEY2=' '
       JK=0
-      DO 10 I=1,ncharline 
+      DO 10 I=1,NCHARLINE 
       IF(CARTE(I:I)=='/')THEN
        JK=JK+1
        J=0

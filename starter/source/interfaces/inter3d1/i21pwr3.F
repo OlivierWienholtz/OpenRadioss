@@ -34,6 +34,7 @@ Chd|====================================================================
      3                  IRECT,XM0   ,GAPMIN,GAPMAX,DEPTH,
      4                  NSN  ,ITAG  ,DRAD  ,ID,TITR)
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -55,8 +56,7 @@ C     REAL
      .   STFN(*),X(3,*),PENI(*),GAP_S(*),XM0(3,*),
      .   GAPMIN,GAPMAX,DEPTH,DRAD
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------

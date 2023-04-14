@@ -54,6 +54,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE SENSOR_MOD
       USE INTBUFDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -70,7 +71,7 @@ C-----------------------------------------------
       INTEGER IPARI(*),NPC1(*),NPC(*)
       my_real STFAC,XFILTR
       my_real FRIGAP(*),FRIC_P(*),TF(*)
-      CHARACTER TITR*nchartitle,TITR1*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR,TITR1
 C-----------------------------------------------
       TYPE (SURF_)   ,TARGET , DIMENSION(NSURF)   :: IGRSURF
       TYPE(SUBMODEL_DATA) LSUBMODEL(*)
@@ -101,9 +102,7 @@ C-----------------------------------------------
      .   ANGLADM, CADM, DEPTH,C1,C2,C3,C4,C5,C6, ALPHA,GAPSCALE,GAPMAX, 
      .   STMIN,STMAX,STIFF, PMAX,AREA, KTHE, XTHE, FRAD, DRAD,
      .   VISC,XFRICTH,PTMAX,PSKID,DCOND,XTHE_UNIT,KTHE_UNIT
-      CHARACTER MESS*40, MSGTITL*nchartitle
-      CHARACTER OPT*ncharkey,KEY*ncharkey,KEY1*ncharkey,
-     .          BCFLAG*ncharfield, BCFLAGM*ncharfield
+      CHARACTER MESS*40
 !,
       INTEGER, DIMENSION(:), POINTER :: INGR2USR
       LOGICAL IS_AVAILABLE

@@ -27,11 +27,12 @@ Chd|        ARRET                         source/system/arret.F
 Chd|-- calls ---------------
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|====================================================================
-      SUBROUTINE SORTIE_MVW(IMVW,IMVW_REF)
+      SUBROUTINE SORTIE_MVW(IMVW,IMVW_REF,IMVW_REFPATH,ROOTNAME)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,LIMVW_REFPATH
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -42,7 +43,6 @@ C-----------------------------------------------
 #include      "task_c.inc"
 #include      "com08_c.inc"
 #include      "scr14_c.inc"
-#include      "chara_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -50,6 +50,8 @@ c      my_real
 c     .        X(3,*)
       INTEGER
      .         IMVW,IMVW_REF
+      CHARACTER(LEN=LIMVW_REFPATH),INTENT(IN) :: IMVW_REFPATH
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -63,7 +65,7 @@ C-----------------------------------------------
       CHARACTER(len=2148) :: TMP_NAME
 C=======================================================================
       IF(ISPMD == 0) THEN
-        FILNAM=ROOTNAM(1:ROOTLEN)//'.mvw'
+        FILNAM=TRIM(ROOTNAME)//'.mvw'
         IOUTMVW = 123123
 
         LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)
@@ -75,37 +77,37 @@ C=======================================================================
        IF(IMVW == 1 .OR. IMVW == 2)THEN
          IF(IZIP  == 0) THEN
            WRITE(IOUTMVW,'(A)')'{ safe_quotes_on }'
-             LINE='{ GRAPHIC_FILE_1 = "'//ROOTNAM(1:ROOTLEN)//'A001"}'
+             LINE='{ GRAPHIC_FILE_1 = "'//TRIM(ROOTNAME)//'A001"}'
            WRITE(IOUTMVW,'(A)') LINE
-             LINE='{ RESULT_FILE_1 = "'//ROOTNAM(1:ROOTLEN)//'A001"}'
+             LINE='{ RESULT_FILE_1 = "'//TRIM(ROOTNAME)//'A001"}'
            WRITE(IOUTMVW,'(A)') LINE
          ELSE
            WRITE(IOUTMVW,'(A)')'{ safe_quotes_on }'
-             LINE='{ GRAPHIC_FILE_1 = "'//ROOTNAM(1:ROOTLEN)//'A001.gz"}'
+             LINE='{ GRAPHIC_FILE_1 = "'//TRIM(ROOTNAME)//'A001.gz"}'
            WRITE(IOUTMVW,'(A)') LINE
-             LINE='{ RESULT_FILE_1 = "'//ROOTNAM(1:ROOTLEN)//'A001.gz"}'
+             LINE='{ RESULT_FILE_1 = "'//TRIM(ROOTNAME)//'A001.gz"}'
            WRITE(IOUTMVW,'(A)') LINE
          ENDIF
        ELSEIF(IMVW == 3 .OR. IMVW == 4)THEN
          WRITE(IOUTMVW,'(A)')'{ safe_quotes_on }'
-           LINE='{ GRAPHIC_FILE_1 = "'//ROOTNAM(1:ROOTLEN)//'.h3d"}'
+           LINE='{ GRAPHIC_FILE_1 = "'//TRIM(ROOTNAME)//'.h3d"}'
          WRITE(IOUTMVW,'(A)') LINE
-           LINE='{ RESULT_FILE_1 = "'//ROOTNAM(1:ROOTLEN)//'.h3d"}'
+           LINE='{ RESULT_FILE_1 = "'//TRIM(ROOTNAME)//'.h3d"}'
          WRITE(IOUTMVW,'(A)') LINE
        ENDIF
 
        IF (IMVW_REF == 1) THEN
          WRITE(IOUTMVW,'(A)')'{ safe_quotes_on }'
-           LINE='{ GRAPHIC_FILE_2 = "'//IMVW_REFPATH(1:LEN_TRIM(IMVW_REFPATH))//ROOTNAM(1:ROOTLEN)//'A001"}'
+           LINE='{ GRAPHIC_FILE_2 = "'//IMVW_REFPATH(1:LEN_TRIM(IMVW_REFPATH))//TRIM(ROOTNAME)//'A001"}'
          WRITE(IOUTMVW,'(A)') LINE
-           LINE='{ RESULT_FILE_2 = "'//IMVW_REFPATH(1:LEN_TRIM(IMVW_REFPATH))//ROOTNAM(1:ROOTLEN)//'A001"}'
+           LINE='{ RESULT_FILE_2 = "'//IMVW_REFPATH(1:LEN_TRIM(IMVW_REFPATH))//TRIM(ROOTNAME)//'A001"}'
          WRITE(IOUTMVW,'(A)') LINE
-           LINE='{ PLOT_FILE_2 = "'//IMVW_REFPATH(1:LEN_TRIM(IMVW_REFPATH))//ROOTNAM(1:ROOTLEN)//'T01"}'
+           LINE='{ PLOT_FILE_2 = "'//IMVW_REFPATH(1:LEN_TRIM(IMVW_REFPATH))//TRIM(ROOTNAME)//'T01"}'
          WRITE(IOUTMVW,'(A)') LINE
        ENDIF
 
-       IF (IMVW == 1 .OR. IMVW == 3)LINE='{ PLOT_FILE_1 = "'//ROOTNAM(1:ROOTLEN)//'T01"}'
-       IF (IMVW == 2 .OR. IMVW == 4)LINE='{ PLOT_FILE_1 = "'//ROOTNAM(1:ROOTLEN)//'_0001.abf"}'
+       IF (IMVW == 1 .OR. IMVW == 3)LINE='{ PLOT_FILE_1 = "'//TRIM(ROOTNAME)//'T01"}'
+       IF (IMVW == 2 .OR. IMVW == 4)LINE='{ PLOT_FILE_1 = "'//TRIM(ROOTNAME)//'_0001.abf"}'
        WRITE(IOUTMVW,'(A)') LINE
        WRITE(IOUTMVW,'(A)')'*Id("HyperWorks", "13.*")'
        WRITE(IOUTMVW,'(A)')'*BeginPalette()'

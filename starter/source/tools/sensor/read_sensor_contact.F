@@ -44,6 +44,7 @@ C-----------------------------------------------
       USE SUBMODEL_MOD
       USE SENSOR_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -51,14 +52,13 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "scr17_c.inc"
 #include      "units_c.inc"
 #include      "submod_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER ,INTENT(IN) :: SENS_ID
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       TYPE (SENSOR_STR_) :: SENSOR_PTR
       TYPE (SUBMODEL_DATA) ,DIMENSION(NSUBMOD) :: LSUBMODEL
       TYPE (UNIT_TYPE_)    ,INTENT(IN) :: UNITAB 
@@ -67,7 +67,7 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER :: INT_ID,IDIR,NPARIS,NPARRS,NVAR,SENS_TYPE
       my_real :: TDEL,TMIN,FMIN,FMAX,FREQ
-      CHARACTER DIR*ncharkey
+      CHARACTER(LEN=NCHARKEY)   ::  DIR
       LOGICAL :: IS_AVAILABLE
 C--------------------------------
 C     SENSOR BASED ON CONTACT FORCE
@@ -79,7 +79,7 @@ card1
       CALL HM_GET_FLOATV('Tdelay' ,TDEL   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
 card2
       CALL HM_GET_INTV  ('InterfaceId' ,INT_ID ,IS_AVAILABLE,LSUBMODEL)
-      CALL HM_GET_STRING('DIR '        ,DIR    ,ncharfield,IS_AVAILABLE)
+      CALL HM_GET_STRING('DIR '        ,DIR    ,NCHARFIELD,IS_AVAILABLE)
       CALL HM_GET_FLOATV('Fmin'        ,FMIN   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('Fmax'        ,FMAX   ,IS_AVAILABLE,LSUBMODEL,UNITAB)
       CALL HM_GET_FLOATV('Tmin'        ,TMIN   ,IS_AVAILABLE,LSUBMODEL,UNITAB)

@@ -31,14 +31,11 @@ Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
       SUBROUTINE SUMMSG()
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,LINE120
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
-C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "scr17_c.inc"
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
@@ -58,7 +55,8 @@ C-----------------------------------------------
      .             E_OPTION_TYPE(IWARN+IERR)
       CHARACTER*200 TMPIN
       CHARACTER*60 OPTIONTYPE(IWARN+IERR)
-      CHARACTER*ncharline MYFMT,TMP_CHAR
+      CHARACTER(LEN=NCHARLINE) :: MYFMT
+      CHARACTER(LEN=LINE120)   ::TMP_CHAR
 c      CHARACTER*59 SUM_WARN(IWARN*10),SUM_ERR(IERR)
       CHARACTER*59 , DIMENSION(:), ALLOCATABLE :: SUM_WARN,SUM_ERR
 C-----------------------------------------------

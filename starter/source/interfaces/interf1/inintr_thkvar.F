@@ -108,7 +108,8 @@ Chd|====================================================================
      5                  KNOD2ELC,KNOD2ELTG,NOD2ELS,NOD2ELC ,NOD2ELTG,
      6                  INTSTAMP,SKEW     ,MS     ,IN      ,V       ,
      7                  VR       ,RBY     ,NPBY   ,LPBY    ,IPARTS  ,
-     8                  IPARTC,IPARTG,THK_PART,NOM_OPT,PTR_NOPT_INTER)
+     8                  IPARTC,IPARTG,THK_PART,NOM_OPT,PTR_NOPT_INTER,
+     9                  ROOTNAME,ROOTNAME_LENGTH)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -118,6 +119,7 @@ C-----------------------------------------------
       USE INTBUFDEF_MOD
       USE INTBUFSCRATCH_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -127,7 +129,6 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "units_c.inc"
 #include      "param_c.inc"
-#include      "scr15_c.inc"
 #include      "scr17_c.inc"
 #include      "com01_c.inc"
 #include      "com04_c.inc"
@@ -150,8 +151,8 @@ C-----------------------------------------------
       TYPE(ELBUF_STRUCT_), DIMENSION(NGROUP) :: ELBUF_TAB
       TYPE(INTBUF_STRUCT_) INTBUF_TAB(*)
       TYPE(SCRATCH_STRUCT_) INSCR(*)
-
-
+      INTEGER, INTENT(IN)                 :: ROOTNAME_LENGTH  ! INPUT deck rootname length
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME         ! INPUT deck rootname
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -162,8 +163,7 @@ C-----------------------------------------------
      .   DIMENSION(:),ALLOCATABLE:: THKSH4_VAR,THKSH3_VAR,THKNOD
       CHARACTER*2148 FILNAM
       INTEGER ID
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 C-----------------------------------------------
       I_MEM = 0
       RESORT = 0
@@ -234,8 +234,8 @@ C
   100 CONTINUE
 C
       IF(IWRN/=0) THEN
-        LEN_FILNAM = OUTFILE_NAME_LEN + ROOTLEN + 6
-        FILNAM = OUTFILE_NAME(1:OUTFILE_NAME_LEN)//ROOTNAM(1:ROOTLEN)//'.coord'
+        LEN_FILNAM = OUTFILE_NAME_LEN + ROOTNAME_LENGTH + 6
+        FILNAM = OUTFILE_NAME(1:OUTFILE_NAME_LEN)//TRIM(ROOTNAME)//'.coord'
         OPEN(UNIT=IOU2,FILE=FILNAM(1:LEN_FILNAM),STATUS='UNKNOWN',
      .       FORM='FORMATTED')
         WRITE(IOU2,'(2A)')'#--1---|---2---|---3---|---4---|',

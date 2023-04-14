@@ -52,6 +52,7 @@ C-----------------------------------------------
       USE SETDEF_MOD
       USE GROUPDEF_MOD 
       USE MESSAGE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -90,9 +91,12 @@ C-----------------------------------------------
       INTEGER, DIMENSION(:),ALLOCATABLE :: ISORT,ISORT2,SAV,SAV2
       INTEGER, DIMENSION(:),ALLOCATABLE :: INDEX_SORT,INDEX_SORT2
       INTEGER, DIMENSION(70000) :: IWORK
-      CHARACTER KEYSET*ncharfield,SET_TYPE*ncharfield,KEY*ncharkey,KEY_TYPE*ncharfield
-      CHARACTER TITLE*nchartitle,SET_TITLE*nchartitle,KEYPART*ncharkey,TITLE2*nchartitle
-      CHARACTER MESS*40
+      !
+      CHARACTER(LEN=NCHARFIELD) :: KEYSET,SET_TYPE,KEY_TYPE
+      CHARACTER(LEN=NCHARKEY)   :: KEY,KEYPART
+      CHARACTER(LEN=NCHARTITLE) :: TITLE,SET_TITLE,TITLE2
+      CHARACTER(LEN=40)         :: MESS
+      !
       DATA MESS/'SET  GROUP DEFINITION               '/
 C-----------------------------------------------
       IF(MODE==1) THEN

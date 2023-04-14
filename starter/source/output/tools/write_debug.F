@@ -34,13 +34,17 @@ Chd|        FRETITL2                      source/starter/freform.F
 Chd|        WRITE_I_C                     source/output/tools/write_routines.c
 Chd|====================================================================
       SUBROUTINE WRITE_I_C_DEBUG(A,N,SA)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE NAMES_AND_TITLES_MOD ,ONLY: NCHARTITLE
+C-----------------------------------------------
 ! Do not replace IMPLICIT NONE by an include here
       IMPLICIT NONE
-#include "nchar_c.inc"
 #include "debug_rst.inc"
       INTEGER :: A(N),N
       CHARACTER(len=*) ::  SA
-      CHARACTER*nchartitle:: TITR
+      CHARACTER(LEN=NCHARTITLE):: TITR
       INTEGER :: I,IT,J
       INTEGER :: NT
 #if defined(_OPENMP)
@@ -51,9 +55,9 @@ Chd|====================================================================
        NT=1
 #endif
       IF(FLUSH_RST_TO_TXT) THEN
-        TITR(1:nchartitle) = " "
-        IF(N==ceiling(dble(nchartitle)/3.0D0)) THEN
-          CALL FRETITL2(TITR,A,ceiling(dble(nchartitle)/3.0D0))
+        TITR(1:NCHARTITLE) = " "
+        IF(N==ceiling(dble(NCHARTITLE)/3.0D0)) THEN
+          CALL FRETITL2(TITR,A,ceiling(dble(NCHARTITLE)/3.0D0))
           WRITE(777+NT,*) TRIM(SA),' '
           J = 1
           DO I = 1,N
@@ -80,9 +84,11 @@ Chd|-- calls ---------------
 Chd|        WRITE_DB                      source/restart/ddsplit/wrrest.F
 Chd|====================================================================
       SUBROUTINE WRITE_DB_DEBUG(A,N,SA)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
 ! Do not replace IMPLICIT NONE by an include here
       IMPLICIT NONE
-#include "nchar_c.inc"
 #include "debug_rst.inc"
       INTEGER :: N
       DOUBLE PRECISION :: A(N)
@@ -96,7 +102,6 @@ Chd|====================================================================
        NT=1  
 #endif
 
-  
       IF(FLUSH_RST_TO_TXT) THEN
         WRITE(777+NT,*) TRIM(SA),' '
         DO I = 1,N

@@ -35,6 +35,7 @@ C-----------------------------------------------
 C   M o d u l e s
 C----------------------------------------------- 
       USE GROUPDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -55,8 +56,7 @@ C-----------------------------------------------
       INTEGER I,J,ID,IGU,NENTITY,GRTYPE,TRI,GRPGRP,LEVEL,R2R_ALL,
      .        R2R_SHARE,L_GROUP,ERR,ITITLE1(LTITR),ENTITY,
      .       NENTITY_L(NGR)
-      CHARACTER(LEN=nchartitle) :: TITR
-!      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, ALLOCATABLE, DIMENSION (:)  ::  IGROUP_L
 C-----------------------------------------------
       DO IGU=1,NGR
@@ -169,8 +169,8 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,J,ID,IGU,NENTITY,GRTYPE,TRI,GRPGRP,LEVEL,R2R_ALL,
      .        R2R_SHARE,L_GROUP,ERR,ITITLE2(LTITR),ENTITY,NENTITY_L
-      CHARACTER(LEN=nchartitle) :: TITR
-!      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+!      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, ALLOCATABLE, DIMENSION (:)  ::  IGROUP_L
 C-----------------------------------------------
       DO IGU=1,NGR
@@ -291,7 +291,7 @@ C-----------------------------------------------
      .        IGU1,IGU2
       my_real
      .        CODE
-      CHARACTER TITR*nchartitle
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       INTEGER, ALLOCATABLE, DIMENSION (:)  ::  IGROUP_L
 C-----------------------------------------------
       DO IGU=1,NGR

@@ -40,12 +40,13 @@ Chd|        SYSFUS2                       source/system/sysfus.F
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|        MESSAGE_MOD                   share/message_module/message_mod.F
 Chd|====================================================================
-      SUBROUTINE LECNOISE(INOISE,ITABM1)
+      SUBROUTINE LECNOISE(INOISE,ITABM1,NAMES_AND_TITLES)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NAMES_AND_TITLES_,LTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -55,10 +56,8 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-#include      "com05_c.inc"
 #include      "units_c.inc"
 #include      "scrnoi_c.inc"
-#include      "chara_c.inc"
 #include      "scr05_c.inc"
 #include      "scr13_c.inc"
 #include      "titr_c.inc"
@@ -67,6 +66,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      TYPE(NAMES_AND_TITLES_),INTENT(IN) :: NAMES_AND_TITLES
       INTEGER INOISE(*), ITABM1(*)
 C     REAL
 C      my_real
@@ -181,8 +181,8 @@ C FICHIER @T ENTETE
 C
       IUNIT=IUNOI
       ICODE=3040
-      NOILEN=MIN(ROOTLEN,7)
-      FILNAM=ROOTNAM(1:NOILEN)//'_'//CHRUN//'_@.thy'
+      NOILEN=MIN(NAMES_AND_TITLES%ROOTNAME_LENGTH,7)
+      FILNAM=NAMES_AND_TITLES%ROOTNAME(1:NOILEN)//'_'//NAMES_AND_TITLES%CHRUN//'_@.thy'
       LEN_TMP_NAME = OUTFILE_NAME_LEN + NOILEN + 11
       TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:LEN_TRIM(FILNAM))  
       IF(ITFORM==0)THEN
@@ -216,9 +216,9 @@ C
 C
 C TITRE
 C
-      WRITE(CARD,'(20A4)')TEXT
-      READ(CARD,'(20A4)')TITLE
+      CARD(1:LTITLE) = NAMES_AND_TITLES%TITLE(1:LTITLE)
       IF(ITFORM==0)THEN
+        READ(CARD,'(20A4)')TITLE
         WRITE(IUNIT)ICODE,TITLE
       ELSEIF(ITFORM==1)THEN
         CH8=STRI(ICODE)
@@ -254,7 +254,7 @@ C-------ivers date------------
       ELSEIF(ITFORM==1)THEN
         WRITE(IUNIT,'(A)')CH80
       ELSEIF(ITFORM==2)THEN
-        WRITE(IUNIT,'(2A)')FILNAM(1:ROOTLEN+11),' FORMAT'
+        WRITE(IUNIT,'(2A)')FILNAM(1:NAMES_AND_TITLES%ROOTNAME_LENGTH+11),' FORMAT'
         WRITE(IUNIT,'(A,I5,A)')EOR,80,'C'
         WRITE(IUNIT,'(A)')CH80
       ELSEIF(ITFORM==3)THEN
@@ -355,7 +355,7 @@ C-------GEO DESCRIPTION------------
        CALL EOR_C(44)
       ENDIF
 C-------HIERARCHY DESCRIPTION------------
-      CH40=ROOTNAM
+      CH40=NAMES_AND_TITLES%ROOTNAME(1:40)
       READ(CH40,'(10A4)')TIT40
       DO I=1,40
        ITIT40(I)=ICHAR(CH40(I:I))

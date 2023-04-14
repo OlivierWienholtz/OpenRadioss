@@ -40,6 +40,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -60,9 +61,9 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER                :: I,OPTID,UID,NIMDISP
       CHARACTER(2)           :: XX,YY,ZZ
-      CHARACTER(ncharfield)  :: XYZ
-      CHARACTER(ncharkey)    :: KEY
-      CHARACTER(nchartitle)  :: TITR
+      CHARACTER(NCHARFIELD)  :: XYZ
+      CHARACTER(NCHARKEY)    :: KEY
+      CHARACTER(NCHARTITLE)  :: TITR
       LOGICAL                :: IS_AVAILABLE
 C-----------------------------------------------
 C   D a t a
@@ -96,7 +97,7 @@ c       CHECK IF ROTATIONAL DISPLACEMENT IS IMPOSED
 c--------------------------------------------------
         IF (KEY(1:4) == 'FGEO') CYCLE  ! skip /IMPDISP/FGEO
 
-        CALL HM_GET_STRING('rad_dir',XYZ,ncharfield,IS_AVAILABLE)
+        CALL HM_GET_STRING('rad_dir',XYZ,NCHARFIELD,IS_AVAILABLE)
 c
         IF (XYZ(1:2) == XX .OR. XYZ(1:2) == YY .OR. XYZ(1:2) == ZZ) THEN
           IMPOSE_DR = 1

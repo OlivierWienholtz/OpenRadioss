@@ -103,6 +103,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE STACK_MOD
       USE DRAPE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C----------------------------------------------
 C     INITIALISATION DES MASSES ET INERTIES NODALES
 C----------------------------------------------
@@ -157,7 +158,7 @@ C-----------------------------------------------
      .   IPANG,NTHK,IGTYP,IGMAT,ILAY,NPTT,IT,IINT,IPGMAT,MAX_NPTT,
      .   NSLICE,IPOS,IPT,IPT_ALL,IE,NLAY_MAX
       INTEGER*8 I8EMS(3,MVSIZ) 
-      CHARACTER*nchartitle, TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
       my_real 
      .   FAC,MST,DMS,THICKT,THKLY,LAYPOS,MSE,INS,MZI,EMS_NPTT,ET,ZJ,
      .   XX,YY,ZZ,XY,YZ,ZX,MSL,XIL,MS_NPTT,POS_0,THINNING

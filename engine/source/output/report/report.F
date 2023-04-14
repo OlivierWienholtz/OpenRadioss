@@ -28,12 +28,13 @@ Chd|-- calls ---------------
 Chd|        INOUTFILE_MOD                 ../common_source/modules/inoutfile_mod.F
 Chd|        USER_INTERFACE_MOD            share/modules/user_interface_mod.F
 Chd|====================================================================
-      SUBROUTINE REPORT(IH3DREADER,N,IMVW)
+      SUBROUTINE REPORT(IH3DREADER,N,IMVW,ROOTNAME,ROOTLEN)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE INOUTFILE_MOD
       USE USER_INTERFACE_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:LROOTNAME,NCHARLINE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -51,12 +52,13 @@ C-----------------------------------------------
 #include      "scr02_c.inc"
 #include      "scr11_c.inc"
 #include      "spmd_c.inc"
-#include      "chara_c.inc"
 #include      "drape_c.inc"
 #include      "submodel.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      CHARACTER(LEN=LROOTNAME),INTENT(IN) :: ROOTNAME
+      INTEGER,INTENT(IN) :: ROOTLEN
       INTEGER
      .         IH3DREADER,N,IMVW
 C-----------------------------------------------
@@ -68,7 +70,7 @@ C-----------------------------------------------
 
       CHARACTER FILNAM*100,MVWNAM*100
       CHARACTER LINE*200
-      CHARACTER CWD*ncharline
+      CHARACTER(LEN=NCHARLINE) CWD
       CHARACTER*100  FMW
       CHARACTER*8  DATE
       CHARACTER*10  TIME
@@ -130,8 +132,8 @@ c
        CALL DATE_AND_TIME(DATE,TIME)
        STATUS = GETCWD(CWD)
        LEN_CWD = LEN_TRIM(CWD)
-       FILNAM=ROOTNAM(1:ROOTLEN)//'_report.html'
-       MVWNAM=ROOTNAM(1:ROOTLEN)//'.mvw'
+       FILNAM=TRIM(ROOTNAME)//'_report.html'
+       MVWNAM=TRIM(ROOTNAME)//'.mvw'
        IOUTREP = 123124
 
        LEN_TMP_NAME = OUTFILE_NAME_LEN + LEN_TRIM(FILNAM)
@@ -153,7 +155,7 @@ c
        WRITE(IOUTREP,'(A)')'{'
        WRITE(IOUTREP,'(A)')'winProps = "height=600,width=520,location=no,scrollbars=no,menubars=no,toolbars=no,
      .                      status=no,resizable=yes";'
-       WRITE(IOUTREP,'(A,A,A)')'window.open("',ROOTNAM(1:ROOTLEN),'_frames.html","H3D",winProps);'
+       WRITE(IOUTREP,'(A,A,A)')'window.open("',TRIM(ROOTNAME),'_frames.html","H3D",winProps);'
        WRITE(IOUTREP,'(A)')'}'
        WRITE(IOUTREP,'(A)')'</script>'
        WRITE(IOUTREP,'(A)')'</head>'
@@ -177,14 +179,14 @@ c
        WRITE(IOUTREP,'(11A)')'Run submitted ',DATE(1:4),'/',DATE(5:6),'/',DATE(7:8),' ,  ',TIME(1:2),'h',TIME(3:4),'mn'
        WRITE(IOUTREP,'(A)')'<p>'
        IF(GOT_INSPIRE_ALM == 1)THEN
-         WRITE(IOUTREP,'(4A)')'Solver Input file : ',CWD(1:LEN_CWD),'/',ROOTNAM(1:ROOTLEN),'_0000.rad'
+         WRITE(IOUTREP,'(4A)')'Solver Input file : ',CWD(1:LEN_CWD),'/',TRIM(ROOTNAME),'_0000.rad'
          WRITE(IOUTREP,'(A)')'<p>'
-         WRITE(IOUTREP,'(4A)')'Solver Input file : ',CWD(1:LEN_CWD),'/',ROOTNAM(1:ROOTLEN),'_0001.rad'
+         WRITE(IOUTREP,'(4A)')'Solver Input file : ',CWD(1:LEN_CWD),'/',TRIM(ROOTNAME),'_0001.rad'
          WRITE(IOUTREP,'(A)')'<p>'
        ELSE
-         WRITE(IOUTREP,'(4A)')'Starter Input file : ',CWD(1:LEN_CWD),'/',ROOTNAM(1:ROOTLEN),'_0000.rad'
+         WRITE(IOUTREP,'(4A)')'Starter Input file : ',CWD(1:LEN_CWD),'/',TRIM(ROOTNAME),'_0000.rad'
          WRITE(IOUTREP,'(A)')'<p>'
-         WRITE(IOUTREP,'(4A)')'Engine Input file : ',CWD(1:LEN_CWD),'/',ROOTNAM(1:ROOTLEN),'_0001.rad'
+         WRITE(IOUTREP,'(4A)')'Engine Input file : ',CWD(1:LEN_CWD),'/',TRIM(ROOTNAME),'_0001.rad'
          WRITE(IOUTREP,'(A)')'<p>'
        ENDIF
        WRITE(IOUTREP,'(A)')'<br>'
@@ -604,7 +606,7 @@ c       WRITE(IOUTREP,'(A)')' '
        WRITE(IOUTREP,'(A)')'<p>'
 
 
-       OUTNAME = ROOTNAM(1:ROOTLEN)//'_0000.out'
+       OUTNAME = TRIM(ROOTNAME)//'_0000.out'
 
        IS_FILE_FOUND = 0
 
@@ -759,7 +761,7 @@ c       WRITE(IOUTREP,'(A)')'<p>'
        IF (IH3DREADER /= 0) THEN
          WRITE(IOUTREP,'(A)')'<OBJECT ID="HVPControl" WIDTH=800 HEIGHT=600'
          WRITE(IOUTREP,'(A)')'classid="clsid:D28D4D39-57F5-4DFB-8832-C8CB1B1DC410">'
-         WRITE(IOUTREP,'(3A)')'<PARAM name="src" value="',ROOTNAM(1:ROOTLEN),'.h3d" />'
+         WRITE(IOUTREP,'(3A)')'<PARAM name="src" value="',TRIM(ROOTNAME),'.h3d" />'
          IF (IH3DREADER == 1) WRITE(IOUTREP,'(A)')'<PARAM name="inplace" value="1" />'
          IF (IH3DREADER == 2) WRITE(IOUTREP,'(A)')'<PARAM name="inplace" value="0" />'
          WRITE(IOUTREP,'(A)')'<PARAM name="launch_size" value="800x600" />'
@@ -772,7 +774,7 @@ c         WRITE(IOUTREP,'(A)')'<PARAM name="rr_val2" value="1" />'
          WRITE(IOUTREP,'(A)')'<EMBED type="application/x-h3d"'
          WRITE(IOUTREP,'(A)')'pluginspage="http://www.altair.com"'
          WRITE(IOUTREP,'(A)')'width=800 height=600'
-         WRITE(IOUTREP,'(A)')'src="',ROOTNAM(1:ROOTLEN),'h3d"'
+         WRITE(IOUTREP,'(A)')'src="',TRIM(ROOTNAME),'h3d"'
          IF (IH3DREADER == 1) WRITE(IOUTREP,'(A)')'inplace=1'
          IF (IH3DREADER == 2) WRITE(IOUTREP,'(A)')'inplace=0'
          WRITE(IOUTREP,'(A)')'launch_size="800x600"'

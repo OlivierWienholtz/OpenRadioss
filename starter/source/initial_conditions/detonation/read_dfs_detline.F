@@ -47,6 +47,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE HM_OPTION_READ_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE,NCHARKEY,NCHARFIELD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -67,7 +68,7 @@ C-----------------------------------------------
       INTEGER                           :: ITABM1(SITABM1),ITAB(NUMNOD)
       INTEGER                           :: IPM(NPROPMI,NUMMAT)
       my_real                           :: X(3,NUMNOD)
-      CHARACTER*ncharkey                :: KEY, KEY2      
+      CHARACTER(LEN=NCHARKEY)           :: KEY, KEY2      
       TYPE(SUBMODEL_DATA),INTENT(IN)    :: LSUBMODEL(NSUBMOD)
       INTEGER            ,INTENT(INOUT) :: I1,I2,I3,I4,I5
       INTEGER,INTENT(IN)                :: DET_ID  
@@ -77,17 +78,17 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      INTEGER              :: I, MAT, J, NPEM,NPCM,K,IGU,IGS,JJ,MDET
-      INTEGER              :: IBID,  NODE_ID1, NODE_ID2,uID1,uID2, IOPT, IUNIT, UID
-      INTEGER              :: FLAG_FMT,IMAT,IFLAGUNIT,UNUSED
-      INTEGER              :: STAT
-      my_real              :: XC, YC, ZC, ALT, XC1, YC1, ZC1, XC2, YC2, ZC2, NX, NY, NZ, BID, VCJ
-      CHARACTER*40         :: MESS
-      CHARACTER*64         :: chain1,chain2
-      CHARACTER*nchartitle :: TITR
-      LOGICAL              :: IS_ENCRYPTED, IS_AVAILABLE
-      LOGICAL              :: IS_NODE_DEFINED
-      INTEGER              :: NDETPS,NDETSG,NECRAN,NDETPL,NDETCORD
+      INTEGER                   :: I, MAT, J, NPEM,NPCM,K,IGU,IGS,JJ,MDET
+      INTEGER                   :: IBID,  NODE_ID1, NODE_ID2,uID1,uID2, IOPT, IUNIT, UID
+      INTEGER                   :: FLAG_FMT,IMAT,IFLAGUNIT,UNUSED
+      INTEGER                   :: STAT
+      my_real                   :: XC, YC, ZC, ALT, XC1, YC1, ZC1, XC2, YC2, ZC2, NX, NY, NZ, BID, VCJ
+      CHARACTER*40              :: MESS
+      CHARACTER*64              :: chain1,chain2
+      CHARACTER(LEN=NCHARTITLE) :: TITR
+      LOGICAL                   :: IS_ENCRYPTED, IS_AVAILABLE
+      LOGICAL                   :: IS_NODE_DEFINED
+      INTEGER                   :: NDETPS,NDETSG,NECRAN,NDETPL,NDETCORD
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------

@@ -50,6 +50,7 @@ C-----------------------------------------------
       USE GROUPDEF_MOD
       USE SUBMODEL_MOD
       USE HM_OPTION_READ_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE,NCHARFIELD,NCHARTITLE,NCHARKEY
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -87,9 +88,9 @@ C-----------------------------------------------
      .        IGR,NOD,NB_NODE,NB_PART,IP,IE,NB_SOLID,NB_SH4N,NB_SH3N,
      .        NB_QUAD,NB_TRIA,NB_BEAM,NB_TRUSS,NB_SPRING,NB_SURF_SEG,
      .        NB_LINE_SEG,ISEG
-      CHARACTER(LEN = nchartitle) :: TITLE
-      CHARACTER(LEN = ncharfield) :: KEYSET,SET_TYPE
-      CHARACTER(LEN = ncharkey)   :: KEY
+      CHARACTER(LEN = NCHARTITLE) :: TITLE
+      CHARACTER(LEN = NCHARFIELD) :: KEYSET,SET_TYPE
+      CHARACTER(LEN = NCHARKEY)   :: KEY
       CHARACTER (LEN=255) :: VARNAME
       DOUBLE PRECISION TEMP_DOUBLE
       LOGICAL IS_AVAILABLE
@@ -114,7 +115,7 @@ C-----------------------------------------------
             WRITE(VARNAME,'(A)') TRIM(TITLE)
             CALL QAPRINT(TITLE(1:LEN_TRIM(VARNAME)), ID, 0.0_8)
 !---
-            CALL HM_GET_STRING('set_Type', SET_TYPE ,ncharfield, IS_AVAILABLE)
+            CALL HM_GET_STRING('set_Type', SET_TYPE ,NCHARFIELD, IS_AVAILABLE)
 !-----------------------
 ! issue 'SET_TYPE'  ---> read one more character than the SET_TYPE
 ! ===> workaround
@@ -134,7 +135,7 @@ C-----------------------------------------------
             CALL HM_GET_INTV('clausesmax',CLAUSES_MAX,IS_AVAILABLE,LSUBMODEL)
 !
             DO J=1,CLAUSES_MAX  ! max KEY's of the current /SET
-              CALL HM_GET_STRING_INDEX('KEY_type', KEYSET, J, ncharline, IS_AVAILABLE)
+              CALL HM_GET_STRING_INDEX('KEY_type', KEYSET, J, NCHARLINE, IS_AVAILABLE)
 !-----------------------
 ! issue 'KEYSET'  ---> read one more character than the KEYSET
 ! ===> workaround

@@ -66,6 +66,7 @@ C-----------------------------------------------
       USE UNITAB_MOD
       USE MESSAGE_MOD
       USE SUBMODEL_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARLINE
 C--------------------------------------------------------
 C     LECTURE DES ELEMENTS COQUES TRIANGULAIRE
 C--------------------------------------------------------
@@ -249,10 +250,10 @@ C--------------------------------------------------
             IXTG(5,I)=IPID
             IF (IXTG(NIXTG,I)>ID_LIMIT)THEN
                 CALL ANCMSG(MSGID=509,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                      I1=IXTG(NIXTG,I),C1=LINE,C2='/SH3N')
+     .                      I1=IXTG(NIXTG,I),C1='/SH3N')
             ELSEIF (NADMESH/=0.AND.IXTG(NIXTG,I)>ID_LIMIT_ADMESH)THEN
                 CALL ANCMSG(MSGID=1069,ANMODE=ANINFO,MSGTYPE=MSGERROR,
-     .                      I1=IXTG(NIXTG,I),C1=LINE,C2='/SH3N')
+     .                      I1=IXTG(NIXTG,I),C1='/SH3N')
             ENDIF                                                                   
             IF(THK(I)>0) THEN                       
                CALL APARTSET(INDEX_PART, CHECK_THICK_SHELL)   

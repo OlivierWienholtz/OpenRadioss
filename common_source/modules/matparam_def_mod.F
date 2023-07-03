@@ -203,6 +203,7 @@ c
         integer                   :: ILAW    
         integer                   :: MAT_ID
         character(LEN=NCHARTITLE) :: TITLE
+        integer                   :: NTABLE
         integer                   :: COMPRESSIBILITY      ! "compressible","incompressible","elasto_plastic"
         integer                   :: SMSTR                ! "small_strain", "large_strain"
         integer                   :: STRAIN_FORMULATION   ! "total", "incremental"

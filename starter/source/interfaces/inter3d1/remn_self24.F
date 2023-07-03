@@ -41,6 +41,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE MESSAGE_MOD
       USE INTBUFDEF_MOD
+      USE NAMES_AND_TITLES_MOD ,ONLY:NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -50,9 +51,9 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "param_c.inc"
 #include      "com04_c.inc"
-#include      "scr17_c.inc"
 #include      "tabsiz_c.inc"
 #include      "my_allocate.inc"
+#include      "scr17_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -79,8 +80,7 @@ C-----------------------------------------------
      .        KI,KL,JJ,IEDGE,NEDGE,NREMOV1(NINTER),NS,MAXNM
       INTEGER, DIMENSION(:),ALLOCATABLE :: TAGD,TAGNOD
       INTEGER ID,NC(20),NMC(4)
-      CHARACTER*nchartitle,
-     .   TITR
+      CHARACTER(LEN=NCHARTITLE) :: TITR
 
 
       INTEGER :: III,JJJ,NNOD_2,NOINT,E_ID,IADA

@@ -36,9 +36,10 @@ Chd|====================================================================
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
-      USE SENSOR_MOD , ONLY : SENSORS_, SENSOR_STR_, LOGICAL_SENSORS_LIST, 
+      USE SENSOR_MOD ,ONLY : SENSORS_, SENSOR_STR_, LOGICAL_SENSORS_LIST, 
      .                        ISENBUF, LSENBUF, NSENPARR, NSENPARI, LOGICAL_SENSOR_COUNT
-      USE WRITE_MOD, ONLY : WRITE_INTEGER
+      USE WRITE_MOD ,ONLY : WRITE_INTEGER
+      USE NAMES_AND_TITLES_MOD ,ONLY : NCHARTITLE
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -72,7 +73,7 @@ c
           TITLE = SENSOR%TITLE
           ALLOCATE (LTEMP(NPARI))
           LTEMP(1:NPARI) = SENSOR%IPARAM(1:NPARI)
-c         update node system N° after renumbering for sensors using nodes
+c         update node system Nï¿½ after renumbering for sensors using nodes
           IF (TYP == 2) THEN   ! /sens/disp
             N1 = NODLOCAL(SENSOR%IPARAM(1))
             N2 = NODLOCAL(SENSOR%IPARAM(2))

@@ -138,7 +138,7 @@ if ( CMAKE_C_COMPILER_VERSION VERSION_GREATER 10)
 set( portability "-fallow-argument-mismatch -fallow-invalid-boz -std=legacy")
 endif()
 
-set ( opt_flag "  ${wo_linalg} -DCOMP_GFORTRAN=1 -ffp-contract=off -frounding-math -fopenmp " )
+set ( opt_flag "  ${wo_linalg} -DCOMP_GFORTRAN=1 -ffp-contract=off -frounding-math -fopenmp -mno-fma" )
 
 if ( sanitize STREQUAL "1" )
 set( FSANITIZE "-fsanitize=address -fsanitize=undefined  -fsanitize=bounds-strict -DSANITIZE") 
@@ -234,6 +234,8 @@ set (F_O1_compiler_flags " -O1 ${opt_flag} -w ${portability} ${precision_flag} $
 set (F_O2_compiler_flags " -O2 ${opt_flag} -w ${portability} ${precision_flag} ${cppmach} ${cpprel} -DCPP_comp=f90 -ffixed-line-length-none  ${mpi_flag} ${ADF} ")
 set (C_O1_compiler_flags " -O1 ${opt_flag} -w                ${precision_flag} ${cppmach} ${cpprel}  ${mpi_flag} ${ADF} ")
 
+# szhourg.F
+set_source_files_properties( ${source_directory}/source/elements/solid/solidez/szhour3.F PROPERTIES COMPILE_FLAGS ${F_O2_compiler_flags} )
 
 # resol_init.F
 set_source_files_properties( ${source_directory}/source/engine/resol_init.F PROPERTIES COMPILE_FLAGS ${F_O1_compiler_flags} )

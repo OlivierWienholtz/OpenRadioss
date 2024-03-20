@@ -29,6 +29,7 @@
 
 import os
 import json
+import subprocess
 # qa_tools libraries
 import qa_system
 
@@ -172,25 +173,22 @@ def get_executables(mpi,prec,exec_arch,debug):
   
   return executable
 
+
 def get_starter_command(starter,starter_input,np,starter_arg):
 # ------------------------------------------------------------------
 # Input : 
 #   starter : executable name
 #   starter_input : Starter Input Deck
+#   np: Number of MPI domains
 # ------------------------------------------------------------------
 # Create Starter Command line
 # ----------------------------
-# starter: starter executable name
-# starter_input: Starter input deckname
-# np: Number of MPI domains
-#
-  if (arch == 'win64'):
-    redirect=' > starter_output.log 2>&1'
-  else:
-     redirect=' > starter_output.log 2>&1'
-  
-  starter_command=starter+' -i '+ starter_input +' -np '+str(np) + ' ' + starter_arg + redirect
+# 
+  starter_command=[starter]+['-i']+[starter_input]+['-np']+[str(np)]
+  if starter_arg:
+      starter_command=starter_command+[starter_arg]
   return starter_command
+
 
 def get_engine_command(engine,mpi,engine_input,np):
 # ------------------------------------------------------------------
@@ -202,24 +200,18 @@ def get_engine_command(engine,mpi,engine_input,np):
 # ------------------------------------------------------------------
 # Create Engine command line
 # --------------------
-# Create engine command line :
-# engine:        engine executable name
-# mpi:           'smp', 'impi', 'ompi'
-# engine_input:  input deckname
-# np:            Number MPI domains
 #
-  if (arch == 'win64'):
-    redirect=' > engine_output.log  2>&1'
-    if (mpi =='impi' ):
-      command='mpiexec -delegate -np '+str(np)+' ' + engine + ' -i '+engine_input + redirect
-    else:
-      command=engine + ' -i '+engine_input + redirect
+  if arch == 'win64':
+      if mpi =='impi' :   # Win64 / Intel MPI
+           command=['mpiexec']+['-delegate']+['-np']+[str(np)]+[engine]+['-i']+[engine_input]
+      else:              # Win64 / SMP
+           command=[engine]+['-i']+[engine_input]
   else:
-    redirect=' > engine_output.log 2>&1'
-    if (mpi == 'smp' ):
-      command=engine + ' -i '+engine_input + redirect
-    else:
-      command='mpirun -np '+str(np) + ' '+engine + ' -i '+engine_input  + redirect
+    if (mpi == 'smp' ):  # Linux64 / SMP
+      command=[engine]+['-i']+[engine_input]
+    else:                # linux64 / IMPI or OMPI
+      command=['mpirun']+[-np]+[str(np)]+[engine]+['-i']+[engine_input]
+
   return command
 
 
@@ -242,32 +234,32 @@ def exec_openradioss(starter,starter_arg,run_starter,engine,run_engine,starter_d
 
   # Environment Variable setting
   #-----------------------------
+  cwd = os.getcwd()
+
   # OMP_NUM_THREADS
   qa_system.set_variable('OMP_NUM_THREADS',str(nt))
   #
   # RAD_CFG_PATH
   #
-  rad_cfg_path=os.getcwd()+slash+'..'+slash+'..'+slash+'..'+slash+'hm_cfg_files'
+  rad_cfg_path=cwd+slash+'..'+slash+'..'+slash+'..'+slash+'hm_cfg_files'
   qa_system.set_variable('RAD_CFG_PATH',rad_cfg_path)
 
   #
   # RAD_H3D_PATH
   #
-  rad_h3d_path=os.getcwd()+slash+'..'+slash+'..'+slash+'..'+slash+'extlib'+slash+'h3d'+slash+'lib'+arch
+  rad_h3d_path=cwd+slash+'..'+slash+'..'+slash+'..'+slash+'extlib'+slash+'h3d'+slash+'lib'+arch
   qa_system.set_variable('RAD_H3D_PATH',rad_h3d_path)
 
   #
-  # PATH/LD_LIBRARY_PATH : add parth to extlib in PATH
+  # PATH/LD_LIBRARY_PATH : add path to extlib in PATH
   #
+  hm_reader_path=cwd+slash+'..'+slash+'..'+slash+'..'+slash+'extlib'+slash+'hm_reader'+slash+arch
+
   if arch == 'win64':
     path=os.getenv('PATH')
-    wd=os.getcwd()
-    hm_reader_path=wd+slash+'..'+slash+'..'+slash+'..'+slash+'extlib'+slash+'hm_reader'+slash+arch
     new_path=hm_reader_path+sep+path
     os.environ['PATH']=new_path
   else:
-    wd=os.getcwd()
-    hm_reader_path=wd+slash+'..'+slash+'..'+slash+'..'+slash+'extlib'+slash+'hm_reader'+slash+arch
     try:
       path=os.getenv('LD_LIBRARY_PATH')
       new_path=hm_reader_path+sep+path
@@ -276,43 +268,50 @@ def exec_openradioss(starter,starter_arg,run_starter,engine,run_engine,starter_d
     os.environ['LD_LIBRARY_PATH']=new_path
 
   print("")
+
+
+  # Execute Starter
+  # ----------------
   if run_starter == 1:
      print("--- Executing Starter")
+     outfile=open("starter_output.log","w")
      starter_command=get_starter_command(starter,starter_deck,np,starter_arg)
-     p_starter_command='    '+starter_command
-     print(p_starter_command)
-     os.system(starter_command)
-
-     if stdout == 1:
-        print('')
-        with open('starter_output.log') as outfile:
-          while True:
-           line=outfile.readline()
-           if not line:
-             break
-           print(line[:-1])
-
+     outfile.write(' '.join(starter_command) +'\n')
+     print(' '.join(starter_command))
+     with subprocess.Popen(starter_command,stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
+        for line in proc.stdout:
+           outfile.write(line)
+           if stdout == 1:
+              print(line[:-1])
+        
+        for line in proc.stderr:
+           outfile.write(line)
+           if stdout == 1:
+              print(line[:-1])
+     outfile.close()
   else:
      print("--- Skip Starter")
   print("")
 
   if run_engine == 1:
      print("--- Executing Engine")
+     outfile=open("engine_output.log","w")
      for deck in engine_decks:
         engine_command=get_engine_command(engine,mpi,deck,np)
-        p_engine_command='    '+ engine_command
-        print(p_engine_command)
-        os.system(engine_command)
+        print(' '.join(engine_command))
+        outfile.write(' '.join(engine_command) +'\n')
+        with subprocess.Popen(engine_command,stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
+           for line in proc.stdout:
+               outfile.write(line)
+               if stdout == 1:
+                  print(line[:-1])
+        
+           for line in proc.stderr:
+               outfile.write(line)
+               if stdout == 1:
+                  print(line[:-1])
 
-        if stdout == 1:
-           print('')
-           with open('engine_output.log') as outfile:
-             while True:
-               line=outfile.readline()
-               if not line:
-                 break
-               print(line[:-1])
-           outfile.close()
+     outfile.close()
 
   else:
      print("--- Skip Engine")  

@@ -23,7 +23,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 Chd|====================================================================
 Chd|  MMAIN_MOD                     source/materials/mat_share/mmain.F
 Chd|-- called by -----------
-Chd|        BFORC2                        source/ale/bimat/bforc2.F     
+Chd|        BFORC2                        source/ale/bimat/bforc2.F
 Chd|        IG3DUFORC3                    source/elements/ige3d/ig3duforc3.F
 Chd|        Q4FORC2                       source/elements/solid_2d/quad4/q4forc2.F
 Chd|        QFORC2                        source/elements/solid_2d/quad/qforc2.F
@@ -37,9 +37,9 @@ Chd|        S8EFORC3                      source/elements/solid/solide8e/s8eforc
 Chd|        S8SFORC3                      source/elements/solid/solide8s/s8sforc3.F
 Chd|        S8ZFORC3                      source/elements/solid/solide8z/s8zforc3.F
 Chd|        SCFORC3                       source/elements/thickshell/solidec/scforc3.F
-Chd|        SFORC3                        source/elements/solid/solide/sforc3.F
 Chd|        SPSTRES                       source/elements/sph/spstres.F 
 Chd|        SZFORC3                       source/elements/solid/solidez/szforc3.F
+Chd|        SFORC3                        source/elements/solid/solide/sforc3.F
 Chd|-- calls ---------------
 Chd|====================================================================
       MODULE MMAIN_MOD
@@ -47,7 +47,7 @@ Chd|====================================================================
 Chd|====================================================================
 Chd|  MMAIN                         source/materials/mat_share/mmain.F
 Chd|-- called by -----------
-Chd|        BFORC2                        source/ale/bimat/bforc2.F     
+Chd|        BFORC2                        source/ale/bimat/bforc2.F
 Chd|        IG3DUFORC3                    source/elements/ige3d/ig3duforc3.F
 Chd|        Q4FORC2                       source/elements/solid_2d/quad4/q4forc2.F
 Chd|        QFORC2                        source/elements/solid_2d/quad/qforc2.F
@@ -62,7 +62,7 @@ Chd|        S8SFORC3                      source/elements/solid/solide8s/s8sforc
 Chd|        S8ZFORC3                      source/elements/solid/solide8z/s8zforc3.F
 Chd|        SCFORC3                       source/elements/thickshell/solidec/scforc3.F
 Chd|        SFORC3                        source/elements/solid/solide/sforc3.F
-Chd|        SPSTRES                       source/elements/sph/spstres.F 
+Chd|        SPSTRES                       source/elements/sph/spstres.F
 Chd|        SZFORC3                       source/elements/solid/solidez/szforc3.F
 Chd|-- calls ---------------
 Chd|        ANCMSG                        source/output/message/message.F
@@ -184,8 +184,16 @@ Chd|====================================================================
      O   TABLE,       FVD2,        FDELTAX,     FSSP,
      P   FQVIS,       IPARG1,      IGEO,        CONDE,
      Q   ITASK,       NLOC_DMG,    VARNL,       MAT_ELEM,
-     R   H3D_STRAIN,  JPLASOL,     JSPH,        OPT_MTN,
-     S   OPT_JCVT,    OPT_ISORTH,  OPT_ISORTHG)
+     R   H3D_STRAIN,  JPLASOL,     JSPH,        SZ_BUFVOIS,
+     .   NSVOIS,      SNPC,        STF,         SBUFMAT,
+     .   SVIS,        SZ_IX,       IDTMINS,     IRESP,
+     .   N2D,         TH_STRAIN,   NGROUP,      TT, 
+     .   DT1,         NTABLE,      NUMELQ,      nummat,
+     .   numgeo,      numnod,      numels,      nfunct,      
+     .   IDEL7NG,     IDEL7NOK,    IDTMIN,      MAXFUNC,
+     .   IMON_MAT,    USERL_AVAIL, heat_meca,   impl_s,
+     .   idyna,       OPT_MTN,      OPT_JCVT,   OPT_ISORTH,  
+     .   OPT_ISORTHG   )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -206,54 +214,149 @@ C   G l o b a l   P a r a m e t e r s
 C-----------------------------------------------
 #include      "mvsiz_p.inc"
 C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "com01_c.inc"
-#include      "com04_c.inc"
-#include      "com08_c.inc"
-#include      "scr17_c.inc"
-#include      "scr19_c.inc"
-#include      "nsvis_c.inc"
-#include      "param_c.inc"
-#include      "impl1_c.inc"
-#include      "sms_c.inc"
-#include      "userlib.inc"
-#include      "timeri_c.inc"
-#include      "thermal_c.inc"
-#include      "scr05_c.inc"
-#include      "scr06_c.inc"
-C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      my_real, INTENT(IN) :: DT1
+      my_real, INTENT(IN) :: TT
+
       INTEGER, OPTIONAL, INTENT(IN) :: OPT_MTN, OPT_JCVT, OPT_ISORTH,  OPT_ISORTHG
+      integer,dimension(102) :: IDTMIN
+      INTEGER, INTENT(IN) :: IDEL7NG
+      INTEGER, INTENT(INOUT) :: IDEL7NOK
+      INTEGER, INTENT(IN) :: MAXFUNC
+      INTEGER, INTENT(IN) :: NTABLE
+      INTEGER, INTENT(IN) :: NUMELQ
+      INTEGER, INTENT(IN) :: nummat
+      INTEGER, INTENT(IN) :: numgeo
+      INTEGER, INTENT(IN) :: numnod
+      INTEGER, INTENT(IN) :: numels
+      INTEGER, INTENT(IN) :: nfunct
+      INTEGER, INTENT(IN) :: N2D
+      INTEGER, INTENT(IN) :: TH_STRAIN
+      INTEGER, INTENT(IN) :: NGROUP
+      INTEGER, INTENT(IN) :: SZ_BUFVOIS
+      INTEGER, INTENT(IN) :: NSVOIS
       INTEGER, INTENT(INOUT) :: JSPH
       INTEGER, INTENT(INOUT) :: JPLASOL
       INTEGER, INTENT(IN) :: NEL
-      INTEGER IX(*), IPARG(NPARG,NGROUP), NPF(*),PID(*),
-     .        MAT(*)  ,NGL(*), IPM(NPROPMI,*),IPARG1(*),IGEO(NPROPGI,*)
-      INTEGER NELTST, ITYPTST, OFFSET, ISTRAIN, 
-     .        IEXPAN,NG,ILAY,IPTR,IPTS,IPTT,IBIDON1,IBIDON2,IBIDON3 ,
-     .        IBIDON4, IADBUF, ITASK,H3D_STRAIN
-      my_real DT2T
-      my_real
-     .   PM(NPROPM,*), GEO(*), FBID(*), V(*), TF(*), VARNL(NEL),
-     .   BUFMAT(*), STIFN(*), X(3,*),OFF(*),W(*),SIGY(*) ,ET(*) ,
-C-----------  R4_FREE is replaced by R3_AMU (no more free)  
-     .   BUFVOIS(*), DEFP(*) ,R3_DAM(*) ,R4_AMU(*),GAMA(MVSIZ,6), 
-     .   VD2(*)   ,DVOL(*)  ,DELTAX(*),VIS(*)   ,
-     .   QVIS(*)  ,CXX(*)   ,S1(*)    ,S2(*)    ,S3(*)    ,
-     .   S4(*)    ,S5(*)    ,S6(*)    ,DXX(*)   ,DYY(*)   ,
-     .   DZZ(*)   ,D4(*)    ,D5(*)    ,D6(*)    ,WXX(*)   ,
-     .   WYY(*)   ,WZZ(*)   ,RX(*)    ,RY(*)    ,RZ(*)    ,
-     .   SX(*)    ,SY(*)    ,SZ(*)    ,VDX(*)   ,VDY(*)   ,
-     .   VDZ(*)   ,MUMAX(*) ,SSP_EQ(MVSIZ)      ,AIRE(*)  ,
-     .   MFXX(*)  ,MFXY(*)  ,MFXZ(*)  ,MFYX(*)  ,MFYY(*)  ,
-     .   MFYZ(*)  ,MFZX(*)  ,MFZY(*)  ,MFZZ(*) ,TEMPEL(*), DIE(*),
-     .   MSSA(*), DMELS(*)  ,VOLN(MVSIZ)
+      INTEGER, INTENT(IN) :: SNPC
+      INTEGER, INTENT(IN) :: STF
+      INTEGER, INTENT(IN) :: SBUFMAT
+      INTEGER, INTENT(IN) ::  SZ_IX
+      INTEGER, INTENT(IN) ::  IDTMINS
+      INTEGER, INTENT(IN) :: IRESP
+      INTEGER, INTENT(IN) :: IMON_MAT
+      INTEGER, INTENT(IN) :: USERL_AVAIL
+      INTEGER, INTENT(IN) :: IMPL_S
+      INTEGER, INTENT(IN) :: IDYNA
+      INTEGER, DIMENSION(N_VAR_IPARG,NGROUP),INTENT(IN) :: IPARG
+      INTEGER, DIMENSION(SNPC),INTENT(IN)      :: NPF
+      integer,dimension(mvsiz),intent(in)         :: MAT
+      integer,dimension(nixs,sz_ix),intent(in) :: ix
+      integer,dimension(mvsiz),intent(inout)        :: pid
+      integer,dimension(mvsiz),intent(inout)        :: ngl
+      integer,dimension(n_var_ipm,nummat),intent(in)  :: ipm
+      integer,dimension(n_var_igeo,numgeo),intent(in)  :: igeo
+      integer,intent(in) :: neltst
+      integer,intent(in) :: ityptst
+      integer,intent(in) :: ISTRAIN
+      integer,intent(in) :: IEXPAN
+      integer,intent(in) :: NG
+      integer,intent(inout) :: ILAY
+      integer,intent(in) :: IPTR
+      integer,intent(in) :: IPTS
+      integer,intent(in) :: IPTT
+      integer,intent(in) :: ITASK
+      integer,intent(in) :: H3D_STRAIN
+      integer,intent(in) :: offset
+      integer,dimension(N_VAR_IPARG),intent(in) :: IPARG1
+      !
+      my_real,intent(in) :: dt2t
+      my_real,intent(inout) :: heat_meca
+      my_real, DIMENSION(MVSIZ,6), INTENT(INOUT)  :: SVIS
+      my_real, dimension(n_var_geo,numgeo), intent(inout) :: geo
+      my_real, dimension(n_var_pm,nummat), intent(inout) :: pm
+      my_real, dimension(3,numnod), intent(in) :: v
+      my_real, dimension(3,numnod), intent(in) :: x
+      my_real, dimension(3,numnod), intent(in) :: w
+      my_real, dimension(numels), intent(inout) :: MSSA
+      my_real, dimension(numels), intent(inout) :: DMELS
+      my_real, dimension(stf), intent(inout) :: tf
+      my_real, dimension(SZ_BUFVOIS), intent(inout) :: BUFVOIS
+      my_real,dimension(sbufmat),target,intent(inout) ::bufmat
+      my_real, dimension(nfunct), intent(inout) :: FBID
+
+      my_real, dimension(nel), intent(inout) :: VARNL
+      my_real, dimension(nel), intent(inout) :: defp
+
+      my_real, dimension(mvsiz), intent(inout) :: sigy
+      my_real, dimension(mvsiz), intent(inout) :: et
+      my_real, dimension(mvsiz), intent(inout) :: off
+      my_real, dimension(mvsiz), intent(inout) :: stifn
+      my_real, dimension(mvsiz,6), intent(inout) :: gama
+      my_real, dimension(mvsiz), intent(inout) :: VD2
+      my_real, dimension(mvsiz), intent(inout) :: DELTAX
+      my_real, dimension(mvsiz), intent(inout) :: VIS
+      my_real, dimension(mvsiz), intent(inout) :: WXX
+      my_real, dimension(mvsiz), intent(inout) :: WYY
+      my_real, dimension(mvsiz), intent(inout) :: WZZ
+      my_real, dimension(mvsiz), intent(inout) :: VDX
+      my_real, dimension(mvsiz), intent(inout) :: VDY
+      my_real, dimension(mvsiz), intent(inout) :: VDZ
+      my_real, dimension(mvsiz), intent(inout) :: MUMAX
+      my_real, dimension(mvsiz), intent(inout) :: SSP_EQ
+      my_real, dimension(mvsiz), intent(inout) :: AIRE
+      my_real, dimension(mvsiz), intent(inout) :: CXX
+      my_real, dimension(mvsiz), intent(inout) :: VOLN
+      my_real, dimension(mvsiz), intent(inout) :: FR_WAV
+      my_real, dimension(mvsiz), intent(inout) :: FQVIS
+      my_real, dimension(mvsiz), intent(inout) :: FVD2
+      my_real, dimension(mvsiz), intent(inout) :: FSSP
+      my_real, dimension(mvsiz), intent(inout) :: FDELTAX
+      my_real, dimension(mvsiz), intent(inout) :: CONDE
+      my_real, dimension(mvsiz), intent(inout) :: S1
+      my_real, dimension(mvsiz), intent(inout) :: S2
+      my_real, dimension(mvsiz), intent(inout) :: S3
+      my_real, dimension(mvsiz), intent(inout) :: S4
+      my_real, dimension(mvsiz), intent(inout) :: S5
+      my_real, dimension(mvsiz), intent(inout) :: S6
+      my_real, dimension(mvsiz), intent(inout) :: D4
+      my_real, dimension(mvsiz), intent(inout) :: D5
+      my_real, dimension(mvsiz), intent(inout) :: D6
+      my_real, dimension(mvsiz), intent(inout) :: DVOL
+      my_real, dimension(mvsiz), intent(inout) :: QVIS
+      my_real, dimension(mvsiz), intent(inout) :: DXX
+      my_real, dimension(mvsiz), intent(inout) :: DYY
+      my_real, dimension(mvsiz), intent(inout) :: DZZ
+      my_real, dimension(mvsiz), intent(inout) :: RX
+      my_real, dimension(mvsiz), intent(inout) :: RY
+      my_real, dimension(mvsiz), intent(inout) :: RZ
+      my_real, dimension(mvsiz), intent(inout) :: SX
+      my_real, dimension(mvsiz), intent(inout) :: SY
+      my_real, dimension(mvsiz), intent(inout) :: SZ
+      my_real, dimension(mvsiz), intent(inout) :: DXY
+      my_real, dimension(mvsiz), intent(inout) :: DYX
+      my_real, dimension(mvsiz), intent(inout) :: DYZ
+      my_real, dimension(mvsiz), intent(inout) :: DZY
+      my_real, dimension(mvsiz), intent(inout) :: DZX
+      my_real, dimension(mvsiz), intent(inout) :: DXZ
+      my_real, dimension(mvsiz), intent(inout) :: MFXX
+      my_real, dimension(mvsiz), intent(inout) :: MFXY
+      my_real, dimension(mvsiz), intent(inout) :: MFXZ
+      my_real, dimension(mvsiz), intent(inout) :: MFYX
+      my_real, dimension(mvsiz), intent(inout) :: MFYY
+      my_real, dimension(mvsiz), intent(inout) :: MFYZ
+      my_real, dimension(mvsiz), intent(inout) :: MFZX
+      my_real, dimension(mvsiz), intent(inout) :: MFZY
+      my_real, dimension(mvsiz), intent(inout) :: MFZZ
+      my_real, dimension(mvsiz), intent(inout) :: TEMPEL
+      my_real, dimension(mvsiz), intent(inout) :: DIE
+      my_real, dimension(mvsiz), intent(inout) :: R3_DAM
+      my_real, dimension(mvsiz), intent(inout) :: R4_AMU
+
+
       TARGET :: VARNL,DEFP
-      my_real
-     .   DXY(*) ,DYX(*) ,DYZ(*) ,DZY(*) ,DZX(*) ,DXZ(*),FR_WAV(*),
-     .   FQVIS(*),FVD2(*),FSSP(*),FDELTAX(*),CONDE(*)
+      
       TYPE(TTABLE) TABLE(*)
       TYPE (ELBUF_STRUCT_), TARGET, DIMENSION(NGROUP) :: ELBUF_TAB
       TYPE (NLOCAL_STR_) :: NLOC_DMG 
@@ -262,6 +365,7 @@ C-----------  R4_FREE is replaced by R3_AMU (no more free)
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
+      INTEGER IBIDON1,IBIDON2,IBIDON3,IBIDON4
       INTEGER I,IPG,NUVAR,NPARAM,NFUNC,IFUNC_ALPHA,ILAW,IMAT,
      .   NVARF,NFAIL,NTABL_FAIL,IR,IRUPT,IVISC,EOSTYP,NPTS,NPTT,NPTR,NPG,
      .   ISVIS,MX,NVARTMP,NLAY,INLOC
@@ -1511,7 +1615,7 @@ c
      F   GBUF%G_DT,IPM,      RHOREF,   RHOSP,
      G   LBUF%EPSD,ITY,      JTUR,     JTHE,
      H   JHBE,     JCVT,     JSPH,     ISMSTR,
-     I   JSMS,     NPG )
+     I   JSMS,     NPG,      SVIS )
 C     like law25 for shell + S33 = EPS33*E33
       ELSEIF (MTN == 25) THEN
         CALL M25LAW(MAT_ELEM%MAT_PARAM(IMAT),
@@ -1615,7 +1719,7 @@ C     like law25 for shell + S33 = EPS33*E33
      E   VOL_AVG,  GBUF%DT,  GBUF%G_DT,NEL,
      F   D4,       D5,       D6,       RHOREF,
      G   RHOSP,    ISMSTR,   ITY,      JSMS,
-     H   JTUR,     JTHE,     NPG )
+     H   JTUR,     JTHE,     NPG,SVIS )
 C
       ELSEIF (MTN == 49) THEN
         CALL M49LAW (MAT      ,PM       ,OFF     ,LBUF%SIG,LBUF%PLA,
@@ -1703,7 +1807,7 @@ c
      Z   LBUF%FORTH, LBUF%VISC,  NEL,        GBUF%ETOTSH,
      1   ISELECT,    TSTAR,      LBUF%MU,    AMU2,
      2   DPDM,       RHOREF,     RHOSP,      NLOC_DMG,
-     3   ITY,        JTUR,       MAT_ELEM,   IDEL7NOK)
+     3   ITY,        JTUR,       MAT_ELEM,   IDEL7NOK,SVIS)
 c
       ELSE   ! 'user type' Radioss material laws 
 C---
@@ -1749,7 +1853,14 @@ c
      Z   GBUF%ETOTSH, ISELECT,     TSTAR,       LBUF%MU,
      1   DPDM,        RHOREF,      RHOSP,       NVARTMP,
      2   MBUF%VARTMP, LBUF%EINTTH, MAT_ELEM,    NLOC_DMG,
-     3   ITY,         JTUR,        JSMS,        IDEL7NOK)
+     3   ITY,         JTUR,        JSMS,        IDEL7NOK,
+     4   SZ_BUFVOIS,  SZ_IX,       SNPC,        STF,
+     5   SBUFMAT,     SVIS,        N2D,         NGROUP,
+     6   IMON_MAT,    NUMNOD,      NUMELS,      NTABLE,
+     7   NUMGEO,      NUMMAT,      NUMELQ,      IDTMIN,
+     8   DT1,         TT,          
+     9   IMPL_S,
+     A   IDYNA,       USERL_AVAIL, NIXS,        NIXQ)
 
       ENDIF 
 C-----------------------------------
@@ -1812,7 +1923,7 @@ C---------------------------------------------------------------------
      2   PID,     CXX,     AIRE,    VOLG,
      3   DXX,     DYY,     DZZ,     D4,
      4   D5,      D6,      MAT,     ISVIS,
-     5   RHOREF,  NEL)
+     5   RHOREF,  NEL,     SVIS)
           DO  I=1,NEL                                                 
             VOL(I)  = LBUF%VOL(I)                                       
             EINT(I) = LBUF%EINT(I)                                      

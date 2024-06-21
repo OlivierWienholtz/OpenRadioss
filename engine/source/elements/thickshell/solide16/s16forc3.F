@@ -71,7 +71,11 @@ Chd|====================================================================
      F                    IPM      ,ISTRAIN ,TEMP   ,FTHE    ,FTHESKY ,
      G                    IEXPAN   ,GRESAV  ,GRTH   ,IGRTH   ,TABLE   ,
      H                    IGEO     ,VOLN    ,CONDN  ,CONDNSKY,ITASK  ,
-     I                    IOUTPRT  ,MAT_ELEM,H3D_STRAIN  ,DT    )
+     I                    IOUTPRT  ,MAT_ELEM,H3D_STRAIN  ,DT  ,SNPC  ,
+     J                    STF      ,SBUFMAT,SVIS,NSVOIS,IDTMINS,IRESP,      
+     .                    IDEL7NG,     IDEL7NOK,    IDTMIN,     MAXFUNC, 
+     .                    IMON_MAT ,USERL_AVAIL, heat_meca,     impl_s,
+     V                    idyna)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -107,6 +111,21 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      INTEGER,INTENT(IN) :: SNPC
+      INTEGER,INTENT(IN) :: STF
+      INTEGER, INTENT(IN) :: SBUFMAT
+      INTEGER, INTENT(IN) :: IDTMINS
+      INTEGER, INTENt(IN) :: NSVOIS
+      INTEGER ,INTENT(IN) :: IRESP 
+      INTEGER ,INTENT(IN) :: IDEL7NG
+      INTEGER ,INTENT(INOUT) :: IDEL7NOK
+      integer,dimension(102) :: IDTMIN
+      INTEGER ,INTENT(IN) :: MAXFUNC
+      INTEGER, INTENT(IN) :: IMPL_S
+      INTEGER, INTENT(IN) :: IDYNA
+      INTEGER, INTENT(IN) :: USERL_AVAIL
+      INTEGER, INTENT(IN) :: IMON_MAT
+      my_real, INTENT(INOUT) :: HEAT_MECA
       INTEGER IXS(NIXS,*), IPARG(NPARG,NGROUP),NPF(*),
      .        IPARTS(*),IXS16(8,*),IADS16(8,*),IPM(*),GRTH(*),IGRTH(*),
      .        IGEO(*),IADS(8,*),ITASK,IOUTPRT
@@ -131,6 +150,7 @@ C-----------------------------------------------
      .  PX(MVSIZ,NPE,NIPMAX),PY(MVSIZ,NPE,NIPMAX),PZ(MVSIZ,NPE,NIPMAX),
      .  TEMP(*), FTHE(*), FTHESKY(*), GRESAV(*),VOLN(MVSIZ),CONDN(*),
      .  CONDNSKY(*)
+      my_real, DIMENSION(MVSIZ,6), INTENT(INOUT) :: SVIS
       TYPE (TTABLE) TABLE(*)
       TYPE (ELBUF_STRUCT_), TARGET, DIMENSION(NGROUP) :: ELBUF_TAB
       TYPE (NLOCAL_STR_)  , TARGET :: NLOC_DMG 
@@ -168,7 +188,7 @@ C-----------------------------------------------
      . TEMPEL(MVSIZ),DIE(MVSIZ),THEM(MVSIZ,NPE),AREA(MVSIZ),LLSH(MVSIZ)
      
       ! Variables utilisees dans les routines solides uniquement (en arguments).
-      INTEGER NC(MVSIZ,NPE),NN_DEL,IPRES
+      INTEGER NC(MVSIZ,NPE),NN_DEL,IPRES,SZ_IX
       my_real
      .  OFF(MVSIZ) , RHOO(MVSIZ),NI(NPE,NIPMAX),
      .  SIGSM(MVSIZ),VOLSM(MVSIZ),
@@ -376,6 +396,7 @@ C=======================================================================
       IF (NPTR*NPTS*NPTT*NLAY > NIPMAX) STOP 933
       IBID     = 0
       IBIDON(1)= 0
+      SZ_IX=NUMELQ+NUMELS+NSVOIS
 !
       DO I=1,6
         II(I) = NEL*(I-1)
@@ -599,8 +620,16 @@ C
      O   TABLE,       BID,         BID,         BID,
      P   BID,         IPARG(1,NG), IGEO,        CONDE,
      Q   ITASK,       NLOC_DMG,    VARNL,       MAT_ELEM,
-     R   H3D_STRAIN,  JPLASOL,     JSPH,        OPT_MTN=MTN,
-     S   OPT_JCVT=JCVT,OPT_ISORTH=ISORTH,       OPT_ISORTHG=ISORTHG)
+     R   H3D_STRAIN,  JPLASOL,     JSPH,        MVSIZ,0,
+     *   SNPC,        STF,         SBUFMAT,     SVIS,
+     *   SZ_IX,       IDTMINS,     IRESP,       N2D,         
+     *   TH_STRAIN,   NGROUP,      TT, 
+     .   DT1,         NTABLE,      NUMELQ,      nummat,
+     .   numgeo,      numnod,      numels,      nfunct,      
+     .   IDEL7NG,     IDEL7NOK,    IDTMIN,      MAXFUNC,
+     .   IMON_MAT,    USERL_AVAIL, heat_meca,   impl_s,
+     .   idyna,       OPT_MTN=MTN, OPT_JCVT=JCVT,OPT_ISORTH=ISORTH,
+     .   OPT_ISORTHG=ISORTHG)
 
 c
       IF (ISTRAIN == 1)THEN 
@@ -637,7 +666,7 @@ C
      6   GBUF%EINT, GBUF%RHO,  GBUF%QVIS, GBUF%PLA,
      7   WI,        VOLG,      LBUF%VOL,  GBUF%VOL,
      8   L_PLA,     NEL,       CONDE,     DELTAX,
-     9   CONDEG,    ISRAT)
+     9   CONDEG,    ISRAT,     SVIS)
       !-------------------------
       !    finite element heat transfert  
       !--------------------------

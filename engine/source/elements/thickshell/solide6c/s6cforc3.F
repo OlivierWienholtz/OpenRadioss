@@ -79,7 +79,10 @@ Chd|====================================================================
      D                   IGRTH    ,TABLE   ,MSSA    ,DMELS  ,VOLN   ,
      E                   ITASK    ,IOUTPRT ,MAT_ELEM,H3D_STRAIN ,
      F                   TEMP     ,FTHE    ,FTHESKY ,CONDN  ,CONDNSKY,
-     G                   IEXPAN   ,IFTHE   ,ICONDN  ,DT     )
+     G                   IEXPAN   ,IFTHE   ,ICONDN  ,DT     ,SNPC,STF,
+     H                   SBUFMAT  ,SVIS    ,NSVOIS  ,IDTMINS,IRESP,
+     I                   IDEL7NG  ,IDEL7NOK,MAXFUNC, IMON_MAT, USERL_AVAIL, 
+     J                   heat_meca)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -112,6 +115,18 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      INTEGER,INTENT(IN):: SNPC
+      INTEGER,INTENT(IN):: STF
+      INTEGER, INTENT(IN) :: SBUFMAT
+      INTEGER, INTENT(IN) :: NSVOIS
+      INTEGER, INTENT(IN) :: IDTMINS
+      INTEGER ,INTENT(IN) :: IRESP
+      INTEGER ,INTENT(IN) :: IDEL7NG
+      INTEGER ,INTENT(INOUT) :: IDEL7NOK
+      INTEGER ,INTENT(IN) :: MAXFUNC
+      INTEGER, INTENT(IN) :: USERL_AVAIL
+      INTEGER, INTENT(IN) :: IMON_MAT
+      my_real, INTENT(INOUT) :: HEAT_MECA
       INTEGER IXS(NIXS,*),IPARG(NPARG,NGROUP),NPF(*),IADS(8,*),GRTH(*),
      .  IPARTS(*),IPM(NPROPMI,*),IGEO(NPROPGI,*),IGRTH(*), ITASK,IOUTPRT
       INTEGER NELTST,ITYPTST,OFFSET,NG,NEL,ICP,ICSIG,ISTRAIN,H3D_STRAIN
@@ -132,6 +147,7 @@ C-----------------------------------------------
      .   MSSA(*), DMELS(*), VOLN(MVSIZ)
       my_real, INTENT(INOUT) :: TEMP(NUMNOD),FTHE(IFTHE),FTHESKY(LSKY),
      .   CONDN(ICONDN),CONDNSKY(LSKY)
+      my_real, DIMENSION(MVSIZ,6), INTENT(INOUT) :: SVIS
       TYPE (TTABLE) TABLE(*)
       TYPE (ELBUF_STRUCT_), TARGET, DIMENSION(NGROUP) :: ELBUF_TAB
       TYPE (NLOCAL_STR_)  , TARGET                    :: NLOC_DMG 
@@ -235,6 +251,7 @@ C
       DOUBLE PRECISION 
      .   VOLDP(MVSIZ),FACDP
       INTEGER INLOC,L_NLOC,IPOS(6),INOD(6)
+      iNTEGER SZ_R1_FREE,SZ_IX
       my_real, DIMENSION(:,:), ALLOCATABLE :: VAR_REG
       my_real, DIMENSION(:), POINTER :: DNL
 C-----
@@ -309,6 +326,8 @@ C=======================================================================
       IT = 1
       INLOC = IPARG(78,NG)
       ALLOCATE(VAR_REG(NEL,NLAY))
+      SZ_R1_FREE=MVSIZ
+      SZ_IX=NUMELQ+NUMELS+NSVOIS
 C-----------
       IBID = 0
       IBIDON(1) = 0
@@ -642,8 +661,15 @@ C------------------------------------------------------
      O   TABLE,       BID,         BID,         BID,
      P   BID,         IPARG(1,NG), IGEO,        CONDE,
      Q   ITASK,       NLOC_DMG,    VAR_REG(1,ILAY),MAT_ELEM,
-     R   H3D_STRAIN,  JPLASOL,     JSPH,        OPT_MTN=MTN,
-     S   OPT_JCVT=JCVT,OPT_ISORTH=ISORTH,       OPT_ISORTHG=ISORTHG)
+     R   H3D_STRAIN,  JPLASOL,     JSPH,      SZ_R1_FREE,0, 
+     *   SNPC,        STF,         SBUFMAT    ,SVIS ,SZ_IX,IDTMINS,
+     *   IRESP,       N2D,         TH_STRAIN,   NGROUP ,TT, 
+     .   DT1,         NTABLE,      NUMELQ,      nummat,
+     .   numgeo,      numnod,      numels,      nfunct,      
+     .   IDEL7NG,     IDEL7NOK,    IDTMIN,      MAXFUNC,
+     .   IMON_MAT,    USERL_AVAIL, heat_meca,   impl_s,
+     .   idyna, OPT_MTN=MTN,OPT_JCVT=JCVT,OPT_ISORTH=ISORTH, 
+     S   OPT_ISORTHG=ISORTHG)
 
 C
         DO I=1,NEL
@@ -691,7 +717,8 @@ C----------------------------
      H   GBUF%EPSD,  GBUF%SIG,   GBUF%EINT,  GBUF%RHO,
      I   GBUF%QVIS,  GBUF%PLA,   ZT,         WT,
      J   VOLG,       OFF,        NU1,        LBUF%VOL,
-     K   GBUF%VOL,   L_PLA,      L_EPSD,     NEL)
+     K   GBUF%VOL,   L_PLA,      L_EPSD,     NEL,
+     L   SVIS )
         ELSE
          CALL S6CFINT3(
      1   LBUF%SIG,          PX1,               PX2,               PX3,
@@ -713,7 +740,8 @@ C----------------------------
      H   GBUF%EPSD,         GBUF%SIG,          GBUF%EINT,         GBUF%RHO,
      I   GBUF%QVIS,         GBUF%PLA,          A_GAUSS(ILAY,NLAY),W_GAUSS(ILAY,NLAY),
      J   VOLG,              OFF,               NU1,               LBUF%VOL,
-     K   GBUF%VOL,          L_PLA,             L_EPSD,            NEL)
+     K   GBUF%VOL,          L_PLA,             L_EPSD,            NEL,
+     L   SVIS)
         ENDIF ! IF (ISORTH > 0)
 C-------------------------
 C Finite element heat transfert  

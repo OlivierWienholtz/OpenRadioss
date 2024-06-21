@@ -57,7 +57,6 @@ C============================================================================
 C   M o d u l e s
 C-----------------------------------------------
       USE TRI7BOX
-      USE INTBUFMOD
       USE MESSAGE_MOD
       USE IMP_INTBUF
       USE INTBUFDEF_MOD

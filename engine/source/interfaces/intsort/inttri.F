@@ -130,7 +130,6 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE ELBUFDEF_MOD  
-      USE INTBUFMOD
       USE INTSTAMP_MOD
       USE TRI7BOX
       USE INTBUFDEF_MOD  

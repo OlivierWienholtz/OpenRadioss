@@ -234,7 +234,7 @@ C     LAW 11 uses IELVS=IBIDON and IXS=IBIDON should not be used.
       OFFSET=0
       CALL MMAIN(
      1   ELBUF_TAB,   NG,          PM,          GEO,
-     2   FV,          ALE_CONNECT, IBIDON,      IPARG,
+     2                ALE_CONNECT, IBIDON,      IPARG,
      3   V,           PLD,         NPC,         BUFMAT,
      4   STI,         X,           DT2T,        NELTST,
      5   ITYPTST,     OFFSET,      NEL,         W,
@@ -259,11 +259,12 @@ C     LAW 11 uses IELVS=IBIDON and IXS=IBIDON should not be used.
      O   TABLE,       BID,         BID,         BID,
      P   BID,         IPARG(1,NG), IGEO,        BID,
      Q   ITASK,       NLOC_DMG,    VARNL,       MAt_ELEM,
-     R   H3D_STRAIN,  JPLASOL,     JSPH,SZ_R1_FREE,IBID,
-     S   SNPC,STF,    SBUFMAT,SVIS,SZ_IX,       IDTMINS,
-     T   IRESP,N2D,         TH_STRAIN,   NGROUP,TT, 
+     R   H3D_STRAIN,  JPLASOL,     JSPH,        SZ_R1_FREE,
+     S                SNPC,        STF,         SBUFMAT,
+     *   SVIS,        SZ_IX,       IDTMINS,     IRESP,
+     T   N2D,         TH_STRAIN,   NGROUP,      TT, 
      .   DT1,         NTABLE,      NUMELQ,      nummat,
-     .   numgeo,      numnod,      numels,      nfunct,      
+     .   numgeo,      numnod,      numels,
      .   IDEL7NG,     IDEL7NOK,    IDTMIN,      MAXFUNC,
      .   IMON_MAT,    USERL_AVAIL, heat_meca,   impl_s,
      .   idyna)

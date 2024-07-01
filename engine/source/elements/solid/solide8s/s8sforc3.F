@@ -821,7 +821,7 @@ c
 c
       CALL MMAIN(
      1   ELBUF_TAB,    NG,           PM,           GEO,
-     2   FV,           ALE_CONNECT,  IXS,          IPARG,
+     2                 ALE_CONNECT,  IXS,          IPARG,
      3   V,            TF,           NPF,          BUFMAT,
      4   STI,          X,            DT2T,         NELTST,
      5   ITYPTST,      OFFSET,       NEL,          W,
@@ -846,11 +846,12 @@ c
      O   TABLE,        BID,          BID,          BID,
      P   BID,          IPARG(1,NG),  IGEO,         CONDE,
      Q   ITASK,        NLOC_DMG,     VAR_REG(1,IP),MAT_ELEM,
-     R   H3D_STRAIN,   JPLASOL,      JSPH,SZ_R1_FREE,0,SNPC,STF,
-     S   SBUFMAT,      SVIS,         SZ_IX,IDTMINS,IRESP,
-     T   N2D,         TH_STRAIN,   NGROUP,TT, 
+     R   H3D_STRAIN,   JPLASOL,      JSPH,         SZ_R1_FREE,
+     S                 SNPC,         STF,          SBUFMAT,
+     *   SVIS,         SZ_IX,        IDTMINS,      IRESP,
+     T   N2D,          TH_STRAIN,    NGROUP,       TT, 
      .   DT1,         NTABLE,      NUMELQ,      nummat,
-     .   numgeo,      numnod,      numels,      nfunct,      
+     .   numgeo,      numnod,      numels,
      .   IDEL7NG,     IDEL7NOK,    IDTMIN,      MAXFUNC,
      .   IMON_MAT,    USERL_AVAIL, heat_meca,   impl_s,
      .   idyna)

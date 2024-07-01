@@ -28,7 +28,7 @@ contains
 !! \brief main routine for Material Computation for brick/quad/thickshell/sph elements
 subroutine mmain(&
    &elbuf_tab,   ng,          pm,          geo,&
-   &fbid,        ale_connect, ix,          iparg,&
+   &            ale_connect, ix,          iparg,&
    &v,           tf,          npf,         bufmat,&
    &stifn,       x,           dt2t,        neltst,&
    &ityptst,     offset,      nel,         w,&
@@ -54,11 +54,11 @@ subroutine mmain(&
    &fqvis,       iparg1,      igeo,        conde,&
    &itask,       nloc_dmg,    varnl,       mat_elem,&
    &h3d_strain,  jplasol,     jsph,        sz_bufvois,&
-   &nsvois,      snpc,        stf,         sbufmat,&
+   &             snpc,        stf,         sbufmat,&
    &svis,        sz_ix,       idtmins,     iresp,&
    &n2d,         th_strain,   ngroup,      tt,&
    &dt1,         ntable,      numelq,      nummat,&
-   &numgeo,      numnod,      numels,      nfunct,&
+   &numgeo,      numnod,      numels,            &
    &idel7ng,     idel7nok,    idtmin,      maxfunc,&
    &imon_mat,    userl_avail, heat_meca,   impl_s,&
    &idyna,       opt_mtn,      opt_jcvt,   opt_isorth,&
@@ -101,12 +101,10 @@ subroutine mmain(&
       integer, intent(in) :: numgeo
       integer, intent(in) :: numnod
       integer, intent(in) :: numels
-      integer, intent(in) :: nfunct
       integer, intent(in) :: n2d
       integer, intent(in) :: th_strain
       integer, intent(in) :: ngroup
       integer, intent(in) :: sz_bufvois
-      integer, intent(in) :: nsvois
       integer, intent(inout) :: jsph
       integer, intent(inout) :: jplasol
       integer, intent(in) :: nel
@@ -155,7 +153,6 @@ subroutine mmain(&
       my_real, dimension(stf), intent(inout) :: tf
       my_real, dimension(sz_bufvois), intent(inout) :: bufvois
       my_real,dimension(sbufmat),target,intent(inout) ::bufmat
-      my_real, dimension(nfunct), intent(inout) :: fbid
 
       my_real, dimension(nel), intent(inout) :: varnl
       my_real, dimension(nel), intent(inout) :: defp

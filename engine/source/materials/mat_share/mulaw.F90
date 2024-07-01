@@ -1,155 +1,32 @@
-!copyright>        OpenRadioss
-!copyright>        Copyright (C) 1986-2024 Altair Engineering Inc.
-!copyright>
-!copyright>        This program is free software: you can redistribute it and/or modify
-!copyright>        it under the terms of the GNU Affero General Public License as published by
-!copyright>        the Free Software Foundation, either version 3 of the License, or
-!copyright>        (at your option) any later version.
-!copyright>
-!copyright>        This program is distributed in the hope that it will be useful,
-!copyright>        but WITHOUT ANY WARRANTY; without even the implied warranty of
-!copyright>        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!copyright>        GNU Affero General Public License for more details.
-!copyright>
-!copyright>        You should have received a copy of the GNU Affero General Public License
-!copyright>        along with this program.  If not, see <https://www.gnu.org/licenses/>.
-!copyright>
-!copyright>
-!copyright>        Commercial Alternative: Altair Radioss Software
-!copyright>
-!copyright>        As an alternative to this open-source version, Altair also offers Altair Radioss
-!copyright>        software under a commercial license.  Contact Altair to discuss further if the
-!copyright>        commercial version may interest you: https://www.altair.com/radioss/.
-!hd|====================================================================
-!hd|  mulaw_mod                     source/materials/mat_share/mulaw.f
-!hd|-- called by -----------
-!hd|        mmain                         source/materials/mat_share/mmain.f
-!hd|-- calls ---------------
-!hd|====================================================================
+!Copyright>        OpenRadioss
+!Copyright>        Copyright (C) 1986-2024 Altair Engineering Inc.
+!Copyright>
+!Copyright>        This program is free software: you can redistribute it and/or modify
+!Copyright>        it under the terms of the GNU Affero General Public License as published by
+!Copyright>        the Free Software Foundation, either version 3 of the License, or
+!Copyright>        (at your option) any later version.
+!Copyright>
+!Copyright>        This program is distributed in the hope that it will be useful,
+!Copyright>        but WITHOUT ANY WARRANTY; without even the implied warranty of
+!Copyright>        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!Copyright>        GNU Affero General Public License for more details.
+!Copyright>
+!Copyright>        You should have received a copy of the GNU Affero General Public License
+!Copyright>        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!Copyright>
+!Copyright>
+!Copyright>        Commercial Alternative: Altair Radioss Software
+!Copyright>
+!Copyright>        As an alternative to this open-source version, Altair also offers Altair Radioss
+!Copyright>        software under a commercial license.  Contact Altair to discuss further if the
+!Copyright>        commercial version may interest you: https://www.altair.com/radioss/.
 module mulaw_mod
 contains
-!hd|====================================================================
-!hd|  mulaw                         source/materials/mat_share/mulaw.f
-!hd|-- called by -----------
-!hd|        mmain                         source/materials/mat_share/mmain.f
-!hd|-- calls ---------------
-!hd|        ancmsg                        source/output/message/message.f
-!hd|        arret                         source/system/arret.f
-!hd|        eng_userlib_flaw              source/user_interface/dyn_userlib.c
-!hd|        epsf2u                        source/materials/mat/mat033/sigeps33.f
-!hd|        fail_biquad_s                 source/materials/fail/biquad/fail_biquad_s.f
-!hd|        fail_changchang_s             source/materials/fail/changchang/fail_changchang_s.f
-!hd|        fail_cockroft_s               source/materials/fail/cockroft_latham/fail_cockroft_s.f
-!hd|        fail_emc                      source/materials/fail/emc/fail_emc.f
-!hd|        fail_energy_s                 source/materials/fail/energy/fail_energy_s.f
-!hd|        fail_gene1_s                  source/materials/fail/gene1/fail_gene1_s.f
-!hd|        fail_hashin_s                 source/materials/fail/hashin/fail_hashin_s.f
-!hd|        fail_hoffman_s                source/materials/fail/hoffman/fail_hoffman_s.f
-!hd|        fail_inievo_s                 source/materials/fail/inievo/fail_inievo_s.f
-!hd|        fail_johnson                  source/materials/fail/johnson_cook/fail_johnson.f
-!hd|        fail_maxstrain_s              source/materials/fail/max_strain/fail_maxstrain_s.f
-!hd|        fail_mullins_or_s             source/materials/fail/mullins_or/fail_mullins_or_s.f
-!hd|        fail_orthbiquad_s             source/materials/fail/orthbiquad/fail_orthbiquad_s.f
-!hd|        fail_orthenerg_s              source/materials/fail/orthenerg/fail_orthenerg_s.f
-!hd|        fail_orthstrain               source/materials/fail/orthstrain/fail_orthstrain_s.f
-!hd|        fail_puck_s                   source/materials/fail/puck/fail_puck_s.f
-!hd|        fail_rtcl_s                   source/materials/fail/rtcl/fail_rtcl_s.f
-!hd|        fail_sahraei_s                source/materials/fail/sahraei/fail_sahraei_s.f
-!hd|        fail_spalling_s               source/materials/fail/spalling/fail_spalling_s.f
-!hd|        fail_syazwan_s                source/materials/fail/syazwan/fail_syazwan_s.f
-!hd|        fail_tab2_s                   source/materials/fail/tabulated/fail_tab2_s.f
-!hd|        fail_tab_s                    source/materials/fail/tabulated/fail_tab_s.f
-!hd|        fail_tbutcher_s               source/materials/fail/tuler_butcher/fail_tbutcher_s.f
-!hd|        fail_tensstrain_s             source/materials/fail/tensstrain/fail_tensstrain_s.f
-!hd|        fail_tsaihill_s               source/materials/fail/tsaihill/fail_tsaihill_s.f
-!hd|        fail_tsaiwu_s                 source/materials/fail/tsaiwu/fail_tsaiwu_s.f
-!hd|        fail_visual_s                 source/materials/fail/visual/fail_visual_s.f
-!hd|        fail_wierzbicki_s             source/materials/fail/wierzbicki/fail_wierzbicki_s.f
-!hd|        fail_wilkins_s                source/materials/fail/wilkins/fail_wilkins_s.f
-!hd|        fmqviscb                      source/materials/mat_share/fmqviscb.f
-!hd|        mdtsph                        source/materials/mat_share/mdtsph.f
-!hd|        mqviscb                       source/materials/mat_share/mqviscb.f
-!hd|        mreploc                       source/materials/mat_share/mreploc.f
-!hd|        mrotens                       source/materials/mat_share/mrotens.f
-!hd|        mrotensns                     source/materials/mat_share/mrotens.f
-!hd|        mstrain_rate                  source/materials/mat_share/mstrain_rate.f
-!hd|        nsvisul                       source/materials/mat_share/nsvisul.f
-!hd|        sigeps100                     source/materials/mat/mat100/sigeps100.f
-!hd|        sigeps101                     source/materials/mat/mat101/sigeps101.f
-!hd|        sigeps102                     source/materials/mat/mat102/sigeps102.f
-!hd|        sigeps103                     source/materials/mat/mat103/sigeps103.f
-!hd|        sigeps104                     source/materials/mat/mat104/sigeps104.f
-!hd|        sigeps105                     source/materials/mat/mat105/sigeps105.f
-!hd|        sigeps106                     source/materials/mat/mat106/sigeps106.f
-!hd|        sigeps107                     source/materials/mat/mat107/sigeps107.f
-!hd|        sigeps109                     source/materials/mat/mat109/sigeps109.f
-!hd|        sigeps111                     source/materials/mat/mat111/sigeps111.f
-!hd|        sigeps112                     source/materials/mat/mat112/sigeps112.f
-!hd|        sigeps115                     source/materials/mat/mat115/sigeps115.f
-!hd|        sigeps120                     source/materials/mat/mat120/sigeps120.f
-!hd|        sigeps121                     source/materials/mat/mat121/sigeps121.f
-!hd|        sigeps122                     source/materials/mat/mat122/sigeps122.f
-!hd|        sigeps124                     source/materials/mat/mat124/sigeps124.f
-!hd|        sigeps187                     source/materials/mat/mat187/sigeps187.f
-!hd|        sigeps190                     source/materials/mat/mat190/sigeps190.f
-!hd|        sigeps28                      source/materials/mat/mat028/sigeps28.f
-!hd|        sigeps33                      source/materials/mat/mat033/sigeps33.f
-!hd|        sigeps34                      source/materials/mat/mat034/sigeps34.f
-!hd|        sigeps35                      source/materials/mat/mat035/sigeps35.f
-!hd|        sigeps36                      source/materials/mat/mat036/sigeps36.f
-!hd|        sigeps37                      source/materials/mat/mat037/sigeps37.f
-!hd|        sigeps38                      source/materials/mat/mat038/sigeps38.f
-!hd|        sigeps40                      source/materials/mat/mat040/sigeps40.f
-!hd|        sigeps41                      source/materials/mat/mat041/sigeps41.f
-!hd|        sigeps42                      source/materials/mat/mat042/sigeps42.f
-!hd|        sigeps44                      source/materials/mat/mat044/sigeps44.f
-!hd|        sigeps45                      source/materials/mat/mat045/sigeps45.f
-!hd|        sigeps48                      source/materials/mat/mat048/sigeps48.f
-!hd|        sigeps50                      source/materials/mat/mat050/sigeps50.f
-!hd|        sigeps51                      source/materials/mat/mat051/sigeps51.f
-!hd|        sigeps52                      source/materials/mat/mat052/sigeps52.f
-!hd|        sigeps53                      source/materials/mat/mat053/sigeps53.f
-!hd|        sigeps56                      source/materials/mat/mat056/sigeps56.f
-!hd|        sigeps60                      source/materials/mat/mat060/sigeps60.f
-!hd|        sigeps62                      source/materials/mat/mat062/sigeps62.f
-!hd|        sigeps65                      source/materials/mat/mat065/sigeps65.f
-!hd|        sigeps66                      source/materials/mat/mat066/sigeps66.f
-!hd|        sigeps67                      source/materials/mat/mat067/sigeps67.f
-!hd|        sigeps68                      source/materials/mat/mat068/sigeps68.f
-!hd|        sigeps69                      source/materials/mat/mat069/sigeps69.f
-!hd|        sigeps70                      source/materials/mat/mat070/sigeps70.f
-!hd|        sigeps71                      source/materials/mat/mat071/sigeps71.f
-!hd|        sigeps72                      source/materials/mat/mat072/sigeps72.f
-!hd|        sigeps74                      source/materials/mat/mat074/sigeps74.f
-!hd|        sigeps75                      source/materials/mat/mat075/sigeps75.f
-!hd|        sigeps76                      source/materials/mat/mat076/sigeps76.f
-!hd|        sigeps77                      source/materials/mat/mat077/sigeps77.f
-!hd|        sigeps78                      source/materials/mat/mat078/sigeps78.f
-!hd|        sigeps79                      source/materials/mat/mat079/sigeps79.f
-!hd|        sigeps80                      source/materials/mat/mat080/sigeps80.f
-!hd|        sigeps81                      source/materials/mat/mat081/sigeps81.f
-!hd|        sigeps82                      source/materials/mat/mat082/sigeps82.f
-!hd|        sigeps84                      source/materials/mat/mat084/sigeps84.f
-!hd|        sigeps88                      source/materials/mat/mat088/sigeps88.f
-!hd|        sigeps90                      source/materials/mat/mat090/sigeps90.f
-!hd|        sigeps92                      source/materials/mat/mat092/sigeps92.f
-!hd|        sigeps93                      source/materials/mat/mat093/sigeps93.f
-!hd|        sigeps94                      source/materials/mat/mat094/sigeps94.f
-!hd|        sigeps95                      source/materials/mat/mat095/sigeps95.f
-!hd|        sigeps96                      source/materials/mat/mat096/sigeps96.f
-!hd|        sigeps97                      source/materials/mat/mat097/sigeps97.f
-!hd|        sreploc3                      source/elements/solid/solide/sreploc3.f
-!hd|        startime                      source/system/timer.f
-!hd|        stoptime                      source/system/timer.f
-!hd|        viscmain                      source/materials/visc/viscmain.f
-!hd|        ale_connectivity_mod          ../common_source/modules/ale/ale_connectivity_mod.f
-!hd|        mat_elem_mod                  ../common_source/modules/mat_elem/mat_elem_mod.f
-!hd|        message_mod                   share/message_module/message_mod.f
-!hd|        nlocal_reg_mod                ../common_source/modules/nlocal_reg_mod.f
-!hd|        sigeps100_mod                 source/materials/mat/mat100/sigeps100.f
-!hd|        table_mod                     share/modules/table_mod.f
-!hd|====================================================================
-   subroutine mulaw(&
+! ======================================================================================================================
+!                                                   mmain
+! ======================================================================================================================
+!! \brief main routine for advanced Material Computation for brick/quad/thickshell/sph elements 
+subroutine mulaw(&
    &nft,         mtn,         jcvt,        pm,&
    &off,         sig,         eint,        rho,&
    &qold,        vol,         strain,      sigl,&
@@ -195,9 +72,9 @@ contains
    &dt1,         tt,          &
    &impl_s,&
    &idyna,       userl_avail, nixs,        nixq)
-!-----------------------------------------------
-!   m o d u l e s
-!-----------------------------------------------
+! ----------------------------------------------------------------------------------------------------------------------
+!                                                   Modules
+! ----------------------------------------------------------------------------------------------------------------------
       use constant_mod
       use table_mod
       use mat_elem_mod
@@ -207,15 +84,15 @@ contains
       use sigeps100_mod
       use sigeps126_mod
       use prop_param_mod
-!-----------------------------------------------
-!   i m p l i c i t   t y p e s
-!-----------------------------------------------
-implicit none
+! ----------------------------------------------------------------------------------------------------------------------
+!                                                   Implicit none
+! ----------------------------------------------------------------------------------------------------------------------
+      implicit none
 #include "my_real.inc"
 #include "mvsiz_p.inc"
-!-----------------------------------------------
-!   d u m m y   a r g u m e n t s
-!-----------------------------------------------
+! ----------------------------------------------------------------------------------------------------------------------
+!                                                   Arguments
+! ----------------------------------------------------------------------------------------------------------------------
       type (buf_fail_),intent(inout), target                        :: fbuf
       type (buf_visc_),intent(inout)                                :: vbuf
       type (ttable), dimension(ntable) ,intent(in)                  :: table
@@ -402,9 +279,9 @@ implicit none
       my_real, dimension(mvsiz), intent(inout) :: rhosp
       my_real, dimension(mvsiz), intent(inout) :: stifn
       my_real, dimension(mvsiz,6), intent(inout) :: svis
-!-----------------------------------------------
-!   l o c a l   v a r i a b l e s
-!-----------------------------------------------
+! ----------------------------------------------------------------------------------------------------------------------
+!                                                   Local variables
+! ----------------------------------------------------------------------------------------------------------------------
       my_real, dimension(nel),target :: uvarf1
       my_real, target, dimension(nel) :: scale1
       my_real , dimension(1) ,target :: vec0

@@ -157,7 +157,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      INTEGER I,J,LCO,NF1,IFLAG,NUVAR,
+      INTEGER I,J,LCO,NF1,IFLAG,NUVAR,CURRENT_LAYER,
      .   ILAY,NLAY,IR,IS,IT,IP,IBID,MX,L_PLA,L_EPSD
       INTEGER MXT(MVSIZ),NGL(MVSIZ),NGEO(MVSIZ),IBIDON(1)
 c     Variables utilisees dans les routines solides uniquement (en arguments).
@@ -634,6 +634,7 @@ C-----------------------------
 C------------------------------------------------------
 C Compute new stresses according to constitutive laws
 C------------------------------------------------------
+        CURRENT_LAYER=ILAY         ! one treatment pass LAY to negative
         CALL MMAIN(
      1   ELBUF_TAB,   NG,          PM,          GEO,
      2   FV,          ALE_CONNECT, IXS,         IPARG,
@@ -656,7 +657,7 @@ C------------------------------------------------------
      J   DZZ,         IPM,         GAMA,        BID,
      K   BID,         BID,         BID,         BID,
      L   BID,         BID,         ISTRAIN,     TEMPEL,
-     M   DIE,         IEXPAN,      ILAY,        MSSA,
+     M   DIE,         IEXPAN,      CURRENT_LAYER,MSSA,
      N   DMELS,       IR,          IS,          IT,
      O   TABLE,       BID,         BID,         BID,
      P   BID,         IPARG(1,NG), IGEO,        CONDE,

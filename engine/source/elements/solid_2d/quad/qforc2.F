@@ -174,7 +174,7 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER LCO, NF1, IFLAG,I,II,IPTR,IPTS,IPTT,ILAY,ISTRAIN
-      INTEGER IBIDON(1),IBID,N,SZ_IX
+      INTEGER IBIDON(1),IBID,N,SZ_IX,DUMMY_IPARG1(NPARG)
 
       my_real RX(MVSIZ),RY(MVSIZ),RZ(MVSIZ),SX(MVSIZ),SY(MVSIZ),SZ(MVSIZ),TX(MVSIZ),TY(MVSIZ),TZ(MVSIZ)
 
@@ -421,7 +421,7 @@ c
      M   BID,         IBIDON(1),   ILAY,        MBID,
      N   MBID,        IPTR,        IPTS,        IPTT,
      O   TABLE,       BID,         BID,         BID,
-     P   BID,         IBIDON(1),   IGEO,        BID,
+     P   BID,         DUMMY_IPARG1,IGEO,        BID,
      Q   ITASK,       NLOC_DMG,    VARNL,       MAT_ELEM,
      R   H3D_STRAIN,  JPLASOL,     JSPH,        SZ_BUFVOIS,0,
      S   SNPC,        STF,         SBUFMAT,     SVIS,

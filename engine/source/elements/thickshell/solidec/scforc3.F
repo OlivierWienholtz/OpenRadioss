@@ -161,7 +161,7 @@ C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,J,ILAY,IR,IS,IT,IP,NF1,IFLAG,L_PLA,L_EPSD,
      .   PID,MTN0,IPTHK,IPPOS,IPMAT,NLYMAX,MID,IPANG,IBID,NLAY,
-     .   JJ(6),SZ_IX
+     .   JJ(6),SZ_IX,CURRENT_LAYER
       INTEGER MXT0(MVSIZ),MX
 C-----           
       INTEGER MXT(MVSIZ),NGL(MVSIZ),NGEO(MVSIZ),IBIDV(1)
@@ -727,6 +727,7 @@ C------------------------------------------------------
 C Compute new stresses according to constitutive laws
 C Compute time step DT2T
 C------------------------------------------------------
+        CURRENT_LAYER=ILAY
         CALL MMAIN(
      1   ELBUF_TAB,    NG,          PM,        GEO,
      2   FV,           ALE_CONNECT, IXS,       IPARG,
@@ -749,7 +750,7 @@ C------------------------------------------------------
      J   DZZ,          IPM,         GAMA,      BID,
      K   BID,          BID,         BID,       BID,
      L   BID,          BID,         ISTRAIN,   TEMPEL,
-     M   DIE,          IEXPAN,      ILAY,      MSSA,
+     M   DIE,          IEXPAN,      CURRENT_LAYER,MSSA,
      N   DMELS,        IR,          IS,        IT,
      O   TABLE,        BID,         BID,       BID,
      P   BID,          IPARG(1,NG), IGEO,      CONDE,

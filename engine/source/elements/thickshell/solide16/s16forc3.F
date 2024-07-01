@@ -161,7 +161,7 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER I,J,N,LCO, NF1, IFLAG, IL, IR, IS, IT, NF2,L_PLA,
-     .        IP,NLAY,NPTT,NPTS,NPTR,ICO,IBID,IBIDON(1),MX,II(6),PID
+     .        IP,NLAY,NPTT,NPTS,NPTR,ICO,IBID,IBIDON(1),MX,II(6),PID,CURRENT_LAYER
 
       INTEGER MXT(MVSIZ),NGL(MVSIZ),NGEO(MVSIZ),IPERM1(NPE),IPERM2(NPE)
       my_real
@@ -590,6 +590,8 @@ C
           IF(JTHE < 0 ) THEN
              CALL S20TEMPCG(1,NEL,NPE, NC,NI(1,IP), TEMP,TEMPEL)
           ENDIF
+
+      CURRENT_LAYER=IL
       !------------------------------------------------------
       !     CALCUL DES CONTRAINTES SUIVANT LOIS CONSTITUTIVES
       !------------------------------------------------------
@@ -615,7 +617,7 @@ C
      J   DZZ,         IPM,         GAMA,        BID,
      K   BID,         BID,         BID,         BID,
      L   BID,         BID,         ISTRAIN,     TEMPEL,
-     M   DIE,         IEXPAN,      IL,          MBID,
+     M   DIE,         IEXPAN,      CURRENT_LAYER,MBID,
      N   MBID,        IR,          IS,          IT,
      O   TABLE,       BID,         BID,         BID,
      P   BID,         IPARG(1,NG), IGEO,        CONDE,

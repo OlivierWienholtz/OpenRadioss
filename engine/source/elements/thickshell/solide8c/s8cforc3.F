@@ -189,7 +189,7 @@ C-----------------------------------------------
       INTEGER  I,J,N,LCO,NF1,IFLAG,IAD0,NLAY,L_PLA,L_EPSD,
      .   IP,IR,IS,IT,IL,NPTR,NPTS,NPTT,ICR,ICS,ICT,PID,MTN0,IPTHK,
      .   IPPOS,IPMAT,NLYMAX,MID,IPANG,IOR_TSH,NPTR0,NPTS0,NPTT0,IBID,MX,
-     .   II(6)
+     .   II(6),CURRENT_LAYER
       INTEGER MXT(MVSIZ),NGL(MVSIZ),NGEO(MVSIZ),MXT0(MVSIZ),IBIDON(1),
      .  IDEG(MVSIZ)
      
@@ -965,6 +965,7 @@ c
      .                 IP,        BPRELD,    LBUF%SIG,TT     ,        
      .                 NEL   ,NPT   ,SENSORS%NSENSOR,SENSORS%SENSOR_TAB)
 
+        CURRENT_LAYER=IL
         CALL MMAIN(
      1   ELBUF_TAB,   NG,          PM,          GEO,
      2   FV,          ALE_CONNECT, IXS,         IPARG,
@@ -987,7 +988,7 @@ c
      J   MFZZ(1,IP),  IPM,         GAMA,        BID,
      K   BID,         BID,         BID,         BID,
      L   BID,         BID,         ISTRAIN,     TEMPEL,
-     M   DIE,         IEXPAN,      IL,          MSSA,
+     M   DIE,         IEXPAN,     CURRENT_LAYER,MSSA,
      N   DMELS,       IR,          IS,          IT,
      O   TABLE,       BID,         BID,         BID,
      P   BID,         IPARG(1,NG), IGEO,        CONDE,

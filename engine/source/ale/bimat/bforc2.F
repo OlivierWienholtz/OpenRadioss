@@ -66,7 +66,7 @@ Chd|====================================================================
       SUBROUTINE BFORC2(ELBUF_TAB,NG   ,
      1                   PM     ,GEO    ,IC     ,X       ,
      2                   A      ,V      ,MS     ,W      ,FLUX    ,
-     3                   FLU1   ,VEUL   ,FV     ,ALE_CONNECT  ,IPARG   ,
+     3                   FLU1   ,VEUL   ,ALE_CONNECT  ,IPARG   ,
      4                   JPARG  ,FILL   ,DFILL  ,IMS    ,NLOC_DMG,
      5                   TF     ,NPF    ,BUFMAT ,PARTSAV ,
      6                   DT2T   ,NELTST ,ITYPTST,STIFN  ,OFFSET  ,
@@ -130,7 +130,7 @@ C-----------------------------------------------
       INTEGER NELTST,ITYPTST, IADQ(4,*),GRTH(*),IGRTH(*)
       my_real DT2T
       my_real PM(*), GEO(*), X(*), A(*), V(*), MS(*), W(*), FLUX(4,*),
-     .        FLU1(*), VEUL(*), FV(*), FILL(NUMNOD,*),EANI(*),FSKY(*),
+     .        FLU1(*), VEUL(*),FILL(NUMNOD,*),EANI(*),FSKY(*),
      .        DFILL(NUMNOD,*), TF(*), BUFMAT(*), PARTSAV(*), STIFN(*),
      .        BUFVOIS(6,*),GRESAV(*),VOLN(MVSIZ),MS_2D(*),FSKYM(*)
       my_real, DIMENSION(MVSIZ,6), INTENT(INOUT) :: SVIS
@@ -354,20 +354,19 @@ C-----------------------------------------------------
      J   WYZ,         IPM,         GAMA,        BID,
      K   BID,         BID,         BID,         BID,
      L   BID,         BID,         IBID,        BID,
-     M   BID,         IBID,        ILAY,       MBID,
+     M   BID,         IBID,        ILAY,        MBID,
      N   MBID,        1,           1,           1,
      O   TABLE,       BID,         BID,         BID,
      P   BID,         IPARG(1,NG), IGEO,        BID,
      Q   ITASK,       NLOC_DMG,    VARNL,       MAT_ELEM,
      R   H3D_STRAIN,  JPLASOL,     JSPH,        SZ_BUFVOIS,
-     S                SNPC,        STF,         SBUFMAT,
-     T   SVIS,        SZ_IX,       IDTMINS,     IRESP,
-     *   N2D,         TH_STRAIN,   NGROUP,      TT, 
+     T           SNPC,STF,SBUFMAT,SVIS,          SZ_IX,
+     U   IDTMINS,IRESP, N2D,         TH_STRAIN,   NGROUP,TT, 
      .   DT1,         NTABLE,      NUMELQ,      nummat,
-     .   numgeo,      numnod,      numels,
+     .   numgeo,      numnod,      numels,            
      .   IDEL7NG,     IDEL7NOK,    IDTMIN,      MAXFUNC,
      .   IMON_MAT,    USERL_AVAIL, heat_meca,   impl_s,
-     .   idyna )  
+     .   idyna)
 C----------------------------------
 C     PETROV-GALERKIN PSEUDO MASSES & ALE MASSES
 C----------------------------------

@@ -1155,7 +1155,7 @@ C----6---------------------------------------------------------------7---------8
             CALL QFORC2(ELBUF_TAB,NG   ,
      1        PM      ,GEO    ,IXQ     ,X         ,A           ,
      2        V       ,MS     ,W       ,WA        ,VAL2        ,
-     3        VEUL    ,FV     ,ALE_CONNECT   ,IPARG     ,NLOC_DMG    ,
+     3        VEUL    ,ALE_CONNECT   ,IPARG     ,NLOC_DMG    ,
      4        TF      ,NPC    ,BUFMAT  ,PARTSAV   ,
      5        DT2T    ,NELTST ,ITYPTST ,STIFN     ,OFFSET      ,
      6        EANI    ,IPARTQ(NF1),NEL ,IADQ      ,FSKY        ,

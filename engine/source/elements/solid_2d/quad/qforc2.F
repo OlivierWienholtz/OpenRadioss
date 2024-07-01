@@ -62,7 +62,7 @@ Chd|====================================================================
       SUBROUTINE QFORC2(ELBUF_TAB,NG      ,
      1                  PM       ,GEO     ,IC          ,X        ,A       ,
      2                  V        ,MS      ,W           ,FLUX     ,FLU1    ,
-     3                  VEUL     ,FV      ,ALE_CONNECT ,IPARG    ,NLOC_DMG,
+     3                  VEUL     ,ALE_CONNECT ,IPARG    ,NLOC_DMG,
      4                  TF       ,NPF     ,BUFMAT      ,PARTSAV  ,
      5                  DT2T     ,NELTST  ,ITYPTST     ,STIFN    ,OFFSET  ,
      6                  EANI     ,IPARTQ  ,NEL         ,IADQ     ,FSKY    ,
@@ -155,7 +155,7 @@ C-----------------------------------------------
       INTEGER OFFSET,NEL,NG,NELTST,ITYPTST,IOUTPRT,H3D_STRAIN
       my_real DT2T
       my_real PM(*), GEO(*), X(*), A(*), V(*), MS(*), W(*), FLUX(4,*),
-     .        FLU1(*), VEUL(*), FV(*), TF(*), BUFMAT(*), FSKY(*),
+     .        FLU1(*), VEUL(*), TF(*), BUFMAT(*), FSKY(*),
      .        PARTSAV(*), STIFN(*),EANI(*), BUFVOIS(6,*),QMV(8,*),GRESAV(*),VOLN(MVSIZ),
      .        MS_2D(*),FSKYM(*)
       my_real, DIMENSION(MVSIZ,6), INTENT(INOUT) :: SVIS

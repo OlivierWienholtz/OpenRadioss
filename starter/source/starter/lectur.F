@@ -3681,6 +3681,11 @@ C--------------------------------------------
 C--------------------------------------------
 C     LECTURE DES DRAPES
 C--------------------------------------------
+      print*,'------------'
+      print*,'before drape'
+      print*,'------------'
+      call memory_stats_c()
+
       ERR_MSG='DRAPE'
       ERR_CATEGORY='DRAPE'
       CALL TRACE_IN1(ERR_MSG,LEN_TRIM(ERR_MSG))
@@ -3786,6 +3791,11 @@ C-------------------------
             ALLOCATE(STACK%PM(0,0))
          ENDIF  
       ENDIF
+
+      print*,'------------'
+      print*,'after drape'
+      print*,'------------'
+      call memory_stats_c()
 C--------------------------------------------
       IF(NSUBDOM==0) GOTO 218
 C--------------------------------------------
@@ -4663,6 +4673,11 @@ C     PFLUID & PBLAST
       SLLOADP      = NUMLOADP
 C
       CALL TRACE_OUT1()
+      print*,'------------'
+      print*,'before impvel'
+      print*,'------------'
+      call memory_stats_c()
+
 c------------------------------------------------------
 c     IMPOSED DISPLACEMENTS, VELOCITIES AND ACCELERATIONS
 c------------------------------------------------------
@@ -5231,6 +5246,10 @@ C--------------------------------------------
       ENDIF
       CALL TRACE_OUT1()
 
+      print*,'------------'
+      print*,'before monvol'
+      print*,'------------'
+      call memory_stats_c()
 
 C -------------------------------------------------
 C Check surfaces for airbags
@@ -7587,6 +7606,10 @@ C
 C
       ENDIF
 
+      print*,'------------'
+      print*,'after inintr'
+      print*,'------------'
+      call memory_stats_c()
 
 C--------------------------------------------
 C     LECTURE DES MURS RIGIDES
@@ -8183,6 +8206,11 @@ C--------------------------------------------
 !
       IF (IDDLEVEL == 0) CALL HM_YCTRL(UNITAB,LSUBMODEL,IGRBRIC,IXC,IXTG, PTSHEL,PTSH3N,NUSPHCEL)
 C
+      print*,'------------'
+      print*,'before elbuf_ini'
+      print*,'------------'
+      call memory_stats_c()
+
 C----------------------------------------------------------
 C
 C XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -8235,6 +8263,12 @@ c
       ELSE
         ALLOCATE(XFEM_TAB(0,0), STAT=Stat)
       ENDIF
+      print*,'------------'
+      print*,'after elbuf_ini'
+      print*,'------------'
+      call memory_stats_c()
+
+
 C--------------------------------------------
 C     WARNING FOR PTHICKFAIL
 C--------------------------------------------
@@ -8549,7 +8583,10 @@ C
       IF(NUMEL   > 0) DTELEM = ZERO
 C
       CALL STARTIME(14,1)
-        
+      print*,'------------'
+      print*,'before inita'
+      print*,'------------'
+      call memory_stats_c()
       CALL INITIA(IPARG      , ELBUF          , MS               , IN                 , V        ,
      &            X          , IXS            , IXQ              , IXC                , IXT      ,
      &            IXP        , IXR            , DETONATORS       , GEO                , PM       ,
@@ -8616,6 +8653,11 @@ C
           CALL BULKFAKEIGEO3(ELBUF_TAB,IPARG,PM,KXIG3D,IGRSURF,STIFINT)
         ENDIF
       ENDIF
+
+      print*,'after inita'
+      call memory_stats_c() 
+      print*,'------------'
+
 C
 C----------------------------------
 C

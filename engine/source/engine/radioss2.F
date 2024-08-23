@@ -358,6 +358,7 @@ CRVERS for version in MADCL
 C------------------------------------------------------------------
 C Constant initialization
        CALL INICONSTANT
+       print*,'toto'
 C------------------------------------------------------------------
       CODVERS= 101
       MSGID  =  38

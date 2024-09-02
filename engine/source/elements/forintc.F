@@ -80,7 +80,8 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      O    XFEM_TAB  ,CONDN     ,CONDNSKY  ,CRKEDGE   ,
      P    STACK     ,ITAB      ,
      S    DRAPE_SH4N  ,DRAPE_SH3N  ,SUBSET    ,XDP       ,VPINCH,
-     T    APINCH    ,STIFPINCH ,DRAPEG,OUTPUT ,DT        )
+     T    APINCH    ,STIFPINCH ,DRAPEG,OUTPUT ,DT        , USERL_AVAIL,MAXFUNC,
+     U    SBUFMAT   ,STF       ,SNPC)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -127,6 +128,11 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      INTEGER,INTENT(IN)    :: USERL_AVAIL ! Flag for User libraries availability
+      INTEGER,INTENT(IN)    :: MAXFUNC     ! Maximum number of functions
+      INTEGER,INTENT(IN)    :: SBUFMAT     ! Size of Bufmat
+      INTEGER,INTENT(IN)    :: STF         ! Size of TF
+      INTEGER,INTENT(IN)    :: SNPC        ! Size of NPC
       INTEGER
      .   IXC(NIXC,*), IXTG(NIXTG,*), IGEO(NPROPGI,*), IPM(NPROPMI,*),
      .   NPC(*), IPARG(NPARG,*), IPARI(NPARI,*), 
@@ -330,7 +336,8 @@ C
      Q   CONDN,              CONDNSKY,           ISUBSTACK,          STACK,
      R   DRAPE_SH4N,         NEL,                NLOC_DMG,           VPINCH,
      S   APINCH,             STIFPINCH,          DRAPEG%INDX_SH4N,   IGRE,
-     T   JTUR,               DT)
+     T   JTUR,               DT,               NXLAYMAX,           IDEL7NOK,           USERL_AVAIL,
+     U   MAXFUNC,            SBUFMAT,            STF,                SNPC)
           ELSEIF (JHBE >= 21 .AND. JHBE <= 29) THEN
 
               CALL CZFORC3(
@@ -362,7 +369,8 @@ C
      Q   NODEDGE,            CRKNODIAD,          CONDN,              CONDNSKY,
      R   STACK,              ISUBSTACK,          XFEM_TAB(NG,1:NXEL),CRKEDGE,
      S   DRAPE_SH4N,         NEL,                NLOC_DMG,           DRAPEG%INDX_SH4N,
-     T   IGRE,               JTUR,               DT                 )
+     T   IGRE,               JTUR,               DT ,               IDEL7NOK,           USERL_AVAIL,
+     U   MAXFUNC,            SBUFMAT,            STF,                SNPC)
 
       IF (ICRACK3D > 0 .AND. IXFEM > 0 .AND. ACTIFXFEM > 0) THEN
           DO IXEL=1,NXEL
@@ -389,8 +397,8 @@ C
      M          IADC_CRK   ,ELCUTC(1,NF1),CRKSKY ,
      N          SENSORS    ,IXEL     ,
      O          ISUBSTACK  ,UXINT_MEAN ,UYINT_MEAN,UZINT_MEAN,NLEVXF      ,
-     P          NODEDGE    ,CRKEDGE    ,STACK    ,DRAPE_SH4N  ,NLOC_DMG,DRAPEG%INDX_SH4N,IGRE   ,
-     Q          DT         )
+     P          NODEDGE    ,CRKEDGE    ,STACK    ,DRAPE_SH4N  ,NLOC_DMG,DRAPEG%INDX_SH4N,IGRE,
+     *          DT         ,IDEL7NOK   ,USERL_AVAIL,MAXFUNC  ,SBUFMAT,STF ,SNPC)
           ENDDO
             ENDIF
 c
@@ -424,7 +432,8 @@ c
      Q   CONDN,              CONDNSKY,           STACK,              ISUBSTACK,
      R   XFEM_TAB(NG,1:NXEL),CRKEDGE,            DRAPE_SH4N,         IPRI,
      S   NLOC_DMG,           DRAPEG%INDX_SH4N,   IGRE,               JTUR,
-     T   OUTPUT,             DT              )
+     T   OUTPUT,             DT              ,   USERL_AVAIL,        MAXFUNC,
+     U   SBUFMAT,            STF,                SNPC)
 c
          IF (ICRACK3D > 0 .AND. IXFEM > 0 .AND. ACTIFXFEM > 0) THEN
           DO IXEL=1,NXEL
@@ -452,7 +461,7 @@ c
      N SENSORS,IXEL      ,STACK       ,
      O ISUBSTACK   ,UXINT_MEAN  ,UYINT_MEAN  ,UZINT_MEAN,NLEVXF      ,
      P NODEDGE     ,CRKEDGE     ,DRAPE_SH4N   ,IPRI       ,NLOC_DMG  ,
-     R DRAPEG%INDX_SH4N,IGRE    ,DT          )
+     Q DRAPEG%INDX_SH4N,IGRE    ,DT            ,USERL_AVAIL, MAXFUNC,SBUFMAT,STF,SNPC)
           ENDDO
             END IF
           ENDIF
@@ -520,7 +529,9 @@ C----6---------------------------------------------------------------7--
      J   IPARG(1,NG),     SENSORS,              PTG(1,NF1),      JTHE,
      K   CONDN,           CONDNSKY,             ISUBSTACK,       STACK,
      L   ITASK,           DRAPE_SH3N,           IPRI,            NLOC_DMG,
-     M   DRAPEG%INDX_SH3N,IGRE,                 JTUR,            DT  )
+     M   DRAPEG%INDX_SH3N,IGRE,                 JTUR,            DT  ,   
+     N   NXLAYMAX,                              IDEL7NOK,        USERL_AVAIL, 
+     O   MAXFUNC,         SBUFMAT,              STF,             SNPC)
            ELSE
              IF (ISH3N == 30) THEN
               CALL CDKFORC3(
@@ -545,7 +556,9 @@ C----6---------------------------------------------------------------7--
      J   JTHE,                                  CONDN,                CONDNSKY,        ISUBSTACK,
      K   STACK,                                 ITASK,                DRAPE_SH3N,      IPRI,
      L   NLOC_DMG,                              DRAPEG%INDX_SH3N,     IGRE,            JTUR,
-     M   DT      )
+     M   DT      ,                              NXLAYMAX,             IDEL7NOK,        USERL_AVAIL,
+     M   MAXFUNC,                               SBUFMAT,              STF,             SNPC)
+     
              ELSE
               CALL C3FORC3(
      1   ELBUF_TAB(NG),         JFT,                                   JLT,               PM,
@@ -574,7 +587,8 @@ C----6---------------------------------------------------------------7--
      O   CONDNSKY,              STACK,                                 ISUBSTACK,         XFEM_TAB(NG,1:NXEL),
      P   CRKEDGE,               DRAPE_SH3N,                            IPRI,              NLOC_DMG,
      Q   XDP,                   DRAPEG%INDX_SH3N,                      IGRE,              JTUR,
-     R   DT    )
+     R   DT    ,                IDEL7NOK,                              USERL_AVAIL,       MAXFUNC,
+     S  SBUFMAT,                STF,                                   SNPC)
 
        IF (ICRACK3D > 0 .AND. IXFEM > 0 .AND. ACTIFXFEM > 0) THEN
          DO IXEL=1,NXEL
@@ -603,7 +617,9 @@ C----6---------------------------------------------------------------7--
      M   IXEL,              STACK,                ISUBSTACK,        UXINT_MEAN,
      N   UYINT_MEAN,        UZINT_MEAN,           NLEVXF,           NODEDGE,
      O   CRKEDGE,           DRAPE_SH3N,           IPRI,             NLOC_DMG,
-     P   DRAPEG%INDX_SH3N,  IGRE,                 DT  )
+     P   DRAPEG%INDX_SH3N,  IGRE,                 DT  ,             IDEL7NOK,
+     A   USERL_AVAIL,       MAXFUNC,              SBUFMAT,          STF,
+     B   SNPC)
         ENDDO
         ENDIF
        ENDIF

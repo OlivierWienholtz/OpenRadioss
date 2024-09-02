@@ -1104,7 +1104,8 @@ C-------------------------
      5      STIFN        ,FSKY     ,IADS     ,OFFSET    ,IPARTS(NF1),           
      6      NEL          ,DT2T     ,NELTST   ,ITYPTST   ,IPM        ,           
      7      ITASK        ,GRESAV   ,GRTH     ,IGRTH(NF1),MSSA(NF1)  ,           
-     8      DMELS(NF1)   ,TABLE,IPRI     ,MAT_ELEM,NG  ,SVIS         )     
+     8      DMELS(NF1)   ,TABLE,IPRI     ,MAT_ELEM,NG  ,SVIS ,SNPC  ,
+     9      NUMGEO       ,SBUFMAT        ,STF,NTABLE)     
                                                  
             IF (NSECT > 0)THEN
                K0=NSTRF(25)

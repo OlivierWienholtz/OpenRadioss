@@ -379,7 +379,7 @@ C-----------------------------------------------
       USE INTERFACES_MOD
       USE SUBMODEL_MOD , ONLY : NSUBMOD
       USE PYTHON_FUNCT_MOD
-      USE NAMES_AND_TITLES_MOD,only: NAMES_AND_TITLES_,LTITLE
+      USE NAMES_AND_TITLES_MOD
       USE BCS_MOD , ONLY : BCS_STRUCT_
       use constraint_mod , only : constraint_
       use c_inivell_mod ,  only : c_inivell

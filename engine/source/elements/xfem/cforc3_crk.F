@@ -83,7 +83,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      M            SENSORS,IXEL ,STACK   ,
      N            ISUBSTACK,UXINT_MEAN,UYINT_MEAN,UZINT_MEAN,NLEVXF,
      O            NODEDGE,CRKEDGE,DRAPE_SH4N,IPRI  ,NLOC_DMG,INDX_DRAPE, IGRE,
-     P            DT     )
+     P            DT     , USERL_AVAIL,MAXFUNC,SBUFMAT,STF,SNPC)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -121,6 +121,11 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      INTEGER,INTENT(IN)    :: USERL_AVAIL ! Flag for User libraries availability
+      INTEGER,INTENT(IN)    :: MAXFUNC     ! Maximum number of functions
+      INTEGER,INTENT(IN)    :: SBUFMAT     ! Size of BUFMAT
+      INTEGER,INTENT(IN)    :: STF         ! Size of TF
+      INTEGER,INTENT(IN)    :: SNPC        ! Size of NPC
       INTEGER, INTENT(IN) :: IGRE
       INTEGER JFT,JLT,NVC,MTN,NELTST,ITYPTST,OFFSET,
      .   NEL,ISTRAIN,IHBE,ITHK,IOFC,IPLA,NFT,
@@ -225,6 +230,9 @@ C---
      .  DIMENSION(:) ,POINTER  ::  SMSTRG
       my_real,
      .  DIMENSION(:,:), ALLOCATABLE :: VARNL
+      INTEGER NPTTOT
+      INTEGER SDIR_A    ! Size of DIR_A
+      INTEGER SDIR_B    ! Size of DIR_B
 C=======================================================================
       IBID = 0
       IUN  = 1
@@ -236,6 +244,7 @@ C=======================================================================
       IT   = 1
       SEDRAPE = SCDRAPE
       NUMEL_DRAPE = NUMELC_DRAPE
+      NPTTOT = 1
       ALLOCATE(VARNL(NEL,1))
       VARNL = ZERO
 C -----will put it in starter     
@@ -271,6 +280,8 @@ C
       ALLOCATE (DIRB(NXLAY*NEL*L_DIRB))
       DIRA=ZERO
       DIRB=ZERO
+      SDIR_A=NXLAY*NEL*L_DIRA
+      SDIR_B=NXLAY*NEL*L_DIRB
       DIR_A => DIRA(1:NXLAY*NEL*L_DIRA)
       DIR_B => DIRB(1:NXLAY*NEL*L_DIRB)
 C
@@ -449,7 +460,9 @@ C-----------------------------
      N    ISMSTR    ,IR        ,IS        ,NLAYER    ,NPTT      ,
      O    IXLAY     ,IXEL      ,ISUBSTACK ,STACK     ,
      P    BID       ,ITASK     ,DRAPE_SH4N  ,VARNL     ,NLOC_DMG ,
-     R    INDX_DRAPE ,THKE, SEDRAPE  ,NUMEL_DRAPE,DT   )
+     R    INDX_DRAPE ,THKE, SEDRAPE  ,NUMEL_DRAPE,DT   ,NXLAYMAX ,
+     S    IDEL7NOK   ,USERL_AVAIL ,MAXFUNC  ,NPTTOT    ,SBUFMAT,
+     T    SDIR_A     ,SDIR_B   ,STF        ,SNPC)
 C-----------------------------
         IF ((ITASK==0).AND.(IMON_MAT==1)) CALL STOPTIME(35,1)
 C-----------------------------

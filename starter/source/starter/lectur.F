@@ -585,7 +585,6 @@ C-----------------------------------------------
       USE ALE_CONNECTIVITY_MOD
       USE DRAPE_MOD
       USE INIVOL_DEF_MOD
-      USE INIVOL_INTERF_MOD
       USE SENSOR_MOD
       USE RANDOM_MOD
       USE ALE_EBCS_MOD
@@ -605,7 +604,7 @@ C-----------------------------------------------
       USE READ_FUNCT_PYTHON_MOD
       USE PYTHON_FUNCT_MOD
       USE INTER_CAND_MOD
-      USE NAMES_AND_TITLES_MOD, only:NAMES_AND_TITLES_,NCHARLINE
+      USE NAMES_AND_TITLES_MOD
       USE damping_rby_spmdset_mod
       USE HM_READ_PRELOAD_AXIAL_MOD
       USE BCS_MOD, ONLY : BCS, BCS_STRUCT_
@@ -623,6 +622,7 @@ C-----------------------------------------------
       use hm_preread_inivel_mod, only : hm_preread_inivel
       use brokmann_random_def_mod
       use brokmann_elem_renum_mod
+      use hm_read_inivol_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -902,6 +902,8 @@ C-----------------------------------------------
       INTEGER SCR_FILE_NAME_LEN
       CHARACTER(LEN=ncharkey) :: KEY
       INTEGER NUSPHCEL
+      INTEGER, DIMENSION(:,:), ALLOCATABLE :: IXSPS
+      LOGICAL MAT20_DISCRETE_FILL
 C-----------------------------------------------
 C Model Checker Memory
       DATA IUN/1/
@@ -2088,7 +2090,8 @@ c---------------------------------------------------------------
      .     MAT_ELEM    ,MLAW_TAG ,FAIL_TAG ,EOS_TAG   ,
      .     RWORK       ,SBUFMAT  ,IPM      ,PM        ,UNITAB    ,
      .     MULTI_FVM   ,FAILWAVE ,NLOC_DMG ,LSUBMODEL ,
-     .     TABLE       ,NPC      )
+     .     TABLE       ,NPC      ,LTITR,
+     .     MAT20_DISCRETE_FILL,  USERL_AVAIL ,MAT_NUMBER)
 c---------------------------------------------------------------
       ALLOCATE(BUFMAT(SBUFMAT)    ,STAT=stat)
       IF(STAT /= 0) CALL ANCMSG(MSGID=268,ANMODE=ANINFO,
@@ -4394,7 +4397,7 @@ C--------------------------------------------
      .      CALL INIMU3(PM     ,IXS    ,FILL   ,DFILL  )
         IF(NUMELQ>0)
      .      CALL INIMU2(PM     ,IXQ    ,FILL   ,DFILL  )
-          CALL INIMUL  (PM     ,FILL   ,DFILL  )
+          CALL INIMUL  (PM     ,FILL   ,DFILL  ,MAT20_DISCRETE_FILL)
        ENDIF
       ENDIF
       CALL TRACE_OUT1()
@@ -6336,12 +6339,17 @@ C
       ENDIF
 C---------------------------------
       IF(NUMSPH/=0) THEN
+            if ( .NOT. ALLOCATED(IXSPS) ) ALLOCATE(IXSPS(KVOISPH,NUMSPH),STAT=stat)
+            IF (STAT /= 0) CALL ANCMSG(MSGID=268,ANMODE=ANINFO,
+     .                                 MSGTYPE=MSGERROR,
+     .                                 C1='IXSPS')
+      
           IWORK  = 0
           EADD   => IWORK(1:NUMSPH+1)
           CALL SPGRHEAD(KXSP    ,IXSP    ,IPARGTMP,PM     ,IPART  ,
      2                  IPARTSP ,EADD    ,CEPSP   ,ND     ,IPM    ,
      3                  IGEO    ,SPBUF   ,SPH2SOL,
-     4                  SOL2SPH ,IRST    ,MAT_ELEM%MAT_PARAM)
+     4                  SOL2SPH ,IRST    ,MAT_ELEM%MAT_PARAM,IXSPS)
 C---------------------------------
 C-  GROUPAGE SPMD
 C---------------------------------
@@ -6363,7 +6371,9 @@ C
      2                   IPARTSP ,EADD    ,ND      ,CEPSP,DD_TMP     ,
      3                   IDX     ,IXSP    ,IPM  , IGEO      ,
      4                   SPBUF   ,SPH2SOL,SOL2SPH  ,
-     5                   IRST    ,NOD2SP  ,IPRI    ,MAT_ELEM%MAT_PARAM)
+     5                   IRST    ,NOD2SP  ,IPRI    ,MAT_ELEM%MAT_PARAM,
+     6                   IXSPS)
+        IF (ALLOCATED(IXSPS)) DEALLOCATE(IXSPS)
         ENDIF
 C---------------------------------
       IF(NUMELX>0) THEN

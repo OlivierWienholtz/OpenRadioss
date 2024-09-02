@@ -86,7 +86,7 @@ C-----------------------------------------------
       USE ALE_MOD
       USE OUTPUT_MOD
       USE MAT_ELEM_MOD
-      USE NAMES_AND_TITLES_MOD, only: NAMES_AND_TITLES_, NCHARLINE
+      USE NAMES_AND_TITLES_MOD
       USE DEFAULTS_MOD, only: DEFAULTS_
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s

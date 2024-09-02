@@ -663,6 +663,7 @@ C-----------------------------------------------
       USE spmd_mod , only : SPMD_MAX,spmd_allreduce
       USE SKEW_MOD
       USE ELBUFDEF_MOD
+      USE MY_ALLOC_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1227,6 +1228,15 @@ C-------------------------------------------------------------------------------
         INTEGER MAXFUNC
         PARAMETER (MAXFUNC  = 100)
 C-----------------------------------------------------------------------------------       
+C Err THK
+C-----------------------------------------------------------------------------------       
+        my_real, DIMENSION(:), ALLOCATABLE :: THICK_SH4
+        my_real, DIMENSION(:), ALLOCATABLE :: THICK_SH3
+        my_real, DIMENSION(:), ALLOCATABLE :: THICK_NOD
+        my_real, DIMENSION(:), ALLOCATABLE :: AREA_NOD
+        my_real, DIMENSION(:), ALLOCATABLE :: AREA_SH4
+        my_real, DIMENSION(:), ALLOCATABLE :: AREA_SH3
+C-----------------------------------------------------------------------------------       
 C Uncomment for Debug - ITAB is copied in Debug Module.
 C-----------------------------------------------------------------------------------
        CALL PREPARE_DEBUG()
@@ -1731,6 +1741,17 @@ C
              ALLOCATE(THKSH3 (0))
              ALLOCATE(THKNOD (0))
           END IF
+
+          IF( ( ANIM_CE(2156)/=0 .OR. H3D_DATA%SH_SCAL_ERR_THK /=0) 
+     .          .AND.((TT>=TANIM .AND. TT<=TANIM_STOP).OR.TT>=TOUTP.OR.
+     .               (MANIM>=4.AND.MANIM<=15))) THEN
+              CALL MY_ALLOC(AREA_SH4,NUMELC)
+              CALL MY_ALLOC(AREA_SH3,NUMELTG)
+              CALL MY_ALLOC(AREA_NOD,NUMNOD)
+              CALL MY_ALLOC(THICK_SH4,NUMELC)
+              CALL MY_ALLOC(THICK_SH3,NUMELTG)
+              CALL MY_ALLOC(THICK_NOD,NUMNOD)
+          ENDIF
 C----------------------------------------------------------
 C    SELECTIVE MASS SCALING
 C----------------------------------------------------------
@@ -8156,7 +8177,9 @@ C===============================================================================
         CALL ERR_THK(IXC     ,IXTG    ,IPARG   ,IAD_ELEM,FR_ELEM    ,
      .               WEIGHT  ,X       ,ELBUF_TAB,IPART   ,IPART(K3)  ,
      .               IPART(K8)  ,ITSK   ,NODFTSK ,NODLTSK ,ERR_THK_SH4,
-     .               ERR_THK_SH3,SH4TREE,SH3TREE)
+     .               ERR_THK_SH3,SH4TREE,SH3TREE,
+     .               AREA_SH4,  AREA_SH3,  AREA_NOD,
+     .               THICK_SH4, THICK_SH3, THICK_NOD)
 
 !$OMP END PARALLEL
 

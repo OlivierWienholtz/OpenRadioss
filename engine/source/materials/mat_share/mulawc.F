@@ -153,20 +153,23 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      3       MAT      ,AREA     ,EXX      ,EYY       ,EXY      ,EXZ      ,    
      4       EYZ      ,KXX      ,KYY      ,KXY       ,GEO      ,THK_LY   ,             
      5       PID      ,TF       ,NPF      ,MTN       ,DT1C     ,DM       ,           
-     6       BUFMAT   ,SSP      ,RHO      ,VISCMX    ,IPLA     ,IOFC     ,    
+     6       BUFMAT   ,SSP      ,RHO      ,VISCMX    ,IPLA     ,IOFC     ,
      7       INDX     ,NGL      ,THKLY    ,MATLY     ,ZCFAC    ,MAT_ELEM ,             
      8       SHF      ,GS       ,SIGY     ,THK0      ,EPSP     ,              
      9       POSLY    ,IGEO     ,IPM      ,FAILWAVE  ,FWAVE_EL ,                                   
      A       IFAILURE ,ALDT     ,TEMPEL   ,DIE       ,                        
-     B       R11      ,R12      ,R13      ,R21       ,R22      ,R23      ,    
-     C       R31      ,R32      ,R33      ,TABLE     ,IXFEM    ,ELCRKINI ,    
+     B       TABLE     ,IXFEM    ,ELCRKINI ,    
      D       SENSORS  ,NG       ,                         
      E       DIR1_CRK ,DIR2_CRK ,IPARG    ,JHBE      ,ISMSTR   ,JTHE     ,             
      F       TENSX    ,IR       ,IS       ,NLAY      ,NPT      ,IXLAY    ,    
      G       IXEL     ,ITHK     ,F_DEF    ,ISHPLYXFEM,
-     H       ITASK    ,PM_STACK ,ISUBSTACK,STACK     ,TSTAR    ,ALPE     ,
+     H       ITASK    ,ISUBSTACK,STACK     ,TSTAR    ,ALPE     ,
      I       PLY_EXX  ,PLY_EYY  ,PLY_EXY  ,PLY_EXZ   ,PLY_EYZ  ,PLY_F    ,
-     J       VARNL    ,ETIMP    ,NLOC_DMG ,NLAY_MAX  ,LAYNPT_MAX)
+     J       VARNL    ,ETIMP    ,NLOC_DMG ,NLAY_MAX  ,LAYNPT_MAX,
+     *       IMPL_S   ,IMCONV   ,NPROPGI, NPROPMI ,NPROPM  ,NPROPG,
+     *       IMON_MAT ,NUMGEO   ,NUMSTACK, DT1       ,TT ,NXLAYMAX,
+     *       IDEL7NOK ,USERL_AVAIL,MAXFUNC,NUMMAT,VARNL_NPTTOT,
+     *       SBUFMAT  ,SDIR_A   ,SDIR_B   ,STF,NPARG,SNPC)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -180,60 +183,148 @@ C-----------------------------------------------
       USE SENSOR_MOD
       USE SIGEPS125C_MOD
       USE ELBUFDEF_MOD
+      USE FILE_DESCRIPTOR_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
 #include      "comlock.inc"
 C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "units_c.inc"
-#include      "scr17_c.inc"
-#include      "scr19_c.inc"
-#include      "param_c.inc"
-#include      "com04_c.inc"
-#include      "com08_c.inc"
-#include      "com20_c.inc"
-#include      "impl1_c.inc"
-#include      "userlib.inc"
-#include      "com_xfem1.inc"
-#include      "timeri_c.inc"
-C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER IR,IS,IPT,JFT,JLT,NEL,NPT,MTN,IPLA,IOFC,NG,NLAY,
-     .  ISMSTR,IXFEM,NUVARR,IFAILURE,JHBE,IXLAY,IXEL,ITHK,JTHE,
-     .  IREP,ISUBSTACK,ITASK,ISHPLYXFEM,NUMTABL
-      INTEGER MAT(*),MATLY(*),PID(*),NPF(*),NGL(MVSIZ),INDX(MVSIZ),
-     .   IGEO(NPROPGI,*),IPM(NPROPMI,*),ELCRKINI(NXLAYMAX,*),
-     .   IPARG(*),FWAVE_EL(NEL)
-      INTEGER, INTENT(IN) :: NLAY_MAX, LAYNPT_MAX
-      my_real DM
-      my_real FOR(NEL,5),MOM(NEL,3),GSTR(NEL,8),THK(*),EINT(JLT,2),OFF(*),
-     .   DIR_A(*),DIR_B(*),VISCMX(*),PM(NPROPM,*),THK_LY(NEL,*),
-     .   AREA(*),GEO(NPROPG,*),TF(*),DT1C(*),THKLY(*),ALDT(*),
-     .   EXX(*), EYY(*), EXY(*), EXZ(*), EYZ(*), EPSP(*),
-     .   KXX(*), KYY(*), KXY(*),BUFMAT(*),SSP(*),RHO(*),
-     .   ZCFAC(MVSIZ,2),SHF(*),GS(*),SIGY(*),THK0(*),
-     .   POSLY(MVSIZ,*),TEMPEL(MVSIZ),DIE(*),VARNL(NEL,*),
-     .   R11(MVSIZ), R12(MVSIZ), R13(MVSIZ),
-     .   R21(MVSIZ), R22(MVSIZ), R23(MVSIZ),
-     .   R31(MVSIZ), R32(MVSIZ), R33(MVSIZ),
-     .   DIR1_CRK(*),DIR2_CRK(*),TENSX(NEL,5),
-     .   F_DEF(MVSIZ,8),PM_STACK(20,*),TSTAR(MVSIZ),ALPE(MVSIZ),
-     .   PLY_EXX(MVSIZ,*),PLY_EYY(MVSIZ,*),PLY_EXY(MVSIZ,*), 
-     .   PLY_EXZ(MVSIZ,*),PLY_EYZ(MVSIZ,*),PLY_F(MVSIZ,5,*),ETIMP(MVSIZ)
-      TYPE(ELBUF_STRUCT_), TARGET :: ELBUF_STR
+      INTEGER, INTENT(IN) :: IR
+      INTEGER, INTENT(IN) :: IS
+      INTEGER, INTENT(IN) :: JFT
+      INTEGER, INTENT(IN) :: JLT
+      INTEGER, INTENT(IN) :: NEL
+      INTEGER, INTENT(IN) :: NPT
+      INTEGER, INTENT(IN) :: MTN
+      INTEGER, INTENT(IN) :: IPLA
+      INTEGER, INTENT(IN) :: NG
+      INTEGER, INTENT(IN) :: NLAY
+      INTEGER, INTENT(IN) :: ISMSTR
+      INTEGER, INTENT(IN) :: IXFEM
+      INTEGER, INTENT(IN) :: IFAILURE
+      INTEGER, INTENT(IN) :: JHBE
+      INTEGER, INTENT(IN) :: IXLAY
+      INTEGER, INTENT(IN) :: IXEL
+      INTEGER, INTENT(IN) :: ITHK
+      INTEGER, INTENT(IN) :: JTHE
+      INTEGER, INTENT(IN) :: ISUBSTACK
+      INTEGER, INTENT(IN) :: ITASK
+      INTEGER, INTENT(IN) :: ISHPLYXFEM
+      INTEGER, INTENT(IN) :: NLAY_MAX
+      INTEGER, INTENT(IN) :: LAYNPT_MAX
+      INTEGER, INTENT(IN) :: USERL_AVAIL        ! Flag for User libraries availability
+      INTEGER, INTENT(IN) :: MAXFUNC            ! Maximum number of functions
+      INTEGER, INTENT(IN) :: NXLAYMAX           ! XFEM Parameter, Maximum number of layers
+      INTEGER, INTENT(IN) :: IMPL_S
+      INTEGER, INTENT(IN) :: IMCONV
+      INTEGER, INTENT(IN) :: NPROPGI
+      INTEGER, INTENT(IN) :: NPROPMI
+      INTEGER, INTENT(IN) :: NPROPM
+      INTEGER, INTENT(IN) :: NPROPG
+      INTEGER, INTENT(IN) :: IMON_MAT
+      INTEGER, INTENT(IN) :: NUMGEO
+      INTEGER, INTENT(IN) :: NUMMAT
+      INTEGER, INTENT(IN) :: NUMSTACK
+      INTEGER, INTENT(IN) :: VARNL_NPTTOT
+      INTEGER, INTENT(IN) :: SBUFMAT
+      INTEGER, INTENT(IN) :: SDIR_A
+      INTEGER, INTENT(IN) :: SDIR_B
+      INTEGER, INTENT(IN) :: STF
+      INTEGER, INTENT(IN) :: NPARG
+      INTEGER, INTENT(IN) :: SNPC
+      INTEGER, INTENT(IN),DIMENSION(MVSIZ) :: MAT
+      INTEGER, INTENT(IN),DIMENSION(MVSIZ) :: PID
+      INTEGER, INTENT(IN),DIMENSION(MVSIZ) :: NGL
+      INTEGER, INTENT(IN),DIMENSION(NPROPGI,NUMGEO) :: IGEO
+      INTEGER, INTENT(IN),DIMENSION(NPROPMI,NUMMAT) :: IPM
+      INTEGER, INTENT(IN),DIMENSION(NPARG) :: IPARG
+      INTEGER, INTENT(IN),DIMENSION(SNPC)  :: NPF
+      !
+      INTEGER, INTENT(INOUT) :: IDEL7NOK           ! Element deletion flag for IDEL flag in contact interfaces
+      INTEGER, INTENT(INOUT) :: IOFC
+      INTEGER, INTENT(INOUT),DIMENSION(MVSIZ*NLAY_MAX) :: MATLY
+      INTEGER, INTENT(INOUT),DIMENSION(MVSIZ*NLAY_MAX) :: INDX
+      INTEGER, INTENT(INOUT),DIMENSION(NEL)            :: FWAVE_EL
+      INTEGER, INTENT(INOUT),DIMENSION(NXLAYMAX,MVSIZ) :: ELCRKINI
+
+
+
+      my_real, INTENT(IN) :: DT1
+      my_real, INTENT(IN) :: TT
+      my_real, INTENT(IN),DIMENSION(NPROPM,NUMMAT) :: PM
+      my_real, INTENT(IN),DIMENSION(NPROPG,NUMGEO) :: GEO
+      my_real, INTENT(IN),DIMENSION(SBUFMAT)       :: BUFMAT
+      my_real, INTENT(IN),DIMENSION(STF)           ::  TF
+      !
+      my_real, intent(inout) :: DM
+      my_real, intent(inout), dimension(nel,5) :: FOR
+      my_real, intent(inout), dimension(nel,3) :: MOM
+      my_real, intent(inout), dimension(nel,8) :: GSTR
+      my_real, intent(inout), dimension(nel)   :: THK
+      my_real, intent(inout), dimension(nel,2) :: EINT
+      my_real, intent(inout), dimension(nel)   :: EPSP
+      my_real, intent(inout), dimension(nel,5) :: TENSX
+      !
+      my_real, intent(inout), dimension(mvsiz) :: KXX
+      my_real, intent(inout), dimension(mvsiz) :: KYY
+      my_real, intent(inout), dimension(mvsiz) :: KXY
+      !
+      my_real, intent(inout), dimension(mvsiz) :: OFF
+      my_real, intent(inout), dimension(mvsiz) :: TEMPEL
+      my_real, intent(inout), dimension(mvsiz) :: VISCMX
+      my_real, intent(inout), dimension(mvsiz) :: AREA
+      my_real, intent(inout), dimension(mvsiz) :: EXX
+      my_real, intent(inout), dimension(mvsiz) :: EYY
+      my_real, intent(inout), dimension(mvsiz) :: EXY
+      my_real, intent(inout), dimension(mvsiz) :: EXZ
+      my_real, intent(inout), dimension(mvsiz) :: EYZ
+      my_real, intent(inout), dimension(mvsiz) :: THK0
+      my_real, intent(inout), dimension(mvsiz) :: SSP
+      my_real, intent(inout), dimension(mvsiz) :: RHO
+      my_real, intent(inout), dimension(mvsiz) :: TSTAR
+      my_real, intent(inout), dimension(mvsiz) :: ALPE
+      my_real, intent(inout), dimension(mvsiz) :: SHF
+      my_real, intent(inout), dimension(mvsiz) :: GS
+      my_real, intent(inout), dimension(mvsiz) :: SIGY
+      my_real, intent(inout), dimension(mvsiz,2) :: ZCFAC
+      my_real, intent(inout), dimension(mvsiz,8) :: F_DEF
+      my_real, intent(inout), dimension(NXLAYMAX,mvsiz) :: DIR1_CRK
+      my_real, intent(inout), dimension(NXLAYMAX,mvsiz) :: DIR2_CRK
+      my_real, intent(inout), dimension(mvsiz) :: DT1C
+      my_real, intent(inout), dimension(mvsiz) :: DIE
+      my_real, intent(inout), dimension(mvsiz) :: ETIMP
+      my_real, intent(inout), dimension(mvsiz) :: ALDT
+      my_real, intent(inout), dimension(MVSIZ*NLAY_MAX*LAYNPT_MAX) :: THKLY
+      my_real, intent(inout), dimension(NEL,NLAY_MAX*LAYNPT_MAX) :: THK_LY
+      my_real, intent(inout), dimension(MVSIZ,NLAY_MAX*LAYNPT_MAX) :: POSLY
+
+      !
+      my_real, intent(inout), dimension(mvsiz,NPT) :: PLY_EXX    ! Batoz shell delamination
+      my_real, intent(inout), dimension(mvsiz,NPT) :: PLY_EYY    ! Batoz shell delamination
+      my_real, intent(inout), dimension(mvsiz,NPT) :: PLY_EXY    ! Batoz shell delamination
+      my_real, intent(inout), dimension(mvsiz,NPT) :: PLY_EXZ    ! Batoz shell delamination
+      my_real, intent(inout), dimension(mvsiz,NPT) :: PLY_EYZ    ! Batoz shell delamination
+      my_real, intent(inout), dimension(mvsiz,5,NPT) :: PLY_F    ! Batoz shell delamination
+      !
+      my_real, intent(inout), dimension(NEL,VARNL_NPTTOT) :: VARNL
+      my_real, intent(inout), dimension(SDIR_A) :: DIR_A
+      my_real, intent(inout), dimension(SDIR_B) :: DIR_B
+      !
       TARGET :: ALDT, IPM, VARNL
+      TYPE(ELBUF_STRUCT_),intent(inout), TARGET :: ELBUF_STR
       TYPE (STACK_PLY) :: STACK
-      TYPE (FAILWAVE_STR_) ,TARGET :: FAILWAVE 
-      TYPE (MAT_ELEM_) ,INTENT(INOUT) ,TARGET :: MAT_ELEM
-      TYPE (NLOCAL_STR_) :: NLOC_DMG 
-      TYPE (SENSORS_) ,INTENT(IN) :: SENSORS
+      TYPE (FAILWAVE_STR_) ,TARGET              :: FAILWAVE 
+      TYPE (MAT_ELEM_) ,INTENT(INOUT) ,TARGET   :: MAT_ELEM
+      TYPE (NLOCAL_STR_)                        :: NLOC_DMG 
+      TYPE (SENSORS_) ,INTENT(IN)               :: SENSORS
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
+      INTEGER :: NUMTABL
+      INTEGER :: IPT
       INTEGER ::I,J,K,II,JJ,KK,IC,JMLY,IPG,IT,IFL,ILAY,NPG,MPT,MX,IMAT,
      .   IRUPT,NFAIL,IADBUF,IADBUFR,MAXNULVAR,IGTYP,NUVAR,NVARF,JDIR,
      .   NFUNC, JPOS, NINDX,NUPAR,NIPARAM,NUPARAM,NUPARAM0,NFUNC_FAIL,NTABL_FAIL,
@@ -302,10 +393,11 @@ c----
       my_real, DIMENSION(:), POINTER  :: SIGBXX,SIGBYY,SIGBXY
       my_real
      .       , DIMENSION(:), ALLOCATABLE :: GV,BETA
+      my_real WM(11,11)
 c
 C-----------------------------------------------
 C   S o u r c e   L i n e s
-c=======================================================================      
+c=======================================================================
       GBUF => ELBUF_STR%GBUF
       IPG  = (IS-1)*ELBUF_STR%NPTR + IR     ! current Gauss point
       NPG  = ELBUF_STR%NPTR * ELBUF_STR%NPTS
@@ -612,6 +704,8 @@ C-----------------------------------------
           THKLYL(1:NEL) = THKLY(JPOS:JPOS+NEL-1)*THK0(1:NEL)
 C
           IF ((IGTYP == 1 .OR. IGTYP == 9).AND.ZSHIFT==ZERO) THEN
+            ! Initialize WM Matrix
+            CALL COQINI_WM(WM)
             WMC(1:NEL) = WM(IPT,NPT)
           ELSE
             WMC(1:NEL) = POSLY(1:NEL,IPT)*THKLY(JPOS:JPOS+NEL-1)
@@ -2667,8 +2761,8 @@ C---------------------------
       ELSEIF (IGTYP == 52 .OR.
      .      ((IGTYP == 17 .OR. IGTYP == 51) .AND. IGMAT > 0)) THEN
         DO I=JFT,JLT
-          SSP(I) = PM_STACK(9,ISUBSTACK)
-          RHO(I) = PM_STACK(1,ISUBSTACK) 
+          SSP(I) = STACK%PM(9,ISUBSTACK)
+          RHO(I) = STACK%PM(1,ISUBSTACK) 
         ENDDO
       ENDIF   
 !---

@@ -395,7 +395,7 @@ C------------------------------------------------------------------
       INERI=0
       IPLAST=1
       IIN=8
-      IOUT=0
+      IOUT=7
       ISOLV=0
       ISTDI=5
       IUGEO=4
@@ -595,8 +595,6 @@ C--------------------------------------------------
 
       IF ( GOT_INPUT == 0)THEN
        IF (ISPMD/=0) THEN
-C redirect IOUT to tmp file  fichier temporaire when SPMD on pi <> 0
-         IOUT = IUSC4
          CALL OPEN_F_SCRATCH_FILE(IOUT,1,ROOTN,LENROOTN,IUSC4_FNAM)
          LEN_IUSC4_FNAM=LEN_TRIM(IUSC4_FNAM)
 
@@ -610,7 +608,6 @@ C redirect IOUT to tmp file  fichier temporaire when SPMD on pi <> 0
        ENDIF
       ELSE
        IF (ISPMD/=0) THEN
-         IOUT = IUSC4
          CALL OPEN_F_SCRATCH_FILE(IOUT,1,ROOTN,LENROOTN,IUSC4_FNAM)
          LEN_IUSC4_FNAM=LEN_TRIM(IUSC4_FNAM)
          WRITE(UNIT=IOUT,IOSTAT=IOS,FMT='(A)')
@@ -724,7 +721,6 @@ C       Create info, hist, monitor, progress and tpl files for writing implicit 
 1006      FORMAT('    *Parameter(PLOT_FILE_1, PLOT_FILE_1, FILENAME, "*", "',A,'")')
         ENDIF
       ENDIF
-        IF(IOUT==0)IOUT=7
         WRITE(CHRUN,'(I4.4)')IRUNN
         IF(MCHECK/=0)THEN
          IF(ISPMD==0) THEN

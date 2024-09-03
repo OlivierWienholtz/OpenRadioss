@@ -76,7 +76,9 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      I   TABLE,       IPARG,       SENSORS,     PTG,
      J   JTHE,        CONDN,       CONDNSKY,    ISUBSTACK,
      K   STACK,       ITASK,       DRAPE_SH3N,  IPRI,
-     L   NLOC_DMG,    INDX_DRAPE,  IGRE,        JTUR)
+     L   NLOC_DMG,    INDX_DRAPE,  IGRE,        JTUR,
+     M   NXLAYMAX,    IDEL7NOK,    USERL_AVAIL, MAXFUNC,
+     N   SBUFMAT,     STF,         SNPC)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -107,6 +109,13 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      INTEGER,INTENT(IN)    :: USERL_AVAIL ! Flag for User libraries availability
+      INTEGER,INTENT(IN)    :: MAXFUNC     ! Maximum number of functions
+      INTEGER,INTENT(INOUT) :: IDEL7NOK    ! Element deletion flag for IDEL flag in contact interfaces
+      INTEGER, INTENT(IN) :: NXLAYMAX    ! XFEM Max layer
+      INTEGER, INTENT(IN) :: SBUFMAT     ! Size of bufmat
+      INTEGER, INTENT(IN) :: STF         ! Size of TF
+      INTEGER, INTENT(IN) :: SNPC        ! Size of NPC
       INTEGER, INTENT(IN) :: JTUR
       INTEGER, INTENT(IN) :: IGRE
       INTEGER JFT, JLT, NVC, MTN,NELTST,ITYPTST,IUN,
@@ -185,6 +194,8 @@ C--- Variables pour le non-local
       my_real, DIMENSION(:), POINTER :: DNL,UNL
       my_real
      .   KSI,ETA
+      INTEGER SDIR_A    ! Size of DIR_A
+      INTEGER SDIR_B    ! Size of DIR_B
 C-----
       TYPE(BUF_LAY_) ,POINTER :: BUFLY
       TYPE(G_BUFEL_) ,POINTER :: GBUF
@@ -280,9 +291,13 @@ c-------------------------------------
               NPTTOT = NPTTOT + NPTT
             ENDDO 
         ENDIF
+        SDIR_A=NPTTOT*NEL*L_DIRA
+        SDIR_B=NPTTOT*NEL*L_DIRB
         DIR_A => DIRA(1:NPTTOT*NEL*L_DIRA)
         DIR_B => DIRB(1:NPTTOT*NEL*L_DIRB)
       ELSE ! idrape
+        SDIR_A=NLAY*NEL*L_DIRA
+        SDIR_B=NLAY*NEL*L_DIRB
         ALLOCATE(DIRA(NLAY*NEL*L_DIRA))
         ALLOCATE(DIRB(NLAY*NEL*L_DIRB))
         DIRA=ZERO
@@ -296,6 +311,8 @@ c-------------------------------------
               DIRA(J1:J2) = ELBUF_STR%BUFLY(J)%DIRA(1:NEL*L_DIRA)
            ENDDO
          ENDIF
+         SDIR_A=NLAY*NEL*L_DIRA
+         SDIR_B=NLAY*NEL*L_DIRB
          DIR_A => DIRA(1:NLAY*NEL*L_DIRA)
          DIR_B => DIRB(1:NLAY*NEL*L_DIRB)
       ENDIF ! IDRAPE
@@ -413,7 +430,9 @@ C----------------------------------------------------------------------------
      N     ISMSTR    ,IR        ,IS        ,NLAY      ,NPT       ,
      O     IBID      ,IBID      ,ISUBSTACK ,STACK     ,
      P     BID       ,ITASK     ,DRAPE_SH3N  ,VAR_REG   ,NLOC_DMG  ,
-     R    INDX_DRAPE ,THKE        ,SEDRAPE     ,NUMEL_DRAPE)
+     R    INDX_DRAPE ,THKE        ,SEDRAPE     ,NUMEL_DRAPE,NXLAYMAX,
+     S    IDEL7NOK   ,USERL_AVAIL,MAXFUNC,NPTTOT,SBUFMAT,
+     T    SDIR_A     ,SDIR_B    ,STF       ,SNPC)
 C----------------------------------------------------------------------------
 C     THICKNESS CORRECTION 
 C----------------------------

@@ -3062,6 +3062,7 @@ C First: try with reduced bounding box
       CALL PYTHON_UPDATE_NODAL_ENTITIES(NUMNOD, X=X,A=A,V=V,D=D,DR=DR,VR=VR)
 C=======================================================================
 
+       print*,ispmd,'IOUT=',iout
 C----------------------------------------
 C     BEGINNING OF EXPLICIT ITERATION LOOP
 C----------------------------------------
@@ -4468,7 +4469,8 @@ C Init var parallel SMP
      N   XFEM_TAB     ,CONDN(IDX_CONDN),CONDNSKY        ,CRKEDGE       ,
      O   STACK        ,ITAB            ,
      Q   DRAPE_SH4N   ,DRAPE_SH3N      ,SUBSETS, XDP    ,PINCH_DATA%VPINCH   ,
-     R   PINCH_DATA%APINCH(1,IDX_PINCH)    ,PINCH_DATA%STIFPINCH(IDX_PINCH)  ,DRAPEG  ,OUTPUT)     
+     R   PINCH_DATA%APINCH(1,IDX_PINCH)    ,PINCH_DATA%STIFPINCH(IDX_PINCH)  ,DRAPEG  ,OUTPUT,
+     S   USERL_AVAIL  ,MAXFUNC         ,SBUFMAT         ,STF           ,SNPC)     
 #include "lockon.inc"
       IF(DT2TT<DT2T)THEN
          DT2T = DT2TT

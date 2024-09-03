@@ -81,7 +81,8 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      M            IADC_CRK,ELCUTC,CRKSKY,SENSORS,IXEL    ,
      N            ISUBSTACK,UXINT_MEAN,UYINT_MEAN,UZINT_MEAN,NLEVXF,
      O            NODEDGE,CRKEDGE, STACK ,DRAPE_SH4N,NLOC_DMG,
-     P            INDX_DRAPE, IGRE  )
+     P            INDX_DRAPE, IGRE ,IDEL7NOK ,USERL_AVAIL,MAXFUNC,
+     Q            SBUFMAT,STF,SNPC)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -115,6 +116,12 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D U M M Y   A R G U M E N T S
 C-----------------------------------------------
+      INTEGER,INTENT(IN)    :: USERL_AVAIL ! Flag for User libraries availability
+      INTEGER,INTENT(IN)    :: MAXFUNC     ! Maximum number of functions
+      INTEGER,INTENT(INOUT) :: IDEL7NOK    ! Element deletion flag for IDEL flag in contact interfaces
+      INTEGER,INTENT(IN)    :: SBUFMAT     ! Size of BUFMAT
+      INTEGER,INTENT(IN)    :: STF         ! Size of TF
+      INTEGER,INTENT(IN)    :: SNPC        ! Size of NPF
       INTEGER JFT ,JLT,NFT,IPARI,MTN,IPRI,ITHK,NELTST,
      .        ITYPTST,ISTRAIN,IPLA,OFFSET,NVC,JSMS,IOFC,IHBE,
      .        KFTS,ISMSTR,IFAILURE,JTHE,IXEL,ISUBSTACK,NLEVXF
@@ -227,6 +234,9 @@ C---
      .  DIMENSION(:) ,POINTER  ::  SMSTRG
       my_real,
      .  DIMENSION(:,:), ALLOCATABLE :: VARNL
+      INTEGER NPTTOT
+      INTEGER SDIR_A    ! Size of DIR_A
+      INTEGER SDIR_B    ! Size of DIR_B
 C=======================================================================
       NEL  = JLT-JFT+1
       BID  = ZERO
@@ -238,6 +248,7 @@ C=======================================================================
       IT   = 1
       SEDRAPE = SCDRAPE
       NUMEL_DRAPE = NUMELC_DRAPE
+      NPTTOT = 1
       ALLOCATE(VARNL(NEL,1))
       VARNL = ZERO
 C -----will put it in starter     
@@ -281,6 +292,8 @@ C
       ALLOCATE(DIRB(NXLAY*NEL*L_DIRB))
       DIRA = ZERO
       DIRB = ZERO
+      SDIR_A = NXLAY*NEL*L_DIRA
+      SDIR_B = NXLAY*NEL*L_DIRB
       DIR_A => DIRA(1:NXLAY*NEL*L_DIRA)
       DIR_B => DIRB(1:NXLAY*NEL*L_DIRB)
       UVAR  => XFEM_STR%BUFLY(1)%MAT(IR,IS,IT)%VAR
@@ -476,7 +489,9 @@ C-----------------------------
      N       ISMSTR    ,IR        ,IS        ,NLAYER    ,NPTT    ,
      O       IXLAY     ,IXEL      ,ISUBSTACK ,STACK     ,
      P       BID       ,ITASK     ,DRAPE_SH4N  ,VARNL     ,NLOC_DMG,
-     R       INDX_DRAPE, THKE    ,SEDRAPE     ,NUMEL_DRAPE)
+     R       INDX_DRAPE, THKE    ,SEDRAPE     ,NUMEL_DRAPE,NXLAYMAX ,
+     S       IDEL7NOK  ,USERL_AVAIL,MAXFUNC,NPTTOT,SBUFMAT,
+     T       SDIR_A    ,SDIR_B   ,STF        ,SNPC)
 C-----------------------------
         IF ((ITASK==0).AND.(IMON_MAT==1)) CALL STOPTIME(35,1)
 C--------------------------

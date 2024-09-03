@@ -103,7 +103,8 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      Q   CONDN,       CONDNSKY,    STACK,       ISUBSTACK,
      R   XFEM_STR,    CRKEDGE,     DRAPE_SH4N,  IPRI,
      S   NLOC_DMG,    INDX_DRAPE,  IGRE,        JTUR,
-     T   OUTPUT)
+     T   OUTPUT,      USERL_AVAIL, MAXFUNC,     SBUFMAT,
+     U   STF,         SNPC)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -140,6 +141,11 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      INTEGER, INTENT(IN) :: USERL_AVAIL ! Flag for User libraries availability
+      INTEGER,INTENT(IN)    :: MAXFUNC   ! Maximum number of functions
+      INTEGER, INTENT(IN) :: SBUFMAT     ! size of Bufmat
+      INTEGER, INTENT(IN) :: STF         ! size of STF
+      INTEGER, INTENT(IN) :: SNPC        ! size of SNPC
       INTEGER, INTENT(IN) :: JTUR
       INTEGER, INTENT(IN) :: IGRE
       INTEGER JFT,JLT,NVC,MTN,NELTST,ITYPTST,OFFSET,
@@ -244,6 +250,8 @@ C-----
       TYPE(L_BUFEL_) ,POINTER :: LBUF
       TYPE(L_BUFEL_DIR_) ,POINTER :: LBUF_DIR
       TYPE (STACK_PLY) :: STACK
+      INTEGER SDIR_A    ! Size of DIR_A
+      INTEGER SDIR_B    ! Size of DIR_B
 C=======================================================================
       GBUF => ELBUF_STR%GBUF
       IDRAPE = ELBUF_STR%IDRAPE
@@ -316,9 +324,13 @@ c-------------------------------------
               NPTTOT = NPTTOT + NPTT
             ENDDO 
         ENDIF
+        SDIR_A=NPTTOT*NEL*L_DIRA
+        SDIR_B=NPTTOT*NEL*L_DIRB
         DIR_A => DIRA(1:NPTTOT*NEL*L_DIRA)
         DIR_B => DIRB(1:NPTTOT*NEL*L_DIRB)
       ELSE ! idrape
+        SDIR_A=NLAY*NEL*L_DIRA
+        SDIR_B=NLAY*NEL*L_DIRB
         ALLOCATE(DIRA(NLAY*NEL*L_DIRA))
         ALLOCATE(DIRB(NLAY*NEL*L_DIRB))
         DIRA=ZERO
@@ -332,6 +344,8 @@ c-------------------------------------
               DIRA(J1:J2) = ELBUF_STR%BUFLY(J)%DIRA(1:NEL*L_DIRA)
            ENDDO
          ENDIF
+         SDIR_A=NLAY*NEL*L_DIRA
+         SDIR_B=NLAY*NEL*L_DIRB
          DIR_A => DIRA(1:NLAY*NEL*L_DIRA)
          DIR_B => DIRB(1:NLAY*NEL*L_DIRB)
       ENDIF ! IDRAPE    
@@ -519,7 +533,9 @@ C-----------------------------
      N  ISMSTR      ,IR          ,IS          ,NLAY       ,NPT        ,
      O  IXLAY       ,IXEL        ,ISUBSTACK   ,STACK      ,
      P  F_DEF       ,ITASK       ,DRAPE_SH4N  ,VAR_REG    ,NLOC_DMG   ,
-     R  INDX_DRAPE  ,THKE        ,SEDRAPE     ,NUMEL_DRAPE)
+     R  INDX_DRAPE  ,THKE        ,SEDRAPE     ,NUMEL_DRAPE,NXLAYMAX   ,
+     S  IDEL7NOK    ,USERL_AVAIL ,MAXFUNC,NPTTOT,SBUFMAT,
+     T  SDIR_A      ,SDIR_B      ,STF         ,SNPC)
 C-----------------------------
       IF ((IMON_MAT==1).AND. ITASK == 0)CALL STOPTIME(35,1)
 C-----------------------------

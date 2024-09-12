@@ -104,6 +104,9 @@ C-----------------------------------------------
       ! Type arrays
       TYPE (ELBUF_STRUCT_), DIMENSION(NGROUP), TARGET :: ELBUF_TAB
 
+      ! Characters
+      CHARACTER(LEN=NCHARLINE100) :: KEYWORD
+
       ! Output arguments
       ! ----------------------------------------
       ! INTEGER arrays
@@ -113,26 +116,25 @@ C-----------------------------------------------
 
       ! Float Arrays
       my_real, INTENT(INOUT) :: ONED_SCALAR(NUMELT+NUMELP+NUMELR)
-
-
 C
-      CHARACTER(LEN=NCHARLINE100) :: KEYWORD
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-C     REAL
-      my_real
-     .   MASS(MVSIZ) ,
-     .   OFF, VALUE(MVSIZ),
-     .   A1,B1,B2,B3,YEQ,F1,M1,M2,M3, XM, DAMMX, VOL,   
-     .   FOR, AREA, FEQ, EPLAS, RHO0, A0, XX1, YY1, ZZ1, AL0,EFRAC
-      INTEGER I,  NG, NEL, NFT,  ITY,  NPT,  
-     .        N,   MLW,   
-     .        IGTYP,IFAIL,
-     .        IPID,
-     .        NN1,NN3,NN4,NN5,NN6,NN7,NN8,NN9,NN10,
-     .        OFFSET,K,KK,ILAYER,IR,IS,JJ(6),IOK_PART(MVSIZ),
-     .        IS_WRITTEN_VALUE(MVSIZ),N1, N2
+      my_real :: MASS(MVSIZ)
+      my_real :: VALUE(MVSIZ)
+      my_real :: OFF
+      my_real :: A1,   B1, B2,    B3
+      my_real :: F1,   M1, M2,    M3
+      my_real :: YEQ,  XM, DAMMX, VOL
+      my_real :: FOR,  AREA, FEQ, EPLAS
+      my_real :: RHO0, A0, XX1, YY1, ZZ1
+      my_real :: AL0,EFRAC
+
+      INTEGER I,  NG, NEL, NFT,  ITY,  NPT
+      INTEGER N,   MLW, IGTYP,IFAIL, IPID
+      INTEGER NN1,NN3,NN4,NN5,NN6,NN7,NN8,NN9,NN10
+      INTEGER OFFSET,K,KK,ILAYER,IR,IS,JJ(6),IOK_PART(MVSIZ)
+      INTEGER IS_WRITTEN_VALUE(MVSIZ),N1, N2
 C-----------------------------------------------
 C
       NN1 = 1

@@ -42,42 +42,80 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      .                  IXP            , IXR     , PM    , ANIM    ,
      .                  ONED_SCALAR    , ID_ELEM , ITY_ELEM ,  
      .                  IS_WRITTEN_ONED, IPARTT  , IPARTP   , IPARTR, H3D_PART,
-     .                  KEYWORD        , X       , D        ,IPT)
+     .                  KEYWORD        , X       , D        ,IPT,
+     .                  NUMELP, NUMELT , NUMELR  ,NIXT     ,NIXP,
+     .                  NIXR ,NGROUP   ,ANIM_FE  ,MX_ANI   ,NPARG,
+     .                  NPROPM, NPROPG , NUMMAT  ,NUMGEO   ,NUMNOD,
+     .                  SZ_ANIN,NUMELPG,NUMELRG,NUMELTRG,NPART)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use constant_mod
       USE ELBUFDEF_MOD
       USE NAMES_AND_TITLES_MOD, ONLY: NCHARLINE100
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
-#include      "implicit_f.inc"
-C-----------------------------------------------
-C   C o m m o n   B l o c k s
-C-----------------------------------------------
-#include      "mvsiz_p.inc"
-!ngroup
-#include      "com01_c.inc"
-!NUMELP, NUMELT, NUMELR
-#include      "com04_c.inc"
-!ANIM_FE
-#include      "scr14_c.inc"
-! nparg, npropm, npropg,
-#include      "param_c.inc"
+      implicit none
+#include "my_real.inc"
+#include "mvsiz_p.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-C     REAL
-      my_real
-     .   PM(NPROPM,*), GEO(NPROPG,*),
-     .   ANIM(*),ONED_SCALAR(*),X(3,*),D(3,*)
-      INTEGER IPARG(NPARG,*),
-     .        IXT(NIXT,*),IXP(NIXP,*),IXR(NIXR,*),
-     .        IPT,
-     .        IS_WRITTEN_ONED(*),ID_ELEM(*),ITY_ELEM(*),
-     .        IPARTT(*) ,IPARTP(*),IPARTR(*),H3D_PART(*)
-C
+      ! Input arguments
+      ! ----------------------------------------
+      ! Integer arrays
+      INTEGER, INTENT(IN) :: NUMELP
+      INTEGER, INTENT(IN) :: NUMELT
+      INTEGER, INTENT(IN) :: NUMELR
+      INTEGER, INTENT(IN) :: NUMELPG
+      INTEGER, INTENT(IN) :: NUMELTRG
+      INTEGER, INTENT(IN) :: NUMELRG      
+      INTEGER, INTENT(IN) :: NIXT
+      INTEGER, INTENT(IN) :: NIXP
+      INTEGER, INTENT(IN) :: NIXR
+      INTEGER, INTENT(IN) :: NGROUP
+      INTEGER, INTENT(IN) :: MX_ANI
+      INTEGER, INTENT(IN) :: NPARG
+      INTEGER, INTENT(IN) :: NPROPM
+      INTEGER, INTENT(IN) :: NPROPG
+      INTEGER, INTENT(IN) :: NUMMAT
+      INTEGER, INTENT(IN) :: NUMGEO
+      INTEGER, INTENT(IN) :: NUMNOD
+      INTEGER, INTENT(IN) :: SZ_ANIN
+      INTEGER, INTENT(IN) :: IPT
+      INTEGER, INTENT(IN) :: NPART
+      INTEGER, DIMENSION(MX_ANI), INTENT(IN) :: ANIM_FE
+      INTEGER, DIMENSION(NIXT,NUMELT), INTENT(IN) :: IXT
+      INTEGER, DIMENSION(NIXP,NUMELP), INTENT(IN) :: IXP
+      INTEGER, DIMENSION(NIXR,NUMELR), INTENT(IN) :: IXR
+      INTEGER, DIMENSION(NPARG,NGROUP),INTENT(IN) :: IPARG
+      INTEGER, DIMENSION(NUMELT),INTENT(IN)       :: IPARTT
+      INTEGER, DIMENSION(NUMELP),INTENT(IN)       :: IPARTP
+      INTEGER, DIMENSION(NUMELR),INTENT(IN)       :: IPARTR
+      INTEGER, DIMENSION(NPART),INTENT(IN)        :: H3D_PART
+      ! Float arrays
+      my_real, INTENT(IN) :: ANIM(SZ_ANIN)
+      my_real, INTENT(IN) :: GEO(NPROPG,NUMGEO)
+      my_real, INTENT(IN) :: PM(NPROPM,NUMMAT)
+      my_real, INTENT(IN) :: X(3,NUMNOD)
+      my_real, INTENT(IN) :: D(3,NUMNOD)
+
+      ! Type arrays
       TYPE (ELBUF_STRUCT_), DIMENSION(NGROUP), TARGET :: ELBUF_TAB
+
+      ! Output arguments
+      ! ----------------------------------------
+      ! INTEGER arrays
+      INTEGER, DIMENSION(NUMELPG+NUMELRG+NUMELTRG),INTENT(INOUT) :: ITY_ELEM
+      INTEGER, DIMENSION(NUMELPG+NUMELRG+NUMELTRG),INTENT(INOUT) :: ID_ELEM
+      INTEGER, DIMENSION(NUMELPG+NUMELRG+NUMELTRG),INTENT(INOUT) :: IS_WRITTEN_ONED
+
+      ! Float Arrays
+      my_real, INTENT(INOUT) :: ONED_SCALAR(NUMELT+NUMELP+NUMELR)
+
+
+C
       CHARACTER(LEN=NCHARLINE100) :: KEYWORD
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -694,4 +732,4 @@ C--------------------------------------------------
       RETURN
       END
 
-      END MODULE
+      END MODULE H3D_ONED_SCALAR_MOD

@@ -1237,6 +1237,15 @@ C-------------------------------------------------------------------------------
         my_real, DIMENSION(:), ALLOCATABLE :: AREA_SH4
         my_real, DIMENSION(:), ALLOCATABLE :: AREA_SH3
 C-----------------------------------------------------------------------------------       
+C admerr
+C-----------------------------------------------------------------------------------       
+        my_real, DIMENSION(:), ALLOCATABLE :: admerr_THICK_SH4
+        my_real, DIMENSION(:), ALLOCATABLE :: admerr_THICK_SH3
+        my_real, DIMENSION(:), ALLOCATABLE :: admerr_THICK_NOD
+        my_real, DIMENSION(:), ALLOCATABLE :: admerr_AREA_NOD
+        my_real, DIMENSION(:), ALLOCATABLE :: admerr_AREA_SH4
+        my_real, DIMENSION(:), ALLOCATABLE :: admerr_AREA_SH3
+C-----------------------------------------------------------------------------------       
 C Uncomment for Debug - ITAB is copied in Debug Module.
 C-----------------------------------------------------------------------------------
        CALL PREPARE_DEBUG()
@@ -1742,15 +1751,22 @@ C
              ALLOCATE(THKNOD (0))
           END IF
 
-          IF( ( ANIM_CE(2156)/=0 .OR. H3D_DATA%SH_SCAL_ERR_THK /=0) 
-     .          .AND.((TT>=TANIM .AND. TT<=TANIM_STOP).OR.TT>=TOUTP.OR.
-     .               (MANIM>=4.AND.MANIM<=15))) THEN
+          IF( ANIM_CE(2156)/=0 .OR. H3D_DATA%SH_SCAL_ERR_THK /=0) THEN
               CALL MY_ALLOC(AREA_SH4,NUMELC)
               CALL MY_ALLOC(AREA_SH3,NUMELTG)
               CALL MY_ALLOC(AREA_NOD,NUMNOD)
               CALL MY_ALLOC(THICK_SH4,NUMELC)
               CALL MY_ALLOC(THICK_SH3,NUMELTG)
               CALL MY_ALLOC(THICK_NOD,NUMNOD)
+          ENDIF
+
+          IF (IADMERRT/=0) THEN
+              CALL MY_ALLOC(admerr_AREA_SH4,NUMELC)
+              CALL MY_ALLOC(admerr_AREA_SH3,NUMELTG)
+              CALL MY_ALLOC(admerr_AREA_NOD,NUMNOD)
+              CALL MY_ALLOC(admerr_THICK_SH4,NUMELC)
+              CALL MY_ALLOC(admerr_THICK_SH3,NUMELTG)
+              CALL MY_ALLOC(admerr_THICK_NOD,NUMNOD)
           ENDIF
 C----------------------------------------------------------
 C    SELECTIVE MASS SCALING
@@ -3740,9 +3756,11 @@ C
         IF(ICHKADM/=0 .AND. IADMERRT/=0)THEN
 C
             CALL ADMERR(
-     .     IXC     ,IXTG     ,X        ,IPARG       ,ELBUF_TAB   ,  
+     .       IXC     ,IXTG     ,X        ,IPARG       ,ELBUF_TAB   ,  
      .       IPART   ,IPART(K3),IPART(K8),ERR_THK_SH4 ,ERR_THK_SH3 ,
-     .       IAD_ELEM ,FR_ELEM ,WEIGHT   ,SH4TREE     ,SH3TREE     )
+     .       IAD_ELEM ,FR_ELEM ,WEIGHT   ,SH4TREE     ,SH3TREE     ,
+     .       admerr_AREA_SH4, admerr_AREA_SH3, admerr_AREA_NOD,
+     .       admerr_THICK_SH4,admerr_THICK_SH3,admerr_THICK_NOD,  )
           END IF
 
 C========================================================================================

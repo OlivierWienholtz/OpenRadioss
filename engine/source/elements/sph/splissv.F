@@ -198,7 +198,6 @@ C
       IF(SOL2SPH_FLAG/=0)THEN
         IF(ITASK==0)THEN
 C
-
           SPH_WORK%A6(1:6,1:3,1:NUMNOD)  = ZERO
           SPH_WORK%AS = ZERO
           SPH_WORK%ITAG= 0

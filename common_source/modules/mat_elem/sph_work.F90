@@ -36,12 +36,26 @@
 #include "my_real.inc"
 
          type sph_work_
-            integer, dimension(:), allocatable :: wreduce
-            integer, dimension(:), allocatable ::  itag
-            double precision, dimension(:,:,:), allocatable :: as6
-            double precision, dimension(:,:,:), allocatable ::  a6
-            my_real, dimension(:,:), allocatable :: as
-            my_real, dimension(:,:), allocatable :: asphr
+            integer, dimension(:), allocatable :: wreduce            ! sphprep
+            !
+            integer, dimension(:), allocatable ::  itag              ! splissv
+            double precision, dimension(:,:,:), allocatable :: as6   ! splissv
+            double precision, dimension(:,:,:), allocatable ::  a6   ! splissv
+            my_real, dimension(:,:), allocatable :: as               ! splissv
+            my_real, dimension(:,:), allocatable :: asphr            ! splissv
+            !
+            my_real, DIMENSION(:), ALLOCATABLE :: WT                 ! forintp
+            my_real, DIMENSION(:), ALLOCATABLE :: WGRADT             ! forintp
+            my_real, DIMENSION(:), ALLOCATABLE :: WLAPLT             ! forintp
+            my_real, DIMENSION(:), ALLOCATABLE :: LAMBDA             ! forintp
+            my_real, DIMENSION(:), ALLOCATABLE :: WGRADTSM           ! forintp
+            my_real, DIMENSION(:), ALLOCATABLE :: WTR                ! forintp
+            my_real, DIMENSION(:), ALLOCATABLE :: LAMBDR             ! forintp
+            my_real, DIMENSION(:), ALLOCATABLE :: WASIGSM            ! forintp
+            my_real, DIMENSION(:,:), ALLOCATABLE :: WAR              ! forintp
+            my_real, DIMENSION(:,:), ALLOCATABLE :: WGR              ! forintp
+            my_real, DIMENSION(:,:), ALLOCATABLE :: WAR2             ! forintp
+            my_real, DIMENSION(:,:), ALLOCATABLE :: STAB             ! forintp
          end type sph_work_
 
       contains 

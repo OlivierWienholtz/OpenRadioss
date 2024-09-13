@@ -96,32 +96,33 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      F   ISORTH,  ET,      MSSA,    DMELS,
      G   TABLE,   IHET,    SSP,     ITASK,
      H   NEL,     ITY,     JSMS,    JSPH,
-     I   JTHE,    JTUR,    IMPL_S   ,NUMMAT,
-     J   MAT_PARAM, SVIS)
+     I   JTHE,    JTUR,    IMPL_S,  NUMMAT,
+     J   MAT_PARAM,        SVIS,    SNPC,
+     K   DT1,     TT,      MAXFUNC, NPROPMI,
+     L   NPROPG,  NPROPM,  IMON_MAT,NUMGEO,
+     M   SBUFMAT, STF,     NTABLE )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      USE CONSTANT_MOD
       USE TABLE_MOD
       USE MAT_ELEM_MOD         
       USE MESSAGE_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
-#include      "implicit_f.inc"
-C-----------------------------------------------
-C   G l o b a l   P a r a m e t e r s
-C-----------------------------------------------
-#include      "mvsiz_p.inc"
+      IMPLICIT NONE
+#include "my_real.inc"
+#include "mvsiz_p.inc"
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "param_c.inc"
-#include      "com08_c.inc"
-#include      "scr19_c.inc"
-#include      "timeri_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      ! Integer arguments (in)
+      ! --------------------------------
+      INTEGER, INTENT(IN) :: SNPC
       INTEGER, INTENT(IN) :: NUMMAT
       INTEGER, INTENT(IN) :: ITY
       INTEGER, INTENT(IN) :: JSMS
@@ -129,61 +130,152 @@ C-----------------------------------------------
       INTEGER, INTENT(IN) :: JTHE
       INTEGER, INTENT(IN) :: JTUR
       INTEGER, INTENT(IN) :: IMPL_S !< 0 for explicit solution / 1 for implicit solution
-      INTEGER LFT,LLT,NFT,NPT,MTN,ISORTH,IPLA,ISMSTR,NUVAR,NVARTMP,
-     .  NELTST,ITYPTST,IHET,ITASK,NEL
-      INTEGER NPF(*),MAT(MVSIZ),NC(8,MVSIZ),NGL(MVSIZ),
-     .   PID(MVSIZ),IPM(NPROPMI,*)
-      my_real
-     .  DT2T
-      my_real 
-     .  PM(NPROPM,*),GAMA(*),RHO(LLT),QOLD(LLT),VOL(LLT),EPSD(LLT), 
-     .  OFF(LLT), SIG(NEL,6),EINT(LLT),OFFG(LLT),CST1(LLT), 
-     .  BUFMAT(*), TF(*),STIFN(*),ET(*), MSSA(*) ,DMELS(*),
-     .  DVOL(MVSIZ) ,VOLGP(MVSIZ,NPT),GEO(NPROPG,*),
-     .  VD2(MVSIZ), DELTAX(MVSIZ),VOLN(MVSIZ),
-     .  D1(MVSIZ,NPT),D2(MVSIZ,NPT),D3(MVSIZ,NPT),D4(MVSIZ,NPT) , 
-     .  D5(MVSIZ,NPT),D6(MVSIZ,NPT),VIS(MVSIZ),RHO0(MVSIZ),
-     .  WXX(MVSIZ,NPT) ,WYY(MVSIZ,NPT) ,WZZ(MVSIZ,NPT),
-     .  RX(MVSIZ)    ,RY(MVSIZ)    ,RZ(MVSIZ),
-     .  SX(MVSIZ)    ,SY(MVSIZ)    ,SZ(MVSIZ),
-     .  TX(MVSIZ)    ,TY(MVSIZ)    ,TZ(MVSIZ),SSP(MVSIZ)
+      INTEGER, INTENT(IN) :: LFT
+      INTEGER, INTENT(IN) :: LLT
+      INTEGER, INTENT(IN) :: NFT
+      INTEGER, INTENT(IN) :: NPT
+      INTEGER, INTENT(IN) :: MTN
+      INTEGER, INTENT(IN) :: ISORTH
+      INTEGER, INTENT(IN) :: IPLA
+      INTEGER, INTENT(IN) :: NELTST
+      INTEGER, INTENT(IN) :: ITYPTST
+      INTEGER, INTENT(IN) :: IHET
+      INTEGER, INTENT(IN) :: ITASK
+      INTEGER, INTENT(IN) :: NEL
+      INTEGER, INTENT(IN) :: MAXFUNC
+      INTEGER, INTENT(IN) :: NPROPMI
+      INTEGER, INTENT(IN) :: NPROPG
+      INTEGER, INTENT(IN) :: NPROPM
+      INTEGER, INTENT(IN) :: IMON_MAT
+      INTEGER, INTENT(IN) :: NUMGEO
+      INTEGER, INTENT(IN) :: SBUFMAT
+      INTEGER, INTENT(IN) :: STF
+      INTEGER, INTENT(IN) :: NTABLE
+      INTEGER, DIMENSION(MVSIZ),INTENT(IN)   :: MAT
+      INTEGER, DIMENSION(MVSIZ),INTENT(IN)   :: NGL
+      INTEGER, DIMENSION(8,MVSIZ),INTENT(IN) :: NC
+      INTEGER, DIMENSION(MVSIZ),INTENT(IN)   :: PID
+      INTEGER, DIMENSION(SNPC),INTENT(IN)    :: NPF
+      INTEGER, DIMENSION(NPROPMI,NUMMAT)     :: IPM
+
+      ! Floating Point arguments (in)
+      ! --------------------------------
+      my_real, DIMENSION(NPROPM,NUMMAT), INTENT(IN) :: PM
+      my_real, DIMENSION(NPROPG,NUMGEO), INTENT(IN) :: GEO
+      my_real, DIMENSION(SBUFMAT), INTENT(IN) :: BUFMAT
+      my_real, DIMENSION(STF), INTENT(IN) :: TF
+      my_real, INTENT(IN) :: DT1
+      my_real, INTENT(IN) :: TT
+      my_real, INTENT(IN) :: DT2T
+
+      ! Integer arguments (inout)
+      ! --------------------------------
+      INTEGER, INTENT(INOUT) :: ISMSTR
+
+      ! Floating Point arguments (inout)
+      ! --------------------------------
+      my_real, DIMENSION(LLT), INTENT(INOUT) :: RHO
+      my_real, DIMENSION(LLT), INTENT(INOUT) :: QOLD
+      my_real, DIMENSION(LLT), INTENT(INOUT) :: VOL
+      my_real, DIMENSION(MVSIZ,6), INTENT(INOUT) :: GAMA
+      my_real, DIMENSION(LLT), INTENT(INOUT) :: EPSD
+      my_real, DIMENSION(LLT), INTENT(INOUT) :: OFF
+      my_real, DIMENSION(LLT), INTENT(INOUT) :: OFFG
+      my_real, DIMENSION(LLT), INTENT(INOUT) :: EINT
+      my_real, DIMENSION(LLT), INTENT(INOUT) :: MSSA
+      my_real, DIMENSION(LLT), INTENT(INOUT) :: DMELS
+      my_real, DIMENSION(NEL,6), INTENT(INOUT) :: SIG
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: VOLN
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: VIS
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: SSP
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: RHO0
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: DVOL
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: VD2
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: DELTAX
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: RX
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: RY
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: RZ
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: SX
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: SY
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: SZ
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: TX
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: TY
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: TZ
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: STIFN
+      my_real, DIMENSION(MVSIZ), INTENT(INOUT) :: ET
       my_real, DIMENSION(MVSIZ,6), INTENT(INOUT) :: SVIS
-      TARGET :: BUFMAT
-      TYPE(TTABLE) TABLE(*)
-      TYPE (BUF_LAY_), TARGET :: BUFLY
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: VOLGP
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: D1
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: D2
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: D3
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: D4
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: D5
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: D6
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: WXX
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: WYY
+      my_real, DIMENSION(MVSIZ,NPT), INTENT(INOUT) :: WZZ
+
+      TYPE(TTABLE),DIMENSION(NTABLE),INTENT(IN) ::  TABLE
+      TYPE (BUF_LAY_),INTENT(INOUT), TARGET :: BUFLY
       TYPE (MATPARAM_STRUCT_) ,DIMENSION(NUMMAT) ,INTENT(INOUT) :: MAT_PARAM
       TARGET :: MAT_PARAM
+      TARGET :: BUFMAT
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      INTEGER NPAR,NUPARAM,NIPARAM,IADBUF,NFUNC,I,J,IPT,JPT,IR,ISRATE,
-     .  IFUNC(MAXFUNC),IDUM1,IRUPT,IMAT,NTABL_FAIL,
-     .  NVARF, IEXPAN8,JJ(6),INLOC,IEOS,DMG_FLAG
-      my_real 
-     .C1(MVSIZ),PNEW(MVSIZ),PP(MVSIZ),DEFP(MVSIZ),
-     .EP1(MVSIZ),EP2(MVSIZ),EP3(MVSIZ),EP4(MVSIZ),EP5(MVSIZ),EP6(MVSIZ),
-     .S1(MVSIZ) ,S2(MVSIZ) ,S3(MVSIZ) ,S4(MVSIZ) ,S5(MVSIZ) ,S6(MVSIZ),
-     .ES1(MVSIZ),ES2(MVSIZ),ES3(MVSIZ),ES4(MVSIZ),ES5(MVSIZ),ES6(MVSIZ),
-     .DE1(MVSIZ),DE2(MVSIZ),DE3(MVSIZ),DE4(MVSIZ),DE5(MVSIZ),DE6(MVSIZ),
-     .SV1(MVSIZ),SV2(MVSIZ),SV3(MVSIZ),SV4(MVSIZ),SV5(MVSIZ),SV6(MVSIZ),
-     .SO1(MVSIZ),SO2(MVSIZ),SO3(MVSIZ),SO4(MVSIZ),SO5(MVSIZ),SO6(MVSIZ),
-     .R11(MVSIZ),R12(MVSIZ),R13(MVSIZ),R21(MVSIZ),R22(MVSIZ),R23(MVSIZ),
-     .R31(MVSIZ),R32(MVSIZ),R33(MVSIZ),
-     .SOLD1(MVSIZ) ,SOLD2(MVSIZ) ,SOLD3(MVSIZ) ,
-     .SOLD4(MVSIZ) ,SOLD5(MVSIZ) ,SOLD6(MVSIZ),
-     .SSPP(MVSIZ),SIGY(MVSIZ),
-     .DPLA(MVSIZ),EPSP1(MVSIZ),TSTAR(MVSIZ),
-     .DF(MVSIZ),AMU(MVSIZ),BIDV(MVSIZ)    
-      my_real 
-     .   E1,E2,E3,E4,E5,E6,DAV,DTA,SS1,SS2,SS3,SS4,
-     .   SS5,SS6,Q1,Q2,Q3,ASRATE,EPSP,
-     .   BID,DUM1,BIDON,BIDON1,BIDON2,BIDON3,BIDON4,BIDON5
-      my_real TT_LOCAL     
-      my_real,
-     .  DIMENSION(:)  ,POINTER :: SIGP,SIGLP,STRAIN,UVAR,UVARF,DFMAX,TDELE,UPARAM0,UPARAM,UPARAMF
+      ! Integer variables
+      INTEGER :: NUVAR
+      INTEGER :: NVARTMP
+      INTEGER :: NPAR
+      INTEGER :: NUPARAM
+      INTEGER :: NIPARAM
+      INTEGER :: IADBUF
+      INTEGER :: NFUNC
+      INTEGER :: I,J
+      INTEGER :: IPT,JPT,IR,ISRATE
+      INTEGER :: IFUNC(MAXFUNC)
+      INTEGER :: IDUM1
+      INTEGER :: IRUPT,IMAT,NTABL_FAIL
+      INTEGER :: NVARF, IEXPAN8,JJ(6),INLOC,IEOS,DMG_FLAG
+      ! Floating Point variables
+      my_real, DIMENSION(LLT) :: CST1
+      my_real, DIMENSION(MVSIZ) :: C1
+      my_real, DIMENSION(MVSIZ) :: PNEW
+      my_real, DIMENSION(MVSIZ) :: PP
+      my_real, DIMENSION(MVSIZ) :: DEFP
+      my_real, DIMENSION(MVSIZ) :: EP1,EP2,EP3,EP4,EP5,EP6
+      my_real, DIMENSION(MVSIZ) :: S1,S2,S3,S4,S5,S6
+      my_real, DIMENSION(MVSIZ) :: ES1,ES2,ES3,ES4,ES5,ES6
+      my_real, DIMENSION(MVSIZ) :: DE1,DE2,DE3,DE4,DE5,DE6
+      my_real, DIMENSION(MVSIZ) :: SV1,SV2,SV3,SV4,SV5,SV6
+      my_real, DIMENSION(MVSIZ) :: SO1,SO2,SO3,SO4,SO5,SO6
+      my_real, DIMENSION(MVSIZ) :: R11,R12,R13
+      my_real, DIMENSION(MVSIZ) :: R21,R22,R23
+      my_real, DIMENSION(MVSIZ) :: R31,R32,R33
+      my_real, DIMENSION(MVSIZ) :: SOLD1,SOLD2,SOLD3,SOLD4,SOLD5,SOLD6
+      my_real, DIMENSION(MVSIZ) :: SSPP
+      my_real, DIMENSION(MVSIZ) :: SIGY
+      my_real, DIMENSION(MVSIZ) :: DPLA
+      my_real, DIMENSION(MVSIZ) :: EPSP1
+      my_real, DIMENSION(MVSIZ) :: TSTAR
+      my_real, DIMENSION(MVSIZ) :: DF
+      my_real, DIMENSION(MVSIZ) :: AMU
+      my_real, DIMENSION(MVSIZ) :: BIDV
+
+      my_real :: E1,E2,E3,E4,E5,E6
+      my_real :: DAV,DTA
+      my_real :: SS1,SS2,SS3,SS4,SS5,SS6
+      my_real :: Q1,Q2,Q3
+      my_real :: ASRATE,EPSP
+      my_real :: BID,DUM1,BIDON,BIDON1,BIDON2,BIDON3,BIDON4,BIDON5
+      my_real TT_LOCAL
+      !
+      my_real, DIMENSION(:)  ,POINTER :: SIGP,SIGLP,STRAIN,UVAR,UVARF
+      my_real, DIMENSION(:)  ,POINTER :: DFMAX,TDELE,UPARAM0,UPARAM,UPARAMF
+      !
       INTEGER, DIMENSION(:), POINTER :: VARTMP,ITABL_FAIL,IPARAM
       TYPE(L_BUFEL_)  ,POINTER :: LBUF
-!
+      !
       CHARACTER OPTION*256
       INTEGER SIZE
       INTEGER :: NRATE

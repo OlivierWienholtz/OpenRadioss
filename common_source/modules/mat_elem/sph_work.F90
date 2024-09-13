@@ -38,15 +38,53 @@
          type sph_work_
             integer, dimension(:), allocatable :: wreduce
             integer, dimension(:), allocatable ::  itag
-            double precision, dimension(:,:,:), allocatable :: as6, a6
+            double precision, dimension(:,:,:), allocatable :: as6
+            double precision, dimension(:,:,:), allocatable ::  a6
             my_real, dimension(:,:), allocatable :: as
             my_real, dimension(:,:), allocatable :: asphr
          end type sph_work_
 
-
-
       contains 
-           subroutine init_sph_work
+! ======================================================================================================================
+!                                                   init_sph_work
+! ======================================================================================================================
+
+         subroutine allocate_sph_work(sph_work,                              &
+       &                              flag_wreduce,size_wreduce,             &
+       &                              flag_sol_to_sph, size_itag,            &
+       &                              size_as6, size_a6, size_as )
+!=======================================================================================
+!! \brief  subroutine to allocate the buffers used in SPHPREP and SPHINT
+         use my_alloc_mod
+! ----------------------------------------------------------------------------------------------------------------------
+!                                                   Implicit none
+! ----------------------------------------------------------------------------------------------------------------------
+         implicit none
+!-----------------------------------------------
+!   g l o b a l   p a r a m e t e r s
+!-----------------------------------------------
+#include "my_real.inc"
+! ----------------------------------------------------------------------------------------------------------------------
+!                                                   Arguments
+! ----------------------------------------------------------------------------------------------------------------------
+           integer,intent(in) :: size_wreduce
+           integer,intent(in) :: flag_wreduce
+           integer,intent(in) :: flag_sol_to_sph
+           integer,intent(in) :: size_itag
+           integer,intent(in) :: size_as6
+           integer,intent(in) :: size_a6
+           integer,intent(in) :: size_as
+           type(sph_work_) :: sph_work
+
+           if (flag_wreduce > 0) call my_alloc(sph_work%wreduce,size_wreduce)
+           if (flag_sol_to_sph > 0) then
+                 call my_alloc(sph_work%itag,size_itag)
+                 call my_alloc(sph_work%as6,6,3,8*size_as6)
+                 call my_alloc(sph_work%a6,6,3,size_a6)
+                 call my_alloc(sph_work%as,3,8*size_as)
+           endif
+         end subroutine allocate_sph_work
+
       end module sph_work_mod
 
 

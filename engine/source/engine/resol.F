@@ -664,6 +664,7 @@ C-----------------------------------------------
       USE SKEW_MOD
       USE ELBUFDEF_MOD
       USE MY_ALLOC_MOD
+      USE SPH_WORK_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1245,6 +1246,8 @@ C-------------------------------------------------------------------------------
         my_real, DIMENSION(:), ALLOCATABLE :: admerr_AREA_NOD
         my_real, DIMENSION(:), ALLOCATABLE :: admerr_AREA_SH4
         my_real, DIMENSION(:), ALLOCATABLE :: admerr_AREA_SH3
+C-----------------------------------------------------------------------------------       
+        type(SPH_WORK_) :: SPH_WORK   ! working Areas for SPLISSV and SPHPREP
 C-----------------------------------------------------------------------------------       
 C Uncomment for Debug - ITAB is copied in Debug Module.
 C-----------------------------------------------------------------------------------
@@ -2281,6 +2284,13 @@ C ---------------------
      .                       IXS,IXC,IXT,IXP,IXR,IXTG,
      .                       SIZE_ADDCNEL,SIZE_CNEL )
       ! -------------------------
+
+      ! -------------------------
+      ! initialization of SPH_WORK
+      call ALLOCATE_SPH_WORK(SPH_WORK,
+     *                       NUMSPH,NUMSPH,         ! Flag & size for WREDUCE
+     *                       SOL2SPH_FLAG, NUMNOD,  ! Flag for other arrays
+     *                       NSPHACT,NUMNOD,NSPHACT ) ! Size of as6, a6, as
 C========================================================================================
 C                                     NON PARALLEL SECTION (SMP)
 C========================================================================================
@@ -4620,7 +4630,7 @@ C Init var parallel SMP
      9    GAUGE   ,NGROUNC ,IGROUNC ,SOL2SPH ,SPH2SOL   ,
      A    IXS     ,IADS    ,ADSKY   ,FSKYD   ,DMSPH(NDTSK),
      B    WASPH(KSPACTIV),ICONTACT_OLD,OFF_SPH_R2R,WSMCOMP,IRUNN_BIS,
-     C    SPH_IORD1)
+     C    SPH_IORD1,SPH_WORK)
 !$OMP END PARALLEL
 
         IF (IMONM > 0) CALL STOPTIME(87,1)
@@ -6837,7 +6847,7 @@ C===============================================================================
      6      WASPH(KSPH21) ,WSMCOMP%BUF ,WASPH(KSPACTIV) ,IPART,ITSK,
      7      SPH2SOL   ,SOL2SPH  ,IRST    ,IXS        ,IPARG     ,
      8      NGROUNC   ,IGROUNC  ,ELBUF_TAB,IAD_ELEM  ,FR_ELEM   ,
-     9      IGEO      ,SOL2SPH_TYP)
+     9      IGEO      ,SOL2SPH_TYP,SPH_WORK)
 
 !$OMP       END PARALLEL
             DEALLOCATE(WASPSYM)
@@ -7043,7 +7053,7 @@ C--- //0 ----------------
            CALL SPONFV (X   ,V     ,A       ,D       ,MS      ,
      2            SPBUF   ,ITAB    ,KXSP    ,IXSP    ,NOD2SP  ,
      3            NPC     ,TF      ,ISPHIO  ,VSPHIO  ,IPART   ,
-     4           IPART(K10),WASPH(KSPACTIV) ,WA,WASPH(KSPH22) )
+     4           IPART(K10),WASPH(KSPACTIV) ,WA,WASPH(KSPH22) ,SPH_WORK)
 
           IF (IMONM > 0) CALL STOPTIME(89,1)
           IF (IMONM > 0) CALL STOPTIME(48,1)

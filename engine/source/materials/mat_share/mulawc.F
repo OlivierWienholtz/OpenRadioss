@@ -158,7 +158,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      8       SHF      ,GS       ,SIGY     ,THK0      ,EPSP     ,              
      9       POSLY    ,IGEO     ,IPM      ,FAILWAVE  ,FWAVE_EL ,                                   
      A       IFAILURE ,ALDT     ,TEMPEL   ,DIE       ,                        
-     B       TABLE     ,IXFEM    ,ELCRKINI ,    
+     B       TABLE     ,IXFEM   ,ELCRKINI ,    
      D       SENSORS  ,NG       ,                         
      E       DIR1_CRK ,DIR2_CRK ,IPARG    ,JHBE      ,ISMSTR   ,JTHE     ,             
      F       TENSX    ,IR       ,IS       ,NLAY      ,NPT      ,IXLAY    ,    
@@ -249,9 +249,7 @@ C-----------------------------------------------
       INTEGER, INTENT(INOUT),DIMENSION(MVSIZ*NLAY_MAX) :: INDX
       INTEGER, INTENT(INOUT),DIMENSION(NEL)            :: FWAVE_EL
       INTEGER, INTENT(INOUT),DIMENSION(NXLAYMAX,MVSIZ) :: ELCRKINI
-
-
-
+      !
       my_real, INTENT(IN) :: DT1
       my_real, INTENT(IN) :: TT
       my_real, INTENT(IN),DIMENSION(NPROPM,NUMMAT) :: PM
@@ -300,7 +298,6 @@ C-----------------------------------------------
       my_real, intent(inout), dimension(MVSIZ*NLAY_MAX*LAYNPT_MAX) :: THKLY
       my_real, intent(inout), dimension(NEL,NLAY_MAX*LAYNPT_MAX) :: THK_LY
       my_real, intent(inout), dimension(MVSIZ,NLAY_MAX*LAYNPT_MAX) :: POSLY
-
       !
       my_real, intent(inout), dimension(mvsiz,NPT) :: PLY_EXX    ! Batoz shell delamination
       my_real, intent(inout), dimension(mvsiz,NPT) :: PLY_EYY    ! Batoz shell delamination

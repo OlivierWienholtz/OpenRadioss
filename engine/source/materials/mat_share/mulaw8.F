@@ -79,7 +79,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||    table_mod           ../engine/share/modules/table_mod.F
       !||====================================================================
       SUBROUTINE MULAW8(
-     1   LFT,     LLT,     NFT,     MTN,
+     1   LFT,     LLT,     MTN,
      2   NPT,     D1,      D2,      D3,
      3   D4,      D5,      D6,      PM,
      4   OFF,     SIG,     EINT,    RHO,
@@ -96,7 +96,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      F   ISORTH,  ET,      MSSA,    DMELS,
      G   TABLE,   IHET,    SSP,     ITASK,
      H   NEL,     ITY,     JSMS,    JSPH,
-     I   JTHE,    JTUR,    IMPL_S,  NUMMAT,
+     I   JTHE,    JTUR,    NUMMAT,
      J   MAT_PARAM,        SVIS,    SNPC,
      K   DT1,     TT,      MAXFUNC, NPROPMI,
      L   NPROPG,  NPROPM,  IMON_MAT,NUMGEO,
@@ -129,10 +129,8 @@ C-----------------------------------------------
       INTEGER, INTENT(IN) :: JSPH
       INTEGER, INTENT(IN) :: JTHE
       INTEGER, INTENT(IN) :: JTUR
-      INTEGER, INTENT(IN) :: IMPL_S !< 0 for explicit solution / 1 for implicit solution
       INTEGER, INTENT(IN) :: LFT
       INTEGER, INTENT(IN) :: LLT
-      INTEGER, INTENT(IN) :: NFT
       INTEGER, INTENT(IN) :: NPT
       INTEGER, INTENT(IN) :: MTN
       INTEGER, INTENT(IN) :: ISORTH

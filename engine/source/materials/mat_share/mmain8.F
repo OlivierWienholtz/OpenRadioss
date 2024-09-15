@@ -209,7 +209,7 @@ c     user-type laws
         ENDDO
 c
         CALL MULAW8(
-     1   1,        NEL,      NFT,      MTN,
+     1   1,        NEL,      MTN,
      2   NPT,      D1,       D2,       D3,
      3   D4,       D5,       D6,       PM,
      4   OFF,      GBUF%SIG, GBUF%EINT,GBUF%RHO,
@@ -226,7 +226,7 @@ c
      F   ISORTH,   ET,       MSSA,     DMELS,
      G   TABLE,    IHET,     SSP,      ITASK,
      H   NEL,      ITY,      JSMS,     JSPH,
-     I   JTHE,     JTUR,     IMPL_S,   MAT_ELEM%NUMMAT,
+     I   JTHE,     JTUR,     MAT_ELEM%NUMMAT,
      J   MAT_ELEM%MAT_PARAM, SVIS,     SNPC,
      K   DT1,      TT,       MAXFUNC,  NPROPMI,
      L   NPROPG,   NPROPM,   IMON_MAT, NUMGEO,

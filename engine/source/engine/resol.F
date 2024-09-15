@@ -3770,7 +3770,7 @@ C
      .       IPART   ,IPART(K3),IPART(K8),ERR_THK_SH4 ,ERR_THK_SH3 ,
      .       IAD_ELEM ,FR_ELEM ,WEIGHT   ,SH4TREE     ,SH3TREE     ,
      .       admerr_AREA_SH4, admerr_AREA_SH3, admerr_AREA_NOD,
-     .       admerr_THICK_SH4,admerr_THICK_SH3,admerr_THICK_NOD,  )
+     .       admerr_THICK_SH4,admerr_THICK_SH3,admerr_THICK_NOD  )
           END IF
 
 C========================================================================================

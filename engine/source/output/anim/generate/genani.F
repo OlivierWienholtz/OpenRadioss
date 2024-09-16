@@ -29,9 +29,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||    imp_buck      ../engine/source/implicit/imp_buck.F
       !||    sortie_main   ../engine/source/output/sortie_main.F
       !||====================================================================
-      MODULE GENANI_MOD
-      CONTAINS
-c 
+
       !||====================================================================
       !||    genani                 ../engine/source/output/anim/generate/genani.F
       !||--- called by ------------------------------------------------------
@@ -6659,7 +6657,6 @@ C
 c-----------       
        RETURN
       END SUBROUTINE GENANI
-      END MODULE GENANI_MOD
 c
       !||====================================================================
       !||    xyz16               ../engine/source/output/anim/generate/genani.F

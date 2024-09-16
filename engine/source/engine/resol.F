@@ -4677,7 +4677,8 @@ C----------------------------------
      E    FTHE          ,FTHESKYI       ,SPHG_F6    ,WSMCOMP%BUF     ,SOL2SPH_TYP   ,
      F    MAt_ELEM      ,OUTPUT         ,SPH_IORD1  ,SNPC            ,STF           ,
      G    SBUFMAT       ,NSVOIS         ,IDTMINS    ,IRESP           ,MAXFUNC       ,
-     .    IMON_MAT      ,USERL_AVAIL    ,heat_meca  ,impl_s          ,idyna)
+     .    IMON_MAT      ,USERL_AVAIL    ,heat_meca  ,impl_s          ,idyna,
+     .    SPH_WORK)
 #include "lockon.inc"
         IF(DT2TT<DT2T)THEN
           DT2T = DT2TT
@@ -7077,7 +7078,7 @@ C--- //0 ----------------
            CALL SPONFV (X   ,V     ,A       ,D       ,MS      ,
      2            SPBUF   ,ITAB    ,KXSP    ,IXSP    ,NOD2SP  ,
      3            NPC     ,TF      ,ISPHIO  ,VSPHIO  ,IPART   ,
-     4            IPART(K10),WASPH(KSPACTIV),WA,WASPH(KSPH22) )
+     4            IPART(K10),WASPH(KSPACTIV),WA,WASPH(KSPH22) ,SPH_WORK)
 
            IF (IMONM > 0) CALL STOPTIME(89,1)
            IF (IMONM > 0) CALL STOPTIME(48,1)

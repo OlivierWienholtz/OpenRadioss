@@ -92,9 +92,9 @@ C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
       INTEGER, INTENT(IN) :: SNPC
-      INTEGER, INTENT(INOUT) :: NUMGEO
-      INTEGER, INTENT(INOUT) :: SBUFMAT
-      INTEGER, INTENT(INOUT) :: STF
+      INTEGER, INTENT(IN) :: NUMGEO
+      INTEGER, INTENT(IN) :: SBUFMAT
+      INTEGER, INTENT(IN) :: STF
       INTEGER, INTENT(IN) :: NTABLE
       INTEGER IX(*), IPARG(*), NPF(*),MAT(*),NC(*),NGL(*),
      .        NEL, NELTST, ITYPTST, PID(MVSIZ,*),IPM(NPROPMI,*),

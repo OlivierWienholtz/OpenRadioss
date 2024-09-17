@@ -190,6 +190,7 @@ CONTAINS
 !-----------------------------------------------
       IMPLICIT NONE
 #include "my_real.inc"
+#include "comlock.inc"
 !-----------------------------------------------
 !   D u m m y   A r g u m e n t s
 !-----------------------------------------------
@@ -2904,10 +2905,10 @@ CONTAINS
          IF (IMCONV == 1) THEN
             DO II = 1,NINDX
                I = INDX(II)
-!$OMP CRITICAL
+#include "lockon.inc"
                WRITE(IOUT, 1000) NGL(I)
                WRITE(ISTDO,1100) NGL(I),TT
-!$OMP END CRITICAL
+#include "lockoff.inc"
             ENDDO
          ENDIF
       ENDIF

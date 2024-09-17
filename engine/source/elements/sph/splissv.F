@@ -108,7 +108,7 @@ C-----------------------------------------------
      .        IS,IC,ISLIDE,IPRT,NS,MYADRN, 
      .        NSOL, NSKI, N1, N2, N3, N4, N5, N6, N7, N8, 
      .        IR, IT, NSPHDIR, KP, NP,NELEM, OFFSET, NEL, IG, NG, 
-     .        II, II1, SIZE, LENR, IERROR
+     .        II, II1, SZ, LENR, IERROR
       my_real
      .       XI,YI,ZI,DI,RHOI,PRESI,XJ,YJ,ZJ,DJ,PRESJ,RHOJ,DIJ,
      .       VXI,VYI,VZI,VXJ,VYJ,VZJ,
@@ -947,10 +947,10 @@ C
 C-----
       IF ((SOL2SPH_FLAG > 0).AND.(ITASK==0)) THEN
         IF(NSPMD > 1)THEN
-          SIZE=19
+          SZ=19
           LENR = IAD_ELEM(1,NSPMD+1)-IAD_ELEM(1,1)
           CALL SPMD_EXCH_A_SOL2SPH(
-     1   SPH_WORK%A6       ,SPH_WORK%ITAG   ,IAD_ELEM ,FR_ELEM,SIZE,
+     1   SPH_WORK%A6       ,SPH_WORK%ITAG   ,IAD_ELEM ,FR_ELEM,SZ,
      2   LENR     )
         END IF
 C-----

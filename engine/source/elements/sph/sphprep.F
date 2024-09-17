@@ -168,11 +168,6 @@ C      /---------------/
             ALLOCATE( BOOL_SPH_SORT(NUMSPH) )
             BOOL_SPH_SORT(1:NUMSPH) = .FALSE.
         ENDIF
-        IF(IERROR/=0) THEN
-          CALL ANCMSG(MSGID=19,ANMODE=ANINFO,
-     .                C1='(SPH)')
-          CALL ARRET(2)
-        END IF
 
         IF(NSPHIO==0)THEN
           NSP2SORT=0

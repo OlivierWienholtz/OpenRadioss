@@ -93,9 +93,9 @@
            if (flag_wreduce > 0) call my_alloc(sph_work%wreduce,size_wreduce)
            if (flag_sol_to_sph > 0) then
                  call my_alloc(sph_work%itag,size_itag)
-                 allocate(sph_work%as6(6,3,8*size_as6))
                  allocate(sph_work%a6 (6,3,size_a6))
                  allocate(sph_work%as(3,8*size_as))
+                 allocate(sph_work%as6(6,3,8*size_as6))
            endif
          end subroutine allocate_sph_work
 

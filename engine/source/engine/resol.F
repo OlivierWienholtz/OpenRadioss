@@ -3087,8 +3087,6 @@ C First: try with reduced bounding box
       CALL PYTHON_UPDATE_TIME(TT,DT2)
       CALL PYTHON_UPDATE_NODAL_ENTITIES(NUMNOD, X=X,A=A,V=V,D=D,DR=DR,VR=VR)
 C=======================================================================
-
-       print*,ispmd,'IOUT=',iout
 C----------------------------------------
 C     BEGINNING OF EXPLICIT ITERATION LOOP
 C----------------------------------------

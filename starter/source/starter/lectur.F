@@ -581,7 +581,6 @@ C-----------------------------------------------
       USE ALE_CONNECTIVITY_MOD
       USE DRAPE_MOD
       USE INIVOL_DEF_MOD
-      USE INIVOL_INTERF_MOD
       USE SENSOR_MOD
       USE RANDOM_MOD
       USE ALE_EBCS_MOD

@@ -38,11 +38,11 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      2                     IPARTSP, EADD,   ND  , CEPSP, DD_IAD,
      3                     IDX,   IXSP, IPM  , IGEO,
      4                     SPBUF,SPH2SOL,SOL2SPH,
-     5                     IRST   , NOD2SP ,PRINT_FLAG,MAT_PARAM )
+     5                     IRST   , NOD2SP ,PRINT_FLAG,MAT_PARAM ,
+     6                     IXSPS)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
-      USE MOD_SPGRHEAD
       USE MESSAGE_MOD
       USE R2R_MOD
       USE MATPARAM_DEF_MOD
@@ -65,6 +65,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      INTEGER, DIMENSION(KVOISPH,NUMSPH),INTENT(INOUT) :: IXSPS
       INTEGER IDX,ND,
      .        KXSP(NISP,*),IPARG(NPARG,*),DD_IAD(NSPMD+1,*),EADD(*),
      .        IPART(LIPART1,*),IPARTSP(*),CEPSP(*),IXSP(KVOISPH,NUMSPH),
@@ -94,11 +95,6 @@ C-----------------------------------------------
       my_real
      .         GET_U_GEO
       EXTERNAL GET_U_GEO
-C--------------------------------------------------------------
-      ALLOCATE(IXSPS(KVOISPH,NUMSPH),STAT=stat)
-      IF (STAT /= 0) CALL ANCMSG(MSGID=268,ANMODE=ANINFO,
-     .                           MSGTYPE=MSGERROR,
-     .                           C1='IXSPS')
 C--------------------------------------------------------------
 C         BORNAGE DES GROUPES DE MVSIZ
 C--------------------------------------------------------------
@@ -429,8 +425,6 @@ C
      +' GROUP   CELL       CELL      FIRST    BUFFER   CELL     IEOS'/
      +'         MATERIAL   NUMBER    CELL     ADDRESS  TYPE     TYPE'/)
  1001 FORMAT(7(1X,I7,1X))
-C-----------
-      DEALLOCATE(IXSPS)
 C-----------
       RETURN
       END

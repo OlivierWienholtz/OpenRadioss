@@ -895,6 +895,7 @@ C-----------------------------------------------
       INTEGER SCR_FILE_NAME_LEN
       CHARACTER(LEN=ncharkey) :: KEY
       INTEGER NUSPHCEL
+      INTEGER, DIMENSION(:,:), ALLOCATABLE :: IXSPS
 C-----------------------------------------------
 C Model Checker Memory
       DATA IUN/1/
@@ -6321,12 +6322,17 @@ C
       ENDIF
 C---------------------------------
       IF(NUMSPH/=0) THEN
+            if ( .NOT. ALLOCATED(IXSPS) ) ALLOCATE(IXSPS(KVOISPH,NUMSPH),STAT=stat)
+            IF (STAT /= 0) CALL ANCMSG(MSGID=268,ANMODE=ANINFO,
+     .                                 MSGTYPE=MSGERROR,
+     .                                 C1='IXSPS')
+      
           IWORK  = 0
           EADD   => IWORK(1:NUMSPH+1)
           CALL SPGRHEAD(KXSP    ,IXSP    ,IPARGTMP,PM     ,IPART  ,
      2                  IPARTSP ,EADD    ,CEPSP   ,ND     ,IPM    ,
      3                  IGEO    ,SPBUF   ,SPH2SOL,
-     4                  SOL2SPH ,IRST    ,MAT_ELEM%MAT_PARAM)
+     4                  SOL2SPH ,IRST    ,MAT_ELEM%MAT_PARAM,IXSPS)
 C---------------------------------
 C-  GROUPAGE SPMD
 C---------------------------------
@@ -6348,7 +6354,9 @@ C
      2                   IPARTSP ,EADD    ,ND      ,CEPSP,DD_TMP     ,
      3                   IDX     ,IXSP    ,IPM  , IGEO      ,
      4                   SPBUF   ,SPH2SOL,SOL2SPH  ,
-     5                   IRST    ,NOD2SP  ,IPRI    ,MAT_ELEM%MAT_PARAM)
+     5                   IRST    ,NOD2SP  ,IPRI    ,MAT_ELEM%MAT_PARAM,
+     6                   IXSPS)
+        IF (ALLOCATED(IXSPS)) DEALLOCATE(IXSPS)
         ENDIF
 C---------------------------------
       IF(NUMELX>0) THEN

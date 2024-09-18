@@ -37,7 +37,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||====================================================================
       SUBROUTINE HM_READ_MAT20(
      .             IPM      ,PM       ,UNITAB   ,MAT_ID   ,TITR    ,
-     .             LSUBMODEL,MTAG     ,MATPARAM )
+     .             LSUBMODEL,MTAG     ,MATPARAM ,MAT20_DISCRETE_FILL)
 C-----------------------------------------------
 C   D e s c r i p t i o n
 C-----------------------------------------------
@@ -60,11 +60,11 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "units_c.inc"
 #include      "com01_c.inc"
-#include      "mmale20_c.inc"
 #include      "param_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      LOGICAL, INTENT(INOUT) :: MAT20_DISCRETE_FILL     
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB 
       INTEGER, INTENT(INOUT) :: IPM(NPROPMI)
       INTEGER, INTENT(IN) :: MAT_ID
@@ -117,7 +117,7 @@ C
         WRITE(IOUT,1300)(MAT(I),AMAT(I),CMAT(I),I=1,NMAT)
       ENDIF
 C
-      IF(CMAT(3)>=ONE)DISCRETE_FILL=.TRUE.
+      IF(CMAT(3)>=ONE)MAT20_DISCRETE_FILL=.TRUE.
 
       IF(NSPMD > 1) THEN
         CALL ANCMSG(MSGID=755,

@@ -53,7 +53,9 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      .             MAT_ELEM    ,MLAW_TAG ,FAIL_TAG ,EOS_TAG  ,
      .             BUFMAT      ,BUFLEN   ,IPM      ,PM       ,UNITAB   ,
      .             MULTI_FVM   ,FAILWAVE ,NLOC_DMG ,LSUBMODEL,
-     .             TABLE       ,NPC      )
+     .             TABLE       ,NPC      ,LTITR,lSET_51_IFLG6,
+     .             SSP0MAX     ,LC0MAX   ,TCP_REF  ,MAT20_DISCRETE_FILL,
+     .             USERL_AVAIL ,MAT_NUMBER)
 C-----------------------------------------------
 C   D e s c r i p t i o n
 C-----------------------------------------------
@@ -95,6 +97,14 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
+      INTEGER, INTENT(IN) :: LTITR
+      INTEGER, INTENT(IN) :: USERL_AVAIL
+      INTEGER, INTENT(INOUT) :: lSET_51_IFLG6
+      INTEGER, INTENT(INOUT) :: MAT_NUMBER
+      my_real, INTENT(INOUT) :: SSP0MAX
+      my_real, INTENT(INOUT) :: LC0MAX
+      my_real, INTENT(INOUT) :: TCP_REF
+      LOGICAL, INTENT(INOUT) :: MAT20_DISCRETE_FILL
       INTEGER :: BUFLEN
       INTEGER,INTENT(IN) :: NPC(SNPC)
       INTEGER ,DIMENSION(NPROPMI,NUMMAT), INTENT(INOUT) :: IPM
@@ -157,7 +167,11 @@ c-------------------------------------------------------------------
       CALL HM_READ_MAT(
      .     MAT_ELEM%MAT_PARAM       ,MLAW_TAG    ,EOS_TAG     ,BUFMAT      ,
      .     BUFLEN      ,IADBUF      ,IPM         ,PM          ,
-     .     MULTI_FVM   ,UNITAB      ,LSUBMODEL   ,TABLE)
+     .     MULTI_FVM   ,UNITAB      ,LSUBMODEL   ,TABLE       ,
+     .     SBUFMAT     ,NPROPMI     ,NPROPM      , TRIMAT,
+     .     IALELAG     ,NTABLE      ,NUMMAT      ,HM_NUMMAT   ,
+     .     LTITR       ,lSET_51_IFLG6,SSP0MAX    ,LC0MAX      ,
+     .     TCP_REF     ,MAT20_DISCRETE_FILL,USERL_AVAIL,MAT_NUMBER)
 
 c-------------------------------------------------------------------
 c     /EOS : Equations of State P=P(µ,E)

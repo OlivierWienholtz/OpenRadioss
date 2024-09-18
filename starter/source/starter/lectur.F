@@ -896,6 +896,7 @@ C-----------------------------------------------
       CHARACTER(LEN=ncharkey) :: KEY
       INTEGER NUSPHCEL
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: IXSPS
+      LOGICAL MAT20_DISCRETE_FILL
 C-----------------------------------------------
 C Model Checker Memory
       DATA IUN/1/
@@ -2080,7 +2081,9 @@ c---------------------------------------------------------------
      .     MAT_ELEM    ,MLAW_TAG ,FAIL_TAG ,EOS_TAG   ,
      .     RWORK       ,SBUFMAT  ,IPM      ,PM        ,UNITAB    ,
      .     MULTI_FVM   ,FAILWAVE ,NLOC_DMG ,LSUBMODEL ,
-     .     TABLE       ,NPC      )
+     .     TABLE       ,NPC      ,LTITR,lSET_51_IFLG6,
+     .     SSP0MAX     ,LC0MAX   ,TCP_REF  ,MAT20_DISCRETE_FILL,
+     .     USERL_AVAIL ,MAT_NUMBER)
 c---------------------------------------------------------------
       ALLOCATE(BUFMAT(SBUFMAT)    ,STAT=stat)
       IF(STAT /= 0) CALL ANCMSG(MSGID=268,ANMODE=ANINFO,
@@ -4386,7 +4389,7 @@ C--------------------------------------------
      .      CALL INIMU3(PM     ,IXS    ,FILL   ,DFILL  )
         IF(NUMELQ>0)
      .      CALL INIMU2(PM     ,IXQ    ,FILL   ,DFILL  )
-          CALL INIMUL  (PM     ,FILL   ,DFILL  )
+          CALL INIMUL  (PM     ,FILL   ,DFILL  ,MAT20_DISCRETE_FILL)
        ENDIF
       ENDIF
       CALL TRACE_OUT1()

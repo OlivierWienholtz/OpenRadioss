@@ -59,6 +59,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      USE MY_ALLOC_MOD
       USE ELBUFDEF_MOD         
       USE MESSAGE_MOD
       USE SPHBOX
@@ -200,11 +201,11 @@ C
 C
           SPH_WORK%A6(1:6,1:3,1:NUMNOD)  = ZERO
           IF (ALLOCATED(SPH_WORK%AS))DEALLOCATE(SPH_WORK%AS)
-          ALLOCATE(SPH_WORK%AS(3,8*NSPHACT))
+          CALL MY_ALLOC(SPH_WORK%AS,3,8*NSPHACT)
           SPH_WORK%AS= ZERO
 
           IF (ALLOCATED(SPH_WORK%AS))DEALLOCATE(SPH_WORK%AS6)
-          ALLOCATE(SPH_WORK%AS6(6,3,8*NSPHACT))
+          CALL MY_ALLOC(SPH_WORK%AS6,6,3,8*NSPHACT)
           SPH_WORK%AS6= ZERO
 
           SPH_WORK%ITAG= 0

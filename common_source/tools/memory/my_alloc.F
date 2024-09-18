@@ -388,8 +388,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 ! ----------------------------------------------------------------------------------------------------------------------
 !                                                      Body
 ! ----------------------------------------------------------------------------------------------------------------------
-
-          allocate(a(l,n,m), stat=ierr)
+          allocate(a(l,m,n), stat=ierr)
           if(.not. present(stat)) then
             if(present(msg)) then
               call check_error_and_write(ierr, msg=msg)
@@ -494,7 +493,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 !                                                      Body
 ! ----------------------------------------------------------------------------------------------------------------------
 
-          allocate(a(l,n,m), stat=ierr)
+          allocate(a(l,m,n), stat=ierr)
           if(.not. present(stat)) then
             if(present(msg)) then
               call check_error_and_write(ierr, msg=msg)

@@ -1628,6 +1628,7 @@ set_source_files_properties( ${source_directory}/source/materials/mat_share/mqvi
 set_source_files_properties( ${source_directory}/source/materials/mat_share/mqvisc8.F PROPERTIES COMPILE_FLAGS "${legacy_flags}" )
 set_source_files_properties( ${source_directory}/source/materials/mat_share/mdtsph.F PROPERTIES COMPILE_FLAGS "${legacy_flags}" )
 set_source_files_properties( ${source_directory}/source/materials/mat_share/mulawglc.F PROPERTIES COMPILE_FLAGS "${legacy_flags}" )
+set_source_files_properties( ${source_directory}/source/materials/mat_share/mulawc.F PROPERTIES COMPILE_FLAGS "${legacy_flags}" )
 set_source_files_properties( ${source_directory}/source/materials/fail/tsaihill/fail_tsaihill_c.F PROPERTIES COMPILE_FLAGS "${legacy_flags}" )
 set_source_files_properties( ${source_directory}/source/materials/fail/tsaiwu/fail_tsaiwu_c.F PROPERTIES COMPILE_FLAGS "${legacy_flags}" )
 set_source_files_properties( ${source_directory}/source/materials/fail/hc_dsse/fail_hc_dsse_c.F PROPERTIES COMPILE_FLAGS "${legacy_flags}" )

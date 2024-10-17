@@ -166,7 +166,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      E       DIR1_CRK ,DIR2_CRK ,IPARG    ,JHBE      ,ISMSTR   ,JTHE     ,             
      F       TENSX    ,IR       ,IS       ,NLAY      ,NPT      ,IXLAY    ,    
      G       IXEL     ,ITHK     ,F_DEF    ,ISHPLYXFEM,
-     H       ITASK    ,PM_STACK ,ISUBSTACK,STACK     ,TSTAR    ,ALPE     ,
+     H       ITASK    ,ISUBSTACK,STACK     ,TSTAR    ,ALPE     ,
      I       PLY_EXX  ,PLY_EYY  ,PLY_EXY  ,PLY_EXZ   ,PLY_EYZ  ,PLY_F    ,
      J       VARNL    ,ETIMP    ,NLOC_DMG ,NLAY_MAX  ,LAYNPT_MAX      ,
      *       IMPL_S   ,IMCONV   ,NPROPGI, NPROPMI ,NPROPM  ,NPROPG,
@@ -294,7 +294,6 @@ C-----------------------------------------------
       my_real, intent(inout), dimension(mvsiz) :: SIGY
       my_real, intent(inout), dimension(mvsiz,2) :: ZCFAC
       my_real, intent(inout), dimension(mvsiz,8) :: F_DEF
-      my_real, intent(inout), dimension(20,*) :: PM_STACK
       my_real, intent(inout), dimension(NXLAYMAX,mvsiz) :: DIR1_CRK
       my_real, intent(inout), dimension(NXLAYMAX,mvsiz) :: DIR2_CRK
       my_real, intent(inout), dimension(mvsiz) :: DT1C
@@ -2787,8 +2786,8 @@ C---------------------------
       ELSEIF (IGTYP == 52 .OR.
      .      ((IGTYP == 17 .OR. IGTYP == 51) .AND. IGMAT > 0)) THEN
         DO I=JFT,JLT
-          SSP(I) = PM_STACK(9,ISUBSTACK)
-          RHO(I) = PM_STACK(1,ISUBSTACK) 
+          SSP(I) = STACK%PM(9,ISUBSTACK)
+          RHO(I) = STACK%PM(1,ISUBSTACK) 
         ENDDO
       ENDIF   
 !---

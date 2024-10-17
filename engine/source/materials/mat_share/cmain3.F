@@ -322,11 +322,11 @@ c
      G       IXEL    ,ITHK    ,F_DEF   ,ISHPLYXFEM,
      H       ITASK   ,ISUBSTACK,STACK ,TSTAR   ,ALPE    ,
      I       PLY_EXX ,PLY_EYY ,PLY_EXY ,PLY_EXZ ,PLY_EYZ ,PLY_F   ,
-     J       VARNL   ,ETIMP   ,NLOC_DMG,NLAY_MAX,LAYNPT_MAX,DT    ,
+     J       VARNL   ,ETIMP   ,NLOC_DMG,NLAY_MAX,LAYNPT_MAX    ,
      *       IMPL_S  ,IMCONV  ,NPROPGI, NPROPMI ,NPROPM  ,NPROPG,
      *       IMON_MAT,NUMGEO  ,NUMSTACK, DT1    ,TT  ,NXLAYMAX ,
      *       IDEL7NOK,USERL_AVAIL,MAXFUNC,NUMMAT,VARNL_NPTTOT,
-     *       SBUFMAT ,SDIR_A  ,SDIR_B  ,STF     ,NPARG  ,SNPC)
+     *       SBUFMAT ,SDIR_A  ,SDIR_B  ,STF     ,NPARG  ,SNPC,DT)
       ENDIF ! IF (NPT == 0) 
 C----------------------------------------------------------------------
       IF (IEXPAN > 0 .AND. JTHE > 0. AND. IDT_THERM==0) THEN

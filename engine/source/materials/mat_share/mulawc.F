@@ -2349,7 +2349,7 @@ c
      5            SIGNXX   ,SIGNYY   ,SIGNXY   ,SIGNYZ   ,SIGNZX   , 
      6            EL_TEMP  ,DFMAX    ,ALDT     ,TABLE    ,TDEL     ,
      7            THK0     ,IPT      ,FOFF     ,THKLYL   ,NTABL_FAIL,ITABL_FAIL,
-     8            LF_DAMMX ,NIPAR    ,IPARAMF  )
+     8            LF_DAMMX ,NIPAR    ,IPARAMF  ,DT)
 c
               CASE (40)     !    RTCL
 c

@@ -71,7 +71,7 @@ C!-----------------------------------------------
       my_real, INTENT(IN) :: TIME,TIMESTEP
       my_real, DIMENSION(NUPARAM), INTENT(IN) :: UPARAM
       my_real, DIMENSION(NEL), INTENT(IN) :: EPSXX,EPSYY,EPSXY,
-     .   DT,EPSP,OFF,ALDT,TEMP,AREA,THKN,THK0,THKLYL
+     .   GBUF_DT,EPSP,OFF,ALDT,TEMP,AREA,THKN,THK0,THKLYL
       INTEGER, DIMENSION(NEL), INTENT(INOUT) :: FOFF
       my_real, DIMENSION(NEL), INTENT(INOUT) :: SIGNXX,SIGNYY,SIGNXY,
      .   SIGNYZ,SIGNZX,TDELE
@@ -369,9 +369,9 @@ c
           IF (BTEST(CRIT,5)) THEN 
             NMOD = NMOD + 1
             IF (TIME > ZERO) THEN 
-              DFMAX(I,1+NMOD) = MAX(DTMIN/(DT(I)*DTFAC1(1)),DFMAX(I,1+NMOD))
+              DFMAX(I,1+NMOD) = MAX(DTMIN/(GBUF_DT(I)*DTFAC1(1)),DFMAX(I,1+NMOD))
               DFMAX(I,1+NMOD) = MIN(DFMAX(I,1+NMOD),ONE)   
-              IF (DT(I)*DTFAC1(1) <= DTMIN) THEN 
+              IF (GBUF_DT(I)*DTFAC1(1) <= DTMIN) THEN 
                 NCRIT(I)  = NCRIT(I) + 1
                 IMINDT(I) = 1
               ENDIF 
@@ -619,8 +619,8 @@ c------------------------
             WRITE(ISTDO,1005) TIME,TMAX    
           ENDIF
           IF (IMINDT(I) == 1) THEN 
-            WRITE(IOUT, 1006) DT(I)*DTFAC1(1),DTMIN
-            WRITE(ISTDO,1006) DT(I)*DTFAC1(1),DTMIN        
+            WRITE(IOUT, 1006) GBUF_DT(I)*DTFAC1(1),DTMIN
+            WRITE(ISTDO,1006) GBUF_DT(I)*DTFAC1(1),DTMIN        
           ENDIF
           IF (ISIGMAX(I) == 1) THEN 
             WRITE(IOUT, 1007) SVM(I),SIGMAX(I)*FACL(I)

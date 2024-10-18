@@ -600,7 +600,7 @@ c
         ISEQ   = BUFLY%L_SEQ
         IADBUF = MAX(1,IPM(7,IMAT))
         NUPARAM0=  IPM(9,IMAT)                    ! old uparam stored in BUFMAT   
-        UPARAM0 => BUFMAT(IADBUF:IADBUF+NUPARAM0) ! old uparam stored in BUFMAT   
+        UPARAM0 => BUFMAT(IADBUF:IADBUF+NUPARAM0-1) ! old uparam stored in BUFMAT   
         NFUNC  = IPM(10,IMAT) 
         NUMTABL= IPM(226,IMAT) 
         ITABLE => IPM(226+1:226+NUMTABL,IMAT)    

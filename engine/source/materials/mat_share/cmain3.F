@@ -81,9 +81,9 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      N           ISMSTR    ,IR        ,IS        ,NLAY      ,NPT        ,
      O           IXLAY     ,IXEL      ,ISUBSTACK ,STACK     ,
      P           F_DEF     ,ITASK     ,DRAPE     ,VARNL     ,NLOC_DMG   ,
-     R           INDX_DRAPE,THKE      ,SEDRAPE   ,NUMEL_DRAPE        ,
+     R           INDX_DRAPE,THKE      ,SEDRAPE   ,NUMEL_DRAPE,DT        ,
      S           NXLAYMAX  ,IDEL7NOK  ,USERL_AVAIL, MAXFUNC ,VARNL_NPTTOT,
-     T           SBUFMAT   ,SDIR_A    ,SDIR_B     ,STF      ,SNPC,DT)
+     T           SBUFMAT   ,SDIR_A    ,SDIR_B     ,STF      ,SNPC)
 C-----------------------------------------------
 C   M o d u l e s
 C----------------------------------------------- 

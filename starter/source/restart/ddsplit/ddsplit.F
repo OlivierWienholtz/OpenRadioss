@@ -384,6 +384,7 @@ C-----------------------------------------------
       use constraint_mod , only : constraint_
       use c_inivell_mod ,  only : c_inivell
       use w_inivel_str_mod , only : w_inivel_str
+      use write_ale_grid_mod, only : write_ale_grid
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------

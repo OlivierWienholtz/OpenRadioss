@@ -196,6 +196,8 @@ C-----------------------------------------------
       USE TIME_MOD
       USE ELBUFDEF_MOD
       use write_inivel_mod , only : write_inivel
+      use write_ale_grid_mod , only : write_ale_grid
+      use write_bcs_wall_mod , only : write_bcs_wall
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------

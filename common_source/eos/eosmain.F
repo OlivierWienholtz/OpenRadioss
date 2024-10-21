@@ -57,6 +57,8 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      5                   BUFMAT,SIG   ,MU_OLD ,MLW   ,POLD  ,
      6                   NPF   ,TF    ,VAREOS ,NVAREOS)
 C-----------------------------------------------
+      use eosexponential_mod
+C-----------------------------------------------
 C   D e s c r i p t i o n
 C-----------------------------------------------
 C This subroutines call the expected EOS solver

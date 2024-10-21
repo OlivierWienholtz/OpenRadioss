@@ -182,6 +182,8 @@ C-----------------------------------------------
       USE DRAPE_MOD
       USE TIME_MOD
       use read_inivel_mod, only : read_inivel
+      use read_ale_grid_mod, only : read_ale_grid
+      use read_bcs_wall_mod, only : read_bcs_wall
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------

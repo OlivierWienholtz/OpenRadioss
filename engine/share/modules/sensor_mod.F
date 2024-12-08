@@ -230,7 +230,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||    sensor_common_mod                  ../common_source/modules/sensor_common_mod.F90
       !||====================================================================
       MODULE SENSOR_MOD
-      USE  SENSOR_COMMON_MOD
+      USE SENSOR_COMMON_MOD
       USE NAMES_AND_TITLES_MOD, ONLY:NCHARTITLE
 !$COMMENT
 !       SENSOR_MOD :
@@ -247,54 +247,16 @@ C-----------------------------------------------
 C-----------------------------------------------
 C     fixed array sizes
 C-----------------------------------------------
-      INTEGER ,PARAMETER :: MX_SENS  = 50000 !used only in sensor list in engine options /STOP, /OUTP...
 
 C-----------------------------------------------
 C   D e r i v e d   T y p e   D e f i n i t i o n s
 C-----------------------------------------------
       ! -----------------------------------
-      TYPE SUB_SENSOR_TYPE
-        INTEGER :: PART     !   id of the part
-        INTEGER :: NUM_GROUP_PART   !   number of element group per part
-        REAL(KIND=8), DIMENSION(:,:,:), ALLOCATABLE :: FBSAV6_SENS      !   FBSAV6 double precision array (parith/on array)           
-      END TYPE SUB_SENSOR_TYPE
+
       ! -----------------------------------
-      TYPE SENSOR_TYPE
-        INTEGER :: TYP      !   type of energy sensor : 1 --> only 1 part ; 2 --> several subparts
-        INTEGER :: PART     !   id of the part
-        INTEGER :: NB_SUB   !   number of subpart only useful for typ=2
-        INTEGER :: NUM_GROUP_PART   !   number of element group per part
-        type(sub_sensor_type), DIMENSION(:), ALLOCATABLE :: SUB
-        REAL(KIND=8), DIMENSION(:,:,:), ALLOCATABLE :: FBSAV6_SENS      !   FBSAV6 double precision array (parith/on array)           
-      END TYPE SENSOR_TYPE
-      ! -----------------------------------
-      TYPE SENSOR_GROUP
-        INTEGER :: NUM_PART     !   number of part per element group
-        INTEGER, DIMENSION(:,:), ALLOCATABLE :: PART   !   size = (num_part,3)
-!       structure of SENS_GROUP%PART :
-!       (1:num_part,1): id of the part
-!       (1:num_part,2): type of energy sensor (1=part / 2=subset)
-!       (1:num_part,3): sensor linked to the current part
-      END TYPE SENSOR_GROUP
-      ! -----------------------------------
-      TYPE SENSOR_COMM
-        LOGICAL :: BOOL         !   boolean : true if there is one or more energy sensors
-        INTEGER :: NUM_SENS   !   number of sensor
-        INTEGER :: BUFFER_SIZE_MEAN   !   buffer size for MPI_SUM reduction
-        INTEGER :: BUFFER_SIZE_MIN_MAX   !   buffer size for MIN/MAX reduction
-        INTEGER, DIMENSION(:), ALLOCATABLE :: ID_SENS   !   id of the sensor
-      END TYPE SENSOR_COMM
-      ! -----------------------------------
-      type(sensor_comm) :: COMM_SENS14 ! structure for mpi communication : sensor typ14
-      type(sensor_comm) :: COMM_SENS16 ! structure for mpi communication : sensor typ16
-      type(sensor_comm) :: COMM_SENS17 ! structure for mpi communication : sensor typ17 --> sensor temperature
-      type(sensor_type), DIMENSION(:), ALLOCATABLE :: SENSOR_STRUCT     !   structure of energy sensor
-      type(sensor_group), DIMENSION(:), ALLOCATABLE :: SENS_GROUP       !   structure of energy sensor
-      INTEGER :: NGR_SENSOR
-!$OMP THREADPRIVATE (NGR_SENSOR)
+
+
 c
-      INTEGER LOGICAL_SENSOR_COUNT
-      INTEGER, DIMENSION(:),ALLOCATABLE :: LOGICAL_SENSORS_LIST
       
 
       END MODULE SENSOR_MOD

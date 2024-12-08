@@ -57,7 +57,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      6                   NEL      ,DT2T     ,NELTST ,ITYPTST ,IPM      ,
      7                   ITASK    ,GRESAV   ,GRTH   ,IGRTH   ,MSSA     ,
      8                   DMELS    ,TABLE    ,IOUTPRT,MAT_ELEM,NG,SVIS ,GLOB_THERM,
-     9                   SNPC     ,NUMGEO   ,SBUFMAT  ,STF    ,NTABLE)
+     9                   SNPC     ,NUMGEO   ,SBUFMAT  ,STF    ,NTABLE,SENSORS)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -66,6 +66,7 @@ C-----------------------------------------------
       USE ALE_CONNECTIVITY_MOD
       USE ELBUFDEF_MOD
       use glob_therm_mod
+      USE SENSOR_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -104,6 +105,7 @@ C     REAL
       TYPE(TTABLE) TABLE(*)
       TYPE(t_ale_connectivity), INTENT(IN) :: ALE_CONNECT
       type (glob_therm_) ,intent(inout)    :: glob_therm
+      type (sensors_),INTENT(INOUT) :: SENSORS
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -169,7 +171,7 @@ C-----------------------------------------------
      .             R11, R12, R13, R21, R22, R23, R31, R32, R33,
      .             IOUTPRT,VGXA,VGYA,VGZA,VGA2,NEL,
      .             XGXA,XGYA,XGZA,XGXA2,XGYA2,XGZA2,
-     .             XGXYA,XGYZA,XGZXA,IPARG(1,NG))
+     .             XGXYA,XGYZA,XGZXA,IPARG(1,NG),SENSORS)
       ENDIF
 C-----------------------------------------------
 C FONCTIONS DE FORME, DEFORMATION, ET OBJECTIVITE 
@@ -240,12 +242,12 @@ c           IF (MTN==11) NB3S = NB14
            IF (JCVT==0)THEN
             CALL S8BILAN(PARTSAV,EINT,GBUF%RHO,GBUF%RK,GBUF%VOL,
      .                  VOLN,VXLOC,VYLOC,VZLOC,IPARTS,
-     .                  GRESAV,GRTH,IGRTH,XLOC,YLOC,ZLOC,ITASK,IPARG(1,NG))
+     .                  GRESAV,GRTH,IGRTH,XLOC,YLOC,ZLOC,ITASK,IPARG(1,NG),SENSORS)
            ELSE
             CALL SR8BILAN(PARTSAV,EINT,GBUF%RHO,GBUF%RK,GBUF%VOL,
      .                  VOLN,VGXA,VGYA,VGZA,VGA2,IPARTS,
      .                  GRESAV,GRTH,IGRTH,XGXA,XGYA,XGZA,
-     .                  XGXA2,XGYA2,XGZA2,XGXYA,XGYZA,XGZXA,ITASK,IPARG(1,NG))
+     .                  XGXA2,XGYA2,XGZA2,XGXYA,XGYZA,XGZXA,ITASK,IPARG(1,NG),SENSORS)
            ENDIF
         ENDIF
 C----------------------------

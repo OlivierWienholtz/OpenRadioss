@@ -687,7 +687,7 @@ C--------------------------
            CALL S10BILAN(PARTSAV,LBUF%EINT,LBUF%RHO,LBUF%RK,LBUF%VOL,
      .                   VX, VY, VZ,NX(1,1,IP),VOLN,IPARTS,
      .                   GRESAV,GRTH,IGRTH,IEXPAN,LBUF%EINTTH,
-     .                   GBUF%FILL,XX,YY,ZZ,ITASK,IPARG(1,NG),GBUF%OFF)
+     .                   GBUF%FILL,XX,YY,ZZ,ITASK,IPARG(1,NG),GBUF%OFF,SENSORS)
         ENDIF
 C-------------------------
         IF (CNS2>ZERO)

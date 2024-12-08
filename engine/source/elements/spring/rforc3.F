@@ -269,7 +269,7 @@ C
      2   V,                 IPARTR,            GBUF%LENGTH(II(1)),GRESAV,
      3   GRTH,              IGRTH,             GBUF%OFF,          NC1,
      4   NC2,               X,                 VR,                ITASK,
-     5   NEL,               IGRE)
+     5   NEL,               IGRE,              SENSORS)
         CALL R1TORS(
      1   GBUF%FOR(II(1)),TANI,           H3D_DATA,       NEL)
 !        
@@ -345,7 +345,7 @@ C
      2   V,                 IPARTR,            GBUF%LENGTH(II(1)),GRESAV,
      3   GRTH,              IGRTH,             GBUF%OFF,          NC1,
      4   NC2,               X,                 VR,                ITASK,
-     5   NEL,               IGRE)
+     5   NEL,               IGRE,              SENSORS)
         CALL R1TORS(
      1   GBUF%FOR(II(1)),TANI,           H3D_DATA,       NEL)
 !        
@@ -410,7 +410,7 @@ C
      2   V,                 IPARTR,            GBUF%LENGTH(II(1)),GRESAV,
      3   GRTH,              IGRTH,             GBUF%OFF,          NC1,
      4   NC2,               X,                 VR,                ITASK,
-     5   NEL,               IGRE)
+     5   NEL,               IGRE,              SENSORS)
         CALL R1TORS(
      1   GBUF%FOR(II(1)),TANI,           H3D_DATA,       NEL)
 !        
@@ -502,7 +502,7 @@ C
      2   V,        IPARTR,   BID,      GRESAV,
      3   GRTH,     IGRTH,    GBUF%OFF, NC1,
      4   NC2,      X,        VR,       ITASK,
-     5   NEL,      IGRE)
+     5   NEL,      IGRE,SENSORS)
         CALL R2TORS(
      1   GBUF%FOR(II(1)),GBUF%FOR(II(2)),GBUF%FOR(II(3)),GBUF%MOM(II(1)),
      2   GBUF%MOM(II(2)),GBUF%MOM(II(3)),TANI,           H3D_DATA,
@@ -584,7 +584,7 @@ c
      2   V,                 IPARTR,            GBUF%LENGTH(II(1)),GRESAV,
      3   GRTH,              IGRTH,             NC1,               NC2,
      4   NC3,               X,                 VR,                ITASK,
-     5   NEL,               IGRE)
+     5   NEL,               IGRE,SENSORS)
         CALL R3TORS(
      1   GBUF%FOR(II(1)),DF,             TANI,           H3D_DATA,
      2   NEL)
@@ -684,7 +684,7 @@ C
      2   V,                 IPARTR,            GBUF%LENGTH(II(1)),GRESAV,
      3   GRTH,              IGRTH,             GBUF%OFF,          NC1,
      4   NC2,               X,                 VR,                ITASK,
-     5   NEL,               IGRE)
+     5   NEL,               IGRE,SENSORS)
         CALL R4TORS(
      1   GBUF%FOR(II(1)),GBUF%FOR(II(2)),GBUF%FOR(II(3)),GBUF%MOM(II(1)),
      2   GBUF%MOM(II(2)),GBUF%MOM(II(3)),TANI,           AL,
@@ -803,7 +803,7 @@ C
      2   V,                 IPARTR,            GBUF%LENGTH(II(1)),GRESAV,
      3   GRTH,              IGRTH,             GBUF%OFF,          NC1,
      4   NC2,               X,                 VR,                ITASK,
-     5   NEL,               IGRE)
+     5   NEL,               IGRE,              SENSORS)
         CALL R4TORS(
      1   GBUF%FOR(II(1)),GBUF%FOR(II(2)),GBUF%FOR(II(3)),GBUF%MOM(II(1)),
      2   GBUF%MOM(II(2)),GBUF%MOM(II(3)),TANI,           AL,
@@ -1001,7 +1001,7 @@ C
      2   V,        IPARTR,   UINER,    X,
      3   VR,       GRESAV,   GRTH,     IGRTH,
      4   NC1,      NC2,      ITASK,    IAD,
-     5   IGRE,     NFT,      NEL)
+     5   IGRE,     NFT,      NEL,SENSORS)
         CALL R4TORS(
      1   GBUF%FOR(II(1)),GBUF%FOR(II(2)),GBUF%FOR(II(3)),GBUF%MOM(II(1)),
      2   GBUF%MOM(II(2)),GBUF%MOM(II(3)),TANI,           AL,
@@ -1101,7 +1101,7 @@ C
      2   V,        IPARTR,   UINER,    X,
      3   VR,       GRESAV,   GRTH,     IGRTH,
      4   NC1,      NC2,      ITASK,    IAD,
-     5   IGRE,     NFT,      NEL)
+     5   IGRE,     NFT,      NEL,      SENSORS)
         CALL R4TORS(
      1   GBUF%FOR(II(1)),GBUF%FOR(II(2)),GBUF%FOR(II(3)),GBUF%MOM(II(1)),
      2   GBUF%MOM(II(2)),GBUF%MOM(II(3)),TANI,           AL,
@@ -1234,7 +1234,7 @@ C
      2   V,        IPARTR,   UINER,    X,
      3   VR,       GRESAV,   GRTH,     IGRTH,
      4   NC1,      NC2,      ITASK,    IAD,
-     5   IGRE,     NFT,      NEL)
+     5   IGRE,     NFT,      NEL,      SENSORS)
         CALL R4TORS(
      1   GBUF%FOR(II(1)),GBUF%FOR(II(2)),GBUF%FOR(II(3)),GBUF%MOM(II(1)),
      2   GBUF%MOM(II(2)),GBUF%MOM(II(3)),TANI,           AL,
@@ -1332,7 +1332,7 @@ C
      2   V,        IPARTR,   UINER,    X,
      3   VR,       GRESAV,   GRTH,     IGRTH,
      4   NC1,      NC2,      ITASK,    IAD,
-     5   IGRE,     NFT,      NEL)
+     5   IGRE,     NFT,      NEL,SENSORS)
         CALL R4TORS(
      1   GBUF%FOR(II(1)),GBUF%FOR(II(2)),GBUF%FOR(II(3)),GBUF%MOM(II(1)),
      2   GBUF%MOM(II(2)),GBUF%MOM(II(3)),TANI,           AL,
@@ -1430,7 +1430,7 @@ C
      2   V,        IPARTR,   UINER,    X,
      3   VR,       GRESAV,   GRTH,     IGRTH,
      4   NC1,      NC2,      ITASK,    IAD,
-     5   IGRE,     NFT,      NEL)
+     5   IGRE,     NFT,      NEL,SENSORS)
         CALL R4TORS(
      1   GBUF%FOR(II(1)),GBUF%FOR(II(2)),GBUF%FOR(II(3)),GBUF%MOM(II(1)),
      2   GBUF%MOM(II(2)),GBUF%MOM(II(3)),TANI,           AL,

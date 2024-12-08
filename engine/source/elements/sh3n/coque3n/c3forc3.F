@@ -586,7 +586,7 @@ c      IFLAG=MOD(NCYCLE,NCPRI)
      5   GRTH,       IGRTH,      OFF,        IBID,
      6   IBID,       IBID,       IBID,       IBID,
      7   IEXPAN,     GBUF%EINTTH,ITASK,      MAT,
-     8   GBUF%VOL,   ACTIFXFEM,  IGRE)
+     8   GBUF%VOL,   ACTIFXFEM,  IGRE,SENSORS)
 C----------------------------
 C     INTERNAL FORCES
 C----------------------------

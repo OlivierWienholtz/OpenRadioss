@@ -226,7 +226,7 @@ C-----------------------------------------------
       TYPE(T_DIFFUSION),INTENT(INOUT) :: DIFFUSION
       TYPE (MAT_ELEM_) ,INTENT(INOUT) :: MAT_ELEM
       TYPE (H3D_DATABASE) :: H3D_DATA
-      TYPE (SENSORS_) ,INTENT(IN)  :: SENSORS
+      TYPE (SENSORS_) ,INTENT(INOUT)  :: SENSORS
       my_real, INTENT(INOUT) :: XCELL(3,SXCELL)
       TYPE (DT_) ,INTENT(INOUT)  :: DT
       TYPE(OUTPUT_), INTENT(INOUT) :: OUTPUT !< output structure
@@ -792,7 +792,7 @@ C
          !---------------------------------------------
           DO NG=ITASK+1,NGROUP,NTHREAD
 C     ALE ON / OFF
-             NGR_SENSOR = NG
+             SENSORS%NGR_SENSOR(ITASK) = NG
              IF (TT  >  ZERO .AND. IPARG(76, NG)  ==  1) CYCLE ! --> OFF
              IF(IPARG(8,NG) /= 1) THEN
 C
@@ -926,7 +926,7 @@ c
      C                  NSVOIS      , IRESP         ,IDEL7NOK        , 
      D                  IDTMIN      , MAXFUNC       ,IMON_MAT        , 
      E                  USERL_AVAIL , impl_s         , idyna     ,DT         ,
-     F                  GLOB_THERM)
+     F                  GLOB_THERM  , SENSORS)
                  ENDIF
                 ENDIF
               ENDIF
@@ -972,7 +972,7 @@ C
             
             DO NG=ITASK+1,NGROUP,NTHREAD
 C     ALE ON / OFF
-               NGR_SENSOR = NG
+               SENSORS%NGR_SENSOR(ITASK) = NG
                IF (TT  >  ZERO .AND. IPARG(76, NG)  ==  1) CYCLE ! --> OFF
                CALL INITBUF(IPARG    ,NG      ,
      2               MTN     ,NEL     ,NFT     ,IAD     ,ITY     ,   

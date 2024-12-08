@@ -118,6 +118,7 @@ C-----------------------------------------------
       USE ELBUFDEF_MOD
       USE SDISTOR_INI_MOD, ONLY : SDISTOR_INI
       use glob_therm_mod
+      USE SENSOR_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -677,7 +678,7 @@ C--------------------------
      .   VZ1, VZ2, VZ3, VZ4, VOLN,IPARTS,GRESAV,
      .   GRTH,IGRTH,IEXPAN,GBUF%EINTTH,GBUF%FILL,
      .   X1, X2, X3, X4, Y1, Y2, Y3, Y4, 
-     .   Z1, Z2, Z3, Z4,ITASK,IPARG(1,NG),OFF)
+     .   Z1, Z2, Z3, Z4,ITASK,IPARG(1,NG),OFF,SENSORS)
       ENDIF
 C
       IF(JLAG+JALE+JEUL == 0)RETURN

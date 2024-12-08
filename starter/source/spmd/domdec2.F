@@ -57,7 +57,8 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      E   ICNDS10,ITAGND ,IGEO   ,TAG_SKN,MULTIPLE_SKEW,
      F   IBFV   ,IBCSCYC,LBCSCYC,R_SKEW,IPM     ,
      G   SENSORS, LEN_CEP,EBCS_TAB,LOADS,IFRAME,
-     H   NICONV ,NIRADIA ,NITFLUX,NUMCONV,NUMRADIA,NFXFLUX)
+     H   NICONV ,NIRADIA ,NITFLUX,NUMCONV,NUMRADIA,NFXFLUX,
+     I   SENSOR_USER_STRUCT)
 C
 C-----------------------------------------------
 C   M o d u l e s
@@ -132,6 +133,7 @@ C-----------------------------------------------
       TYPE(T_EBCS_TAB), INTENT(INOUT) :: EBCS_TAB ! ebcs data structure
       TYPE (LOADS_), INTENT(INOUT) :: LOADS ! load data structure
       INTEGER ,DIMENSION(LISKN,NUMFRAM+1)   ,INTENT(IN) :: IFRAME ! frame data structure
+      TYPE(SENSOR_USER_STRUCT_) ,INTENT(INOUT) :: SENSOR_USER_STRUCT
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------

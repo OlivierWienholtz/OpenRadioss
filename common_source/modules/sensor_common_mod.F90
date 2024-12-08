@@ -114,6 +114,16 @@
         integer, dimension(:), allocatable :: id_sens   !   id of the sensor
       end type sensor_comm
 
+      type sensor_user_struct_
+         logical :: is_used          ! boolean, true if a user sensor is activated
+         integer :: pointer_node,number_node ! nbr of node of user sensor + index 
+         integer :: pointer_part,number_part ! nbr of part of user sensor + index 
+         integer :: pointer_node_per_part,number_node_per_part ! nbr of node defined in a part of user sensor + index 
+         integer, dimension(:), allocatable :: node_list ! list of node
+         integer, dimension(:), allocatable :: part_list ! list of part
+         integer, dimension(:), allocatable :: node_per_part_list ! list of node defined in a part
+      end type sensor_user_struct_
+
 
       !                                  IPARAM                     RPARAM               VAR
 ! if type == 0 : sensor time        {}                          {}                 {} 
@@ -166,7 +176,6 @@
         integer            ,dimension(:) ,allocatable :: anim_tmp
 
         integer, dimension(:) ,allocatable :: tabsensor  
-
 
         integer,dimension(:),allocatable :: ngr_sensor
         ! logical sensors

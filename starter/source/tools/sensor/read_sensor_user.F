@@ -41,7 +41,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||====================================================================
       SUBROUTINE READ_SENSOR_USER(HM_NSENSOR,ISEN    ,TITLE  ,
      .                            UNITAB   ,LSUBMODEL ,KEY       ,UNIT_ID ,SENS_ID,
-     .                            SENSOR_PTR)
+     .                            SENSOR_PTR,SENSOR_USER_STRUCT)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------  
@@ -72,6 +72,7 @@ C-----------------------------------------------
       TYPE (UNIT_TYPE_),INTENT(IN) ::UNITAB
       TYPE (SUBMODEL_DATA) ,DIMENSION(NSUBMOD) :: LSUBMODEL
       TYPE (SENSOR_STR_)   ,INTENT(OUT)        :: SENSOR_PTR
+      TYPE(sensor_user_struct_), INTENT(INOUT) :: SENSOR_USER_STRUCT
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------
@@ -132,7 +133,7 @@ c--------------------------------------------------
       IF (NLINES > 1) THEN
 !
 !
-        IF ((TYP>28.AND.TYP<38).AND. .NOT.(ALREADY_DONE) ) CALL SENSOR_USER_ALLOC(ALREADY_DONE)
+        IF ((TYP>28.AND.TYP<38).AND. .NOT.(ALREADY_DONE) ) CALL SENSOR_USER_ALLOC(ALREADY_DONE,SENSOR_USER_STRUCT)
 !
 c---------------------------------------
         IF (TYP>=29.AND.TYP<=31) THEN

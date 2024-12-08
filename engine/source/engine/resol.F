@@ -2088,7 +2088,7 @@ C Reinitialise sensor variables defined in /SENS/RESET
        K12=K11+NUMELIG3D
        CALL SENSOR_INIT(SUBSETS,IPARG,NGROUC,
      .                  IPART(K3),IPART(K8),IPART(K1),IPART(K2),IPART(K4),
-     .                  IPART(K5) ,IPART(K6),SENSORS,TT ,DT2 ,IOUT, PYTHON )
+     .                  IPART(K5) ,IPART(K6),SENSORS,TT ,DT2 ,IOUT, PYTHON ,NTHREAD)
 
 
 C========================================================================================
@@ -4805,7 +4805,7 @@ C
      Y H3D_DATA       ,IFTHE         ,ICONDN      ,DT      ,OUTPUT,
      Z SBUFMAT        ,SNPC          ,STF         ,NODADT  ,DTFAC1,
      . DTMIN1         ,IDTMIN        ,IOUT        ,ISTDO   ,IDTMINS,DTFACS,NSVOIS,
-     . IRESP          ,MAXFUNC       ,USERL_AVAIL ,GLOB_THERM,IMON_MAT,DTMINS)
+     . IRESP          ,MAXFUNC       ,USERL_AVAIL ,GLOB_THERM,IMON_MAT,DTMINS,SANIN)
 C     
 #include "lockon.inc"
       IF(DT2TT<DT2T)THEN
@@ -7016,19 +7016,22 @@ c
           CALL SENSOR_ENER_SAV(NSENSOR,SENSORS%SENSOR_TAB ,PARTSAV ,PARTSAV2)
           ! -------------------------------
           ! pre-computation and mpi communication for type 16 sensor
-          IF (COMM_SENS16%BOOL) THEN
-             CALL SENSOR_DIST_SURF0(NSENSOR,SENSORS%SENSOR_TAB,NODES%X,IGRSURF)
+          IF (SENSORS%COMM_SENS16%BOOL) THEN
+             CALL SENSOR_DIST_SURF0(NSENSOR,SENSORS%SENSOR_TAB,NODES%X,
+     *                              IGRSURF,SENSORS%COMM_SENS16)
           ENDIF
           ! -------------------------------
           ! pre-computation and mpi communication for type 17 sensor
-          IF(COMM_SENS17%BOOL) THEN
-             CALL SENSOR_TEMP0(NSENSOR,SENSORS%SENSOR_TAB,IGRNOD,TEMP,NODES%WEIGHT)
+          IF(SENSORS%COMM_SENS17%BOOL) THEN
+             CALL SENSOR_TEMP0(NSENSOR,SENSORS%SENSOR_TAB,IGRNOD,TEMP,NODES%WEIGHT,SENSORS%COMM_SENS17,
+     *                         SENSORS%SENSOR_STRUCT)
           ENDIF
           ! -------------------------------
           IF (NSPMD > 1) THEN
             CALL SENSOR_SPMD(SENSORS%SENSOR_TAB,IPARI   ,NPRW     ,ISENSP  ,NSENSP  ,
      .                   XSENS     ,NODES%X       ,ACCELM   ,IACCP   ,NACCP   ,
-     .                   GAUGE     ,IGAUP   ,NGAUP    ,PARTSAV2,NSENSOR )
+     .                   GAUGE     ,IGAUP   ,NGAUP    ,PARTSAV2,NSENSOR,
+     .                   SENSORS%COMM_SENS14,SENSORS%SENSOR_STRUCT)
           ENDIF      
 c
           ! check activation condition of base sensors
@@ -7038,7 +7041,7 @@ c
      .         SUBSETS   ,IGRSURF   ,IGRNOD    , PYTHON)
 c
           ! check activation condition of logical sensors hierarchy
-          CALL SENSOR_LOGICAL(NSENSOR,SENSORS%SENSOR_TAB)
+          CALL SENSOR_LOGICAL(SENSORS)
 
         ENDIF
 
@@ -8316,19 +8319,22 @@ c
         CALL SENSOR_ENER_SAV(NSENSOR,SENSORS%SENSOR_TAB,PARTSAV ,PARTSAV2)
 
         ! pre-computation and mpi communication for type 16 sensor
-        IF (COMM_SENS16%BOOL) THEN
-          CALL SENSOR_DIST_SURF0(NSENSOR,SENSORS%SENSOR_TAB,NODES%X,IGRSURF)
+        IF (SENSORS%COMM_SENS16%BOOL) THEN
+          CALL SENSOR_DIST_SURF0(NSENSOR,SENSORS%SENSOR_TAB,NODES%X,
+     *                           IGRSURF,SENSORS%COMM_SENS16)
         ENDIF
 
         ! pre-computation and mpi communication for type 17 sensor
-        IF (COMM_SENS17%BOOL) THEN
-          CALL SENSOR_TEMP0(NSENSOR,SENSORS%SENSOR_TAB,IGRNOD,TEMP,NODES%WEIGHT)
+        IF (SENSORS%COMM_SENS17%BOOL) THEN
+          CALL SENSOR_TEMP0(NSENSOR,SENSORS%SENSOR_TAB,IGRNOD,TEMP,NODES%WEIGHT,SENSORS%COMM_SENS17,
+     *                      SENSORS%SENSOR_STRUCT)
         ENDIF
 
         IF (NSPMD > 1) THEN
           CALL SENSOR_SPMD(SENSORS%SENSOR_TAB,IPARI ,NPRW      ,ISENSP    ,NSENSP    ,
      .                 XSENS     ,NODES%X       ,ACCELM   ,IACCP     ,NACCP     ,
-     .                 GAUGE     ,IGAUP   ,NGAUP    ,PARTSAV2  ,NSENSOR   ) 
+     .                 GAUGE     ,IGAUP   ,NGAUP    ,PARTSAV2  ,NSENSOR,
+     .                 SENSORS%COMM_SENS14,SENSORS%SENSOR_STRUCT  ) 
         ENDIF
 c       
         ! check activation condition of base sensors
@@ -8338,7 +8344,7 @@ c
      .       SUBSETS   ,IGRSURF   ,IGRNOD    ,PYTHON)
 c       
         ! check activation condition of logical sensor hierarchy
-        CALL SENSOR_LOGICAL(NSENSOR,SENSORS%SENSOR_TAB)
+        CALL SENSOR_LOGICAL(SENSORS)
 
       ENDIF  !  NSENSOR > 0
 C========================================================================================

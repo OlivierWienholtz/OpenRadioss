@@ -52,6 +52,7 @@ C-----------------------------------------------
       USE NAMES_AND_TITLES_MOD , ONLY : NCHARLINE, NCHARKEY
       USE FORMAT_MOD ,ONLY :  FMT_F
       USE READER_OLD_MOD , ONLY : KEY0, KCUR, KLINE, LINE
+      USE USER_INTERFACE_MOD,only : KSENS_CUR
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------

@@ -39,6 +39,7 @@ C     MODULE dedicated to pass arrays from RADIOSS to user routines.
 C-----------------------------------------------------------------------------------
         TYPE (USER_WINDOWS_) :: USER_WINDOWS
         TYPE(SENSOR_USER_STRUCT_) :: SENSOR_USER_STRUCT
+        INTEGER :: KSENS_CUR
 
       END MODULE USER_INTERFACE_MOD
 

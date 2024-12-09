@@ -8155,7 +8155,7 @@ c
      .       SUBSETS   ,IGRSURF   ,IGRNOD    ,PYTHON)
 c       
         ! check activation condition of logical sensor hierarchy
-        CALL SENSOR_LOGICAL(NSENSOR,SENSORS%SENSOR_TAB)
+        CALL SENSOR_LOGICAL(SENSORS)
 
       ENDIF  !  NSENSOR > 0
 C========================================================================================

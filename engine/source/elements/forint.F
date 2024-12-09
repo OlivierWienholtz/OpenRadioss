@@ -1110,7 +1110,7 @@ C-------------------------
      6      NEL          ,DT2T     ,NELTST   ,ITYPTST   ,IPM        ,           
      7      ITASK        ,GRESAV   ,GRTH     ,IGRTH(NF1),MSSA(NF1)  ,           
      8      DMELS(NF1)   ,TABLE,IPRI     ,MAT_ELEM,NG  ,SVIS ,GLOB_THERM,
-     9      SNPC         ,NUMGEO         ,SBUFMAT      ,STF,NTABLE)     
+     9      SNPC         ,NUMGEO         ,SBUFMAT      ,STF,NTABLE,SENSORS)     
                                                  
             IF (NSECT > 0)THEN
                K0=NSTRF(25)

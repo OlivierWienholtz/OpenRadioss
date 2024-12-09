@@ -907,7 +907,7 @@ C
      D                  SVIS            ,NSVOIS           ,IRESP       ,TT        ,DT1      ,      
      .                  IDEL7NOK        ,IDTMIN           ,MAXFUNC     ,  
      .                  IMON_MAT        ,USERL_AVAIL      ,impl_s    ,idyna    ,
-     .                  DT              ,GLOB_THERM) 
+     .                  DT              ,GLOB_THERM       ,SENSORS)
 c
                  ELSEIF (ITY == 2 .AND. JMULT /= 0) THEN
                   CALL BFORC2(
@@ -1084,7 +1084,7 @@ C     ALE ON / OFF
      D              SVIS      ,NSVOIS           ,IRESP       ,TT       ,DT1       ,      
      .              IDEL7NOK  ,IDTMIN           ,MAXFUNC     ,  
      .              IMON_MAT  ,USERL_AVAIL      ,impl_s   ,idyna     ,
-     .              DT        ,GLOB_THERM)
+     .              DT        ,GLOB_THERM       ,SENSORS)
 c
                       ELSEIF(ITY == 2 .AND. JMULT /= 0)THEN
                   CALL BFORC2(ELBUF_TAB  ,NG           ,
@@ -1102,7 +1102,7 @@ c
      B                        NSVOIS     ,IRESP        ,IDEL7NOK         ,
      C                        IDTMIN     ,MAXFUNC      ,IMON_MAT         ,
      E                        USERL_AVAIL,impl_s           ,idyna      ,DT        ,
-     F                        GLOB_THERM)
+     F                        GLOB_THERM ,SENSORS)
 
                  ENDIF
                 ENDIF

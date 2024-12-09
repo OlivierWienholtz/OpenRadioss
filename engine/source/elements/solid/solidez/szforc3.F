@@ -1050,7 +1050,8 @@ C Energy, momentum, mass balance per part in case of output
      .       VGXA, VGYA, VGZA, VGA2, VOLN,IPARTS,                
      .       GRESAV,GRTH,IGRTH,GBUF%OFF,IEXPAN,GBUF%EINTTH,
      .       GBUF%FILL, XGXA, XGYA, XGZA,
-     .       XGXA2,XGYA2,XGZA2,XGXYA,XGYZA,XGZXA,ITASK,IPARG(1,NG))                                  
+     .       XGXA2,XGYA2,XGZA2,XGXYA,XGYZA,XGZXA,ITASK,IPARG(1,NG),
+     .       SENSORS)                                  
       ENDIF
 C
 C Compute nodal internal forces

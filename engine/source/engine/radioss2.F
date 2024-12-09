@@ -1464,7 +1464,7 @@ C------------------------------------------------
      G              MDS_LABEL,MDS_OUTPUT_TABLE,MDS_NMAT,MAX_DEPVAR,
      H              MDS_NDEPSVAR,STACK,IBCL,ILOADP,LLOADP,SENSORS,
      I              DYNAIN_DATA,DT ,LOADS ,OUTPUT,NAMES_AND_TITLES,
-     J              MAT_ELEM%MAT_PARAM,GLOB_THERM,PBLAST,SENSOR_USER_STRUCT)
+     J              MAT_ELEM%MAT_PARAM,GLOB_THERM,PBLAST)
 C------------------------------------------------
 C Close & Delete scratch file
       CLOSE (UNIT=IIN)

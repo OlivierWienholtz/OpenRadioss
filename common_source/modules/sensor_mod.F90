@@ -28,7 +28,7 @@
       !||    names_and_titles_mod   ../common_source/modules/names_and_titles_mod.F
       !||    python_funct_mod       ../common_source/modules/python_mod.F90
       !||====================================================================
-      module sensor_common_mod
+      module sensor_mod
 ! ----------------------------------------------------------------------------------------------------------------------
 !                                                   Modules
 ! ----------------------------------------------------------------------------------------------------------------------
@@ -192,4 +192,4 @@
       END TYPE SENSORS_
 
 
-      end module sensor_common_mod 
+      end module sensor_mod 

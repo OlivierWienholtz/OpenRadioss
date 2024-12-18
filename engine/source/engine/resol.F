@@ -1129,7 +1129,16 @@ C-------------------------------------------------------------------------------
 C AMS
       INTEGER LSKYI_SMS_NEW
       INTEGER, ALLOCATABLE, DIMENSION(:,:) :: T2MAIN_SMS
-      my_real, DIMENSION(:),ALLOCATABLE :: T2FAC_SMS         
+      my_real, DIMENSION(:),ALLOCATABLE :: T2FAC_SMS
+      my_real, DIMENSION(:), ALLOCATABLE :: MSKYI_FI_SMS
+      INTEGER, DIMENSION(:),ALLOCATABLE :: LIST_SMS
+      INTEGER, DIMENSION(:),ALLOCATABLE :: LIST_RMS
+      my_real, DIMENSION(:,:), ALLOCATABLE :: CJWORK
+      my_real, DIMENSION(:,:), ALLOCATABLE :: FREA
+      INTEGER, DIMENSION(:), ALLOCATABLE :: IRWL_WORK
+      my_real, DIMENSION(:,:), ALLOCATABLE :: SMS_VFI
+      my_real, DIMENSION(:,:), ALLOCATABLE :: MW6
+      integer sz_mw6
 C-----------------------------------------------------------------------------------
 C     FVMBAG: switch to UP
       INTEGER :: NFVBAG0 
@@ -6166,7 +6175,24 @@ C
         IF(NSPMD > 1)THEN
           CALL SPMD_NLIST_SMS(FR_SMS,FR_RMS)
         END IF
+        IF (ALLOCATED(MSKYI_FI_SMS)) DEALLOCATE(MSKYI_FI_SMS)
+        IF (ALLOCATED(LIST_SMS)) DEALLOCATE(LIST_SMS)
+        IF (ALLOCATED(LIST_RMS)) DEALLOCATE(LIST_RMS)
+        IF (ALLOCATED(LIST_RMS)) DEALLOCATE(LIST_RMS)
+        IF (ALLOCATED(SMS_VFI)) DEALLOCATE(SMS_VFI)
+         CALL MY_ALLOC(MSKYI_FI_SMS,FR_RMS(NSPMD+1))
+        CALL MY_ALLOC(LIST_SMS,FR_SMS(NSPMD+1))
+        CALL MY_ALLOC(LIST_RMS,FR_RMS(NSPMD+1))
+        CALL MY_ALLOC( SMS_VFI,3,FR_RMS(NSPMD+1)+FR_SMS(NSPMD+1) )
 
+        IF (ALLOCATED(MW6)) DEALLOCATE(MW6) 
+        if (IPARIT /=0) then
+          sz_mw6 = NUMNOD
+          CALL MY_ALLOC(MW6,6,NUMNOD)
+        else
+          sz_mw6 = 1
+          CALL MY_ALLOC(MW6,6,1)
+        endif
 !$OMP PARALLEL PRIVATE(ITSK,NODFTSK,NODLTSK)
         ITSK = OMP_GET_THREAD_NUM()
         NODFTSK   = 1+ITSK*NUMNOD/ NTHREAD
@@ -6194,7 +6220,8 @@ C
      I             NPRW  ,LPRW    ,FR_WALL   ,NRWL_SMS      ,RBY      ,
      J             NODES%X     ,NODES%A       ,NODES%AR        ,NODES%IN            ,NODES%V        ,
      K             NODES%VR    ,IRBE2   ,LRBE2     ,IRBE3         ,LRBE3    ,
-     L             IAD_RBE3M ,FR_RBE3M ,NATIV_SMS,T2MAIN_SMS,T2FAC_SMS)
+     L             IAD_RBE3M ,FR_RBE3M ,NATIV_SMS,T2MAIN_SMS,T2FAC_SMS,
+     M             MSKYI_FI_SMS, LIST_SMS,LIST_RMS,SZ_mw6,MW6)
 c
 !$OMP END PARALLEL
 
@@ -6850,6 +6877,10 @@ C===============================================================================
 C                                     PARALLEL SECTION (SMP)
 C========================================================================================
 
+        CALL MY_ALLOC(CJWORK,18,NJOINT)
+        CALL MY_ALLOC(FREA,3,NUMNOD)
+        CALL MY_ALLOC(IRWL_WORK,SLPRW)
+
 !$OMP PARALLEL PRIVATE(ITSK,NODFTSK,NODLTSK)
         ITSK = OMP_GET_THREAD_NUM()
         NODFTSK   = 1+ITSK*NUMNOD/ NTHREAD
@@ -6880,9 +6911,15 @@ C===============================================================================
      N        NMRBE2   ,R2SIZE    ,IRBE3    ,LRBE3      ,FRBE3    ,
      O        IAD_RBE3M ,FR_RBE3M,FR_RBE3MP ,RRBE3      ,RRBE3_PON,
      P        PREC_SMS3 ,DIAG_SMS3,IAD_RBY  ,FR_RBY6    ,RBY6     ,
-     Q        R3SIZE    ,BETATE   ,IBCSCYC    ,LBCSCYC)
+     Q        R3SIZE    ,BETATE   ,IBCSCYC    ,LBCSCYC,
+     R        MSKYI_FI_SMS, LIST_SMS,LIST_RMS,CJWORK,FREA,
+     S        IRWL_WORK,SMS_VFI,sz_mw6,MW6)
 
 !$OMP END PARALLEL
+
+        IF (ALLOCATED(CJWORK)) DEALLOCATE(CJWORK)
+        IF (ALLOCATED(FREA)) DEALLOCATE(FREA)
+        IF (ALLOCATED(IRWL_WORK)) DEALLOCATE(IRWL_WORK)
 
         IF (IMON>0) CALL STOPTIME(39,1)
 
@@ -8537,7 +8574,8 @@ C--------------------------------------------------
      D        LRBE3    ,FRBE3    ,IAD_RBE3M,FR_RBE3M  ,FR_RBE3MP ,
      E        RRBE3    ,RRBE3_PON,IAD_RBY  ,FR_RBY6   ,RBY6      ,
      F        LPBY     ,TAGMSR_RBY_SMS,R3SIZE,NODII_SMS,INDX2_SMS,
-     G        IBCSCYC  ,LBCSCYC ,OUTPUT)
+     G        IBCSCYC  ,LBCSCYC ,OUTPUT, MSKYI_FI_SMS,LIST_SMS,
+     H        LIST_RMS ,SMS_VFI,sz_mw6,mw6)
 
 !$OMP END PARALLEL
 
@@ -8546,7 +8584,7 @@ C--------------------------------------------------
        END IF
       END IF
 C---
-      NISKY_SMS=0     
+      NISKY_SMS=0
       
 C========================================================================================
 C                                     NON PARALLEL SECTION (SMP)

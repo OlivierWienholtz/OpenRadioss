@@ -2095,6 +2095,7 @@ C Reinitialise sensor variables defined in /SENS/RESET
        K10=K9+NUMELX
        K11=K10+NUMSPH
        K12=K11+NUMELIG3D
+       print*,'NTHREAD=',NTHREAD
        CALL SENSOR_INIT(SUBSETS,IPARG,NGROUC,
      .                  IPART(K3),IPART(K8),IPART(K1),IPART(K2),IPART(K4),
      .                  IPART(K5) ,IPART(K6),SENSORS,TT ,DT2 ,IOUT, PYTHON ,NTHREAD)

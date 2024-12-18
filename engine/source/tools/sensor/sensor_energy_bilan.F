@@ -82,7 +82,7 @@ C-----------------------------------------------
       my_real, DIMENSION(MVSIZ,2) :: FSTPARIT   
       INTEGER :: NGR_SENSOR
 C-----------------------------------------------
-      NGR_SENSOR=SENSORS%NGR_SENSOR(ITASK)
+      NGR_SENSOR=SENSORS%NGR_SENSOR(ITASK+1)
       IF(IPARIT>0) THEN
          IF(SENSORS%SENS_GROUP(NGR_SENSOR)%NUM_PART>0) THEN
             IF(SENSORS%SENS_GROUP(NGR_SENSOR)%NUM_PART==1) THEN

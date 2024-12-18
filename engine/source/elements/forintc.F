@@ -231,7 +231,7 @@ C
       DO IG = 1, NGROUC
 C
             NG = IGROUC(IG)
-            SENSORS%NGR_SENSOR(ITASK) = NG
+            SENSORS%NGR_SENSOR(ITASK+1) = NG
             NGR_FAIL_WIND = NG
             IF (IPARG(1, NG) == 151) THEN !  Debranchement loi 151
                CYCLE

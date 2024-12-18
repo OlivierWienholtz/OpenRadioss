@@ -306,7 +306,7 @@ C
 c------------------------
       DO IG = 1, NGROUNC
         NG = IGROUNC(IG)         
-        SENSORS%NGR_SENSOR(ITASK) = NG   
+        SENSORS%NGR_SENSOR(ITASK+1) = NG   
 C       temporarily used to avoid pass KTBUF_STR everywhere
         NG_IMP = NG
 

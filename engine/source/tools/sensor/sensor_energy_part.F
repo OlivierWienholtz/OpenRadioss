@@ -56,7 +56,7 @@ C-----------------------------------------------
       INTEGER I,TYP,IPRT,ISUBS,NP,J,JJ
       INTEGER :: NGR_SENSOR
 C-----------------------------------------------
-        NGR_SENSOR = SENSORS%ngr_sensor(ITASK)
+        NGR_SENSOR = SENSORS%ngr_sensor(ITASK+1)
         IF(SENSORS%SENS_GROUP(NGR_SENSOR)%NUM_PART>0) IPRI = 1
 C-----------
       RETURN

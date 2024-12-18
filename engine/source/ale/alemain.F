@@ -793,7 +793,7 @@ C
          !---------------------------------------------
           DO NG=ITASK+1,NGROUP,NTHREAD
 C     ALE ON / OFF
-             SENSORS%NGR_SENSOR(ITASK) = NG
+             SENSORS%NGR_SENSOR(ITASK+1) = NG
              IF (TT  >  ZERO .AND. IPARG(76, NG)  ==  1) CYCLE ! --> OFF
              IF(IPARG(8,NG) /= 1) THEN
 C
@@ -973,7 +973,7 @@ C
             
             DO NG=ITASK+1,NGROUP,NTHREAD
 C     ALE ON / OFF
-               SENSORS%NGR_SENSOR(ITASK) = NG
+               SENSORS%NGR_SENSOR(ITASK+1) = NG
                IF (TT  >  ZERO .AND. IPARG(76, NG)  ==  1) CYCLE ! --> OFF
                CALL INITBUF(IPARG    ,NG      ,
      2               MTN     ,NEL     ,NFT     ,IAD     ,ITY     ,   

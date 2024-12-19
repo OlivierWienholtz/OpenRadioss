@@ -6188,8 +6188,8 @@ C
 
         IF (ALLOCATED(MW6)) DEALLOCATE(MW6) 
         if (IPARIT /=0) then
-          sz_mw6 = NUMNOD
-          CALL MY_ALLOC(MW6,6,NUMNOD)
+          sz_mw6 = 3*NUMNOD
+          CALL MY_ALLOC(MW6,6,sz_mw6)
         else
           sz_mw6 = 1
           CALL MY_ALLOC(MW6,6,1)

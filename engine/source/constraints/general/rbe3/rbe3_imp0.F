@@ -103,10 +103,14 @@ C
       !||    rbe3cl      ../engine/source/constraints/general/rbe3/rbe3f.F
       !||====================================================================
       SUBROUTINE RBE3_IMPI(
-     1                    IRBE3  ,LRBE3 ,FRBE3  ,X     ,SKEW   ,
+     1                    RBE3  ,LRBE3 ,FRBE3  ,X     ,SKEW   ,
      2                    NSS3   ,ISS3  ,IKC   ,NDOF   ,IDDL   ,
      3                    IADK   ,JDIK  ,DIAG_K ,LT_K  ,B     ,
      4                    WEIGHT ,ITAB  )
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -120,17 +124,18 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER WEIGHT(*),IRBE3(NRBE3L,*),LRBE3(*),
+      INTEGER WEIGHT(*),LRBE3(*),
      .        IADK(*),JDIK(*),NDOF(*),ITAB(*),
      .        IDDL(*),IKC(*),NSS3(*),ISS3(*)
 C     REAL
       my_real
      .   X(3,*), SKEW(LSKEW,*), FRBE3(*),
      .   DIAG_K(*),LT_K(*),B(*)
+      TYPE(RBE3_),INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      INTEGER I, J, N, M, NS ,NML, IAD,JJ,IROT,IADS,MAX_M,IROTG,
+      INTEGER I, J, N, M, NS ,NML, IAD,JJ,IROT,IADS,MAX_M,
      .        JT(3,NRBE3),JR(3,NRBE3),NM,NN,NSJ,IADJ
 C     REAL
       my_real,
@@ -138,23 +143,23 @@ C     REAL
 
 C-----------------------------------------------
       IADS = SLRBE3/2
-      CALL PRERBE3(IRBE3 ,MAX_M , IROTG,JT  ,JR   )
+      CALL PRERBE3(RBE3%IRBE3 ,MAX_M , JT  ,JR   )
       ALLOCATE(FDSTNB(18*MAX_M))
-      IF (IROTG>0) ALLOCATE(MDSTNB(18*MAX_M))
+      IF (RBE3%IROTG>0) ALLOCATE(MDSTNB(18*MAX_M))
       IADJ=1
       DO N=1,NRBE3
-        IAD = IRBE3(1,N)
-        NS  = IRBE3(3,N)
+        IAD = RBE3%IRBE3(1,N)
+        NS  = RBE3%IRBE3(3,N)
         IF (NS==0) CYCLE
-        NML = IRBE3(5,N)
-          IROT =IRBE3(6,N)
+        NML = RBE3%IRBE3(5,N)
+          IROT =RBE3%IRBE3(6,N)
           DO J =1,3
            JR(J,N)=0
           ENDDO
        IF (WEIGHT(NS)/=0.AND.NDOF(NS)>0) THEN
         CALL RBE3CL(LRBE3(IAD+1),LRBE3(IADS+IAD+1),NS     ,X    ,
      .              FRBE3(6*IAD+1),SKEW    ,NML     ,IROT   ,FDSTNB ,
-     .              MDSTNB  ,IRBE3(2,N))
+     .              MDSTNB  ,RBE3%IRBE3(2,N))
             CALL RBE3_IMP1(NS    ,NML   ,LRBE3(IAD+1) ,X      ,IROT   ,
      2                     NSS3(N),ISS3(IADJ),JT(1,N) ,JR(1,N),FDSTNB ,
      3                     MDSTNB,IKC   ,NDOF  ,IDDL  ,IADK   ,
@@ -164,7 +169,7 @@ C-----------------------------------------------
       ENDDO
 C
       DEALLOCATE(FDSTNB)
-      IF (IROTG>0) DEALLOCATE(MDSTNB)
+      IF (RBE3%IROTG>0) DEALLOCATE(MDSTNB)
 C
       RETURN
       END

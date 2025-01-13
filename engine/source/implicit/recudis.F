@@ -97,13 +97,14 @@ C
      3                   NRBYAC,IRBYAC,NINT2 ,IINT2 ,IPARI ,
      4                   INTBUF_TAB   ,NDOF  ,D     ,DR    ,
      5                   X     ,XFRAME,LJ    ,IXR   ,IXC   ,
-     6                   IXTG  ,SH4TREE,SH3TREE,IRBE3 ,LRBE3,
+     6                   IXTG  ,SH4TREE,SH3TREE,RBE3 ,LRBE3,
      7                   FRBE3 ,IRBE2 ,LRBE2 )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE IMP_FVBCL
       USE INTBUFDEF_MOD
+      USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -122,7 +123,7 @@ C-----------------------------------------------
      .        IPARI(NPARI,*), ISKEW(*),
      .        NRBYAC,IRBYAC(*),NINT2 ,IINT2(*),IXR(*)
       INTEGER NDOF(*),ICODT(*) ,ICODR(*),IXC(*),IXTG(*),
-     .         SH4TREE(*), SH3TREE(*),IRBE3(NRBE3L,*),LRBE3(*),
+     .         SH4TREE(*), SH3TREE(*),LRBE3(*),
      .         IRBE2(*),LRBE2(*)
       my_real
      .   RBY(NRBY,*) ,SKEW(*),IN(*),MS(*),
@@ -131,6 +132,7 @@ C-----------------------------------------------
      .  X(3,*),D(3,*),DR(3,*)
 
       TYPE(INTBUF_STRUCT_) INTBUF_TAB(*)
+      TYPE(RBE3_),INTENT(INOUT) :: RBE3
 C----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -163,7 +165,7 @@ C-------local FV-BCS coupling might modify global dirs due to unconsisting
      2              NDOF  ,D    ,DR   ,IXR  )
       ENDIF
       IF(NRBE3>0)THEN
-       CALL RBE3_IMPD(IRBE3 ,LRBE3 ,X    ,D     ,DR    ,
+       CALL RBE3_IMPD(RBE3 ,LRBE3 ,X    ,D     ,DR    ,
      1                FRBE3  ,SKEW  )
       ENDIF
       IF(NRBE2>0)THEN

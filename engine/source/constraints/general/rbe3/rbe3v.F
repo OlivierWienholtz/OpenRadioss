@@ -134,8 +134,12 @@ C---
       !||    prerbe3     ../engine/source/constraints/general/rbe3/rbe3f.F
       !||    rbe3cl      ../engine/source/constraints/general/rbe3/rbe3f.F
       !||====================================================================
-      SUBROUTINE RBE3_IMPD(IRBE3 ,LRBE3 ,X    ,D     ,DR    ,
+      SUBROUTINE RBE3_IMPD(RBE3 ,LRBE3 ,X    ,D     ,DR    ,
      1                     FRBE3 ,SKEW  )
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -150,10 +154,11 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER IRBE3(NRBE3L,*),LRBE3(*)
+      INTEGER LRBE3(*)
 C     REAL
       my_real
      .   X(3,*), D(3,*), DR(3,*),  FRBE3(*),SKEW(*)
+      TYPE (RBE3_),INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -167,18 +172,18 @@ C     REAL
 
 C======================================================================|
       IADS = SLRBE3/2
-      CALL PRERBE3(IRBE3 ,MAX_M , IROTG,JT  ,JR   )
+      CALL PRERBE3(RBE3%IRBE3 ,MAX_M , IROTG,JT  ,JR   )
       ALLOCATE(FDSTNB(3,6,MAX_M))
       IF (IROTG>0) ALLOCATE(MDSTNB(3,6,MAX_M))
       DO N=1,NRBE3
-        IAD = IRBE3(1,N)
-        NS  = IRBE3(3,N)
+        IAD = RBE3%IRBE3(1,N)
+        NS  = RBE3%IRBE3(3,N)
         IF (NS==0) CYCLE
-        NML = IRBE3(5,N)
-          IROT =MIN(IRBE3(6,N),IRODDL)
+        NML = RBE3%IRBE3(5,N)
+          IROT =MIN(RBE3%IRBE3(6,N),IRODDL)
         CALL RBE3CL(LRBE3(IAD+1),LRBE3(IADS+IAD+1),NS     ,X    ,
      .              FRBE3(6*IAD+1),SKEW    ,NML     ,IROT   ,FDSTNB ,
-     .              MDSTNB  ,IRBE3(2,N))
+     .              MDSTNB  ,RBE3%IRBE3(2,N))
         DO J = 1,3
            VS(J) = ZERO
            VRS(J) = ZERO

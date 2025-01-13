@@ -458,12 +458,13 @@ C
      6                      DIAG_I ,LT_I  ,IDDLI ,NDDL  ,IADK   ,
      7                      JDIK   ,IKC   ,DIAG_K,LT_K  ,IDDL   ,
      8                      NDOFI  ,ITOK  ,UD    ,LB    ,LUJ    ,
-     9                      NT_RW  ,IRBE3 ,LRBE3 ,FRBE3 ,NSS3   ,
+     9                      NT_RW  ,RBE3 ,LRBE3 ,FRBE3 ,NSS3   ,
      A                      ISS3   ,IRBE2 ,LRBE2 ,NSB2  ,ISB2   )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE INTBUFDEF_MOD
+      USE rbe3_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -484,7 +485,7 @@ C-----------------------------------------------
      .        IDDL(*),IKC(*),NSS(*),ISS(*),NSS2(*),ISS2(*),
      .        IADK(*),JDIK(*),NDDLI,NNZI,IADI(*),JDII(*),
      .        IDDLI(*),NDOFI(*),NINT2 ,IINT2(*),IAINT2(*)
-      INTEGER IRBE3(NRBE3L,*),LRBE3(*),NSS3(*),ISS3(*),
+      INTEGER LRBE3(*),NSS3(*),ISS3(*),
      .        IRBE2(*),LRBE2(*),NSB2(*),ISB2(*)
       my_real
      .   RBY(NRBY,*) ,X(3,*) ,SKEW(*),IN(*),MS(*)
@@ -493,6 +494,7 @@ C-----------------------------------------------
      .  DIAG_I(*),LT_I(*),LB(*),UD(3,*),XFRAME(NXFRAME,*),FRBE3(*)
 
       TYPE(INTBUF_STRUCT_) INTBUF_TAB(*)
+      TYPE(RBE3_),INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -542,7 +544,7 @@ C-----l'interface 2 ------
 C-----rbe3 ------
       IF(NRBE3>0)THEN
        CALL RBE3_IMPI(
-     1              IRBE3  ,LRBE3 ,FRBE3  ,X     ,SKEW    ,
+     1              RBE3   ,LRBE3 ,FRBE3  ,X     ,SKEW    ,
      2              NSS3   ,ISS3  ,IIC   ,NDOFI  ,IDDLI   ,
      3              IADI   ,JDII  ,DIAG_I,LT_I   ,LB0     ,
      4              WEIGHT ,ITAB  )
@@ -930,7 +932,7 @@ C
      3                   NRBYAC,IRBYAC,NINT2 ,IINT2 ,IPARI ,
      4                   INTBUF_TAB    ,NDOF  ,D     ,DR    ,
      5                   X     ,XFRAME,LJ    ,IXR   ,IXC   ,
-     6                   IXTG  ,SH4TREE,SH3TREE,IRBE3 ,LRBE3,
+     6                   IXTG  ,SH4TREE,SH3TREE,RBE3 ,LRBE3,
      7                   FRBE3 ,IADK   ,JDIK  ,DIAG_K,LT_K ,
      8                   IDDL  ,IKC    ,INLOC ,NUM_IMP,NS_IMP,
      9                   NE_IMP,INDEX2,NDDL   ,W_DDL  ,A   ,
@@ -939,6 +941,7 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE INTBUFDEF_MOD
+      USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -961,7 +964,7 @@ C-----------------------------------------------
      .        IPARI(NPARI,*), ISKEW(*),
      .        NRBYAC,IRBYAC(*),NINT2 ,IINT2(*),IXR(*)
       INTEGER NDOF(*),ICODT(*) ,ICODR(*),IXC(*),IXTG(*),
-     .        SH4TREE(*), SH3TREE(*),IRBE3(*),LRBE3(*),
+     .        SH4TREE(*), SH3TREE(*),LRBE3(*),
      .        IRBE2(*),LRBE2(*)
       INTEGER NDDL,IADK(*),JDIK(*),IDDL(*),IKC(*) ,INLOC(*),
      .        NUM_IMP(*),NS_IMP(*),NE_IMP(*),INDEX2(*),W_DDL(*)
@@ -972,6 +975,7 @@ C-----------------------------------------------
      .  X(3,*),D(3,*),DR(3,*),DIAG_K(*),LT_K(*),A(3,*),AR(3,*),R02
 
       TYPE(INTBUF_STRUCT_) INTBUF_TAB(*)
+      TYPE(RBE3_),INTENT(INOUT) :: RBE3
 C----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -1010,7 +1014,7 @@ C
      3                NRBYAC,IRBYAC,NINT2 ,IINT2 ,IPARI ,
      4                INTBUF_TAB,NDOF  ,A     ,AR    ,
      5                X_C   ,XFRAME,LJ    ,IXR   ,IXC   ,
-     6                IXTG  ,SH4TREE,SH3TREE,IRBE3 ,LRBE3,
+     6                IXTG  ,SH4TREE,SH3TREE,RBE3 ,LRBE3,
      7                FRBE3 ,IRBE2 ,LRBE2 )
        ELSE
          CALL RECUKIN(RBY   ,LPBY  ,NPBY  ,SKEW  ,ISKEW ,
@@ -1019,7 +1023,7 @@ C
      3                NRBYAC,IRBYAC,NINT2 ,IINT2 ,IPARI ,
      4                INTBUF_TAB ,NDOF  ,A     ,AR    ,
      5                X     ,XFRAME,LJ    ,IXR   ,IXC   ,
-     6                IXTG  ,SH4TREE,SH3TREE,IRBE3 ,LRBE3,
+     6                IXTG  ,SH4TREE,SH3TREE,RBE3 ,LRBE3,
      7                FRBE3 ,IRBE2 ,LRBE2 )
        END IF !(IMP_LR > 0)THEN
 C

@@ -158,7 +158,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      P  I2MSCH ,ISIZXV,ILENXV ,ISLEN7  ,IRLEN7 ,ISLEN11,IRLEN11,ISLEN17,
      Q  IRLEN17,IRLEN7T,ISLEN7T,KINET  ,NUM_IMP1,TEMP   ,DT2PREV,WAINT ,
      R  LGRAV   ,SH4TREE ,SH3TREE,IRLEN20,ISLEN20,IRLEN20T,ISLEN20T    ,
-     S  IRLEN20E,ISLEN20E,IRBE3,LRBE3  ,FRBE3  ,FR_I2M,IAD_I2M,FR_RBE3M,
+     S  IRLEN20E,ISLEN20E,RBE3,LRBE3  ,FRBE3  ,FR_I2M,IAD_I2M,FR_RBE3M,
      T  IAD_RBE3M,FRWL6,IRBE2 ,LRBE2   ,INTBUF_TAB_C,IKINE  ,DIAG_SMS,
      V  ICFIELD,LCFIELD,CFIELD,COUNT_REMSLV,COUNT_REMSLVE,
      X  ELBUF_TAB,ELBUF_IMP,XDP,WEIGHT_MD , STACK ,
@@ -187,6 +187,7 @@ C-----------------------------------------------
         USE TH_SURF_MOD , ONLY : TH_SURF_
         USE SKEW_MOD
         use glob_therm_mod
+        USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -251,7 +252,7 @@ C-----------------------------------------------
      .          I2MSCH ,ISIZXV,ILENXV ,ISLEN7  ,IRLEN7 ,ISLEN11,IRLEN11,
      .          ISLEN17,IRLEN17,IRLEN7T,ISLEN7T,
      .          IRLEN20,ISLEN20,IRLEN20T,ISLEN20T,IRLEN20E,ISLEN20E,
-     .          KINET(*),NUM_IMP1(*),IRBE3(*),LRBE3(*),IRBE2(*),LRBE2(*)
+     .          KINET(*),NUM_IMP1(*),LRBE3(*),IRBE2(*),LRBE2(*)
       my_real, INTENT(IN) :: DPL0CLD(6,NCONLD),VEL0CLD(6,NCONLD)
         my_real DT2PREV,VOLMON(*) ,TEMP(*), WAINT(*),FRBE3(*)
         TYPE (ELBUF_STRUCT_), DIMENSION(NGROUP) :: ELBUF_TAB, ELBUF_IMP
@@ -286,6 +287,7 @@ C
         TYPE (TH_SURF_) , INTENT(INOUT) :: TH_SURF
         TYPE(SKEW_),INTENT(INOUT) :: SKEWS
         type (glob_therm_) , INTENT(INOUT) :: GLOB_THERM
+        TYPE(RBE3_),INTENT(INOUT) :: RBE3
 C
 C---D_IMP: dUn+1,i,DD : ddU,i+1
 C---R_IMP[1:R02,2:RRR(R_OLD),3:RU0,4:E02,5:DE_OLD,6:EIMP,7,8,9:pour line-search]
@@ -743,7 +745,7 @@ C---------attention si rigid body reactive(deactive) pendant un restart il faut 
      8      JDIK      ,NDDL      ,NNZK      ,NNMAX     ,LSIZE(8)  ,
      9      INLOC     ,NKMAX     ,IKINW(LI9),IKINW(LI10),IKINW(LI11),
      A      NMC2      ,IKINW(LI12),NTMP     ,LSIZE(12) ,LSIZE(13) ,
-     B      FR_ELEM   ,IAD_ELEM  ,IPM       ,IGEO      ,IRBE3     ,
+     B      FR_ELEM   ,IAD_ELEM  ,IPM       ,IGEO      ,RBE3%IRBE3     ,
      C      LRBE3     ,IKINW(LI13),FR_I2M   ,IAD_I2M   ,FR_RBE3M  ,
      D      IAD_RBE3M ,IRBE2     ,LRBE2     ,IKINW(LI14),IKINW(LI15))
 C-------------important is no buffer overflow
@@ -786,7 +788,7 @@ C-------estimation of A(t+dt) w/ initial velocity----
      .                     DIAG_K ,IADK    ,JDIK   ,LT_K   ,WEIGHT ,
      1                     RBY    ,X       ,SKEWS%SKEW   ,LPBY   ,NPBY   ,
      2                     NRBYAC ,IRBYAC  ,NINT2  ,IINT2  ,IPARI  ,
-     3                     INTBUF_TAB      ,IRBE3  ,LRBE3  ,FRBE3  ,
+     3                     INTBUF_TAB      ,RBE3%IRBE3  ,LRBE3  ,FRBE3  ,
      4                     IRBE2  ,LRBE2   ,V      ,VR     ,NDDL0  ,
      5                     FR_ELEM,IAD_ELEM,MS     ,IN     )
           END IF
@@ -819,7 +821,7 @@ C
      9    DIAG_K    ,LT_K      ,NDOF      ,IDDL      ,IKC       ,
      A    D_IMP     ,LB        ,NKUD      ,IKUD      ,BKUD      ,
      B    NMC2      ,IKINW(LI12),NT_RW    ,DR_IMP    ,DIRUL     ,
-     C    IRBE3     ,LRBE3     ,FRBE3     ,IKINW(LI13),IRBE2    ,
+     C    RBE3%IRBE3,LRBE3     ,FRBE3     ,IKINW(LI13),IRBE2    ,
      D    LRBE2     ,IKINW(LI14),IKINW(LI15))
 C
           anew_stif = 'Y'
@@ -947,7 +949,7 @@ C
      3    LNSS      ,NINT2     ,IINT2     ,IAINT2    ,LNSS2     ,
      4    NDDLI     ,NNZI      ,IDDLI     ,NDOFI     ,N_IMPN    ,
      5    N_IMPM    ,NNMAX     ,NKMAX     ,NDOF      ,NSREM     ,
-     6    IRBE3     ,LRBE3     ,LNSS3     ,IRBE2     ,LRBE2     ,
+     6    RBE3      ,LRBE3     ,LNSS3     ,IRBE2     ,LRBE2     ,
      7    LNSB2     ,LNSRB2    ,IND_IMP  )
           ALLOCATE(IADI0(NDDLI+1))
           ALLOCATE(ITOK(NDDLI))
@@ -969,7 +971,7 @@ C
      4    ISS2      ,NDDLI     ,NNZI      ,IADI0     ,JDII0       ,
      5    IDDLI     ,NDOFI     ,N_IMPN    ,ITOK      ,IDDL        ,
      6    NNMAX     ,NKMAX     ,N_IMPM    ,NDOF      ,IAINT2      ,
-     7    IRBE3     ,LRBE3     ,NSS3      ,ISS3      ,IRBE2       ,
+     7    RBE3%IRBE3,LRBE3     ,NSS3      ,ISS3      ,IRBE2       ,
      8    LRBE2     ,NSB2      ,ISB2      ,IND_IMP  )
           ALLOCATE(DIAG_I0(NDDLI))
           ALLOCATE(LT_I0(NNZI))
@@ -1000,7 +1002,7 @@ Ctmp-------A n'est pas modifie ici -------------------
      9      JDIK      ,IKC       ,DIAG_K    ,LT_K      ,IDDL      ,
      A      NUM_IMP   ,NS_IMP    ,NE_IMP    ,IND_IMP   ,NDOFI     ,
      B      ITOK      ,D_IMP     ,LB        ,GAP       ,DIRUL     ,
-     C      NT_RW     ,NUM_IMP1  ,IRBE3     ,LRBE3     ,FRBE3     ,
+     C      NT_RW     ,NUM_IMP1  ,RBE3     ,LRBE3     ,FRBE3     ,
      D      NSS3      ,ISS3      ,IRBE2     ,LRBE2     ,NSB2      ,
      E      ISB2      )
           ELSEIF (ISMDISP>0.AND.ILINE==0) THEN
@@ -1016,7 +1018,7 @@ Ctmp-------A n'est pas modifie ici -------------------
      9      JDIK      ,IKC       ,DIAG_K    ,LT_K      ,IDDL      ,
      A      NUM_IMP   ,NS_IMP    ,NE_IMP    ,IND_IMP   ,NDOFI     ,
      B      ITOK      ,D_IMP     ,LB        ,GAP       ,DIRUL     ,
-     C      NT_RW     ,NUM_IMP1  ,IRBE3     ,LRBE3     ,FRBE3     ,
+     C      NT_RW     ,NUM_IMP1  ,RBE3      ,LRBE3     ,FRBE3     ,
      D      NSS3      ,ISS3      ,IRBE2     ,LRBE2     ,NSB2      ,
      E      ISB2      )
           ELSE
@@ -1032,7 +1034,7 @@ Ctmp-------A n'est pas modifie ici -------------------
      9      JDIK      ,IKC       ,DIAG_K    ,LT_K      ,IDDL      ,
      A      NUM_IMP   ,NS_IMP    ,NE_IMP    ,IND_IMP   ,NDOFI     ,
      B      ITOK      ,D_IMP     ,LB        ,GAP       ,DIRUL     ,
-     C      NT_RW     ,NUM_IMP1  ,IRBE3     ,LRBE3     ,FRBE3     ,
+     C      NT_RW     ,NUM_IMP1  ,RBE3      ,LRBE3     ,FRBE3     ,
      D      NSS3      ,ISS3      ,IRBE2     ,LRBE2     ,NSB2      ,
      E      ISB2      )
           ENDIF
@@ -1130,7 +1132,7 @@ C             R_IMP(13) = SQRT(R2)
      .                  DIAG_K ,IADK    ,JDIK   ,LT_K   ,WEIGHT ,
      1                  RBY    ,X       ,SKEWS%SKEW   ,LPBY   ,NPBY   ,
      2                  NRBYAC ,IRBYAC  ,NINT2  ,IINT2  ,IPARI  ,
-     3                  INTBUF_TAB      ,IRBE3  ,LRBE3  ,FRBE3  ,
+     3                  INTBUF_TAB      ,RBE3%IRBE3,LRBE3  ,FRBE3  ,
      4                  IRBE2  ,LRBE2   ,V      ,VR     ,NDDL0  ,
      5                  FR_ELEM,IAD_ELEM,MS     ,IN     )
         END IF
@@ -1143,7 +1145,7 @@ C-------------LB,A,AR devient Fext-Fint---------------------
      4              NDDL0 ,LB    ,ISETK  ,INLOC  ,DIRUL  ,
      5              A     ,AR    ,AC     ,ACR    ,NT_RW  ,
      6              IRFLAG,W_DDL ,NDDL   ,R_IMP(1),IDYNA ,
-     7              V     ,VR    ,MS     ,IN     ,IRBE3  ,
+     7              V     ,VR    ,MS     ,IN     ,RBE3%IRBE3  ,
      8              LRBE3 ,FRBE3 ,WEIGHT ,IRBE2  ,LRBE2  )
 C
         IF (IMACH==3.AND.NSPMD>1) THEN
@@ -1163,7 +1165,7 @@ C
      5          INTLIST   ,XI_C      ,IBFV      ,DIRUL     ,SKEWS%SKEW      ,
      6          XFRAME    ,ISKEW     ,ICODT     ,R_IMP(16) ,D_IMP     ,
      7          LB        ,IFDIS     ,NDDL      ,DR_IMP    ,IDDLI     ,
-     8          IRBE3     ,LRBE3     ,FRBE3     ,IRBE2     ,LRBE2     ,
+     8          RBE3%IRBE3,LRBE3     ,FRBE3     ,IRBE2     ,LRBE2     ,
      9          DD        ,DDR       ,A         ,AR        ,AC        ,
      A          ACR       ,MS        ,V         ,NDDL0     ,R_IMP(1)  ,
      B          RBY       ,ICODR     ,NT_RW     ,W_DDL     ,WEIGHT    ,
@@ -1177,7 +1179,7 @@ C
      5          INTLIST   ,X_A       ,IBFV      ,DIRUL     ,SKEWS%SKEW      ,
      6          XFRAME    ,ISKEW     ,ICODT     ,R_IMP(16) ,D_IMP     ,
      7          LB        ,IFDIS     ,NDDL      ,DR_IMP    ,IDDLI     ,
-     8          IRBE3     ,LRBE3     ,FRBE3     ,IRBE2     ,LRBE2     ,
+     8          RBE3%RBE3 ,LRBE3     ,FRBE3     ,IRBE2     ,LRBE2     ,
      9          DD        ,DDR       ,A         ,AR        ,AC        ,
      A          ACR       ,MS        ,V         ,NDDL0     ,R_IMP(1)  ,
      B          RBY       ,ICODR     ,NT_RW     ,W_DDL     ,WEIGHT    ,
@@ -1191,7 +1193,7 @@ C
      5          INTLIST   ,X         ,IBFV      ,DIRUL     ,SKEWS%SKEW,
      6          XFRAME    ,ISKEW     ,ICODT     ,R_IMP(16) ,D_IMP     ,
      7          LB        ,IFDIS     ,NDDL      ,DR_IMP    ,IDDLI     ,
-     8          IRBE3     ,LRBE3     ,FRBE3     ,IRBE2     ,LRBE2     ,
+     8          RBE3%IRBE3,LRBE3     ,FRBE3     ,IRBE2     ,LRBE2     ,
      9          DD        ,DDR       ,A         ,AR        ,AC        ,
      A          ACR       ,MS        ,V         ,NDDL0     ,R_IMP(1)  ,
      B          RBY       ,ICODR     ,NT_RW     ,W_DDL     ,WEIGHT    ,
@@ -1202,7 +1204,7 @@ C
      1        NPBY      ,LPBY      ,ITAB      ,NRBYAC    ,IRBYAC    ,
      2        NINT2     ,IINT2     ,IPARI     ,INTBUF_TAB,NDOFI     ,
      3        NDOF      ,IKC       ,IDDL      ,FR_ELEM   ,IAD_ELEM  ,
-     4        NDDLI     ,NSL       ,NDDLI_G   ,IRBE3     ,LRBE3     ,
+     4        NDDLI     ,NSL       ,NDDLI_G   ,RBE3%IRBE3,LRBE3     ,
      5        IRBE2     ,LRBE2     )
 C         Store the size of the contact stifness matrix for nonlinear solver outputs
               IF (ISPMD==0.AND.IMCONV>=0) I_IMP(13) = NDDLI_G
@@ -1225,7 +1227,7 @@ C
      2    NPBY      ,LPBY      ,ITAB      ,NRBYAC    ,IRBYAC    ,
      3    NINT2     ,IINT2     ,IBFV      ,DIRUL     ,ISKEW     ,
      6    ICODT     ,NDOFI     ,IDDL      ,IKC       ,NDOF      ,
-     5    INLOC     ,IRBE3     ,LRBE3     ,FRBE3     ,X         ,
+     5    INLOC     ,RBE3%IRBE3     ,LRBE3     ,FRBE3     ,X         ,
      6    SKEWS%SKEW,IRBE2     ,LRBE2)
         ENDIF
 C
@@ -1234,7 +1236,7 @@ C
      1   NMONV  ,IMONV   ,IPARI  ,INTBUF_TAB      ,
      2   A      ,AR      ,NDOF   ,IDDL   ,IKC     ,
      3   INLOC  ,ILINE   ,IBFV   ,SKEWS%SKEW,XFRAME  ,
-     4   DIRUL  ,ISKEW   ,ICODT  ,IRBE3   ,LRBE3  ,
+     4   DIRUL  ,ISKEW   ,ICODT  ,RBE3%IRBE3   ,LRBE3  ,
      5   FRBE3  ,IRBE2   ,LRBE2  ,NSURF)
 C
         IF (GAP<ZERO) THEN
@@ -1374,7 +1376,7 @@ C
      A                 IBID  ,NMONV ,IMONV  ,MONVOL,IGRSURF,
      B                 FR_MV ,VOLMON,IBFV  ,SKEWS%SKEW  ,
      C                 XFRAME,MUMPS_PAR,CDDLP,IND_IMP,XI_C,
-     D                 IRBE3 ,LRBE3 ,IRBE2  ,LRBE2 )
+     D                 RBE3%IRBE3 ,LRBE3 ,IRBE2  ,LRBE2 )
 
 C-----------------------------
 citask0        IF (ITASK == 0) THEN
@@ -1404,7 +1406,7 @@ C
      3                 NRBYAC,IRBYAC,NINT2 ,IINT2 ,IPARI ,
      4                 INTBUF_TAB   ,NDOF  ,D_IMP ,DR_IMP,
      5                 X     ,XFRAME,DIRUL ,IXR   ,IXC   ,
-     6                 IXTG  ,SH4TREE,SH3TREE,IRBE3 ,LRBE3,
+     6                 IXTG  ,SH4TREE,SH3TREE,RBE3 ,LRBE3,
      7                 FRBE3 ,IRBE2 ,LRBE2 )
           IF (ISTOP>0) CALL IMP_STOP(-1)
           CALL INTEGRATORL_HP(D_IMP ,DR_IMP,
@@ -1602,7 +1604,7 @@ C       re-evoluer Rref-------
      3                   NRBYAC,IRBYAC,NINT2 ,IINT2 ,IPARI ,
      4                   INTBUF_TAB   ,NDOF  ,D_IMP ,DR_IMP,
      5                   X     ,XFRAME,DIRUL ,IXR   ,IXC   ,
-     6                   IXTG  ,SH4TREE,SH3TREE,IRBE3 ,LRBE3,
+     6                   IXTG  ,SH4TREE,SH3TREE,RBE3 ,LRBE3,
      7                   FRBE3 ,IADK   ,JDIK  ,DIAG_K,LT_K ,
      8                   IDDL  ,IKC    ,INLOC ,NUM_IMP,NS_IMP,
      9                   NE_IMP,IND_IMP,NDDL  ,W_DDL  ,A   ,
@@ -1654,7 +1656,7 @@ C---------------------
      D                   IMONV ,MONVOL ,IGRSURF,FR_MV  ,
      E                   VOLMON,IBFV   ,SKEWS%SKEW  ,XFRAME,MUMPS_PAR,
      F                   CDDLP ,IND_IMP,NBINTC,INTLIST,NEWFRONT,
-     G                   ISENDTO,IRECVFROM,IRBE3,LRBE3,I_IMP(8),
+     G                   ISENDTO,IRECVFROM,RBE3%IRBE3,LRBE3,I_IMP(8),
      H                   I_IMP(9),I_IMP(10),FEXT  ,DG    ,DGR  ,
      I                   DG0   ,DGR0 ,R_IMP(13),R_IMP(14),
      J                   NODFTSK,NODLTSK,IRBE2,LRBE2,I_IMP(12),
@@ -1690,7 +1692,7 @@ C--------Rigid motions elimination----
      3                   NRBYAC,IRBYAC,NINT2 ,IINT2 ,IPARI ,
      4                   INTBUF_TAB,NDOF  ,D_IMP ,DR_IMP,
      5                   X_C   ,XFRAME,DIRUL ,IXR   ,IXC   ,
-     6                   IXTG  ,SH4TREE,SH3TREE,IRBE3 ,LRBE3,
+     6                   IXTG  ,SH4TREE,SH3TREE,RBE3 ,LRBE3,
      7                   FRBE3 ,IRBE2 ,LRBE2 )
           ELSE
             CALL RECUKIN(RBY   ,LPBY  ,NPBY  ,SKEWS%SKEW  ,ISKEW ,
@@ -1699,7 +1701,7 @@ C--------Rigid motions elimination----
      3                   NRBYAC,IRBYAC,NINT2 ,IINT2 ,IPARI ,
      4                   INTBUF_TAB   ,NDOF  ,D_IMP ,DR_IMP,
      5                   X     ,XFRAME,DIRUL ,IXR   ,IXC   ,
-     6                   IXTG  ,SH4TREE,SH3TREE,IRBE3 ,LRBE3,
+     6                   IXTG  ,SH4TREE,SH3TREE,RBE3 ,LRBE3,
      7                   FRBE3 ,IRBE2 ,LRBE2 )
           END IF
 c       Print information of non-linear solver
@@ -3129,7 +3131,7 @@ C------------------------------------------
      C  FSKYI  ,IFRAME ,XFRAME ,W16    ,IACTIV ,FSKYM  ,IGEO   ,IPM    ,
      D  TFEXT  ,NODFT  ,NODLT  ,NINT7  ,NUM_IMP,NS_IMP ,NE_IMP ,IND_IMP,
      L  IT     ,RWBUF  ,LPRW   ,FR_WALL,NBINTC ,INTLIST,FOPT   ,RWSAV  ,
-     M  FSAVD  ,DIRUL  ,LGRAV  ,IRBE3  ,LRBE3  ,FRBE3  ,
+     M  FSAVD  ,DIRUL  ,LGRAV  ,RBE3  ,LRBE3  ,FRBE3  ,
      N  FRWL6  ,IRBE2  ,LRBE2  ,ICFIELD,LCFIELD,CFIELD,ELBUF_TAB,WEIGHT_MD,
      O  STACK  ,DIMFB  ,FBSAV6 ,STABSEN,TABSENSOR,DRAPE_SH4N,DRAPE_SH3N,H3D_DATA,
      P  NDDL0  ,NNZK0  ,IMPBUF_TAB,CPTREAC,FTHREAC,NODREAC,DRAPEG,TH_SURF ,
@@ -3148,6 +3150,7 @@ C-----------------------------------------------
         USE DRAPE_MOD
         USE TH_SURF_MOD , ONLY : TH_SURF_
         USE SKEW_MOD , ONLY : SKEW_
+        USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -3197,7 +3200,7 @@ C-----------------------------------------------
      .           FOPT(6,*),FSAVD(NTHVKI,*),CFIELD(*),FRBE3(*),
      .           FTHREAC(6,*)
         INTEGER  NDDL0,NNZK0,NINT7
-        INTEGER  NUM_IMP(*),NS_IMP(*),NE_IMP(*),IND_IMP(*),IRBE3(*),LRBE3(*),IRBE2(*),LRBE2(*)
+        INTEGER  NUM_IMP(*),NS_IMP(*),NE_IMP(*),IND_IMP(*),LRBE3(*),IRBE2(*),LRBE2(*)
         TYPE (DRAPE_) :: DRAPE_SH4N(NUMELC_DRAPE), DRAPE_SH3N(NUMELTG_DRAPE)
         TYPE (DRAPEG_) :: DRAPEG
         my_real, INTENT(IN) :: DPL0CLD(6,NCONLD),VEL0CLD(6,NCONLD)
@@ -3211,6 +3214,7 @@ C-----------------------------------------------
         TYPE (SENSOR_STR_) ,DIMENSION(NSENSOR) :: SENSOR_TAB
         TYPE (TH_SURF_) , INTENT(INOUT) :: TH_SURF
         TYPE(SKEW_),INTENT(INOUT) :: SKEWS
+        TYPE(RBE3_),INTENT(INOUT) :: RBE3
 #if defined(MUMPS5)
 C----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -3512,7 +3516,7 @@ C------ 1er VP: for dt check
      9    DIAG_K    ,LT_K      ,NDOF       ,IDDL       ,IKC       ,
      A    D_IMP     ,LB        ,NKUD       ,IKUD       ,BKUD      ,
      B    NMC2      ,IKINW(LI12),NT_RW     ,DR_IMP     ,DIRUL     ,
-     C    IRBE3     ,LRBE3     ,FRBE3      ,IKINW(LI13),IRBE2    ,
+     C    RBE3%IRBE3     ,LRBE3     ,FRBE3      ,IKINW(LI13),IRBE2    ,
      D    LRBE2     ,IKINW(LI14),IKINW(LI15))
 
           IF (IMACH==3.AND.NSPMD>1) THEN
@@ -3554,7 +3558,7 @@ C----------------------------------
      3    LNSS      ,NINT2     ,IINT2     ,IAINT2    ,LNSS2     ,
      4    NDDLI     ,NNZI      ,IDDLI     ,NDOFI     ,N_IMPN    ,
      5    N_IMPM    ,NNMAX     ,NKMAX     ,NDOF      ,NSREM     ,
-     6    IRBE3     ,LRBE3     ,LNSS3     ,IRBE2     ,LRBE2     ,
+     6    RBE3%IRBE3     ,LRBE3     ,LNSS3     ,IRBE2     ,LRBE2     ,
      7    LNSB2     ,LNSRB2    ,IND_IMP   )
           ALLOCATE(IADI(NDDLI+1))
           ALLOCATE(ITOK(NDDLI))
@@ -3574,7 +3578,7 @@ C----------------------------------
      4    ISS2      ,NDDLI     ,NNZI      ,IADI      ,JDII        ,
      5    IDDLI     ,NDOFI     ,N_IMPN    ,ITOK      ,IDDL        ,
      6    NNMAX     ,NKMAX     ,N_IMPM    ,NDOF      ,IAINT2      ,
-     7    IRBE3     ,LRBE3     ,NSS3      ,ISS3      ,IRBE2       ,
+     7    RBE3%IRBE3     ,LRBE3     ,NSS3      ,ISS3      ,IRBE2       ,
      8    LRBE2     ,NSB2      ,ISB2      ,IND_IMP   )
           ALLOCATE(DIAG_I(NDDLI))
           ALLOCATE(LT_I(NNZI))
@@ -3596,7 +3600,7 @@ C----------------------------------
      9    JDIK      ,IKC       ,DIAG_K     ,LT_K      ,IDDL      ,
      A    NUM_IMP   ,NS_IMP    ,NE_IMP     ,IND_IMP   ,NDOFI     ,
      B    ITOK      ,D_IMP     ,LB         ,GAP       ,DIRUL     ,
-     C    NT_RW     ,RBID      ,IRBE3      ,LRBE3     ,FRBE3     ,
+     C    NT_RW     ,RBID      ,RBE3      ,LRBE3     ,FRBE3     ,
      D    NSS3      ,ISS3      ,IRBE2      ,LRBE2     ,NSB2      ,
      E    ISB2      )
 C
@@ -3623,7 +3627,7 @@ C-------------LB,A,AR becomes Fext-Fint---------------------
      4               NDDL0 ,LB    ,ISETK      ,INLOC  ,DIRUL  ,
      5               A     ,AR    ,AC         ,ACR    ,NT_RW  ,
      6               IRFLAG,W_DDL ,NDDL       ,R_IMP(1),IDYNA ,
-     7               V     ,VR    ,MS         ,IN     ,IRBE3  ,
+     7               V     ,VR    ,MS         ,IN     ,RBE3%IRBE3  ,
      8               LRBE3 ,FRBE3 ,WEIGHT     ,IRBE2  ,LRBE2  )
 
         IF (IMACH==3.AND.NSPMD>1) THEN
@@ -3639,7 +3643,7 @@ C-------------LB,A,AR becomes Fext-Fint---------------------
      5        INTLIST   ,X         ,IBFV      ,DIRUL     ,SKEWS%SKEW,
      6        XFRAME    ,ISKEW     ,ICODT     ,A         ,D_IMP     ,
      7        LB        ,IFDIS     ,NDDL      ,DR_IMP    ,IDDLI     ,
-     8        IRBE3     ,LRBE3     ,FRBE3     ,IRBE2  ,LRBE2 )
+     8        RBE3%IRBE3     ,LRBE3     ,FRBE3     ,IRBE2  ,LRBE2 )
               CALL SPMD_MIN_S(GAP)
               CALL SPMD_MAX_I(IFDIS)
               IF ((NSREM+NSL)>0.AND.IFDIS>0)
@@ -3649,7 +3653,7 @@ C-------------LB,A,AR becomes Fext-Fint---------------------
      3        NSL       ,D_IMP     ,DD        ,DR_IMP    ,DDR       ,
      4        A         ,AR        ,MS        ,V         ,X         ,
      5        LB        ,NDDL      ,IBFV      ,SKEWS%SKEW,XFRAME    ,
-     6        IRBE3     ,LRBE3     ,IRBE2     ,LRBE2     ,R_IMP(16) ,
+     6        RBE3%IRBE3     ,LRBE3     ,IRBE2     ,LRBE2     ,R_IMP(16) ,
      7        NDDL0     ,W_DDL     )
             ENDIF
           ENDIF
@@ -3698,7 +3702,7 @@ C    /---------------/
      A                IBID  ,NTMP  ,IBID   ,IBID        ,IBID ,
      B                IBID  ,RBID   ,IBFV  ,SKEWS%SKEW  ,
      C                XFRAME,MUMPS_PAR,IBID,IBID  ,RBID ,
-     D                IRBE3 ,LRBE3 ,IRBE2  ,LRBE2 )
+     D                RBE3%IRBE3 ,LRBE3 ,IRBE2  ,LRBE2 )
         CALL IMP_CHECM0(ITAB  ,NDDL  ,IDDL  ,DIAG_M  ,NDOF  ,IKC   ,INLOC ,NDDL0 ,IMP_IW  ,IMP_IR)
         IF (NINT7>0) THEN
           DEALLOCATE(IADI)

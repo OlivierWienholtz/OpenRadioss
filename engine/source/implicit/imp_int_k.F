@@ -47,7 +47,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      9                      JDIK   ,IKC   ,DIAG_K,LT_K  ,IDDL   ,
      A                      NUM_IMP,NS_IMP,NE_IMP,INDEX2,NDOFI  ,
      B                      ITOK   ,UD    ,LB    ,GAPMIN,DIRUL  ,
-     C                      NT_RW  ,NUM_IMP1,IRBE3,LRBE3,FRBE3  ,
+     C                      NT_RW  ,NUM_IMP1,RBE3,LRBE3,FRBE3  ,
      D                      NSS3   ,ISS3   ,IRBE2 ,LRBE2,NSB2   ,
      E                      ISB2   ) 
 C-----------------------------------------------
@@ -57,6 +57,7 @@ C-----------------------------------------------
       USE INTBUFDEF_MOD
       USE IMP_INTBUF
       USE SENSOR_MOD
+      USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -80,7 +81,7 @@ C-----------------------------------------------
      .        IADK(*),JDIK(*),NDDLI,NNZI,IADI(*),JDII(*),
      .        IDDLI(*),NDOFI(*),NINT2 ,IINT2(*),IAINT2(*)
       INTEGER NUM_IMP(*),NS_IMP(*),NE_IMP(*),INDEX2(*),NUM_IMP1(*)
-      INTEGER IRBE3(NRBE3L,*),LRBE3(*),NSS3(*),ISS3(*),
+      INTEGER LRBE3(*),NSS3(*),ISS3(*),
      .        IRBE2(*),LRBE2(*),NSB2(*),ISB2(*)
       my_real
      .  A(3,*),V(3,*),RBY(NRBY,*),X(3,*) ,SKEW(*),IN(*),MS(*)
@@ -90,6 +91,7 @@ C-----------------------------------------------
      .  FRBE3(*)
       TYPE(INTBUF_STRUCT_) INTBUF_TAB(*)
       TYPE (SENSOR_STR_) ,DIMENSION(NSENSOR) ,INTENT(IN) :: SENSOR_TAB
+      TYPE(RBE3_),INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -360,7 +362,7 @@ C
      6                      DIAG_I ,LT_I  ,IDDLI ,NDDL  ,IADK   ,
      7                      JDIK   ,IKC   ,DIAG_K,LT_K  ,IDDL   ,
      8                      NDOFI  ,ITOK  ,UD    ,LB    ,DIRUL  ,
-     9                      NT_RW  ,IRBE3 ,LRBE3 ,FRBE3  ,NSS3  ,
+     9                      NT_RW  ,RBE3  ,LRBE3 ,FRBE3  ,NSS3  ,
      A                      ISS3   ,IRBE2 ,LRBE2 ,NSB2  ,ISB2   ) 
 C
       RETURN

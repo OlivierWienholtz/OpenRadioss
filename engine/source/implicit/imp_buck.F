@@ -90,7 +90,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      O                    FNCONT      ,FTCONT       , TEMP     , SH4TREE  , SH3TREE   ,
      P                    ERR_THK_SH4 ,ERR_THK_SH3  , IFRAME   , LPRW     ,
      P                    ELBUF_TAB   ,FSAV         , FSAVD    , RWSAV    , AR        ,
-     R                    IRBE3       ,LRBE3        , FRBE3    , FR_I2M   , IAD_I2M   ,
+     R                    RBE3        ,LRBE3        , FRBE3    , FR_I2M   , IAD_I2M   ,
      S                    FR_RBE3M    ,IAD_RBE3M    , FRWL6    , IBCL     , FORC      ,
      T                    IRBE2       ,LRBE2        , IAD_RBE2 , FR_RBE2  , WEIGHT_MD ,
      U                    CLUSTER     ,FCLUSTER     , MCLUSTER , XFEM_TAB ,
@@ -122,6 +122,7 @@ C-----------------------------------------------
       USE ANIM_MOD
       USE MATPARAM_DEF_MOD
       use glob_therm_mod
+      USE rbe3_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -170,7 +171,7 @@ C-----------------------------------------------
      .        FR_WALL(*),DIRUL(*),SH4TREE(*),SH3TREE(*),
      .        WEIGHT_MD(*),NV46,NERCVOIS(*),NESDVOIS(*),LERCVOIS(*),
      .        LESDVOIS(*),XEDGE4N(4,*),XEDGE3N(3,*),SPH2SOL(*)
-      INTEGER IFRAME(LISKN,*),LPRW(*), IRBE3(*),LRBE3(*),
+      INTEGER IFRAME(LISKN,*),LPRW(*), LRBE3(*),
      .        FR_I2M(*),IAD_I2M(*),FR_RBE3M(*),IAD_RBE3M(*),IBCL(*),
      .        IRBE2(*),LRBE2(*),IAD_RBE2(*),FR_RBE2(*),
      .        DIMFB,STABSEN,TABSENSOR(*)
@@ -212,6 +213,7 @@ C-----------------------------------------------
       TYPE(DRAPEG_)    :: DRAPEG
       TYPE (MATPARAM_STRUCT_) ,DIMENSION(NUMMAT) ,INTENT(IN) :: MATPARAM_TAB
       type (glob_therm_) ,intent(inout)       :: glob_therm
+      TYPE(rbe3_),INTENT(INOUT) :: RBE3
 #if defined(MUMPS5) && defined(DNC)
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -812,7 +814,7 @@ C
      .                NRBYAC, IRBYAC, NINT2,   IINT2, IPARI,
      .                INTBUF_TAB    , NDOF,    D,     DR,
      .                X    ,  XFRAME , DIRUL,  IXR    ,IXC  ,
-     .                IXTG ,SH4TREE ,SH3TREE,   IRBE3 ,LRBE3,
+     .                IXTG ,SH4TREE ,SH3TREE,  RBE3  ,LRBE3,
      7                FRBE3 , IRBE2 ,LRBE2  )
 C
          DMAX=ZERO

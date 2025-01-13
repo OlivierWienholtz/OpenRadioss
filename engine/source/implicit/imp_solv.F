@@ -1179,7 +1179,7 @@ C
      5          INTLIST   ,X_A       ,IBFV      ,DIRUL     ,SKEWS%SKEW      ,
      6          XFRAME    ,ISKEW     ,ICODT     ,R_IMP(16) ,D_IMP     ,
      7          LB        ,IFDIS     ,NDDL      ,DR_IMP    ,IDDLI     ,
-     8          RBE3%RBE3 ,LRBE3     ,FRBE3     ,IRBE2     ,LRBE2     ,
+     8          RBE3%IRBE3,LRBE3     ,FRBE3     ,IRBE2     ,LRBE2     ,
      9          DD        ,DDR       ,A         ,AR        ,AC        ,
      A          ACR       ,MS        ,V         ,NDDL0     ,R_IMP(1)  ,
      B          RBY       ,ICODR     ,NT_RW     ,W_DDL     ,WEIGHT    ,

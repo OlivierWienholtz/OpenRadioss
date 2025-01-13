@@ -48,7 +48,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||====================================================================
       SUBROUTINE RDCOMI(TABVINT,MULTI_FVM,H3D_DATA,DYNAIN_DATA,
      .                  INTER_PARAMETERS,SENSORS,LOADS ,MAT_ELEM,SKEWS,
-     .                  GLOB_THERM,PBLAST )
+     .                  GLOB_THERM,PBLAST,RBE3 )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -73,6 +73,7 @@ C-----------------------------------------------
       USE SKEW_MOD
       USE glob_therm_mod
       USE PBLAST_MOD
+      USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -88,6 +89,7 @@ C-----------------------------------------------
       TYPE (SKEW_)          ,INTENT(INOUT) :: SKEWS
       TYPE (GLOB_THERM_)    ,INTENT(INOUT) :: GLOB_THERM
       TYPE (PBLAST_)        ,INTENT(INOUT) :: PBLAST
+      TYPE (RBE3_)          ,INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
@@ -1102,6 +1104,7 @@ C stapming : modification of warning messages in engine
 C-----RBE3
       NEXT   = NEXT + 1
       NRBE3 = TABVINT(NEXT)
+      RBE3%NRBE3 = NRBE3
       NEXT   = NEXT + 1
       SIRBE3 = TABVINT(NEXT)
       NEXT   = NEXT + 1

@@ -75,7 +75,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      .      NPBY,    NPBYL,   LPBY,     LPBYL,   LRIVET,  NSTRF,
      .      LJOINT,  NODPOR,  MONVOL,   LAGBUF,  
      .      IPART_STATE,IRBYM ,LNRBYM, WEIGHT_RM,ICODRBYM,
-     .      IRBE3 ,LRBE3,INOD_PXFEM,IEL_PXFEM,
+     .      LRBE3,INOD_PXFEM,IEL_PXFEM,
      .      IADC_PXFEM, ADSKY_PXFEM, MADIDX,MADCLNOD,NOM_SECT,
      .      IRBE2    ,LRBE2, PROCNE_PXFEM, IADSDP_PXFEM,
      .      IADRCP_PXFEM     ,ITHVAR,ICFIELD,ILOADP,INOD_CRKXFEM,

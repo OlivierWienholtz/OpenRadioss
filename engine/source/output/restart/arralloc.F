@@ -64,8 +64,8 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||    stack_mod               ../engine/share/modules/stack_mod.F
       !||    trimat_mod              ../engine/share/modules/trimat.F
       !||====================================================================
-      SUBROUTINE RESTALLOC(ELEMENT, NODES,MULTI_FVM,H3D_DATA,PINCH_DATA,ALE_CONNECTIVITY,SEGVAR,INTERFACES,SKEWS,
-     .                     GLOB_THERM)
+      SUBROUTINE RESTALLOC(ELEMENT,    NODES,MULTI_FVM,H3D_DATA,PINCH_DATA,ALE_CONNECTIVITY,SEGVAR,INTERFACES,SKEWS,
+     .                     GLOB_THERM, RBE3)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -101,6 +101,7 @@ C-----------------------------------------------
       use glob_therm_mod
       USE connectivity_mod
       USE nodal_arrays_mod
+      use rbe3_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -141,6 +142,7 @@ C-----------------------------------------------
       TYPE(INTERFACES_) :: INTERFACES
       TYPE(SKEW_) , INTENT(INOUT)       :: SKEWS
       type(glob_therm_) ,intent(inout) :: GLOB_THERM
+      type(rbe3_) ,intent(inout) :: RBE3
 C----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -156,6 +158,7 @@ C   -----------------------------------------------
         CALL ALLOCATE_NODAL_ARRAYS(NODES, NUMNOD, NTHREAD, IRODDL, IPARIT, 
      .      ISECUT, IISROTS, IMPOSE_DR, IDROT, NRCVVOIS, SICODT)
 
+        CALL ALLOCATE_RBE3(RBE3)
 C       
 c       ALLOCATE (ICODE(SICODE),STAT=IERR)
 c       IF (IERR/=0) GOTO 1000
@@ -369,10 +372,6 @@ c       ITABM1 = 0
         ALLOCATE (LRBE2(SLRBE2),STAT=IERR)
         IF (IERR/=0) GOTO 1000
         LRBE2 = 0  
-
-        ALLOCATE (IRBE3(SIRBE3),STAT=IERR)
-        IF (IERR/=0) GOTO 1000
-        IRBE3 = 0  
 
         ALLOCATE (LRBE3(SLRBE3),STAT=IERR)
         IF (IERR/=0) GOTO 1000

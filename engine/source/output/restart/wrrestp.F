@@ -148,7 +148,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      .                   IMPBUF_TAB ,IMPL_S          ,IMPL_S0    ,MCP         ,TEMP             ,
      .                   FORNEQS    ,UNITAB          ,STACK      ,NDRAPE      ,DRAPE_SH3N       ,
      .                   DRAPE_SH4N ,DRAPEG          ,RESTSIZE   ,SKEWS       ,GLOB_THERM       ,
-     .                   PBLAST)
+     .                   PBLAST     ,RBE3)
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
@@ -202,6 +202,7 @@ C-----------------------------------------------
       use glob_therm_mod
       use write_ale_grid_mod , only : write_ale_grid
       use write_bcs_wall_mod , only : write_bcs_wall
+      use rbe3_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -251,6 +252,7 @@ c     TYPE (CLUSTER_) ,DIMENSION(NCLUSTER) :: CLUSTER
       TYPE(DRAPEG_)    :: DRAPEG
       type (glob_therm_) ,intent(inout) :: GLOB_THERM
       TYPE(PBLAST_)    ,INTENT(INOUT) :: PBLAST
+      TYPE(RBE3_)      ,INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
@@ -677,7 +679,7 @@ C--------------------------------------
 
         CALL WRITE_I_C(LRBE2,SLRBE2)
 
-        CALL WRITE_I_C(IRBE3,SIRBE3)
+        CALL WRITE_I_C(rbe3%irbe3,rbe3%nrbe3*irbe3_variables)
 
         CALL WRITE_I_C(LRBE3,SLRBE3)
 

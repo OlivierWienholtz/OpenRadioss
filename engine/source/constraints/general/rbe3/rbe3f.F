@@ -40,15 +40,16 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||--- uses       -----------------------------------------------------
       !||    h3d_mod              ../engine/share/modules/h3d_mod.F
       !||====================================================================
-      SUBROUTINE RBE3T1(IRBE3 ,LRBE3 ,X     ,A      ,AR     ,
+      SUBROUTINE RBE3T1(RBE3 ,LRBE3 ,X     ,A      ,AR     ,
      1                  MS    ,IN    ,FRBE3 ,SKEW   ,WEIGHT ,
-     2                  STIFN ,STIFR ,IAD_M ,FR_M   ,ISIZE  ,
+     2                  STIFN ,STIFR ,IAD_M ,FR_M   ,
      3                  FR_MPON,DMAST ,ADM   ,DINERT,ADI    ,
      4                  RSUM  ,RSUM_PON,H3D_DATA )
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE H3D_MOD
+      USE rbe3_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -66,8 +67,8 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER IRBE3(NRBE3L,*),LRBE3(*),WEIGHT(*),IAD_M(*) ,FR_M(*),
-     .        ISIZE,FR_MPON(*)
+      INTEGER LRBE3(*),WEIGHT(*),IAD_M(*) ,FR_M(*),
+     .        FR_MPON(*)
 C     REAL
       my_real
      .   X(3,*), A(3,*), AR(3,*), MS(*), IN(*), FRBE3(*),SKEW(*),
@@ -75,10 +76,11 @@ C     REAL
       DOUBLE PRECISION
      .   RSUM_PON(*)
       TYPE (H3D_DATABASE) :: H3D_DATA
+      TYPE (RBE3_),INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
-      INTEGER I, J, N, MAX_M,IROTG,JT(3,NRBE3),JR(3,NRBE3),IERR,NMT,
+      INTEGER I, J, N, MAX_M,JT(3,NRBE3),JR(3,NRBE3),IERR,NMT,
      .        IADA,IADMS,IADFN,IADAR,IADIN,IADFR,IADM0,IADI0,IADL,
      .        IPA,IPMS,IPFN,IPAR,IPIN,IPFR,NMP,IADLP,NS,NML,ICOM,
      .        IADLP1,IADM1,IADI1,NMT0,IADMP(SLRBE3/2),IML(SLRBE3/2)
@@ -91,15 +93,14 @@ C     .      , DIMENSION(:), ALLOCATABLE :: RSUM_PON
 C======================================================================|
       I7KGLO = 1
       NMT0 = SLRBE3/2
-      CALL PRERBE3(IRBE3 ,MAX_M , IROTG,JT  ,JR   )
-      ICOM = IAD_M(NSPMD+1)-IAD_M(1)
-      IF (NSPMD>1)CALL SPMD_MAX_II(IROTG,IAD_M,ICOM)
+      CALL PRERBE3(RBE3%IRBE3 ,MAX_M ,JT  ,JR   )
+
       IF (NMT0>0) THEN
-       CALL PRERBE3P(IRBE3 ,LRBE3 ,IADMP ,IML   , NMT   )
+       CALL PRERBE3P(RBE3%IRBE3 ,LRBE3 ,IADMP ,IML   , NMT   )
        IADA=1
        IADMS=IADA+3*NMT
        IADFN=IADMS+NMT
-       IF (IROTG>0) THEN
+       IF (RBE3%IROTG>0) THEN
         IADAR=IADFN+NMT
         IADIN=IADAR+3*NMT
         IADFR=IADIN+NMT
@@ -111,15 +112,15 @@ C======================================================================|
        IADL=IADFR+NMT
 C       ALLOCATE(RSUM(IADL),STAT=IERR)
        CALL ZERO1(RSUM,IADL)
-       CALL RBE3F(IRBE3 ,LRBE3 ,X    ,A     ,AR    ,
+       CALL RBE3F(RBE3%IRBE3 ,LRBE3 ,X    ,A     ,AR    ,
      1           MS    ,IN    ,FRBE3,SKEW  ,WEIGHT,
-     2           STIFN ,STIFR ,JT   ,JR    ,IROTG ,
+     2           STIFN ,STIFR ,JT   ,JR    ,RBE3%IROTG ,
      3           MAX_M ,RSUM(IADA),RSUM(IADAR) ,RSUM(IADMS),
      4           RSUM(IADIN),RSUM(IADFN),RSUM(IADFR),NMT0  ,
      5           IADMP )
 C
        IF (NSPMD>1.AND.IPARIT==0) THEN
-            CALL RBE3POFF(IRBE3 ,LRBE3 ,A    ,MS    ,WEIGHT,
+            CALL RBE3POFF(RBE3%IRBE3 ,LRBE3 ,A    ,MS    ,WEIGHT,
      1                    AR    ,IN    ,STIFN,STIFR )
        END IF
        IF (IPARIT>0.AND.IMACH==3) THEN
@@ -127,7 +128,7 @@ C
         IPA=1
         IPMS=IPA+3*NMP
         IPFN=IPMS+NMP
-        IF (IROTG>0) THEN
+        IF (RBE3%IROTG>0) THEN
          IPAR=IPFN+NMP
          IPIN=IPAR+3*NMP
          IPFR=IPIN+NMP
@@ -143,7 +144,7 @@ C   RSUM_PON=ZERO
         CALL FOAT_TO_6_FLOAT(1  ,NMT*3  ,RSUM(IADA) ,RSUM_PON(IPA) )
         CALL FOAT_TO_6_FLOAT(1  ,NMT    ,RSUM(IADMS),RSUM_PON(IPMS))
         CALL FOAT_TO_6_FLOAT(1  ,NMT    ,RSUM(IADFN),RSUM_PON(IPFN))
-        IF (IROTG>0) THEN
+        IF (RBE3%IROTG>0) THEN
          CALL FOAT_TO_6_FLOAT(1  ,NMT*3  ,RSUM(IADAR) ,RSUM_PON(IPAR))
          CALL FOAT_TO_6_FLOAT(1  ,NMT    ,RSUM(IADIN),RSUM_PON(IPIN))
          CALL FOAT_TO_6_FLOAT(1  ,NMT    ,RSUM(IADFR),RSUM_PON(IPFR))
@@ -152,27 +153,27 @@ C   RSUM_PON=ZERO
             CALL SPMD_EXCH_RBE3_PON(
      .       RSUM_PON(IPA),RSUM_PON(IPAR),RSUM_PON(IPMS),RSUM_PON(IPIN),
      .       RSUM_PON(IPFN),RSUM_PON(IPFR),FR_MPON,IAD_M  ,
-     .       IAD_M(NSPMD+1),ISIZE,IROTG)
+     .       IAD_M(NSPMD+1),RBE3%irotg_sz,RBE3%IROTG)
         ENDIF
 C
 C Routine assemblage parith/ON
 C
-        CALL ASP2_RBE3(IRBE3 ,LRBE3 ,A     ,AR    ,MS    ,
+        CALL ASP2_RBE3(RBE3%IRBE3 ,LRBE3 ,A     ,AR    ,MS    ,
      1                IN     ,WEIGHT,STIFN ,STIFR ,RSUM_PON(IPA),
      2                RSUM_PON(IPAR),RSUM_PON(IPMS),RSUM_PON(IPIN),
-     3                RSUM_PON(IPFN),RSUM_PON(IPFR),NMT  ,IML  ,IROTG)
+     3                RSUM_PON(IPFN),RSUM_PON(IPFR),NMT  ,IML  ,RBE3%IROTG)
 C        DEALLOCATE(RSUM_PON)
        ELSE
 C-----------------A-=A*W+DA-----
-        CALL ASS_RBE3(IRBE3 ,LRBE3 ,A     ,AR    ,MS    ,
+        CALL ASS_RBE3(RBE3%IRBE3 ,LRBE3 ,A     ,AR    ,MS    ,
      1                IN    ,WEIGHT,STIFN ,STIFR ,RSUM(IADA),
      2                RSUM(IADAR) ,RSUM(IADMS), RSUM(IADIN),
-     3                RSUM(IADFN) ,RSUM(IADFR),NMT   ,IML  ,IROTG)
+     3                RSUM(IADFN) ,RSUM(IADFR),NMT   ,IML  ,RBE3%IROTG)
         IF (IPARIT==0.AND.ICOM>0) THEN
             CALL SPMD_EXCH_RBE3(
      .       A    ,AR   ,MS      ,IN     ,STIFN,
-     .       STIFR,FR_M ,IAD_M   ,IAD_M(NSPMD+1),ISIZE,
-     .       IROTG)
+     .       STIFR,FR_M ,IAD_M   ,IAD_M(NSPMD+1),RBE3%irotg_sz,
+     .       RBE3%IROTG)
         ENDIF
        END IF
 C
@@ -181,14 +182,14 @@ c--------------calcul dms,diner---
        IADI0=  IADM0 + NMT0
        CALL DMI_RBE3(NMT   ,LRBE3 ,FRBE3(IADM0),FRBE3(IADI0),
      1               RSUM(IADMS)  ,RSUM(IADIN) ,DMAST ,ADM  ,
-     2               DINERT,ADI   ,IROTG   ,IRBE3  ,MS      ,
+     2               DINERT,ADI   ,RBE3%IROTG   ,RBE3%IRBE3  ,MS      ,
      3               IN    ,WEIGHT,IADMP   ,H3D_DATA)
 C       DEALLOCATE(RSUM)
       END IF ! IF (NMT>0)
 C
 C---  reset of secnd nodes forces is necessary w/AMS
       DO N=1,NRBE3
-        NS  = IRBE3(3,N)
+        NS  = RBE3%IRBE3(3,N)
         IF(NS/=0) THEN
           IF (WEIGHT(NS)/=0) THEN
             DO J = 1,3
@@ -904,7 +905,7 @@ C---
       !||    sms_rbe3t1       ../engine/source/ams/sms_rbe3.F
       !||    sms_rbe3t2       ../engine/source/ams/sms_rbe3.F
       !||====================================================================
-      SUBROUTINE PRERBE3(IRBE3 ,MAX_M , IROTG,JT  ,JR   )
+      SUBROUTINE PRERBE3(IRBE3 ,MAX_M , JT  ,JR   )
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -917,7 +918,7 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER IRBE3(NRBE3L,*),MAX_M , IROTG,JT(3,*)  ,JR(3,*)
+      INTEGER IRBE3(NRBE3L,*),MAX_M , JT(3,*)  ,JR(3,*)
 C     REAL
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
@@ -925,12 +926,10 @@ C-----------------------------------------------
       INTEGER I, J, N,NML,IC,ICT,ICR,IROT
 C======================================================================|
       MAX_M=0
-      IROTG=0
       DO N=1,NRBE3
               NML = IRBE3(5,N)
               IROT =IRBE3(6,N)
         MAX_M=MAX(MAX_M,NML)
-        IROTG=MAX(IROTG,IROT)
               IC=IRBE3(4,N)
         ICT=IC/512
         ICR=(IC-512*(ICT))/64

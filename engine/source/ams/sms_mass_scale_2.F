@@ -98,7 +98,7 @@ C-----
      J        FTHREAC  ,FRWL6    ,DIM      ,TAGSLV_RBY,DAMPR      ,
      K        DAMP     ,IGRNOD   ,DR       ,RBY       ,
      L        TAGMSR_RBY_SMS,JSM_SMS,IRBE2  ,LRBE2      ,
-     N        IAD_RBE2 ,FR_RBE2M ,NMRBE2   ,R2SIZE    ,IRBE3      ,
+     N        IAD_RBE2 ,FR_RBE2M ,NMRBE2   ,R2SIZE    ,RBE3      ,
      O        LRBE3      ,FRBE3    ,IAD_RBE3M ,FR_RBE3M ,FR_RBE3MP,
      P        RRBE3      ,RRBE3_PON,PREC_SMS3 ,DIAG_SMS3,IAD_RBY  ,
      Q        FR_RBY6    ,RBY6     ,R3SIZE ,BETATE      ,IBCSCYC  ,
@@ -111,6 +111,7 @@ C-----------------------------------------------
       USE MESSAGE_MOD
       USE GROUPDEF_MOD
       USE SENSOR_MOD
+      USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -156,7 +157,7 @@ C-----------------------------------------------
      .         SH4TREE(KSH4TREE,*), SH3TREE(KSH3TREE,*), DIM,
      .         TAGMSR_RBY_SMS(*), JSM_SMS(*),
      .         IRBE2(NRBE2L,*), LRBE2(*), IAD_RBE2(*),
-     .         FR_RBE2M(*), NMRBE2, R2SIZE, IRBE3(NRBE3L,*), LRBE3(*),
+     .         FR_RBE2M(*), NMRBE2, R2SIZE,  LRBE3(*),
      .         IAD_RBE3M(*) ,FR_RBE3M(*) ,FR_RBE3MP(*),
      .         FR_RBY6(*),IAD_RBY(*),R3SIZE,IBCSCYC(*),LBCSCYC(*)
       my_real
@@ -170,12 +171,13 @@ C-----------------------------------------------
      .    RWBUF(*), RWSAV(*), FOPT(*),FTHREAC(6,*),
      .    DAMPR(NRDAMP,*), DAMP(DIM,*), DR(3,*), RBY(NRBY,*), 
      .    FRBE3(*), RRBE3(*), PREC_SMS3(3,*), DIAG_SMS3(3,*),BETATE
+C-----------------------------------------------
       DOUBLE PRECISION FRL6(*), FNL6(*), FRWL6(*), RRBE3_PON(*)
       DOUBLE PRECISION RBY6(8,6,NRBYKIN)
       TYPE(INTSTAMP_DATA) INTSTAMP(*)
       TYPE (SENSOR_STR_) ,DIMENSION(NSENSOR) ,INTENT(IN) :: SENSOR_TAB
-C-----------------------------------------------
       TYPE (GROUP_)  , DIMENSION(NGRNOD) :: IGRNOD
+      TYPE (RBE3_),INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   L o c a l  V a r i a b l e s
 C-----------------------------------------------
@@ -663,7 +665,7 @@ C-----------------------------------
       IF (NRBE3>0)THEN
         IF(ITASK==0)THEN
           CALL SMS_RBE3T1(
-     1      IRBE3 ,LRBE3  ,X        ,A       ,FRBE3    ,
+     1      RBE3  ,LRBE3  ,X        ,A       ,FRBE3    ,
      2      SKEW  ,WEIGHT ,IAD_RBE3M,FR_RBE3M,FR_RBE3MP,
      3      RRBE3 ,RRBE3_PON ,R3SIZE)
         END IF
@@ -817,7 +819,7 @@ C-----------------------------------
      J            FTHREAC  ,FRWL6  ,AM       ,VR      ,
      K            DR       ,IN      ,RBY    ,NPBY     ,LPBY    ,
      L      TAGMSR_RBY_SMS ,IRBE2   ,LRBE2  ,IAD_RBE2 ,FR_RBE2M,
-     M            NMRBE2   ,R2SIZE  ,IRBE3  ,LRBE3    ,FRBE3   ,
+     M            NMRBE2   ,R2SIZE  ,RBE3   ,LRBE3    ,FRBE3   ,
      N            IAD_RBE3M ,FR_RBE3M ,FR_RBE3MP,RRBE3,RRBE3_PON,
      O            PREC_SMS3,DIAG_SMS3,IAD_RBY  ,FR_RBY6    ,RBY6,
      P            TAGSLV_RBY_SMS,R3SIZE,NODFT2_SMS,NODLT2_SMS,INDX2_SMS,

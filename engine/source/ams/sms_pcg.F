@@ -82,7 +82,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      J                FTHREAC   ,FRWL6    ,AM       ,VR      ,
      K                DR        ,IN       ,RBY      ,NPBY     ,LPBY    ,
      L             TAGMSR_RBY_SMS,IRBE2   ,LRBE2    ,IAD_RBE2 ,FR_RBE2M,
-     M                NMRBE2    ,R2SIZE   ,IRBE3  ,LRBE3    ,FRBE3     ,
+     M                NMRBE2    ,R2SIZE   ,RBE3  ,LRBE3    ,FRBE3     ,
      N                IAD_RBE3M,FR_RBE3M ,FR_RBE3MP,RRBE3   ,RRBE3_PON ,
      O                PREC_SMS3,DIAG_SMS3,IAD_RBY  ,FR_RBY6 ,RBY6      ,
      P                TAGSLV_RBY_SMS,R3SIZE,NODFT2_SMS,NODLT2_SMS,INDX2_SMS,
@@ -93,6 +93,7 @@ C-----------------------------------------------
         USE INTSTAMP_MOD
         USE SENSOR_MOD
         USE SMS_PCG_PROJ
+        USE RBE3_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -137,7 +138,7 @@ C----------resol [M]{X}={F}---------
      .           SH4TREE(KSH4TREE,*), SH3TREE(KSH3TREE,*),
      .           NPBY(NNPBY,*), LPBY(*), TAGMSR_RBY_SMS(*),
      .           IRBE2(NRBE2L,*), LRBE2(*), IAD_RBE2(*),
-     .           FR_RBE2M(*), NMRBE2, R2SIZE, IRBE3(NRBE3L,*), LRBE3(*),
+     .           FR_RBE2M(*), NMRBE2, R2SIZE, LRBE3(*),
      .           IAD_RBE3M(*) ,FR_RBE3M(*) ,FR_RBE3MP(*),
      .           FR_RBY6(*),IAD_RBY(*), TAGSLV_RBY_SMS(*),R3SIZE,
      .           NODFT2_SMS,NODLT2_SMS,INDX2_SMS(*),NODII_SMS(*),
@@ -159,6 +160,7 @@ C     REAL
         DOUBLE PRECISION RBY6(8,6,NRBYKIN)
         TYPE(INTSTAMP_DATA) INTSTAMP(*)
         TYPE (SENSOR_STR_) ,DIMENSION(NSENSOR) ,INTENT(IN) :: SENSOR_TAB
+        TYPE (RBE3_),INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -237,7 +239,7 @@ C
 C
             IF(ITASK==0)THEN
               CALL SMS_RBE3_PREC(
-     1          IRBE3 ,LRBE3  ,X      ,DIAG_SMS ,DIAG_SMS3,
+     1          RBE3 ,LRBE3  ,X      ,DIAG_SMS ,DIAG_SMS3,
      2          FRBE3 ,SKEW   ,WEIGHT ,IAD_RBE3M,FR_RBE3M ,
      3          FR_RBE3MP,RRBE3 ,RRBE3_PON ,R3SIZE)
             END IF
@@ -348,7 +350,7 @@ C
           CALL MY_BARRIER
 C
           IF(ITASK==0)THEN
-            CALL SMS_RBE3T2(IRBE3 ,LRBE3 ,X    ,X_SMS ,FRBE3 ,
+            CALL SMS_RBE3T2(RBE3%IRBE3 ,LRBE3 ,X    ,X_SMS ,FRBE3 ,
      2                      SKEW  ,R     ,PREC_SMS3   )
           END IF
         END IF
@@ -516,7 +518,7 @@ C
 C
           IF(ITASK==0)THEN
             CALL SMS_RBE3T1(
-     1        IRBE3 ,LRBE3  ,X        ,Z_SMS   ,FRBE3    ,
+     1        RBE3 ,LRBE3  ,X        ,Z_SMS   ,FRBE3    ,
      2        SKEW  ,WEIGHT ,IAD_RBE3M,FR_RBE3M,FR_RBE3MP,
      3        RRBE3 ,RRBE3_PON ,R3SIZE)
           END IF
@@ -682,7 +684,7 @@ C
           CALL MY_BARRIER
 C
           IF(ITASK==0)THEN
-            CALL SMS_RBE3T2(IRBE3 ,LRBE3 ,X    ,Z_SMS ,FRBE3 ,
+            CALL SMS_RBE3T2(RBE3%IRBE3 ,LRBE3 ,X    ,Z_SMS ,FRBE3 ,
      2                      SKEW  ,RES_SMS     ,PREC_SMS3   )
           END IF
         END IF
@@ -939,7 +941,7 @@ C
 C
           IF(ITASK==0)THEN
             CALL SMS_RBE3T1(
-     1        IRBE3 ,LRBE3  ,X        ,Y_SMS   ,FRBE3    ,
+     1        RBE3  ,LRBE3  ,X        ,Y_SMS   ,FRBE3    ,
      2        SKEW  ,WEIGHT ,IAD_RBE3M,FR_RBE3M,FR_RBE3MP,
      3        RRBE3 ,RRBE3_PON ,R3SIZE)
           END IF
@@ -1159,7 +1161,7 @@ C
           CALL MY_BARRIER
 C
           IF(ITASK==0)THEN
-            CALL SMS_RBE3T2(IRBE3 ,LRBE3 ,X    ,Z_SMS ,FRBE3 ,
+            CALL SMS_RBE3T2(RBE3%IRBE3 ,LRBE3 ,X    ,Z_SMS ,FRBE3 ,
      2                      SKEW  ,RES_SMS     ,PREC_SMS3   )
           END IF
         END IF
@@ -1438,7 +1440,7 @@ C
 C
             IF(ITASK==0)THEN
               CALL SMS_RBE3T1(
-     1        IRBE3 ,LRBE3  ,X        ,Z_SMS   ,FRBE3    ,
+     1        RBE3  ,LRBE3  ,X        ,Z_SMS   ,FRBE3    ,
      2        SKEW  ,WEIGHT ,IAD_RBE3M,FR_RBE3M,FR_RBE3MP,
      3        RRBE3 ,RRBE3_PON ,R3SIZE)
             END IF

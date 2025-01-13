@@ -52,9 +52,9 @@ C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
       INTEGER N, I, M, JT(3,NRBE3), JR(3,NRBE3), IAD, NS, NML, FIN, 
-     .        FINFIN, ICOM, IROTG, MAX_M
+     .        FINFIN, ICOM, MAX_M
 C-----------------------------------------------
-      CALL PRERBE3(IRBE3 ,MAX_M , IROTG,JT  ,JR   )
+      CALL PRERBE3(IRBE3 ,MAX_M ,JT  ,JR   )
       ICOM = IAD_M(NSPMD+1)-IAD_M(1)
 c      IF (NSPMD>1)CALL SPMD_MAX_II(IROTG,IAD_M,ICOM)
 C----- 
@@ -137,9 +137,13 @@ C
       !||    zero1                  ../engine/source/system/zero.F
       !||====================================================================
       SUBROUTINE SMS_RBE3T1(
-     1                  IRBE3 ,LRBE3  ,X     ,A      ,FRBE3  ,
+     1                  RBE3 ,LRBE3  ,X     ,A      ,FRBE3  ,
      2                  SKEW  ,WEIGHT ,IAD_M ,FR_M   ,FR_MPON,
      3                  RSUM  ,RSUM_PON ,R3SIZE)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE rbe3_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -154,12 +158,13 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER IRBE3(NRBE3L,*), LRBE3(*), WEIGHT(*), IAD_M(*), FR_M(*),
+      INTEGER LRBE3(*), WEIGHT(*), IAD_M(*), FR_M(*),
      .        FR_MPON(*),R3SIZE
       my_real
      .   X(3,*), A(3,*), FRBE3(*), SKEW(*), RSUM(*)
       DOUBLE PRECISION
      .   RSUM_PON(*)
+      TYPE (RBE3_),INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -176,17 +181,15 @@ C      DOUBLE PRECISION
 C     .      , DIMENSION(:), ALLOCATABLE :: RSUM_PON
 C======================================================================|
       NMT0 = SLRBE3/2
-      CALL PRERBE3(IRBE3 ,MAX_M , IROTG,JT  ,JR   )
+      CALL PRERBE3(RBE3%IRBE3 ,MAX_M ,JT  ,JR   )
       ICOM = IAD_M(NSPMD+1)-IAD_M(1)
-c      IF (NSPMD>1)CALL SPMD_MAX_II(IROTG,IAD_M,ICOM)
-      IF (R3SIZE>5)IROTG = 1
 C
       IF (NMT0>0) THEN
-       CALL PRERBE3P(IRBE3 ,LRBE3 ,IADMP ,IML   , NMT   )
+       CALL PRERBE3P(RBE3%IRBE3 ,LRBE3 ,IADMP ,IML   , NMT   )
        IADA=1
        IADMS=IADA+3*NMT
        IADFN=IADMS+NMT
-       IF (IROTG>0) THEN
+       IF (RBE3%IROTG>0) THEN
         IADAR=IADFN+NMT
         IADIN=IADAR+3*NMT
         IADFR=IADIN+NMT
@@ -200,9 +203,9 @@ C
 C      ALLOCATE(RSUM(IADL),STAT=IERR)
        CALL ZERO1(RSUM,IADL)
        CALL SMS_RBE3_1(
-     1           IRBE3     ,LRBE3 ,X     ,A     ,FRBE3 ,
-     2           SKEW      ,WEIGHT,JT    ,IROTG ,MAX_M ,
-     3           RSUM(IADA),NMT0  ,IADMP )
+     1           RBE3%IRBE3 ,LRBE3 ,X     ,A     ,FRBE3 ,
+     2           SKEW       ,WEIGHT,JT    ,IROTG ,MAX_M ,
+     3           RSUM(IADA) ,NMT0  ,IADMP )
 C
        NMP = 6*NMT
        IPA=1
@@ -230,7 +233,7 @@ C      RSUM_PON=ZERO
 C
 C Routine assemblage parith/ON
 C
-       CALL SMS_RBE3_2(IRBE3 ,LRBE3 ,A     ,WEIGHT,RSUM_PON(IPA),
+       CALL SMS_RBE3_2(RBE3%IRBE3 ,LRBE3 ,A     ,WEIGHT,RSUM_PON(IPA),
      2                 NMT   ,IML   ,JT    )
 C      DEALLOCATE(RSUM_PON)
 C
@@ -343,9 +346,13 @@ C---
       !||    zero1                  ../engine/source/system/zero.F
       !||====================================================================
       SUBROUTINE SMS_RBE3_PREC(
-     1                  IRBE3 ,LRBE3  ,X     ,DIAG_SMS,DIAG_SMS3,
+     1                  RBE3 ,LRBE3  ,X     ,DIAG_SMS,DIAG_SMS3,
      2                  FRBE3 ,SKEW  ,WEIGHT ,IAD_M   ,FR_M     ,
      3                  FR_MPON,RSUM ,RSUM_PON ,R3SIZE)
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      USE rbe3_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -360,13 +367,14 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
-      INTEGER IRBE3(NRBE3L,*), LRBE3(*), WEIGHT(*), IAD_M(*), FR_M(*),
+      INTEGER LRBE3(*), WEIGHT(*), IAD_M(*), FR_M(*),
      .        FR_MPON(*),R3SIZE
 C     REAL
       my_real
      .   X(3,*), DIAG_SMS(*), DIAG_SMS3(*), FRBE3(*), SKEW(*), RSUM(*)
       DOUBLE PRECISION
      .   RSUM_PON(*)
+      TYPE (RBE3_),INTENT(INOUT) :: RBE3
 C-----------------------------------------------
 C   L o c a l   V a r i a b l e s
 C-----------------------------------------------
@@ -383,13 +391,13 @@ C      DOUBLE PRECISION
 C     .      , DIMENSION(:), ALLOCATABLE :: RSUM_PON
 C======================================================================|
       NMT0 = SLRBE3/2
-      CALL PRERBE3(IRBE3 ,MAX_M , IROTG,JT  ,JR   )
+      CALL PRERBE3(RBE3%IRBE3 ,MAX_M , IROTG,JT  ,JR   )
       ICOM = IAD_M(NSPMD+1)-IAD_M(1)
 c      IF (NSPMD>1)CALL SPMD_MAX_II(IROTG,IAD_M,ICOM)
        IF (R3SIZE>5)IROTG = 1
 C
       IF (NMT0>0) THEN
-       CALL PRERBE3P(IRBE3 ,LRBE3 ,IADMP ,IML   , NMT   )
+       CALL PRERBE3P(RBE3%IRBE3 ,LRBE3 ,IADMP ,IML   , NMT   )
        IADA=1
        IADMS=IADA+3*NMT
        IADFN=IADMS+NMT
@@ -407,9 +415,9 @@ C
 C      ALLOCATE(RSUM(IADL),STAT=IERR)
        CALL ZERO1(RSUM,IADL)
        CALL SMS_RBE3_1(
-     1           IRBE3     ,LRBE3 ,X     ,DIAG_SMS3,FRBE3 ,
-     2           SKEW      ,WEIGHT,JT    ,IROTG    ,MAX_M ,
-     3           RSUM(IADA),NMT0  ,IADMP )
+     1           RBE3%IRBE3 ,LRBE3 ,X     ,DIAG_SMS3,FRBE3 ,
+     2           SKEW       ,WEIGHT,JT    ,IROTG    ,MAX_M ,
+     3           RSUM(IADA) ,NMT0  ,IADMP )
 C
        NMP = 6*NMT
        IPA=1
@@ -437,7 +445,7 @@ C      RSUM_PON=ZERO
 C
 C Routine assemblage parith/ON
 C
-       CALL SMS_RBE3_3(IRBE3 ,LRBE3 ,DIAG_SMS3,WEIGHT,RSUM_PON(IPA),
+       CALL SMS_RBE3_3(RBE3%IRBE3 ,LRBE3 ,DIAG_SMS3,WEIGHT,RSUM_PON(IPA),
      2                 NMT   ,IML   ,JT    )
 C      DEALLOCATE(RSUM_PON)
 C

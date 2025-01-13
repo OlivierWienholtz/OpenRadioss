@@ -7985,7 +7985,7 @@ C      RBE3
 C--------------------
       IF (NRBE3>0) THEN
         IF (ITASK==0) THEN
-          CALL RBE3V(RBE3%IRBE3 ,LRBE3 ,NODES%X    ,NODES%A     ,NODES%AR    ,
+          CALL RBE3V(RBE3 ,LRBE3 ,NODES%X    ,NODES%A     ,NODES%AR    ,
      1                 NODES%V   ,NODES%VR    ,FRBE3,SKEWS%SKEW  )
         ENDIF
       ENDIF

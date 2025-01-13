@@ -172,7 +172,7 @@ C     REAL
 
 C======================================================================|
       IADS = SLRBE3/2
-      CALL PRERBE3(RBE3%IRBE3 ,MAX_M , IROTG,JT  ,JR   )
+      CALL PRERBE3(RBE3%IRBE3 ,MAX_M ,JT  ,JR   )
       ALLOCATE(FDSTNB(3,6,MAX_M))
       IF (IROTG>0) ALLOCATE(MDSTNB(3,6,MAX_M))
       DO N=1,NRBE3

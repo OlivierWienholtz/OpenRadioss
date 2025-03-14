@@ -240,7 +240,7 @@ C-----------------------------------------------
         my_real :: DX1,DX2,DX2_FIRST,DX2_LAST,DX2_MIDDLE
         my_real :: PRODUCT_FM,PRODUCT_ML
         my_real :: DIV, DIV0
-
+        ! Commentaire
 !       ----------------------------------------
         FINTER = ZERO
         MIN_GAP = 20

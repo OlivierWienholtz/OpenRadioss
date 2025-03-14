@@ -514,6 +514,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||    update_pon_mod                               ../engine/source/engine/node_spliting/update_pon.F90
       !||    user_windows_mod                             ../common_source/modules/user_windows_mod.F
       !||    xfem2vars_mod                                ../engine/share/modules/xfem2vars_mod.F
+      !||    a_tuer
       !||====================================================================
             SUBROUTINE RESOL(TIMERS, ELEMENT, NODES, AF,IAF,
      1        ISKWN   ,NETH   ,IPART  ,NOM_OPT,KXX    ,IXX    ,

@@ -62,7 +62,7 @@ IF (%1) == () GOTO END_ARG_LOOP
        set jobsv=%2
        )
 
-   IF %1==-openreader (
+   IF %1==-open_reader (
        set use_openreader=1
    )
 

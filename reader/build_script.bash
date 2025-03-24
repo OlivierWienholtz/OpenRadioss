@@ -96,6 +96,11 @@ echo " "
 echo " threads =              : " $threads
 echo " " 
 
+# Load external libraries
+echo "Load external libraries"
+python ../Compiling_tools/script/load_extlib.py
+
+
 # create build directory
 if [ ! -d ${build_directory} ] 
 then

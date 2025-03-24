@@ -39,6 +39,10 @@ GOTO ARG_LOOP
 
 :END_ARG_LOOP
 
+:: Load external libraries
+echo Load external libraries
+python ..\Compiling_tools\script\load_extlib.py
+
 :: build directory
 set build_directory=cbuild_%arch%
 

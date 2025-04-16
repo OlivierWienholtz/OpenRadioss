@@ -21,17 +21,19 @@
 !Copyright>        software under a commercial license.  Contact Altair to discuss further if the
 !Copyright>        commercial version may interest you: https://www.altair.com/radioss/.
 
-!! \brief  Module intent is to provide a common location for all file descriptors
-      !||====================================================================
-      !||    file_descriptor_mod   ../engine/source/modules/file_descriptor_mod.F90
-      !||--- called by ------------------------------------------------------
-      !||    mulawc                ../engine/source/materials/mat_share/mulawc.F90
-      !||====================================================================
-        module file_descriptor_mod
-    
-           integer, parameter :: istdo=6
-           integer, parameter :: iout=7
-           integer, parameter :: fchecksum = 4566
-    
-        end module file_descriptor_mod
-
+!! \brief Write line in text outut file, file given by its descriptor.
+!! \details This routine will be used in C file (C calls Fortran).
+        subroutine write_out_file(fd,line,len1)
+!----------------------------------------------
+!   i m p l i c i t   t y p e s
+!-----------------------------------------------
+        implicit none
+!-----------------------------------------------
+!   d u m m y   a r g u m e n t s
+!-----------------------------------------------
+        integer, intent(in) :: fd  ! File descriptor
+        integer len1               ! Length of line to write
+        character(len=len1)  line  ! Line to write
+!-----------------------------------------------
+                write(fd,'(a)') line(1:len1)
+        end

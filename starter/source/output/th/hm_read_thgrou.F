@@ -70,7 +70,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      C      IPARTS        ,IPARTQ        ,IPARTC           ,IPARTT            ,IPARTP        ,IPARTR ,
      D      IPARTG        ,IPARTX        ,IPARTSP          ,IPARTIG3D         ,LITHBUFMX     ,
      E      MAP_TABLES    ,IFLAG         ,PTR_NOPT_SLIPRING,PTR_NOPT_RETRACTOR,SENSORS       ,
-     F      INTERFACES    ,IPARI         ,DUMP_THNMS1_FILE ,ITHERM_FE)
+     F      INTERFACES    ,IPARI         ,DUMP_THNMS1_FILE ,ITHERM_FE         )
 C-----------------------------------------------
       USE MY_ALLOC_MOD
       USE MESSAGE_MOD
@@ -150,6 +150,7 @@ C-----------------------------------------------
       INTEGER NVARNS,NVARSPH
       INTEGER NVARIN,NVARRW,NVARRB,NVARAC,NVARSE,NVARJO,NVARFX,NVARFXM
       INTEGER NVARAB,NVARMV4,NVARMV,NVARPA,NVARMVENT,NVARSENS,NVARSENSG
+      INTEGER NVARCHECKSUM,NVARCHECKSUMG
       INTEGER NVARF1,NVARFR,NVARGAU,NVARCLUS,NVARCLUSG,NVARFLOW,NVARSURF
       INTEGER NVARRIV,NVARRIVG,NVARSLIP,NVARRET,NSELRT,INOUT
       INTEGER HM_NTHGRP,NTHACCEL,NTHINTER,NTHRWALL,NTHSECTIO,NTHCLUS
@@ -157,7 +158,7 @@ C-----------------------------------------------
       INTEGER NTHMONVOL,HM_NTHPART ,NUMTHPART, HM_NTHSUBS, HM_NTHSURF
       INTEGER HM_NTHSPHCEL, HM_NTHQUAD, HM_NTHSPHFLOW
       INTEGER HM_NTHGAUGE, HM_NTHFXBODY, HM_NTHFRAME, HM_NTHCYLJO, HM_NTHNSTRAND   
-      INTEGER HM_NTHTRIA,HM_NTHSLIPRING,HM_NTHRETRACTOR,HM_NTHSENS
+      INTEGER HM_NTHTRIA,HM_NTHSLIPRING,HM_NTHRETRACTOR,HM_NTHSENS,HM_NTHCHECKSUM
       PARAMETER (NVARRIV = 10,NVARRIVG = 1)
       INTEGER IVARRIV(18,NVARRIVG)
       CHARACTER*10 VARRIV(NVARRIV),VARRIVG(NVARRIVG)
@@ -216,6 +217,7 @@ C-----------------------------------------------
       PARAMETER (NVARF1G = 3,NVARFRG = 4,NVARGAUG = 1,NVARCLUSG=2,NVARFLOWG=1,
      .           NVARSURFG = 1,NVARSLIPG=1,NVARRETG = 1)
       PARAMETER (NVARSENS = 1,NVARSENSG = 1)
+      PARAMETER (NVARCHECKSUM = 1,NVARCHECKSUMG = 1)
       CHARACTER*10 VARNG(NVARNG)
       CHARACTER*10 VARCG(NVARCG),VARTG(NVARTG)
       CHARACTER*10 VARPG(NVARPG),VARRG(NVARRG),VARURG(NVARURG)
@@ -223,7 +225,8 @@ C-----------------------------------------------
       CHARACTER*10 VARING(NVARING),VARRWG(NVARRWG),VARRBG(NVARRBG)
       CHARACTER*10 VARACG(NVARACG),VARSEG(NVARSEG),VARJOG(NVARJOG)
       CHARACTER*10 VARABG(NVARABG),VARMVG4(NVARMG4),VARMVG(NVARMVG),
-     .             VARMVENTG(NVARMVENTG),VARSENS(NVARSENS),VARSENSG(NVARSENSG)
+     .             VARMVENTG(NVARMVENTG),VARSENS(NVARSENS),VARSENSG(NVARSENSG),
+     .             VARCHECKSUM(NVARCHECKSUM),VARCHECKSUMG(NVARCHECKSUMG)
       CHARACTER*10 VARPAG(NVARPAG),VARFXG(NVARFXG),VARFXMG(NVARFXMG)
       CHARACTER*10 VARF1G(NVARF1G),VARFRG(NVARFRG),VARGAUG(NVARGAUG)
       CHARACTER*10 VARCLUSG(NVARCLUSG),VARFLOWG(NVARFLOWG)
@@ -245,7 +248,8 @@ C-----------------------------------------------
       INTEGER IVARF1G(18,NVARF1G),IVARFRG(18,NVARFRG),
      .        IVARGAUG(18,NVARGAUG),IVARCLUSG(18,NVARCLUSG),
      .        IVARFLOWG(18,NVARFLOWG),IVARSURFG(18,NVARSURFG),
-     .        IVARSLIPG(18,NVARSLIPG),IVARRETG(18,NVARRETG)
+     .        IVARSLIPG(18,NVARSLIPG),IVARRETG(18,NVARRETG),
+     .        IVARCHECKSUMG(18,NVARCHECKSUMG)
       INTEGER NSMA
       INTEGER IUN,INODACC,INODFRA
       INTEGER NNOD, NSHEL, NTRUS, NBEAM, NSPRG, NCHTG, NCHINT, NCHJNT,
@@ -279,6 +283,11 @@ C-----------------------------------------------
      .                              VARSLIP_TITLE,VARRET_TITLE,
      .                              VARCLUS_TITLE,VARFLOW_TITLE,
      .                              VARSURF_TITLE,VARSENS_TITLE
+     
+        INTEGER :: LEN_TITLE
+        INTEGER :: LEN_CHECKSUM
+        CHARACTER(LEN=NCHARLINE):: CHECKSUM_TITLE
+        CHARACTER(LEN=64):: CHECKSUM
 C-----------------------------------------------
 C   E x t e r n a l   F u n c t i o n s
 C-----------------------------------------------
@@ -1237,6 +1246,9 @@ C
 c
       DATA VARSENS/
      . 'STATUS   '/
+c
+      DATA VARCHECKSUM/
+     . 'CHECKSUM '/
 C-----------------------------------------------
 C   TH GENERIC VARIABLES
 C-----------------------------------------------
@@ -1750,6 +1762,10 @@ C   frames
       DATA VARSENSG/
      . 'DEF      '/
       DATA IVARSENSG
+     .         / 1, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0/
+      DATA VARCHECKSUMG/
+     . 'DEF      '/
+      DATA IVARCHECKSUMG
      .         / 1, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0/
 C=======================================================================
       TAGP=0
@@ -3097,6 +3113,33 @@ C             error message if type of inout is not correct
 c
           IF(IGS/=0) NTHWA=MAX(NTHWA,ITHGRP(4,IGS)*ITHGRP(6,IGS))    
         ENDDO
+      ENDIF
+      !-------------------------------------------
+      ! /TH/CHECKSUM ( activated automaticaly if /CHECKSUM is used )
+      !-------------------------------------------
+      CALL CHECKSUM_COUNT(HM_NTHCHECKSUM)
+      IF (HM_NTHCHECKSUM > 0) THEN 
+        HM_NTHGRP = HM_NTHGRP + 1
+        IGS = IGS+1
+        CHECKSUM_TITLE = ''
+        CHECKSUM = ''
+        CALL CHECKSUM_READ(I,CHECKSUM_TITLE,LEN_TITLE,CHECKSUM,LEN_CHECKSUM)    
+          
+        TITR = 'CHECKSUM  '
+        CALL FRETITL(TITR,ITHGRP(NITHGR-LTITR+1,IGS),LTITR)
+
+
+        ITHGRP(1,IGS) = 100000
+        NVALL = 1
+        ITYP  = 121
+        KEY   = 'CHECKSUM  ' 
+        CALL HM_READ_THCHECKSUM(
+     1      121      ,KEY      ,
+     2      IAD      ,IFI      ,ITHGRP(1,IGS),ITHBUF   ,
+     3      NVARCHECKSUM   ,VARCHECKSUM    , NSNE   ,
+     5      LITHBUFMX)
+c
+        NTHWA=MAX(NTHWA,ITHGRP(4,IGS)*ITHGRP(6,IGS))    
       ENDIF
 C
       DO N=1,NPART

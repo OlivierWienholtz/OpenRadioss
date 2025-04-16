@@ -1369,6 +1369,16 @@ C-----------------------------
      .           IAD    ,IAD+NN-1 ,IADV   ,IADV+NVAR-1,ITHBUF   ,
      .           WA     ,ITTYP    ,SITHBUF)
 C
+c
+          ELSEIF (ITYP == 121) THEN
+C-----------------------------
+C           SENSORS
+C-----------------------------
+            CALL THSECHECKSUM (
+     .           IAD    ,IAD+NN-1 ,IADV   ,IADV+NVAR-1,ITHBUF   ,
+     .           WA     ,ITTYP    ,SITHBUF)
+C
+c----
 c----
           ENDIF  ! ITYP
        ENDDO

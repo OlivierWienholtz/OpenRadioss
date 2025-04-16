@@ -204,6 +204,7 @@ C-----------------------------------------------
       use write_ale_grid_mod , only : write_ale_grid
       use write_bcs_wall_mod , only : write_bcs_wall
       use rbe3_mod
+      use checksum_output_option_mod, only : checksum_restart_write
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -467,6 +468,10 @@ C--------------------------------------
 C     ECRITURE DES VARIABLES ENTIERES
 C--------------------------------------
       CALL WRITE_I_C(TABVINT,LVARINT)
+C--------------------------------------
+C     WRITE CHECKSUM DIGEST
+C--------------------------------------
+      CALL checksum_restart_write(OUTPUT%CHECKSUM)
 C--------------------------------------
 C     ECRITURE DES ENTIERS
 C--------------------------------------

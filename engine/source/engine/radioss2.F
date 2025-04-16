@@ -172,7 +172,7 @@ C-----------------------------------------------
       USE ALEMUSCL_MOD , only:ALEMUSCL_Param
       USE USER_INTERFACE_MOD
       USE ALE_MOD
-      USE OUTPUT_MOD , ONLY : OUTPUT_, WFEXT, WFEXT_MD
+      USE OUTPUT_MOD , ONLY : OUTPUT_, OUTPUT_PTR, WFEXT, WFEXT_MD
       USE INTERFACES_MOD
       USE DT_MOD
       USE LOADS_MOD
@@ -187,6 +187,7 @@ C-----------------------------------------------
       use rbe3_mod
       USE TIME_HISTORY_MOD , only : TH_CLEAN
       USE SPMD_MOD
+      use checksum_output_option_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -394,6 +395,9 @@ C                                   IF RELEASE WAS BUILT FROM SOURCE
       WFEXT_MD => OUTPUT%WFEXT_MD
       WFEXT = ZERO
       WFEXT_MD = ZERO
+
+      OUTPUT.CHECKSUM.CHECKSUM_COUNT = 0
+      output_ptr => OUTPUT
 
 #include      "machine2.inc"
       
@@ -753,7 +757,7 @@ C       Create info, hist, monitor, progress and tpl files for writing implicit 
             TMP_NAME=OUTFILE_NAME(1:OUTFILE_NAME_LEN)//FILNAM(1:ROOTLEN+9)
             INPUTNAM='CHECK_DATA'
             OPEN(UNIT=IOUT,FILE=TMP_NAME(1:LEN_TMP_NAME),ACCESS='SEQUENTIAL',FORM='FORMATTED',STATUS='UNKNOWN')
-
+            OUTPUT%OUT_FILENAME(1:LEN_TMP_NAME)=TMP_NAME(1:LEN_TMP_NAME)
              IO_ERRL=0
             DO WHILE (IO_ERRL>=0)
               READ(IOUT,'(A)',END = 1000,IOSTAT=IO_ERRL)LINE
@@ -785,6 +789,7 @@ C       Create info, hist, monitor, progress and tpl files for writing implicit 
      .       ACCESS='SEQUENTIAL',
      .       FORM='FORMATTED',STATUS='UNKNOWN')
 C
+           OUTPUT%OUT_FILENAME(1:LEN_TMP_NAME)=TMP_NAME(1:LEN_TMP_NAME)
            WRITE(IOUT,'(1X,A)')FILNAM(1:ROOTLEN+9)
          ENDIF
          WRITE(CHRU_M1,'(I4.4)')IRUNN-1
@@ -1144,7 +1149,9 @@ C--------------------------------------------
         !/ANIM/VECT/ZFINT  not relevant in this case 
         NV_ANI     = NV_ANI - ANIM_V(25)
         ANIM_V(25) = 0                                    
-      ENDIF     
+      ENDIF  
+      
+      NN_ANI = NN_ANI + OUTPUT%CHECKSUM%CHECKSUM_COUNT   
 
       !COMMUN LAW51/LAW37
       !if multimaterial law then removing useless phases output (phases 3 or/and 4)
@@ -1589,6 +1596,10 @@ C------------------------------------------------
      5                 12      ,ITFORM  ,ITHFLAG ,ITHVAR,
      6                 IFILTITL,OUTPUT%TH%SITHBUF ,NAMES_AND_TITLES)
           WA(1:SWA) = ZERO
+          ! Store filename & FD to be closed in arret
+          OUTPUT%TH%TH_FD=IFIL
+          OUTPUT%TH%TH_FILENAME(1:LEN_TRIM(FILNAMTH))=FILNAMTH(1:LEN_TRIM(FILNAMTH))
+
 C   Multiple th files
             IF(NTHGRP01(1)/=0)THEN
               WRITE(CHR_OLD,'(I2.2)')IRUNN
@@ -2164,6 +2175,10 @@ C---------------------------------------------------------------------
          ITASK=0
          IRUNN_BIS = IRUNN
 
+         IF (ISPMD==0)THEN
+            CALL checksum_option_outfile(OUTPUT%checksum)
+         ENDIF
+
          CALL RESOL_HEAD(ELEMENT, NODES, ITASK        ,AF              ,IAF             ,IDATA      ,RDATA,
      .                   GRAPHE       ,IFLOW           ,RFLOW           ,
      .                   STACK        ,IRUNN_BIS       , TIMERS,
@@ -2179,6 +2194,8 @@ C---------------------------------------------------------------------
 C---------------------------------------------------------------------
       CURRENT_RUN = GLOBAL_COMP_TIME%RUN_NBR
       CALL SPMD_REDUCE_DB(GLOBAL_COMP_TIME%ENGINE_TIME(CURRENT_RUN),RESULT,1,0,"MAX ")
+
+
 #ifdef DNC
 C New MADYMO coupling
       IF (IMADCPL==1)THEN
@@ -2200,6 +2217,7 @@ C---------------------------------------------------------------------
       DEALLOCATE(GRAPHE)
       DEALLOCATE(IFLOW, RFLOW)
       CALL FVDEAL()
+
       CALL ARRET(N)
 C---------------------------------------------------------------------
 

@@ -84,8 +84,8 @@ C-----------------------------------------------
        INTEGER :: RANDM_SEED,RANDM_ALEA
        REAL(kind=8) :: RANDM_SEED_NBR,RANDM_ALEA_NBR
        INTEGER :: GOT_GRP_SIZE
-       PARAMETER (LENLIST=32)
-       CHARACTER (LEN=12) ::  ARGLIST(LENLIST)
+       PARAMETER (LENLIST=33)
+       CHARACTER (LEN=20) ::  ARGLIST(LENLIST)
        EXTERNAL IARGC
        DATA ARGLIST/
      .    '-VERSION',  '-V',
@@ -101,7 +101,7 @@ C-----------------------------------------------
      .    '-INSPIRE_ALM' , '-FLUSH_RST', '-CHECK',
      .    '-HSTP_READ' , '-HSTP_WRITE', '-RXALEA', '-RSEED',
      .    '-PREVIEW',
-     .    '-GRP_SIZE' , '-PYTHON' , '-THNMS1'/
+     .    '-GRP_SIZE' , '-PYTHON' , '-THNMS1','-CHECKSUM_READ'/
 
 C-----------------------------------------------
        IDUM=-1
@@ -179,6 +179,7 @@ c
 !       ------------------------
         
         OUTPUT%TH%DUMP_THNMS1_FILE = 0
+        OUTPUT%CHECKSUM%ST_CHECKSUM_READ = 0
 
        ARGS2(1:2096) = ''
 
@@ -304,6 +305,8 @@ C------------------------------------------------
 C------------------------------------------------
             CASE ( '-THNMS1')
                 OUTPUT%TH%DUMP_THNMS1_FILE = 1
+            CASE ( '-CHECKSUM_READ')
+                OUTPUT%CHECKSUM%ST_CHECKSUM_READ = 1
 C------------------------------------------------
 C Lignes de commande qui ne sont pas definies
             CASE DEFAULT
@@ -1243,6 +1246,8 @@ C-----------------------------------------------
      *                  'Optional value, set the seed value for nodal random noise'
        WRITE(6,'(A,A)') '  -python                              : ',
      *                  'Python function in model is safe and can be used'
+       WRITE(6,'(A,A)') '  -checksum_read                       : ',
+     *                  'Compute checksums from deck and read in output file'
 
        WRITE(6,'(A)') ' '
        WRITE(6,'(A)') ' '

@@ -191,6 +191,7 @@ C-----------------------------------------------
       use read_ale_grid_mod, only : read_ale_grid
       use read_bcs_wall_mod, only : read_bcs_wall
       use rbe3_mod
+      use checksum_output_option_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -299,6 +300,8 @@ C fichier de restart au format binaire ieee
       LEN_M = NPROPMI*NUMMAT
 C
         CALL CUR_FIL_C(0)
+
+        CALL checksum_restart_read(OUTPUT%CHECKSUM)
 
         CALL READ_I_C(NODGLOB,SNODGLOB)
 

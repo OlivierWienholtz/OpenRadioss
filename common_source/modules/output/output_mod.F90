@@ -79,10 +79,12 @@
       module output_mod
         use time_history_mod
         use state_file_mod
+        use checksum_output_option_mod
 
         type output_
            type (th_) :: th
            type (state_) :: state
+           type (checksum_option_) :: checksum !< checksum option from Starter
            double precision :: wfext          !< external force work (global value)
            double precision :: wfext_md       !< specific to r2r method
         end type output_

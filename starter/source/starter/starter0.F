@@ -93,6 +93,7 @@ C-----------------------------------------------
       use glob_therm_mod
       use glob_therm_init_mod
       USE PBLAST_MOD
+      use checksum_starter_option_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -790,6 +791,10 @@ c----------- Child process creation for multidomains-----
 
 c       start CPU timer for lectur
         CALL STARTIME(2,1)
+C--------------------------------------------------
+C      Checksum option
+C--------------------------------------------------
+       call hm_read_checksum(LENI,INPUT,LENP,PATH)
 C--------------------------------------------------
 C      Main reading routine
 C--------------------------------------------------

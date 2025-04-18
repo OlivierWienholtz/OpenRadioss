@@ -94,7 +94,7 @@ private:
            // Process include files
            std::string include_file = line.substr(chksum_include.length());
            include_file.erase(remove(include_file.begin(), include_file.end(), ' '), include_file.end());
-           std::cout << "Include file: " << include_file << std::endl;
+           // debug std::cout << "Include file: " << include_file << std::endl;
            file_read(include_file, level + 1);
            continue;
          }
@@ -121,6 +121,39 @@ public:
       file_read(filenam,0);
    };
 
+   void MD5Checksum_count(int * count)  {
+     *count= md5_states.size();
+   }
+
+   void MD5Checksum_member(int * N,char* checksum_title,int *len_title,char* checksum,int * len_checksum)  {
+    int count= md5_states.size();
+    if (*N > count) {
+      std::cout << "Error: N=" << *N << " is greater than the number of checksums " << count << std::endl;
+      checksum[0]='\0';
+      checksum_title[0]='\0';
+      *len_checksum=0;
+      *len_title=0;
+    }else{
+      auto it = md5_states.begin();
+      std::advance(it, *N-1); // Move iterator to the N-th element (0-based index)
+
+      // Copy checksum_title
+      int size_title = std::get<1>(*it).size();
+      std::get<1>(*it).copy(checksum_title ,size_title);
+      checksum_title[size_title]='\0';
+      *len_title=size_title;
+
+      // Copy checksum
+      int size_checksum = std::get<3>(*it).size();
+      std::get<3>(*it).copy(checksum ,size_checksum);
+      checksum[size_checksum]='\0';
+      *len_checksum=size_checksum;
+      
+      // std::cout << "Member " << *N << " Checksum : " << std::get<1>(*it) << " " <<  std::get<3>(*it) << std::endl;
+    }
+  }
+
+
    void print(){
       // Print the checksum list
       std::cout << "Checksum list " << std::endl;
@@ -135,6 +168,50 @@ public:
 
 MD5Checksum md;
 
+extern "C" {
+  void checksum_creation(int * len_filename,char* filename) {
+    int i;
+    char * c_filename = (char*) malloc(*len_filename+1);
+    for (i=0; i<*len_filename; i++){
+      c_filename[i]=filename[i];
+    }
+    c_filename[*len_filename]='\0';
+    std::string cpp_filename(c_filename);
+    free(c_filename);
+    md.MD5Checksum_parse(cpp_filename);
+  }
+
+  void checksum_creation_(int * len_filename,char* filename) {
+    checksum_creation(len_filename,filename);
+  }
+
+  void _FCALL CHECKSUM_CREATION(int * len_filename,char* filename) {
+    checksum_creation(len_filename,filename);
+  }
+
+  void checksum_count(int * count) {
+    md.MD5Checksum_count(count);
+  }
+  void checksum_count_(int * count) {
+    checksum_count(count);
+  }
+  void _FCALL CHECKSUM_COUNT(int * count) {
+    checksum_count(count);
+  }
+
+  void  checksum_read(int * count,char* checksum_title,int *len_title,char* checksum,int * len_checksum) {
+    md.MD5Checksum_member(count,checksum_title,len_title,checksum,len_checksum);
+  }
+  void checksum_read_(int * count,char* checksum_title,int *len_title,char* checksum,int * len_checksum) {
+    md.MD5Checksum_member(count,checksum_title,len_title,checksum,len_checksum);
+  }
+  void _FCALL CHECKSUM_READ(int * count,char* checksum_title,int *len_title,char* checksum,int * len_checksum) {
+    md.MD5Checksum_member(count,checksum_title,len_title,checksum,len_checksum);
+  }
+
+}
+
+#ifdef MAIN
 int main(int argc, char *argv[])
 {
   std::cout << "Filename to process: "<< argv[1] << std::endl;
@@ -143,3 +220,4 @@ int main(int argc, char *argv[])
   std::cout <<  std::endl;
   md.print();
 }
+#endif

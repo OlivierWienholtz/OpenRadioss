@@ -186,6 +186,7 @@ C-----------------------------------------------
       use nodal_arrays_mod
       use rbe3_mod
       USE TIME_HISTORY_MOD , only : TH_CLEAN
+      use checksum_output_option_mod, only: checksum_option_outfile
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -2161,6 +2162,8 @@ C Send Data / Fem Structures
 C---------------------------------------------------------------------
          ITASK=0
          IRUNN_BIS = IRUNN
+
+         IF (ISPMD==0) CALL checksum_option_outfile(OUTPUT%CHECKSUM)
 
          CALL RESOL_HEAD(ELEMENT, NODES, ITASK        ,AF              ,IAF             ,IDATA      ,RDATA,
      .                   GRAPHE       ,IFLOW           ,RFLOW           ,

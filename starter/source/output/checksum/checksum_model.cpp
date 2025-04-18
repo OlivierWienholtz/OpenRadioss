@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string.h>
 #include <md5.h>
+#include <filesystem>
 #define _FCALL 
 
 
@@ -104,8 +105,6 @@ private:
            continue;
          }
          process_checksum(line);
-
-
         
        }
        new_file.close();
@@ -113,11 +112,11 @@ private:
       }
 
 public:
+   // constructor
    MD5Checksum()
    {};
 
    void MD5Checksum_parse(std::string filenam)  {
-   // Main constructor
       file_read(filenam,0);
    };
 
@@ -148,11 +147,10 @@ public:
       std::get<3>(*it).copy(checksum ,size_checksum);
       checksum[size_checksum]='\0';
       *len_checksum=size_checksum;
-      
+
       // std::cout << "Member " << *N << " Checksum : " << std::get<1>(*it) << " " <<  std::get<3>(*it) << std::endl;
     }
   }
-
 
    void print(){
       // Print the checksum list
@@ -164,7 +162,212 @@ public:
         }
       }
    }
+
+   std::list<std::string> get_checksums(){
+      std::list<std::string> checksums;
+      for (const auto& item : md5_states){
+        if (std::get<0>(item) == 0){
+            std::string chksum_item=std::get<1>(item)+"_"+std::get<3>(item);
+            checksums.push_back(chksum_item);
+        }
+      }
+      return checksums;
+   }
+
+
 };
+
+
+class Verify_checksum {
+#ifdef DEBUG
+  int debug=1;
+#else
+  int debug=0;
+#endif
+
+  private:
+  std::string format_as_4_digits(int number) {
+      std::ostringstream oss;
+      oss << std::setw(4) << std::setfill('0') << number; // Format as 4 digits with leading zeros
+      return oss.str();
+  }
+
+  int compare_lists(std::list<std::string> list1, std::list<std::string> list2){
+      // Compare two lists of checksums
+      if (list1.size() != list2.size()) {
+          return 0; // Lists are not equal in size
+      }
+      auto it1 = list1.begin();
+      auto it2 = list2.begin();
+      while (it1 != list1.end() && it2 != list2.end()) {
+          if (*it1 != *it2) {
+              return 0; // Lists are not equal
+          }
+          ++it1;
+          ++it2;
+      }
+      return 1; // Lists are equal
+  }
+
+  // -----------------------------------------------------------------------------------
+  // Parse the .out file and extract checksums
+  // Returns a list of checksums
+  // The function assumes that the .out file is in the same directory as the input file
+  // -----------------------------------------------------------------------------------
+  // input:
+  // directory : directory where the .out file is located
+  // rootname  : rootname of the .out file (without run number and extension)
+  // run_number: run number to be used in the .out file name
+  // output:
+  // list of checksums found in the .out file
+  // -----------------------------------------------------------------------------------
+  std::list<std::string> parse_out_file(std::fstream *new_file){
+
+      std::list<std::string> checksum_list;
+      
+      int not_found=1;
+      std::string line;
+      while (std::getline(*new_file, line) && not_found) {
+        if (line == " CHECKSUMS" || line == "    CHECKSUMS") {                       // Engine output format has 1 space, Starter 
+           if (std::getline(*new_file, line)){     // 2 blank lines
+            if (std::getline(*new_file, line)){
+              while( not_found && std::getline(*new_file, line) ){                   // Read all lines until "CHECKSUM :" is no more found
+                 std::string comp=line.substr(0, 15);
+                 if (comp == "    CHECKSUM : "){
+                    
+                    std::string checksum = line.substr(15);
+                    checksum_list.push_back(checksum);
+
+                    if (debug){
+                      std::cout << "Checksum found: " << checksum << std::endl;
+                    }
+
+                 }else{
+                    not_found = 0;
+                 }
+              }
+            }
+
+           }
+           not_found=0; // Stop reading the file, we found the checksum section
+        }
+
+      } 
+      return checksum_list;
+  }
+
+  std::string separator(){
+    // Return the separator for the file path
+    #ifdef _WIN64
+      return "\\"; // Windows separator
+    #else
+      return "/";  // Unix separator
+    #endif
+  }
+
+
+  std::list<std::tuple<std::string,int>>parse_output_files_compare(std::string directory, std::string rootname,std::list<std::string> checksum_list){
+    
+    std::list<std::tuple<std::string,int>> checksum_compared_list;
+    std::string sep=separator();
+    int run_number=0;
+    int found_out_file=1;
+
+    while (found_out_file){
+      
+      // Construct the output file name
+      std::string st_runnumber = format_as_4_digits(run_number);
+      std::string outfile = directory + sep + rootname + "_" + st_runnumber + ".out";
+
+
+      std::fstream new_file;
+      new_file.open(outfile, std::ios::in);
+
+      if ( !new_file.is_open() ) {
+          // std::cout << "Error: Unable to open file " << outfile << std::endl;
+          found_out_file=0; // No more .out files to process
+      }else{
+             if (debug){
+                std::cout << "Parsing file: " << outfile << std::endl;
+             }
+             std::list<std::string> checksum_list_out=parse_out_file( &new_file );
+             new_file.close();
+             int match;
+             if (checksum_list_out.size() > 0){
+                match = compare_lists(checksum_list, checksum_list_out);
+             }else{
+                match=0; // No checksum found in the output file
+             }
+             checksum_compared_list.push_back(std::make_tuple(outfile,match));
+      run_number++;
+      }
+    }
+    return checksum_compared_list;
+  }
+
+  public:
+
+  Verify_checksum()    // Constructor
+  {};
+
+
+  // -------------------------------------------------------------------------------
+  // Compare the checksum from deck to output file
+  // Computes input deck checksum & parse all output files to compare the results.
+  // -------------------------------------------------------------------------------
+  // input:
+  // starter_input_file : string starter input filename (may contain path)
+  // output:
+  // list of checksums found in the .out file
+  // -------------------------------------------------------------------------------
+  std::list<std::tuple<std::string,int>>  compare_checksum(std::string starter_input_file){
+
+    std::list<std::tuple<int,std::string>> checksum_compare_list;
+    // Compute checksum from input deck
+    MD5Checksum my_checksums;
+    my_checksums.MD5Checksum_parse(starter_input_file);
+    std::list<std::string> deck_checksum_list=my_checksums.get_checksums();
+
+
+    // Extract directory, filename, extension, rootname from starter_input_file
+    std::filesystem::path path(starter_input_file);
+    std::string directory = path.parent_path().string();
+    std::string filename  = path.filename().string();
+    std::string extension = path.extension().string();
+
+    std::string rootname;
+    if (extension == ".rad"){
+      rootname = filename.substr(0, filename.find_last_of('_'));
+    }else{
+      rootname = "unkown";
+    }
+
+    if (debug){
+      std::cout <<  std::endl;
+      std::cout << "Input file: " << starter_input_file << std::endl;
+      std::cout << "Directory: " << directory << std::endl;
+      std::cout << "Filename: " << filename << std::endl;
+      std::cout << "Extension: " << extension << std::endl;    
+      std::cout << "Rootname: " << rootname << std::endl;
+      std::cout << std::endl;
+
+      std::cout << "Commputed Checksum list from deck: " << std::endl;
+      std::cout << "===================================" << std::endl; 
+      for (const auto& item : deck_checksum_list){
+        std::cout << item << std::endl;
+      }
+      std::cout << "==============================" << std::endl;
+      std::cout << std::endl;
+    }
+
+    
+    // Parse all .out files in the directory
+    std::list<std::tuple<std::string,int>> out_list = parse_output_files_compare(directory, rootname, deck_checksum_list);
+    return out_list;
+  }
+
+};
+
 
 MD5Checksum md;
 
@@ -214,10 +417,19 @@ extern "C" {
 #ifdef MAIN
 int main(int argc, char *argv[])
 {
+  Verify_checksum verify_chksum_tool;
+  std::cout << std::endl;
   std::cout << "Filename to process: "<< argv[1] << std::endl;
   std::string file=std::string(argv[1]);
-  md.MD5Checksum_parse(file);
-  std::cout <<  std::endl;
-  md.print();
+
+  std::list<std::tuple<std::string,int>>  list = verify_chksum_tool.compare_checksum(file);
+  std::cout << std::endl;
+  std::cout << "Checksum list from output files: " << std::endl;
+  std::cout << "==============================" << std::endl;
+  for (const auto& item : list){
+    std::cout << "File: " << std::get<0>(item) << " Checksum match: " << std::get<1>(item) << std::endl;
+  }
+  std::cout << "==============================" << std::endl;
+  
 }
 #endif

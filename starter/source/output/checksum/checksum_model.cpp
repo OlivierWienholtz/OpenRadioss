@@ -11,13 +11,14 @@
 #include <filesystem>
 #define _FCALL 
 
+using namespace std;
 
 class MD5Checksum {
-std::list<std::tuple<int,std::string, md5_state_t, std::string>>  md5_states;     // List of options : active flag,id, title, checksum digest
+list<tuple<int,string, md5_state_t, string>>  md5_states;     // List of options : active flag,id, title, checksum digest
 
 private:
   // ------------------------------------------------------------------------------------------------------------------------
-  void new_checksum( std::string title, std::list<std::tuple<int,std::string, md5_state_t, std::string>> *md5_states_tmp){
+  void new_checksum( string title, list<tuple<int,string, md5_state_t, string>> *md5_states_tmp){
   // ------------------------------------------------------------------------------------------------------------------------  
   // CHECKSUM/START was met, create a new checksum state
   // input:
@@ -27,8 +28,8 @@ private:
   // ------------------------------------------------------------------------------------------------------------------------
     md5_state_t new_md5;
     md5_init(&new_md5);
-    std::string md5_digest(16,'0');
-    md5_states_tmp->push_front(std::make_tuple(1,title,new_md5,md5_digest));
+    string md5_digest(16,'0');
+    md5_states_tmp->push_front(make_tuple(1,title,new_md5,md5_digest));
   };
 
   // ------------------------------------------------------------------------------------------------------------------------
@@ -38,13 +39,13 @@ private:
   // input / output:
   // md5_states_tmp : list of checksums computed in the file
   // ------------------------------------------------------------------------------------------------------------------------
-  void process_checksum(std::string line, std::list<std::tuple<int,std::string, md5_state_t, std::string>> *md5_states_tmp){
+  void process_checksum(string line, list<tuple<int,string, md5_state_t, string>> *md5_states_tmp){
   // ------------------------------------------------------------------------------------------------------------------------
       for (auto& item : *md5_states_tmp ) {
-         if (std::get<0>(item) == 1){
-            md5_state_t state = std::get<2>(item);
+         if (get<0>(item) == 1){
+            md5_state_t state = get<2>(item);
             md5_append( &state, (const md5_byte_t *) line.c_str(), line.length() );
-            std::get<2>(item) = state;
+            get<2>(item) = state;
          }
         }
   };
@@ -55,25 +56,25 @@ private:
   // input / output 
   // md5_states_tmp : list of checksums computed in the file
   // --------------------------------------------------------------------------------------------------------------------
-  void end_checksum(std::list<std::tuple<int,std::string, md5_state_t, std::string>> *md5_states_tmp){
+  void end_checksum(list<tuple<int,string, md5_state_t, string>> *md5_states_tmp){
   // --------------------------------------------------------------------------------------------------------------------
       int state=-1;
       for (auto& item : *md5_states_tmp ) {
-            state=std::get<0>(item);
+            state=get<0>(item);
              if (state == 1) {
-                std::get<0>(item) = 0;   // Set Active flag to 0
+                get<0>(item) = 0;   // Set Active flag to 0
 
                 // Finish the MD5 checksum
-                md5_state_t state = std::get<2>(item);
+                md5_state_t state = get<2>(item);
                 unsigned char md5[16];
                 md5_finish (&state, md5);  
 
                 // Add MD5 in hexadecimal format in tuplet
-                std::ostringstream formatted_line;
+                ostringstream formatted_line;
                 for (int i = 0; i < 16; ++i) {
-                    formatted_line << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md5[i]);
+                    formatted_line << hex << setw(2) << setfill('0') << static_cast<int>(md5[i]);
                 }
-                std::get<3>(item)=formatted_line.str();
+                get<3>(item)=formatted_line.str();
                 break;
              }
       }
@@ -85,25 +86,25 @@ private:
   // input / output 
   // md5_states_tmp : list of checksums computed in the file
   // --------------------------------------------------------------------------------------------------------------------
-  void finalize_checksum(std::list<std::tuple<int,std::string, md5_state_t, std::string>> *md5_states_tmp){
+  void finalize_checksum(list<tuple<int,string, md5_state_t, string>> *md5_states_tmp){
     // --------------------------------------------------------------------------------------------------------------------
         int state=-1;
         for (auto& item : *md5_states_tmp ) {
-              state=std::get<0>(item);
+              state=get<0>(item);
                if (state == 1) {
-                  std::get<0>(item) = 0;   // Set Active flag to 0
+                  get<0>(item) = 0;   // Set Active flag to 0
   
                   // Finish the MD5 checksum
-                  md5_state_t state = std::get<2>(item);
+                  md5_state_t state = get<2>(item);
                   unsigned char md5[16];
                   md5_finish (&state, md5);  
   
                   // Add MD5 in hexadecimal format in tuplet
-                  std::ostringstream formatted_line;
+                  ostringstream formatted_line;
                   for (int i = 0; i < 16; ++i) {
-                      formatted_line << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md5[i]);
+                      formatted_line << hex << setw(2) << setfill('0') << static_cast<int>(md5[i]);
                   }
-                  std::get<3>(item)=formatted_line.str();
+                  get<3>(item)=formatted_line.str();
                }
         }
     };
@@ -117,13 +118,13 @@ private:
   // output:
   // md5_states_tmp : list of checksums computed in the file
   // ------------------------------------------------------------------------------------------------------------------------------
-  int  file_read(std::string filename,int level,std::list<std::tuple<int,std::string, md5_state_t, std::string>> *md5_states_tmp){
+  int  file_read(string filename,int level,list<tuple<int,string, md5_state_t, string>> *md5_states_tmp){
   // -----------------------------------------------------------------------------------------------------------------------------
-       std::string chksum_start=( "/CHECKSUM/START");
-       std::string chksum_end=(   "/CHECKSUM/END");
-       std::string chksum_include=( "#include ");
-       std::fstream new_file;
-       new_file.open(filename, std::ios::in);
+       string chksum_start=( "/CHECKSUM/START");
+       string chksum_end=(   "/CHECKSUM/END");
+       string chksum_include=( "#include ");
+       fstream new_file;
+       new_file.open(filename, ios::in);
        
        // Stop  after 15 levels of recursion
        if (level > 15) return 0;
@@ -132,13 +133,13 @@ private:
           return -1;
        }
 
-       std::string line;
-       while (std::getline(new_file, line)) {
+       string line;
+       while (getline(new_file, line)) {
 
          // Search for /CHECKSUM/START keyword
          if (line == chksum_start) {
-           std::string title;
-           std::getline(new_file, title);
+           string title;
+           getline(new_file, title);
            new_checksum(title,md5_states_tmp);
            continue;
          }
@@ -148,12 +149,12 @@ private:
            continue;
          }
 
-         std::string comp=line.substr(0,chksum_include.length());
+         string comp=line.substr(0,chksum_include.length());
          if (comp == chksum_include) {
            // Process include files
-           std::string include_file = line.substr(chksum_include.length());
+           string include_file = line.substr(chksum_include.length());
            include_file.erase(remove(include_file.begin(), include_file.end(), ' '), include_file.end());
-           // debug std::cout << "Include file: " << include_file << std::endl;
+           // debug cout << "Include file: " << include_file << endl;
            file_read(include_file, level + 1,md5_states_tmp);
            continue;
          }
@@ -177,8 +178,8 @@ public:
    // --------------------------------------------------------------------------------------------------------
    {};
 
-   void MD5Checksum_parse(std::string filenam)  {
-      std::list<std::tuple<int,std::string, md5_state_t, std::string>>  md5_states_tmp;
+   void MD5Checksum_parse(string filenam)  {
+      list<tuple<int,string, md5_state_t, string>>  md5_states_tmp;
       file_read(filenam,0,&md5_states_tmp);
       finalize_checksum(&md5_states_tmp); // Finalize all active checksums
       // intvert the list to have it in deck order
@@ -212,28 +213,28 @@ public:
    // --------------------------------------------------------------------------------------------------------
     int count= md5_states.size();
     if (*N > count) {
-      std::cout << "Error: N=" << *N << " is greater than the number of checksums " << count << std::endl;
+      cout << "Error: N=" << *N << " is greater than the number of checksums " << count << endl;
       checksum[0]='\0';
       checksum_title[0]='\0';
       *len_checksum=0;
       *len_title=0;
     }else{
       auto it = md5_states.begin();
-      std::advance(it, *N-1); // Move iterator to the N-th element (0-based index)
+      advance(it, *N-1); // Move iterator to the N-th element (0-based index)
 
       // Copy checksum_title
-      int size_title = std::get<1>(*it).size();
-      std::get<1>(*it).copy(checksum_title ,size_title);
+      int size_title = get<1>(*it).size();
+      get<1>(*it).copy(checksum_title ,size_title);
       checksum_title[size_title]='\0';
       *len_title=size_title;
 
       // Copy checksum
-      int size_checksum = std::get<3>(*it).size();
-      std::get<3>(*it).copy(checksum ,size_checksum);
+      int size_checksum = get<3>(*it).size();
+      get<3>(*it).copy(checksum ,size_checksum);
       checksum[size_checksum]='\0';
       *len_checksum=size_checksum;
 
-      // std::cout << "Member " << *N << " Checksum : " << std::get<1>(*it) << " " <<  std::get<3>(*it) << std::endl;
+      // cout << "Member " << *N << " Checksum : " << get<1>(*it) << " " <<  get<3>(*it) << endl;
     }
   }
 
@@ -243,12 +244,12 @@ public:
    // output:
    // computed checksums in hexadecimal format
    // --------------------------------------------------------------------------------------------------------
-   std::list<std::string> get_checksums(){
+   list<string> get_checksums(){
    // --------------------------------------------------------------------------------------------------------
-      std::list<std::string> checksums;
+      list<string> checksums;
       for (const auto& item : md5_states){
-        if (std::get<0>(item) == 0){
-            std::string chksum_item=std::get<1>(item)+"_"+std::get<3>(item);
+        if (get<0>(item) == 0){
+            string chksum_item=get<1>(item)+"_"+get<3>(item);
             checksums.push_back(chksum_item);
         }
       }
@@ -260,11 +261,11 @@ public:
    // ------------------------
    void print(){
    // ------------------------
-      std::cout << "Checksum list " << std::endl;
-      std::cout << "==============" << std::endl;
+      cout << "Checksum list " << endl;
+      cout << "==============" << endl;
       for (const auto& item : md5_states){
-        if (std::get<0>(item) == 0){
-            std::cout << "Checksum : " << std::get<1>(item) << " " <<  std::get<3>(item) << std::endl;
+        if (get<0>(item) == 0){
+            cout << "Checksum : " << get<1>(item) << " " <<  get<3>(item) << endl;
         }
       }
    }
@@ -295,10 +296,10 @@ class Verify_checksum {
   // output:
   // formatted string
   // -----------------------------------------------------------------------------------
-  std::string format_as_4_digits(int number) {
+  string format_as_4_digits(int number) {
   // -----------------------------------------------------------------------------------
-      std::ostringstream oss;
-      oss << std::setw(4) << std::setfill('0') << number;
+      ostringstream oss;
+      oss << setw(4) << setfill('0') << number;
       return oss.str();
   }
 
@@ -307,7 +308,7 @@ class Verify_checksum {
   // output:
   // separator : "/" for Unix, "\" for Windows
   // -----------------------------------------------------------------------------------
-  std::string separator(){
+  string separator(){
   // -----------------------------------------------------------------------------------
     #ifdef _WIN64
       return "\\"; // Windows separator
@@ -324,7 +325,7 @@ class Verify_checksum {
   // output:
   // 1 if the lists are equal, 0 if they are not equal
   // -----------------------------------------------------------------------------------
-  int compare_lists(std::list<std::string> list1, std::list<std::string> list2){
+  int compare_lists(list<string> list1, list<string> list2){
   // -----------------------------------------------------------------------------------  
       if (list1.size() != list2.size()) {
           return 0; // Lists are not equal in size
@@ -353,25 +354,25 @@ class Verify_checksum {
   // output:
   // list of checksums found in the .out file
   // -----------------------------------------------------------------------------------
-  std::list<std::string> parse_out_file(std::fstream *new_file){
+  list<string> parse_out_file(fstream *new_file){
   // -----------------------------------------------------------------------------------
-      std::list<std::string> checksum_list;
+      list<string> checksum_list;
       
       int not_found=1;
-      std::string line;
-      while (std::getline(*new_file, line) && not_found) {
+      string line;
+      while (getline(*new_file, line) && not_found) {
         if (line == " CHECKSUMS" || line == "    CHECKSUMS") {                       // Engine output format has 1 space, Starter 
-           if (std::getline(*new_file, line)){     // 2 blank lines
-            if (std::getline(*new_file, line)){
-              while( not_found && std::getline(*new_file, line) ){                   // Read all lines until "CHECKSUM :" is no more found
-                 std::string comp=line.substr(0, 15);
+           if (getline(*new_file, line)){     // 2 blank lines
+            if (getline(*new_file, line)){
+              while( not_found && getline(*new_file, line) ){                   // Read all lines until "CHECKSUM :" is no more found
+                 string comp=line.substr(0, 15);
                  if (comp == "    CHECKSUM : "){
                     
-                    std::string checksum = line.substr(15);
+                    string checksum = line.substr(15);
                     checksum_list.push_back(checksum);
 
                     if (debug){
-                      std::cout << "Checksum found: " << checksum << std::endl;
+                      cout << "Checksum found: " << checksum << endl;
                     }
 
                  }else{
@@ -398,43 +399,36 @@ class Verify_checksum {
   // list of tuples (filename, checksum match)
   // The checksum match is 1 if the checksums are equal, 0 if they are not equal
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  std::list<std::tuple<std::string,int>>parse_output_files_compare(std::string directory, std::string rootname,std::list<std::string> checksum_list){
+  void parse_output_files(string directory, string rootname,list<string> deck_checksum_list, list<tuple<string,list<string>>> *checksum_list){
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-    std::list<std::tuple<std::string,int>> checksum_compared_list;
-    std::string sep=separator();
+    list<tuple<string,int>> checksum_compared_list;
+    string sep=separator();
     int run_number=0;
     int found_out_file=1;
 
     while (found_out_file){
       
       // Construct the output file name
-      std::string st_runnumber = format_as_4_digits(run_number);
-      std::string outfile = directory + sep + rootname + "_" + st_runnumber + ".out";
+      string st_runnumber = format_as_4_digits(run_number);
+      string outfile = directory + sep + rootname + "_" + st_runnumber + ".out";
 
 
-      std::fstream new_file;
-      new_file.open(outfile, std::ios::in);
+      fstream new_file;
+      new_file.open(outfile, ios::in);
 
       if ( !new_file.is_open() ) {
-          // std::cout << "Error: Unable to open file " << outfile << std::endl;
+          // cout << "Error: Unable to open file " << outfile << endl;
           found_out_file=0; // No more .out files to process
       }else{
              if (debug){
-                std::cout << "Parsing file: " << outfile << std::endl;
+                cout << "Parsing file: " << outfile << endl;
              }
-             std::list<std::string> checksum_list_out=parse_out_file( &new_file );
+             list<string> checksum_list_out=parse_out_file( &new_file );
+             checksum_list->push_back(make_tuple(outfile,checksum_list_out)); // Add the checksum list to the collection
              new_file.close();
-             int match;
-             if (checksum_list_out.size() > 0){
-                match = compare_lists(checksum_list, checksum_list_out);
-             }else{
-                match=0; // No checksum found in the output file
-             }
-             checksum_compared_list.push_back(std::make_tuple(outfile,match));
       run_number++;
       }
     }
-    return checksum_compared_list;
   }
 
   public:
@@ -450,25 +444,29 @@ class Verify_checksum {
   // input:
   // starter_input_file : string starter input filename (may contain path)
   // output:
-  // list of checksums found in the .out file
+  // list of checksums found in the .out file : format (filename, checksum list)
   // -------------------------------------------------------------------------------
-  std::list<std::tuple<std::string,int>>  compare_checksum(std::string starter_input_file){
+  list<tuple<string,list<string>>> get_checksum(string starter_input_file){
   // -------------------------------------------------------------------------------
+    list<tuple<string,list<string>>>  checksum_list; // checksum list collection from all decks : filename, checksum list
 
-    std::list<std::tuple<int,std::string>> checksum_compare_list;
     // Compute checksum from input deck
     MD5Checksum my_checksums;
     my_checksums.MD5Checksum_parse(starter_input_file);
-    std::list<std::string> deck_checksum_list=my_checksums.get_checksums();
+
+    list<string> deck_checksum_list=my_checksums.get_checksums();    // Compute checksum from input deck
+
+    // Add Starter computed checksum to the list
+    checksum_list.push_back(make_tuple(starter_input_file,deck_checksum_list)); // Add the checksum list to the collection
 
 
     // Extract directory, filename, extension, rootname from starter_input_file
-    std::filesystem::path path(starter_input_file);
-    std::string directory = path.parent_path().string();
-    std::string filename  = path.filename().string();
-    std::string extension = path.extension().string();
+    filesystem::path path(starter_input_file);
+    string directory = path.parent_path().string();
+    string filename  = path.filename().string();
+    string extension = path.extension().string();
 
-    std::string rootname;
+    string rootname;
     if (extension == ".rad"){
       rootname = filename.substr(0, filename.find_last_of('_'));
     }else{
@@ -476,27 +474,40 @@ class Verify_checksum {
     }
 
     if (debug){
-      std::cout <<  std::endl;
-      std::cout << "Input file: " << starter_input_file << std::endl;
-      std::cout << "Directory: " << directory << std::endl;
-      std::cout << "Filename: " << filename << std::endl;
-      std::cout << "Extension: " << extension << std::endl;    
-      std::cout << "Rootname: " << rootname << std::endl;
-      std::cout << std::endl;
+      cout <<  endl;
+      cout << "Input file: " << starter_input_file << endl;
+      cout << "Directory: " << directory << endl;
+      cout << "Filename: " << filename << endl;
+      cout << "Extension: " << extension << endl;    
+      cout << "Rootname: " << rootname << endl;
+      cout << endl;
 
-      std::cout << "Commputed Checksum list from deck: " << std::endl;
-      std::cout << "===================================" << std::endl; 
+      cout << "Commputed Checksum list from deck: " << endl;
+      cout << "===================================" << endl; 
       for (const auto& item : deck_checksum_list){
-        std::cout << item << std::endl;
+        cout << item << endl;
       }
-      std::cout << "==============================" << std::endl;
-      std::cout << std::endl;
+      cout << "==============================" << endl;
+      cout << endl;
     }
 
     
     // Parse all .out files in the directory
-    std::list<std::tuple<std::string,int>> out_list = parse_output_files_compare(directory, rootname, deck_checksum_list);
-    return out_list;
+    parse_output_files(directory, rootname, deck_checksum_list,&checksum_list);
+
+    // print the checksum list from all output files
+    if (debug){
+      cout << "Checksum list from output files: " << endl;
+      cout << "==============================" << endl; 
+      for (const auto& item : checksum_list){
+        cout << "File: " << get<0>(item) << endl;
+        for (const auto& checksum : get<1>(item)){
+          cout << "    "<< checksum << endl;
+        }
+        cout << "==============================" << endl; 
+      }
+    }
+    return checksum_list ;
   }
 
 }; 
@@ -519,7 +530,7 @@ extern "C" {
       c_filename[i]=filename[i];
     }
     c_filename[*len_filename]='\0';
-    std::string cpp_filename(c_filename);
+    string cpp_filename(c_filename);
     free(c_filename);
     md.MD5Checksum_parse(cpp_filename);
   }
@@ -565,19 +576,26 @@ extern "C" {
 int main(int argc, char *argv[])
 {
   Verify_checksum verify_chksum_tool;
-  std::cout << std::endl;
-  std::cout << "Filename to process: "<< argv[1] << std::endl;
-  std::string file=std::string(argv[1]);
+  cout << endl;
+  cout << "Filename to process: "<< argv[1] << endl;
+  string file=string(argv[1]);
 
-  std::list<std::tuple<std::string,int>>  list = verify_chksum_tool.compare_checksum(file);
+  list<tuple<string,list<string>>>  list = verify_chksum_tool.get_checksum(file);
   
-  std::cout << std::endl;
-  std::cout << "Checksum list from output files: " << std::endl;
-  std::cout << "==============================" << std::endl;
+  cout << endl;
+  cout << "Checksum list from output files: " << endl;
+  cout << "==============================" << endl << endl; 
+
   for (const auto& item : list){
-    std::cout << "File: " << std::get<0>(item) << "     Checksum match: " << std::get<1>(item) << std::endl;
+    cout << "File: " << get<0>(item) << endl;
+    for (const auto& checksum : get<1>(item)){
+      string title=checksum.substr(0,checksum.length()-33); // Remove the checksum value
+      string digest=checksum.substr(checksum.length()-32); // Keep only the checksum value
+      cout << "    "<< title << " : " <<  digest << endl;
+    }
+    cout <<  endl; 
   }
-  std::cout << "==============================" << std::endl;
+
   
 }
 #endif

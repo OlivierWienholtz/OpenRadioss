@@ -410,7 +410,13 @@ class Verify_checksum {
       
       // Construct the output file name
       string st_runnumber = format_as_4_digits(run_number);
-      string outfile = directory + sep + rootname + "_" + st_runnumber + ".out";
+      string outfile;
+      if ( directory.length() > 0 ){
+          outfile = directory + sep + rootname + "_" + st_runnumber + ".out";
+      }else{
+          outfile = rootname + "_" + st_runnumber + ".out";
+      }
+      
 
 
       fstream new_file;
@@ -595,7 +601,5 @@ int main(int argc, char *argv[])
     }
     cout <<  endl; 
   }
-
-  
 }
 #endif

@@ -48,7 +48,7 @@ using std::endl;
 #define SHORT2FLOAT 3000.   // used to convert a uint16_t to a float
 
 
-class AnimCheckSum{
+class CheckSum_Anim{
 private:
 
   inline void SWAP_MANY2BYTES(uint16_t *intPtr, size_t number);
@@ -61,7 +61,7 @@ private:
            bool text = false);
 
 public:
-std::list<std::string> CheckSum(FILE *inf);
+std::list<std::string> find(FILE *inf);
 
 
 };

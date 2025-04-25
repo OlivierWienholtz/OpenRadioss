@@ -233,7 +233,7 @@ using namespace std;
    // --------------------------------------------------------------------------------------------------------
    {};
 
-   void MD5Checksum::MD5Checksum_parse(string filenam)  {
+   void MD5Checksum::parse(string filenam)  {
       list<tuple<int,string, md5_state_t, string>>  md5_states_tmp;
       string deck_directory = get_path(filenam); // Get the directory of the file
       file_read(filenam,deck_directory,0,&md5_states_tmp);
@@ -249,7 +249,7 @@ using namespace std;
    // --------------------------------------------------------------------------------------------------------
    // CPP / Fortran interface : Get the number of checksums
    // -------------------------------------------------------------------------------------------------------- 
-   void MD5Checksum::MD5Checksum_count(int * count)  {
+   void MD5Checksum::count(int * count)  {
    // --------------------------------------------------------------------------------------------------------
      *count= md5_states.size();
    }
@@ -265,7 +265,7 @@ using namespace std;
    // checksum : checksum value
    // len_checksum : length of the checksum value
    // --------------------------------------------------------------------------------------------------------
-   void MD5Checksum::MD5Checksum_member(int * N,char* checksum_title,int *len_title,char* checksum,int * len_checksum)  {
+   void MD5Checksum::member(int * N,char* checksum_title,int *len_title,char* checksum,int * len_checksum)  {
    // --------------------------------------------------------------------------------------------------------
     int count= md5_states.size();
     if (*N > count) {
@@ -345,7 +345,7 @@ extern "C" {
     c_filename[*len_filename]='\0';
     string cpp_filename(c_filename);
     free(c_filename);
-    md.MD5Checksum_parse(cpp_filename);
+    md.parse(cpp_filename);
   }
 
   void checksum_creation_(int * len_filename,char* filename) {
@@ -357,7 +357,7 @@ extern "C" {
   }
 
   void checksum_count(int * count) {
-    md.MD5Checksum_count(count);
+    md.count(count);
   }
   void checksum_count_(int * count) {
     checksum_count(count);
@@ -367,13 +367,13 @@ extern "C" {
   }
 
   void  checksum_read(int * count,char* checksum_title,int *len_title,char* checksum,int * len_checksum) {
-    md.MD5Checksum_member(count,checksum_title,len_title,checksum,len_checksum);
+    md.member(count,checksum_title,len_title,checksum,len_checksum);
   }
   void checksum_read_(int * count,char* checksum_title,int *len_title,char* checksum,int * len_checksum) {
-    md.MD5Checksum_member(count,checksum_title,len_title,checksum,len_checksum);
+    md.member(count,checksum_title,len_title,checksum,len_checksum);
   }
   void _FCALL CHECKSUM_READ(int * count,char* checksum_title,int *len_title,char* checksum,int * len_checksum) {
-    md.MD5Checksum_member(count,checksum_title,len_title,checksum,len_checksum);
+    md.member(count,checksum_title,len_title,checksum,len_checksum);
   }
 
 }

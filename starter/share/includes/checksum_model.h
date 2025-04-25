@@ -60,9 +60,9 @@ class MD5Checksum {
        // constructor
        // --------------------------------------------------------------------------------------------------------
        MD5Checksum();
-       void MD5Checksum_parse(std::string filenam);
-       void MD5Checksum_count(int * count);
-       void MD5Checksum_member(int * N,char* checksum_title,int *len_title,char* checksum,int * len_checksum);
+       void parse(std::string filenam);
+       void count(int * count);
+       void member(int * N,char* checksum_title,int *len_title,char* checksum,int * len_checksum);
        std::list<std::string> get_checksums();
        void print();
     };

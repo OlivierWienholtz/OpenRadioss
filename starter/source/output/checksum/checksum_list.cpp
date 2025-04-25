@@ -254,8 +254,8 @@ using namespace std;
                 cout << "Parsing file: " << anim_file << endl;
              }
 
-             AnimCheckSum anim;
-             list<string> checksum_list_out=anim.CheckSum( new_file );
+             CheckSum_Anim anim;
+             list<string> checksum_list_out=anim.find( new_file );
              checksum_list->push_back(make_tuple(anim_file,checksum_list_out)); // Add the checksum list to the collection
              fclose(new_file);
       
@@ -284,7 +284,7 @@ using namespace std;
 
     // Compute checksum from input deck
     MD5Checksum my_checksums;
-    my_checksums.MD5Checksum_parse(starter_input_file);
+    my_checksums.parse(starter_input_file);
 
     list<string> deck_checksum_list=my_checksums.get_checksums();    // Compute checksum from input deck
 

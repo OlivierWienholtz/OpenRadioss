@@ -32,25 +32,25 @@
 #include <checksum_anim.h>
 
 
-  inline void AnimCheckSum::SWAP_MANY2BYTES(uint16_t *intPtr, size_t number){
+  inline void CheckSum_Anim::SWAP_MANY2BYTES(uint16_t *intPtr, size_t number){
     for (size_t ptrIndex = 0; ptrIndex < (number); ptrIndex++){
         intPtr[ptrIndex] = htons((intPtr[ptrIndex]));
     }
   }
 
-  inline void AnimCheckSum::SWAP_MANY4BYTES(int *intPtr, size_t number){
+  inline void CheckSum_Anim::SWAP_MANY4BYTES(int *intPtr, size_t number){
     for (size_t ptrIndex = 0; ptrIndex < (number); ptrIndex++){
         intPtr[ptrIndex] = ntohl((intPtr[ptrIndex]));
     }
   }
 
-  inline void AnimCheckSum::SWAP_MANY8BYTES(double *intPtr, size_t number){
+  inline void CheckSum_Anim::SWAP_MANY8BYTES(double *intPtr, size_t number){
     for (size_t ptrIndex = 0; ptrIndex < (number); ptrIndex++){
         intPtr[ptrIndex] = htobe64(intPtr[ptrIndex]);
     }
   }
 
-  inline void AnimCheckSum::SWAP_BYTESINDATA(void *itemList, size_t itemCount, size_t sizeOfItem){
+  inline void CheckSum_Anim::SWAP_BYTESINDATA(void *itemList, size_t itemCount, size_t sizeOfItem){
     uint16_t *uint16_tCopy;
     int *intCopy;
     double *doubleCopy;
@@ -75,7 +75,7 @@
   // ****************************************
   // read in file
   // ****************************************
-  int AnimCheckSum::Ufread(void *pchar, size_t sizeOfItem,
+  int CheckSum_Anim::Ufread(void *pchar, size_t sizeOfItem,
            size_t numItems,
            FILE *OpenedFile,
            bool text ){
@@ -96,7 +96,7 @@
 // *****************************************
 // Read Animation fime & retrieve checksums
 // *****************************************
-std::list<std::string> AnimCheckSum::CheckSum(FILE *inf)
+std::list<std::string> CheckSum_Anim::find(FILE *inf)
 {
     typedef unsigned char Boolean;
 
@@ -267,7 +267,7 @@ std::list<std::string> AnimCheckSum::CheckSum(FILE *inf)
 int main(int argc, char **argv)
 {
     std::list<std::string> checksum_list;
-    AnimCheckSum animCheckSum;
+    CheckSum_Anim CheckSum_Anim;
     FILE *inf;
     if (argc < 2)
     {
@@ -286,7 +286,7 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    checksum_list=animCheckSum.CheckSum(inf);
+    checksum_list=CheckSum_Anim.CheckSum(inf);
     cout << "Checksum list " << endl;
     cout << "==============" << endl;
     for (const auto& item : checksum_list){

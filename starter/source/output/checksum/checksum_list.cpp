@@ -360,8 +360,8 @@ using namespace std;
 // The function will print the results to the console
 // To build in Standalone mode, use the following command:
 // On Windows:
-// icx -DMAIN         -o ..\exec\checksum.exe -Ishare/includes -ID:\WS\GitHub\OpenRadioss_VS\OpenRadioss\extlib\md5\include     source\output\checksum\list_checksum.cpp source\output\checksum\checksum_model.cpp source\output\checksum\anim_check.cpp D:\WS\GitHub\OpenRadioss_VS\OpenRadioss\extlib\md5\win64\md5.lib ws2_32.lib
-// g++ -DMAIN -no-pie -o ../exec/checksum     -Ishare/includes -I/mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/include source/output/checksum/list_checksum.cpp source/output/checksum/checksum_model.cpp source/output/checksum/anim_check.cpp /mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/linux64/libmd5.a   -std=c++14
+// icx -DMAIN         -o ..\exec\checksum.exe -Ishare/includes -ID:\WS\GitHub\OpenRadioss_VS\OpenRadioss\extlib\md5\include source\output\checksum\checksum_list.cpp source\output\checksum\checksum_model.cpp source\output\checksum\checksum_anim.cpp D:\WS\GitHub\OpenRadioss_VS\OpenRadioss\extlib\md5\win64\md5.lib ws2_32.lib
+// g++ -DMAIN -no-pie -o ../exec/checksum -Ishare/includes -I/mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/include source/output/checksum/checksum_list.cpp source/output/checksum/checksum_model.cpp source/output/checksum/checksum_anim.cpp /mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/linux64/libmd5.a   -std=c++14
 // Add -DDEBUG for additional debug information
 // ------------------------------------------------------------------------------------------------------------------------
 #ifdef MAIN

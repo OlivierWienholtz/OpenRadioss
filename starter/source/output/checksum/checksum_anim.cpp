@@ -29,7 +29,7 @@
 // To launch check_anim :
 // chk_anim  animationFile 
 
-#include <anim_check.h>
+#include <checksum_anim.h>
 
 
   inline void AnimCheckSum::SWAP_MANY2BYTES(uint16_t *intPtr, size_t number){

@@ -21,8 +21,8 @@
 //Copyright>    software under a commercial license.  Contact Altair to discuss further if the
 //Copyright>    commercial version may interest you: https://www.altair.com/radioss/.
 #include <checksum_model.h>
-#include <anim_check.h>
-#include <list_checksum.h>
+#include <checksum_anim.h>
+#include <checksum_list.h>
 using namespace std;
 
 

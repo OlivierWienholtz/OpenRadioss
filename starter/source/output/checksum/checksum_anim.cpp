@@ -235,7 +235,7 @@ std::list<std::string> AnimCheckSum::CheckSum(FILE *inf)
             {
                 Ufread(tmpText, sizeof(char), 81, inf);
     
-                if (strncmp(tmpText, "CHKSUM_",7) == 0 )
+                if (strncmp(tmpText, "ZCHKSM_",7) == 0 )
                 {
                   std::string checksum(tmpText);
                   checksum = checksum.substr(7);

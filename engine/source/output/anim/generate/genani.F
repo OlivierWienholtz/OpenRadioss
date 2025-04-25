@@ -1989,12 +1989,12 @@ c strain gps
 C-----------------------------------------------
        IADCHKSUM = IAD_GPS+500
        IF(OUTPUT%CHECKSUM%CHECKSUM_COUNT > 0) THEN
-         print *,'OUTPUT%CHECKSUM%CHECKSUM_COUNT = ',OUTPUT%CHECKSUM%CHECKSUM_COUNT
+         ! print *,'OUTPUT%CHECKSUM%CHECKSUM_COUNT = ',OUTPUT%CHECKSUM%CHECKSUM_COUNT
          DO I=1,OUTPUT%CHECKSUM%CHECKSUM_COUNT
            ANIM_N(IADCHKSUM+I) = 1
-           CALL ANI_TXT('CHKSUM_'//OUTPUT%CHECKSUM%CHECKSUMS(I), 7+LEN_TRIM(OUTPUT%CHECKSUM%CHECKSUMS(I)))
-           print *, 'ANIM_N(IADCHKSUM+I) = ', ANIM_N(IADCHKSUM+I)
-           print *, 'OUTPUT%CHECKSUM%CHECKSUMS(I) = ', OUTPUT%CHECKSUM%CHECKSUMS(I)
+           CALL ANI_TXT('ZCHKSM_'//OUTPUT%CHECKSUM%CHECKSUMS(I), 7+LEN_TRIM(OUTPUT%CHECKSUM%CHECKSUMS(I)))
+           ! print *, 'ANIM_N(IADCHKSUM+I) = ', ANIM_N(IADCHKSUM+I)
+           ! print *, 'OUTPUT%CHECKSUM%CHECKSUMS(I) = ', OUTPUT%CHECKSUM%CHECKSUMS(I)
          ENDDO
        ENDIF
 C-----------------------------------------------
@@ -2693,7 +2693,7 @@ C
           ELSEIF (I > IADCHKSUM .AND. I < IADCHKSUM + 256 -1) THEN
             DO J=1,256
               IF (I == IADCHKSUM + J) THEN
-                print *, 'ANIM_N(IADCHKSUM + J) == 1',IADCHKSUM + J
+               ! print *, 'ANIM_N(IADCHKSUM + J) == 1',IADCHKSUM + J
                DO N=1,NUMNOD
                  WA4(N) = ZERO
                ENDDO

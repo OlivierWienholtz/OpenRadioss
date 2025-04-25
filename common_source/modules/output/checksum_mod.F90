@@ -79,9 +79,9 @@ contains
             end do
         end do
 
-       do i=1,checksum_option_count
-            print *, 'checksum%checksums(',i,') = ', trim(checksum%checksums(i))
-       end do 
+      !  do i=1,checksum_option_count
+      !      print *, 'checksum%checksums(',i,') = ', trim(checksum%checksums(i))
+      ! end do 
     end subroutine checksum_option_read
 
     !! \brief reads checksum from result file

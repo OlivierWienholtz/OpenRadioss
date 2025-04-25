@@ -1143,7 +1143,9 @@ C--------------------------------------------
         !/ANIM/VECT/ZFINT  not relevant in this case 
         NV_ANI     = NV_ANI - ANIM_V(25)
         ANIM_V(25) = 0                                    
-      ENDIF     
+      ENDIF  
+      
+      NN_ANI = NN_ANI + OUTPUT%CHECKSUM%CHECKSUM_COUNT   
 
       !COMMUN LAW51/LAW37
       !if multimaterial law then removing useless phases output (phases 3 or/and 4)

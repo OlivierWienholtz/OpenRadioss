@@ -122,7 +122,7 @@ contains
                     do j=1,checksum_digest_length
                         checksum_digest(j)=ichar(checksum%checksums(i)(j:j))
                     end do
-                    call write_i_array_c(checksum_digest_length, 1)
+                    call write_i_c(checksum_digest_length, 1)
                     call write_i_array_c(checksum_digest, checksum_digest_length)
 
                 end do

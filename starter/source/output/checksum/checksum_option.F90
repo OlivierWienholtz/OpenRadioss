@@ -136,7 +136,7 @@ contains
                 end do
 
                 call write_i_c(assembled_checksum_length,1)
-                call write_i_c(i_assembled_checksum,assembled_checksum_length)
+                call write_i_array_c(i_assembled_checksum,assembled_checksum_length)
             end do
 
        endif

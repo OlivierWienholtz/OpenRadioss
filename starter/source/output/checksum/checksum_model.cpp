@@ -12,6 +12,8 @@
 #include <algorithm>
 #define _FCALL 
 
+#include <anim_check.h>
+
 using namespace std;
 
 class MD5Checksum {
@@ -383,6 +385,20 @@ class Verify_checksum {
   }
 
   // -----------------------------------------------------------------------------------
+  // Tool : Format the number as a 3-digit string with leading zeros for Animation & Time History files
+  // input:
+  // number : integer to be formatted
+  // output:
+  // formatted string
+  // -----------------------------------------------------------------------------------
+  string format_as_3_digits(int number) {
+    // -----------------------------------------------------------------------------------
+        ostringstream oss;
+        oss << setw(3) << setfill('0') << number;
+        return oss.str();
+    }
+  
+  // -----------------------------------------------------------------------------------
   // Tool : Return the separator for the file path according to the OS
   // output:
   // separator : "/" for Unix, "\" for Windows
@@ -469,18 +485,16 @@ class Verify_checksum {
   }
 
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  // Parse all .out files in the directory and compare the checksums with the ones computed in the input deck
+  // Parse all .out files in the directory
   // input:
   // directory : directory where the .out files are located
   // rootname  : rootname of the .out files (without run number and extension)
-  // checksum_list : list of checksums computed in the input deck
   // output:
   // list of tuples (filename, checksum match)
   // The checksum match is 1 if the checksums are equal, 0 if they are not equal
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  void parse_output_files(string directory, string rootname,list<string> deck_checksum_list, list<tuple<string,list<string>>> *checksum_list){
+  void parse_output_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-    list<tuple<string,int>> checksum_compared_list;
     string sep=separator();
     int run_number=0;
     int found_out_file=1;
@@ -488,16 +502,14 @@ class Verify_checksum {
     while (found_out_file){
       
       // Construct the output file name
-      string st_runnumber = format_as_4_digits(run_number);
+      string runnumber = format_as_4_digits(run_number);
       string outfile;
       if ( directory.length() > 0 ){
-          outfile = directory + sep + rootname + "_" + st_runnumber + ".out";
+          outfile = directory + sep + rootname + "_" + runnumber + ".out";
       }else{
-          outfile = rootname + "_" + st_runnumber + ".out";
+          outfile = rootname + "_" + runnumber + ".out";
       }
       
-
-
       fstream new_file;
       new_file.open(outfile, ios::in);
 
@@ -515,6 +527,59 @@ class Verify_checksum {
       }
     }
   }
+
+  // -------------------------------------------------------------------------------------------------------------------------------------------------
+  // Parse all Animation files in the directory
+  // input:
+  // directory : directory where the .out files are located
+  // rootname  : rootname of the .out files (without run number and extension)
+  // output:
+  // list of tuples (filename, checksum match)
+  // The checksum match is 1 if the checksums are equal, 0 if they are not equal
+  // -------------------------------------------------------------------------------------------------------------------------------------------------
+  void parse_animation_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){ 
+  // -------------------------------------------------------------------------------------------------------------------------------------------------
+    string sep=separator();
+    int run_number=1;
+    int found_out_file=1;
+
+    while (found_out_file){
+      // Construct the output file name
+      string st_runnumber = format_as_3_digits(run_number);
+      string anim_file;
+      if ( directory.length() > 0 ){
+          anim_file = directory + sep + rootname + "A" + st_runnumber;
+      }else{
+        anim_file = rootname + "A" + st_runnumber;
+      }
+
+      FILE *new_file;
+#ifdef _WIN64
+      fopen_s(&new_file, anim_file.c_str(), "rb");
+#else
+      new_file = fopen(anim_file.c_str(), "rb");
+#endif
+
+      if ( !new_file ) {
+          // cout << "Error: Unable to open file " << anim_file << endl;
+          found_out_file=0; // No more .out files to process
+      }else{
+             if (debug){
+                cout << "Parsing file: " << anim_file << endl;
+             }
+
+             AnimCheckSum anim;
+             list<string> checksum_list_out=anim.CheckSum( new_file );
+             checksum_list->push_back(make_tuple(anim_file,checksum_list_out)); // Add the checksum list to the collection
+             fclose(new_file);
+      
+            }
+            run_number++;
+
+      
+    }
+  }
+
 
   public:
 
@@ -577,7 +642,10 @@ class Verify_checksum {
 
     
     // Parse all .out files in the directory
-    parse_output_files(directory, rootname, deck_checksum_list,&checksum_list);
+    parse_output_files(directory, rootname, &checksum_list);
+
+    // parse all animation files in the directory
+    parse_animation_files(directory, rootname, &checksum_list);
 
     // print the checksum list from all output files
     if (debug){

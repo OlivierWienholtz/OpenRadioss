@@ -155,15 +155,15 @@ contains
 ! ----------------------------------------------------------------------------------------------------------------------
 !                                                   Body
 ! ----------------------------------------------------------------------------------------------------------------------
-                write(iout,'(a)') ''
+                write(iout,'(a)') ' '
                 write(iout,'(a)') ' CHECKSUMS'
                 write(iout,'(a)') ' ---------'
-                write(iout,'(a)') ''
+                write(iout,'(a)') ' '
 
                 do i=1,checksum%checksum_count
                     write(iout,'(a,a)') '    CHECKSUM : ',trim( checksum%checksums(i))
                 end do
-                write(iout,'(a)') ''
+                write(iout,'(a)') ' '
     
         end subroutine checksum_option_outfile        
 

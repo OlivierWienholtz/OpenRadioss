@@ -70,11 +70,11 @@ contains
        if (checksum_option_count > 0) then
             call checksum_creation(LENP+LENI,PATH(1:LENP)//INPUT(1:LENI))
             call checksum_count(checksum_digest_count)
-            write(iout,'(a)') ''
-            write(iout,'(a)') ''
+            write(iout,'(a)') ' '
+            write(iout,'(a)') ' '
             write(iout,'(a)') '    CHECKSUMS'
             write(iout,'(a)') '    ---------'
-            write(iout,'(a)') ''
+            write(iout,'(a)') ' '
             do i=1,checksum_digest_count
                 call checksum_read(i,checksum_title,len_title,checksum,len_checksum)
                 write(iout,'(a,a,a,a)') '    CHECKSUM : ',checksum_title(1:len_title), '_',checksum(1:len_checksum)

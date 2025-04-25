@@ -9,6 +9,7 @@
 #include <string.h>
 #include <md5.h>
 #include <filesystem>
+#include <algorithm>
 #define _FCALL 
 
 using namespace std;
@@ -17,6 +18,54 @@ class MD5Checksum {
 list<tuple<int,string, md5_state_t, string>>  md5_states;     // List of options : active flag,id, title, checksum digest
 
 private:
+  // Debug flag
+  // Set to 1 to enable debug mode, 0 to disable it
+#ifdef DEBUG
+  int debug=1;
+#else
+  int debug=0;
+#endif
+  // -----------------------------------------------------------------------------------
+  // Function to remove carriage return characters from a string
+  // -----------------------------------------------------------------------------------
+  void remove_carriage_return(std::string& line) {
+     line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+  }
+
+  // -----------------------------------------------------------------------------------
+  // Tool : Return the separator for the file path according to the OS
+  // output:
+  // separator : "/" for Unix, "\" for Windows
+  // -----------------------------------------------------------------------------------
+  string separator(){
+    // -----------------------------------------------------------------------------------
+      #ifdef _WIN64
+        return "\\"; // Windows separator
+      #else
+        return "/";  // Unix separator
+      #endif
+    }
+  // -----------------------------------------------------------------------------------
+  // Tool : get directory path from a file path
+  // -----------------------------------------------------------------------------------
+    std::string get_path(const std::string& filepath) {
+      // Find the last occurrence of the path separator
+#ifdef _WIN64
+      size_t pos = filepath.find_last_of("/\\");
+      if (pos == std::string::npos) {
+         pos = filepath.find_last_of("/");
+      }
+#else
+      size_t pos = filepath.find_last_of("/");
+#endif
+      if (pos != std::string::npos) {
+          // Extract the substring up to the last separator
+          return filepath.substr(0, pos);
+      }
+      // If no separator is found, return an empty string
+      return "";
+  }
+
   // ------------------------------------------------------------------------------------------------------------------------
   void new_checksum( string title, list<tuple<int,string, md5_state_t, string>> *md5_states_tmp){
   // ------------------------------------------------------------------------------------------------------------------------  
@@ -118,7 +167,7 @@ private:
   // output:
   // md5_states_tmp : list of checksums computed in the file
   // ------------------------------------------------------------------------------------------------------------------------------
-  int  file_read(string filename,int level,list<tuple<int,string, md5_state_t, string>> *md5_states_tmp){
+  int  file_read(string filename,string deck_directory,int level,list<tuple<int,string, md5_state_t, string>> *md5_states_tmp){
   // -----------------------------------------------------------------------------------------------------------------------------
        string chksum_start=( "/CHECKSUM/START");
        string chksum_end=(   "/CHECKSUM/END");
@@ -136,10 +185,12 @@ private:
        string line;
        while (getline(new_file, line)) {
 
-         // Search for /CHECKSUM/START keyword
+          remove_carriage_return(line); // Remove carriage return characters
+          // Search for /CHECKSUM/START keyword
          if (line == chksum_start) {
            string title;
            getline(new_file, title);
+           remove_carriage_return(title); // Remove carriage return characters
            new_checksum(title,md5_states_tmp);
            continue;
          }
@@ -153,9 +204,15 @@ private:
          if (comp == chksum_include) {
            // Process include files
            string include_file = line.substr(chksum_include.length());
-           include_file.erase(remove(include_file.begin(), include_file.end(), ' '), include_file.end());
+           if (deck_directory.length() > 0){
+              include_file = deck_directory+separator()+include_file; // Get the path of the file
+           }
+           if (debug){
+              cout << "Include file: " << include_file << endl;
+           }
+        //   include_file.erase( remove(include_file.rbegin(), include_file.end(), ' '), include_file.end());
            // debug cout << "Include file: " << include_file << endl;
-           file_read(include_file, level + 1,md5_states_tmp);
+           file_read(include_file,deck_directory, level + 1,md5_states_tmp);
            continue;
          }
 
@@ -180,7 +237,8 @@ public:
 
    void MD5Checksum_parse(string filenam)  {
       list<tuple<int,string, md5_state_t, string>>  md5_states_tmp;
-      file_read(filenam,0,&md5_states_tmp);
+      string deck_directory = get_path(filenam); // Get the directory of the file
+      file_read(filenam,deck_directory,0,&md5_states_tmp);
       finalize_checksum(&md5_states_tmp); // Finalize all active checksums
       // intvert the list to have it in deck order
       for (const auto& item : md5_states_tmp){
@@ -289,6 +347,27 @@ class Verify_checksum {
 #endif
 
   private:
+  // -----------------------------------------------------------------------------------
+  // Tool : get directory path from a file path
+  // -----------------------------------------------------------------------------------
+  std::string get_path(const std::string& filepath) {
+    // Find the last occurrence of the path separator
+#ifdef _WIN64
+    size_t pos = filepath.find_last_of("/\\");
+    if (pos == std::string::npos) {
+       pos = filepath.find_last_of("/");
+    }
+#else
+    size_t pos = filepath.find_last_of("/");
+#endif
+    if (pos != std::string::npos) {
+        // Extract the substring up to the last separator
+        return filepath.substr(0, pos);
+    }
+    // If no separator is found, return an empty string
+    return "";
+}
+
   // -----------------------------------------------------------------------------------
   // Tool : Format the number as a 4-digit string with leading zeros for .out files
   // input:
@@ -467,10 +546,9 @@ class Verify_checksum {
 
 
     // Extract directory, filename, extension, rootname from starter_input_file
-    filesystem::path path(starter_input_file);
-    string directory = path.parent_path().string();
-    string filename  = path.filename().string();
-    string extension = path.extension().string();
+    string directory = get_path(starter_input_file); // Get the directory of the file
+    string filename  = starter_input_file.substr(starter_input_file.find_last_of(separator()) + 1);
+    string extension = filename.substr(filename.find_last_of('.'));
 
     string rootname;
     if (extension == ".rad"){
@@ -577,6 +655,9 @@ extern "C" {
 // The function will read the input file and compute the checksums
 // The function will also parse the .out files and compare the checksums with the ones computed in the input deck
 // The function will print the results to the console
+// To buimd in Standalone mode, use the following command:
+// g++ -DMAIN -DDEBUG -no-pie -o ../exec/chksum -I/mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/include source/output/checksum/checksum_model.cpp  /mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/linux64/libmd5.a   -std=c++14
+// Add -DDEBUG for additional debug information
 // ------------------------------------------------------------------------------------------------------------------------
 #ifdef MAIN
 int main(int argc, char *argv[])

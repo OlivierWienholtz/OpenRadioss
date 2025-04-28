@@ -28,6 +28,23 @@
 #include <filesystem>
 #include <algorithm>
 
+// C calls fortran 
+#define _FCALL
+
+#ifdef _WIN64
+#define write_out_file WRITE_OUT_FILE
+#define grab_checksums _FCALL GRAB_CHECKSUMS
+#else
+#define write_out_file write_out_file_
+#define grab_checksums grab_checksums_
+#endif
+
+extern "C" {
+void write_out_file(int * fd,const char * line,int * len_line);
+void grab_checksums(int *fd,char *input,int *leni,char *path,int *lenp);
+}
+
+
 class List_checksum {
 
     public:
@@ -43,7 +60,6 @@ class List_checksum {
     // -----------------------------------------------------------------------------------
     // Tool : get directory path from a file path
     // -----------------------------------------------------------------------------------
-      std::string get_path(const std::string& filepath) ;
       std::string format_as_4_digits(int number);
       std::string format_as_3_digits(int number);
       void remove_cr(std::string &line);
@@ -53,8 +69,9 @@ class List_checksum {
       void parse_output_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
       void parse_animation_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
     public:
+      std::string get_path(const std::string& filepath) ;
       List_checksum();
-      std::list<std::tuple<std::string,std::list<std::string>>> chk_list(std::string starter_input_file);
+      std::list<std::tuple<std::string,std::list<std::string>>> chk_list(std::string input,std::string directory);
   }; 
 
   

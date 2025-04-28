@@ -28,7 +28,8 @@ module checksum_output_option_mod
     use names_and_titles_mod , only : ncharline
 
     type checksum_option_
-       integer checksum_count
+       integer :: checksum_count
+       integer :: st_checksum_read
        character(len=ncharline),dimension(:),allocatable :: checksums
     end type checksum_option_
 

@@ -25,28 +25,6 @@
 #include <checksum_list.h>
 using namespace std;
 
-
-// Class to list the compute starter input file and parse output files for checksums
-// -----------------------------------------------------------------------------------
-
-  std::string List_checksum::get_path(const std::string& filepath) {
-    // Find the last occurrence of the path separator
-#ifdef _WIN64
-    size_t pos = filepath.find_last_of("/\\");
-    if (pos == std::string::npos) {
-       pos = filepath.find_last_of("/");
-    }
-#else
-    size_t pos = filepath.find_last_of("/");
-#endif
-    if (pos != std::string::npos) {
-        // Extract the substring up to the last separator
-        return filepath.substr(0, pos);
-    }
-    // If no separator is found, return an empty string
-    return "";
-}
-
   // -----------------------------------------------------------------------------------
   // Tool : Format the number as a 4-digit string with leading zeros for .out files
   // input:
@@ -181,7 +159,6 @@ using namespace std;
   // -------------------------------------------------------------------------------------------------------------------------------------------------
   void List_checksum::parse_output_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-    string sep=separator();
     int run_number=0;
     int found_out_file=1;
 
@@ -191,7 +168,7 @@ using namespace std;
       string runnumber = format_as_4_digits(run_number);
       string outfile;
       if ( directory.length() > 0 ){
-          outfile = directory + sep + rootname + "_" + runnumber + ".out";
+          outfile = directory + rootname + "_" + runnumber + ".out";
       }else{
           outfile = rootname + "_" + runnumber + ".out";
       }
@@ -225,7 +202,6 @@ using namespace std;
   // -------------------------------------------------------------------------------------------------------------------------------------------------
   void List_checksum::parse_animation_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){ 
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-    string sep=separator();
     int run_number=1;
     int found_out_file=1;
 
@@ -234,7 +210,7 @@ using namespace std;
       string st_runnumber = format_as_3_digits(run_number);
       string anim_file;
       if ( directory.length() > 0 ){
-          anim_file = directory + sep + rootname + "A" + st_runnumber;
+          anim_file = directory + rootname + "A" + st_runnumber;
       }else{
         anim_file = rootname + "A" + st_runnumber;
       }
@@ -268,35 +244,53 @@ using namespace std;
   List_checksum::List_checksum()    // Constructor
   {};
 
+  
+// Class to list the compute starter input file and parse output files for checksums
+// -----------------------------------------------------------------------------------
+
+std::string List_checksum::get_path(const std::string& filepath) {
+  // Find the last occurrence of the path separator
+#ifdef _WIN64
+  size_t pos = filepath.find_last_of("/\\");
+  if (pos == std::string::npos) {
+     pos = filepath.find_last_of("/");
+  }
+#else
+  size_t pos = filepath.find_last_of("/");
+#endif
+  if (pos != std::string::npos) {
+      // Extract the substring up to the last separator
+      return filepath.substr(0, pos);
+  }
+  // If no separator is found, return an empty string
+  return "";
+}
 
   // -------------------------------------------------------------------------------
   // Compare the checksum from deck to output file
   // Computes input deck checksum & parse all output files to compare the results.
   // -------------------------------------------------------------------------------
   // input:
-  // starter_input_file : string starter input filename (may contain path)
+  // filename : string starter input filename
+  // directory : string directory where the input file is located
   // output:
   // list of checksums found in the .out file : format (filename, checksum list)
   // -------------------------------------------------------------------------------
-  list<tuple<string,list<string>>> List_checksum::chk_list(string starter_input_file){
+  list<tuple<string,list<string>>> List_checksum::chk_list(string filename,string directory){
   // -------------------------------------------------------------------------------
     list<tuple<string,list<string>>>  checksum_list; // checksum list collection from all decks : filename, checksum list
 
-    // Compute checksum from input deck
-    MD5Checksum my_checksums;
-    my_checksums.parse(starter_input_file);
-
-    list<string> deck_checksum_list=my_checksums.get_checksums();    // Compute checksum from input deck
-
-    // Add Starter computed checksum to the list
-    checksum_list.push_back(make_tuple(starter_input_file,deck_checksum_list)); // Add the checksum list to the collection
-
+    // Add separator to directory if not present
+    if (directory.length() > 0){
+       string last_char=directory.substr(directory.length()-1); 
+       if  (last_char != "/" && last_char != "\\"){
+          directory=directory+separator();
+       }
+    }
+    string starter_input_file=directory+filename  ; // Starter input file name
 
     // Extract directory, filename, extension, rootname from starter_input_file
-    string directory = get_path(starter_input_file); // Get the directory of the file
-    string filename  = starter_input_file.substr(starter_input_file.find_last_of(separator()) + 1);
     string extension = filename.substr(filename.find_last_of('.'));
-
     string rootname;
     if (extension == ".rad"){
       rootname = filename.substr(0, filename.find_last_of('_'));
@@ -304,15 +298,27 @@ using namespace std;
       rootname = "unkown";
     }
 
+    // Debug prints
     if (debug){
       cout <<  endl;
-      cout << "Input file: " << starter_input_file << endl;
-      cout << "Directory: " << directory << endl;
       cout << "Filename: " << filename << endl;
+      cout << "Directory: " << directory << endl;
+      cout << "Input file: " << starter_input_file << endl;
       cout << "Extension: " << extension << endl;    
       cout << "Rootname: " << rootname << endl;
       cout << endl;
+    }
+    
 
+    // Compute checksum from input deck
+    MD5Checksum my_checksums;
+    my_checksums.parse(starter_input_file);
+    list<string> deck_checksum_list=my_checksums.get_checksums();    // Compute checksum from input deck
+
+    // Add Starter computed checksum to the list
+    checksum_list.push_back(make_tuple(starter_input_file,deck_checksum_list)); // Add the checksum list to the collection
+
+    if (debug){    
       cout << "Commputed Checksum list from deck: " << endl;
       cout << "===================================" << endl; 
       for (const auto& item : deck_checksum_list){
@@ -336,7 +342,7 @@ using namespace std;
       for (const auto& item : checksum_list){
         cout << "File: " << get<0>(item) << endl;
         for (const auto& checksum : get<1>(item)){
-          cout << "    "<< checksum << endl;
+          cout << "       "<< checksum << endl;
         }
         cout << "==============================" << endl; 
       }
@@ -349,6 +355,53 @@ using namespace std;
 
 
 
+// C/Fortran interface for Starter
+extern "C" {
+  void grab_checksums(int *fd,char *input,int *leni,char *path,int *lenp){
+    int i;
+    //Convert input fortran to C Character
+    char input_c[257];  // maximum length of the input string is 256 in Starter
+    for (i=0;i<*leni;i++){
+      input_c[i]=input[i];
+    }
+    input_c[*leni]='\0'; // Add null character to the end of the string
+    string str_input(input_c); // Convert to string
+
+    char path_c[2029];  // maximum length of the path string is 2048 in Starter
+    for (i=0;i<*lenp;i++){
+      path_c[i]=path[i];
+    }
+    path_c[*lenp]='\0'; // Add null character to the end of the string
+    string str_path(path_c); // Convert to string
+    
+    list<tuple<string,list<string>>> checksum_list; // checksum list collection from all decks : filename, checksum list
+    List_checksum chksum_tool;
+    checksum_list=chksum_tool.chk_list(str_input,str_path); // Compute the checksums from the input deck and parse the output files
+
+    string blank_line=" ";
+    const char* blank=blank_line.c_str();
+    int len_blank= strlen(blank);
+
+    for (const auto& item : checksum_list){
+      string filename="    File. . . .   "+get<0>(item);
+      const char* line=filename.c_str();
+      int len_line= strlen(line);
+      write_out_file(fd,line,&len_line);
+      for (const auto& checksum : get<1>(item)){
+        string title=checksum.substr(0,checksum.length()-33); // Remove the checksum value
+        string digest=checksum.substr(checksum.length()-32);  // Keep only the checksum value
+        string checksum_line="                  "+title+" : "+digest;
+        const char* line=checksum_line.c_str();
+        len_line= strlen(line);
+        write_out_file(fd,line,&len_line);
+      }
+      write_out_file(fd,blank,&len_blank);
+      write_out_file(fd,blank,&len_blank);
+    }
+  
+  }
+  
+}
 
 
 // ------------------------------------------------------------------------------------------------------------------------
@@ -363,6 +416,11 @@ using namespace std;
 // Add -DDEBUG for additional debug information
 // ------------------------------------------------------------------------------------------------------------------------
 #ifdef MAIN
+
+void write_out_file(int * fd,const char * line,int * len_line){
+  // Dummy routine to permit link out of Starter
+}
+
 int main(int argc, char *argv[])
 {
   List_checksum verify_chksum_tool;
@@ -370,7 +428,8 @@ int main(int argc, char *argv[])
   cout << "Filename to process: "<< argv[1] << endl;
   string file=string(argv[1]);
 
-  list<tuple<string,list<string>>>  list = verify_chksum_tool.chk_list(file);
+  string path=verify_chksum_tool.get_path(file); // Get the directory of the file
+  list<tuple<string,list<string>>>  list = verify_chksum_tool.chk_list(file,path);
   
   cout << endl;
   cout << "Checksum list from output files: " << endl;

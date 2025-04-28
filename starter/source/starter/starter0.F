@@ -94,6 +94,7 @@ C-----------------------------------------------
       use glob_therm_init_mod
       USE PBLAST_MOD
       use checksum_starter_option_mod
+      use checksum_print_mod
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -220,6 +221,11 @@ C ===================================================
 C=======================================================================
       CALL  RADIOSS_TITLE(ISTDO,CPUNAM,ARCHTITLE,FILNAM,ROOTLEN,CHRUN,IRESP,1)
 C=======================================================================
+c
+      IF ( OUTPUT%CHECKSUM%ST_CHECKSUM_READ == 1 ) THEN
+         CALL CHECKSUM_PRINT(INPUT,PATH,CPUNAM,ARCHTITLE,IRESP)
+         STOP
+      ENDIF
 
 C-------------------------------------------------------------------
 C     Version number
@@ -238,20 +244,20 @@ C-------------------------------------------------------------------
       LOAD_ERROR = 0
       CALL  hm_reader_variables(LOAD_ERROR,CODVERS)
       IF(LOAD_ERROR /= 0) THEN
-        WRITE(IOUT,'(A)') ' '
-        WRITE(IOUT,'(A)') '------------------------------------------------------------------------'
-        WRITE(IOUT,'(A)') '  ERROR : '
-        WRITE(IOUT,'(A)') '  Reader configuration files are not available'
-        WRITE(IOUT,'(A)') '  Check and set RAD_CFG_PATH variable.'
-        WRITE(IOUT,'(A)') '  '
-        WRITE(IOUT,'(A)') '  Standard configuration file installation is '
+        WRITE(ISTDO,'(A)') ' '
+        WRITE(ISTDO,'(A)') '------------------------------------------------------------------------'
+        WRITE(ISTDO,'(A)') '  ERROR : '
+        WRITE(ISTDO,'(A)') '  Reader configuration files are not available'
+        WRITE(ISTDO,'(A)') '  Check and set RAD_CFG_PATH variable.'
+        WRITE(ISTDO,'(A)') '  '
+        WRITE(ISTDO,'(A)') '  Standard configuration file installation is '
 #ifdef _WIN64
-        WRITE(IOUT,'(A)') '  %ALTAIR_HOME%\hwsolvers\radioss\cfg'
+        WRITE(ISTDO,'(A)') '  %ALTAIR_HOME%\hwsolvers\radioss\cfg'
 #else
-        WRITE(IOUT,'(A)') '  $ALTAIR_HOME/hwsolvers/radioss/cfg'
+        WRITE(ISTDO,'(A)') '  $ALTAIR_HOME/hwsolvers/radioss/cfg'
 #endif
-        WRITE(IOUT,'(A)') '------------------------------------------------------------------------'
-        WRITE(IOUT,'(A)') ' '
+        WRITE(ISTDO,'(A)') '------------------------------------------------------------------------'
+        WRITE(ISTDO,'(A)') ' '
         CALL MY_EXIT(2)
       ENDIF
 
@@ -425,10 +431,10 @@ C Runnumber is taken from input name
       ENDIF
 
       IF(IRUN > 0)THEN
-          WRITE(IOUT,'(A)') ' '
-          WRITE(IOUT,'(A,I4)') '** ERROR : INPUT FILE RUN NUMBER SET TO ',IRUN
-          WRITE(IOUT,'(A)') '           MODIF FILES OPTION IS DEPRECATED'
-          WRITE(IOUT,'(A)') ' '
+          WRITE(ISTDO,'(A)') ' '
+          WRITE(ISTDO,'(A,I4)') '** ERROR : INPUT FILE RUN NUMBER SET TO ',IRUN
+          WRITE(ISTDO,'(A)') '           MODIF FILES OPTION IS DEPRECATED'
+          WRITE(ISTDO,'(A)') ' '
           CALL MY_EXIT(2)
        ENDIF
 

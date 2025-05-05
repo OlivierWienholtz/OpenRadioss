@@ -23,6 +23,7 @@
 
 
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <string>
 using std::cout;
@@ -48,9 +49,17 @@ using std::endl;
 #define SHORT2FLOAT 3000.   // used to convert a uint16_t to a float
 
 
-class CheckSum_Anim{
+class CheckSum_Output_Files{
 private:
-
+  // Debug flag
+    // Set to 1 to enable debug mode, 0 to disable it
+#ifdef DEBUG
+    int debug=1;
+#else
+    int debug=0;
+#endif
+  void remove_cr(std::string &line);
+  void remove_trailing_blanks(std::string& str);
   inline void SWAP_MANY2BYTES(uint16_t *intPtr, size_t number);
   inline void SWAP_MANY4BYTES(int *intPtr, size_t number);
   inline void SWAP_MANY8BYTES(double *intPtr, size_t number);
@@ -61,8 +70,8 @@ private:
            bool text = false);
 
 public:
-std::list<std::string> find(FILE *inf);
-
-
+  std::list<std::string> Animation(FILE *inf);
+  std::list<std::string> Time_History(FILE *inf);
+  std::list<std::string> Out_File(std::fstream *new_file);
 };
 

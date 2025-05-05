@@ -55,6 +55,7 @@ class List_checksum {
   #else
     int debug=0;
   #endif
+
   
     private:
     // -----------------------------------------------------------------------------------
@@ -65,9 +66,9 @@ class List_checksum {
       void remove_cr(std::string &line);
       std::string separator();
       int compare_lists(std::list<std::string> list1, std::list<std::string> list2);
-      std::list<std::string> parse_out_file(std::fstream *new_file);
       void parse_output_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
       void parse_animation_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
+      void parse_th_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
     public:
       std::string get_path(const std::string& filepath) ;
       List_checksum();

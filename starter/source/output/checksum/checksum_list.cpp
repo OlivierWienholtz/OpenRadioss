@@ -21,7 +21,7 @@
 //Copyright>    software under a commercial license.  Contact Altair to discuss further if the
 //Copyright>    commercial version may interest you: https://www.altair.com/radioss/.
 #include <checksum_model.h>
-#include <checksum_anim.h>
+#include <checksum_output_files.h>
 #include <checksum_list.h>
 using namespace std;
 
@@ -59,6 +59,7 @@ using namespace std;
   void List_checksum::remove_cr(std::string& line) {
     line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
  }
+
 
   
   // -----------------------------------------------------------------------------------
@@ -100,53 +101,6 @@ using namespace std;
       return 1; // Lists are equal
   }
 
-  // -----------------------------------------------------------------------------------
-  // Parse the .out file and extract checksums
-  // Returns a list of checksums
-  // The function assumes that the .out file is in the same directory as the input file
-  // -----------------------------------------------------------------------------------
-  // input:
-  // directory : directory where the .out file is located
-  // rootname  : rootname of the .out file (without run number and extension)
-  // run_number: run number to be used in the .out file name
-  // output:
-  // list of checksums found in the .out file
-  // -----------------------------------------------------------------------------------
-  list<string> List_checksum::parse_out_file(fstream *new_file){
-  // -----------------------------------------------------------------------------------
-      list<string> checksum_list;
-      
-      int not_found=1;
-      string line;
-      while (getline(*new_file, line) && not_found) {
-        remove_cr(line); // Remove carriage return characters
-        if (line == " CHECKSUMS" || line == "    CHECKSUMS") {                       // Engine output format has 1 space, Starter 
-           if (getline(*new_file, line)){     // 2 blank lines
-            if (getline(*new_file, line)){
-              while( not_found && getline(*new_file, line) ){                   // Read all lines until "CHECKSUM :" is no more found
-                 string comp=line.substr(0, 15);
-                 if (comp == "    CHECKSUM : "){
-                    
-                    string checksum = line.substr(15);
-                    checksum_list.push_back(checksum);
-
-                    if (debug){
-                      cout << "Checksum found: " << checksum << endl;
-                    }
-
-                 }else{
-                    not_found = 0;
-                 }
-              }
-            }
-
-           }
-           not_found=0; // Stop reading the file, we found the checksum section
-        }
-
-      } 
-      return checksum_list;
-  }
 
   // -------------------------------------------------------------------------------------------------------------------------------------------------
   // Parse all .out files in the directory
@@ -183,7 +137,8 @@ using namespace std;
              if (debug){
                 cout << "Parsing file: " << outfile << endl;
              }
-             list<string> checksum_list_out=parse_out_file( &new_file );
+             CheckSum_Output_Files out;
+             list<string> checksum_list_out=out.Out_File( &new_file );
              checksum_list->push_back(make_tuple(outfile,checksum_list_out)); // Add the checksum list to the collection
              new_file.close();
       run_number++;
@@ -230,8 +185,8 @@ using namespace std;
                 cout << "Parsing file: " << anim_file << endl;
              }
 
-             CheckSum_Anim anim;
-             list<string> checksum_list_out=anim.find( new_file );
+             CheckSum_Output_Files out;
+             list<string> checksum_list_out=out.Animation( new_file );
              checksum_list->push_back(make_tuple(anim_file,checksum_list_out)); // Add the checksum list to the collection
              fclose(new_file);
       
@@ -239,6 +194,55 @@ using namespace std;
             run_number++;
     }
   }
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------
+  // Parse all Animation files in the directory
+  // input:
+  // directory : directory where the .out files are located
+  // rootname  : rootname of the .out files (without run number and extension)
+  // output:
+  // list of tuples (filename, checksum match)
+  // The checksum match is 1 if the checksums are equal, 0 if they are not equal
+  // -------------------------------------------------------------------------------------------------------------------------------------------------
+  void List_checksum::parse_th_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){ 
+    // -------------------------------------------------------------------------------------------------------------------------------------------------
+      int run_number=1;
+      int found_out_file=1;
+  
+      while (found_out_file){
+        // Construct the output file name
+        string st_runnumber = format_as_4_digits(run_number);
+        string th_file;
+        th_file = rootname + "_" + st_runnumber+".thy";
+        if ( directory.length() > 0 ){
+            th_file = directory + th_file;
+        }
+        FILE *new_file;
+  #ifdef _WIN64
+        fopen_s(&new_file, th_file.c_str(), "rb");
+  #else
+        new_file = fopen(th_file.c_str(), "rb");
+  #endif
+  
+        if ( !new_file ) {
+            // cout << "Error: Unable to open file " << anim_file << endl;
+            found_out_file=0; // No more .out files to process
+        }else{
+               if (debug){
+                  cout << "Parsing file: " << th_file << endl;
+               }
+  
+               CheckSum_Output_Files out;
+               list<string> checksum_list_th=out.Time_History( new_file );
+               checksum_list->push_back(make_tuple(th_file,checksum_list_th)); // Add the checksum list to the collection
+               fclose(new_file);
+        
+              }
+              run_number++;
+      }
+    }
+  
 
 
   List_checksum::List_checksum()    // Constructor
@@ -335,6 +339,9 @@ std::string List_checksum::get_path(const std::string& filepath) {
     // parse all animation files in the directory
     parse_animation_files(directory, rootname, &checksum_list);
 
+    // parse all animation files in the directory
+    parse_th_files(directory, rootname, &checksum_list);
+
     // print the checksum list from all output files
     if (debug){
       cout << "Checksum list from output files: " << endl;
@@ -393,7 +400,7 @@ extern "C" {
         string checksum_line="                  "+title+" : "+digest;
         const char* line=checksum_line.c_str();
         len_line= strlen(line);
-        write_out_file(fd,line,&len_line);
+        write_out_file(fd,line,&len_line);   // Fortran routine to write the checksum line
       }
       write_out_file(fd,blank,&len_blank);
       write_out_file(fd,blank,&len_blank);
@@ -411,8 +418,8 @@ extern "C" {
 // The function will print the results to the console
 // To build in Standalone mode, use the following command:
 // On Windows:
-// icx -DMAIN         -o ..\exec\checksum.exe -Ishare/includes -ID:\WS\GitHub\OpenRadioss_VS\OpenRadioss\extlib\md5\include source\output\checksum\checksum_list.cpp source\output\checksum\checksum_model.cpp source\output\checksum\checksum_anim.cpp D:\WS\GitHub\OpenRadioss_VS\OpenRadioss\extlib\md5\win64\md5.lib ws2_32.lib
-// g++ -DMAIN -no-pie -o ../exec/checksum -Ishare/includes -I/mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/include source/output/checksum/checksum_list.cpp source/output/checksum/checksum_model.cpp source/output/checksum/checksum_anim.cpp /mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/linux64/libmd5.a   -std=c++14
+// icx -DMAIN         -o ..\exec\checksum.exe -Ishare/includes -ID:\WS\GitHub\OpenRadioss_VS\OpenRadioss\extlib\md5\include source\output\checksum\checksum_list.cpp source\output\checksum\checksum_model.cpp source\output\checksum\checksum_output_files.cpp D:\WS\GitHub\OpenRadioss_VS\OpenRadioss\extlib\md5\win64\md5.lib ws2_32.lib
+// g++ -DMAIN -no-pie -o ../exec/checksum -Ishare/includes -I/mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/include source/output/checksum/checksum_list.cpp source/output/checksum/checksum_model.cpp source/output/checksum/checksum_output_files.cpp /mnt/d/WS/GitHub/OpenRadioss_VS/OpenRadioss/extlib/md5/linux64/libmd5.a   -std=c++14
 // Add -DDEBUG for additional debug information
 // ------------------------------------------------------------------------------------------------------------------------
 #ifdef MAIN

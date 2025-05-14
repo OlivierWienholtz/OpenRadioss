@@ -1856,7 +1856,7 @@ C--------------------------------------
       CALL WRITE_I_C(TABVINT,LVARINT)
       LEN_IA = LEN_IA + LVARINT
 C--------------------------------------
-      IF (P==1) CALL checksum_restart()
+      CALL checksum_restart()
 #ifdef DNC
       CALL WRDUM_INFO()
 #endif

@@ -1885,6 +1885,12 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   N FUNC TEXT
 C-----------------------------------------------
+      ! All spmd domains need to have the ANIM_N set
+      IADCHKSUM = IAD_GPS+500
+      DO I=1,OUTPUT%CHECKSUM%CHECKSUM_COUNT
+           ANIM_N(IADCHKSUM+I) = 1
+      ENDDO
+
       IF (ISPMD==0) THEN
        CTEXT(81)=0
        IF(ANIM_N(01)==1) CALL ANI_TXT('Time Step',9)
@@ -1991,7 +1997,6 @@ C-----------------------------------------------
        IF(OUTPUT%CHECKSUM%CHECKSUM_COUNT > 0) THEN
          ! print *,'OUTPUT%CHECKSUM%CHECKSUM_COUNT = ',OUTPUT%CHECKSUM%CHECKSUM_COUNT
          DO I=1,OUTPUT%CHECKSUM%CHECKSUM_COUNT
-           ANIM_N(IADCHKSUM+I) = 1
            CALL ANI_TXT('ZCHKSM_'//OUTPUT%CHECKSUM%CHECKSUMS(I), 7+LEN_TRIM(OUTPUT%CHECKSUM%CHECKSUMS(I)))
            ! print *, 'ANIM_N(IADCHKSUM+I) = ', ANIM_N(IADCHKSUM+I)
            ! print *, 'OUTPUT%CHECKSUM%CHECKSUMS(I) = ', OUTPUT%CHECKSUM%CHECKSUMS(I)

@@ -301,7 +301,7 @@ C fichier de restart au format binaire ieee
 C
         CALL CUR_FIL_C(0)
 
-        if (ISPMD==0) CALL checksum_option_read(OUTPUT%CHECKSUM)
+        CALL checksum_option_read(OUTPUT%CHECKSUM)
 
         CALL READ_I_C(NODGLOB,SNODGLOB)
 

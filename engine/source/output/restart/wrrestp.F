@@ -471,7 +471,7 @@ C--------------------------------------
 C--------------------------------------
 C     WRITE CHECKSUM DIGEST
 C--------------------------------------
-      if (ISPMD==0) CALL checksum_option_write(OUTPUT%CHECKSUM)
+      CALL checksum_option_write(OUTPUT%CHECKSUM)
 C--------------------------------------
 C     ECRITURE DES ENTIERS
 C--------------------------------------

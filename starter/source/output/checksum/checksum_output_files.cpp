@@ -502,7 +502,7 @@ std::list<std::string> CheckSum_Output_Files::Time_History(FILE * curfile)
         std::string line;
         while (getline(*new_file, line) && not_found) {
           remove_cr(line); // Remove carriage return characters
-          if (line == " CHECKSUMS" || line == "    CHECKSUMS") {         // Engine output format has 1 space, Starter 
+          if (line == " CHECKSUM DIGESTS" || line == "    CHECKSUM DIGESTS") {         // Engine output format has 1 space, Starter 
              if (getline(*new_file, line)){                              // 2 blank lines
               if (getline(*new_file, line)){
                 while( not_found && getline(*new_file, line) ){          // Read all lines until "CHECKSUM :" is no more found
@@ -525,7 +525,38 @@ std::list<std::string> CheckSum_Output_Files::Time_History(FILE * curfile)
              }
              not_found=0; // Stop reading the file, we found the checksum section
           }
-  
         } 
         return checksum_list;
     }
+
+    std::list<std::tuple<std::string,std::string>> CheckSum_Output_Files::Checksum_File(std::fstream *new_file){
+        std::list<std::tuple<std::string,std::string>> checksum_list;
+        int not_found=1;
+        std::string line;
+        while (getline(*new_file, line) && not_found) {
+          remove_cr(line); // Remove carriage return characters
+          if (line == " OUTPUT FILES CHECKSUM DIGESTS") {                // Engine output format has 1 space, Starter 
+
+             if (getline(*new_file, line)){    
+                                          // 1 blank lines
+                while( not_found && getline(*new_file, line) ){          // Read all lines until "CHECKSUM :" is no more found
+                   if (line.length() > 4){
+                      std::string comp=line.substr(4);                   // Remove front blanks
+                      size_t pos =comp.find_last_of(' ');
+                      std::string checksum = comp.substr(pos+1);
+                      std::string filename = comp.substr(0,pos);
+                   
+                      checksum_list.push_back(make_tuple(filename,checksum));
+  
+                   }else{
+                      not_found = 0;
+                   }
+                }
+  
+             }
+             not_found=0; // Stop reading the file, we found the checksum section
+          }
+        } 
+        return checksum_list;
+    }
+

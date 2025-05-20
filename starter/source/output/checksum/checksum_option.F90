@@ -75,8 +75,8 @@ contains
             ! -------------------------------------------
             write(iout,'(a)') ' '
             write(iout,'(a)') ' '
-            write(iout,'(a)') '    CHECKSUMS'
-            write(iout,'(a)') '    ---------'
+            write(iout,'(a)') '    CHECKSUM DIGESTS'
+            write(iout,'(a)') '    ----------------'
             write(iout,'(a)') ' '
             do i=1,checksum_digest_count
                 call checksum_read(i,checksum_title,len_title,checksum,len_checksum)

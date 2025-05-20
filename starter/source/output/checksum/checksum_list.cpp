@@ -25,6 +25,21 @@
 #include <checksum_list.h>
 using namespace std;
 
+
+bool List_checksum::is_integer(const std::string s) {
+   char * p;
+   char * s_cchar = (char*)s.c_str();
+    // strtol will convert the string to a long integer
+    // If the conversion is successful, p will point to the first character after the number
+    // If the conversion fails, p will point to the original string
+   long converted = strtol(s_cchar, &p, 10);
+   if (*p) {
+       return false; // Not a valid integer
+   }
+   return true;
+    
+
+}
   // -----------------------------------------------------------------------------------
   // Tool : Format the number as a 4-digit string with leading zeros for .out files
   // input:
@@ -101,6 +116,84 @@ using namespace std;
       return 1; // Lists are equal
   }
 
+  // -----------------------------------------------------------------------------------
+  // sorst in lists : get a filename & sort it in the corresponding list if pattern found
+  // input:
+  // fname : filename
+  // rootname : deck rootname
+  // output:
+  // void, out_file_list, th_file_list, anim_file_list are updated
+  // -----------------------------------------------------------------------------------
+  void List_checksum::sort_in_lists(std::string fname,std::string rootname){
+
+      size_t pos = string(fname).find_last_of('.');
+      std::string extension = fname.substr(pos + 1);
+      if (extension == "out") {
+             out_file_list.push_back(fname);
+      }
+      if (extension == "thy") {
+             th_file_list.push_back(fname);
+      }
+
+      if (extension == "checksum") {
+          int filename_length = rootname.length()+5+extension.length()+1;
+          if (fname.length() == filename_length){
+             std::string str_runnumber=fname.substr(rootname.length()+1,4); 
+             if (is_integer(str_runnumber)){
+                   checksum_file_list.push_back(fname);
+             }
+          }
+      }
+
+      // Old styled files
+      string rd_run = fname.substr(fname.length()-3);
+      string file_A=fname.substr(0,fname.length()-3);
+      string anim_pattern=rootname+ "A";
+      if ( is_integer(rd_run)  && anim_pattern == file_A){
+          anim_file_list.push_back(fname);
+      }
+      string th_pattern=rootname+ "T";
+      if ( is_integer(rd_run)  && th_pattern == file_A){
+          th_file_list.push_back(fname);
+      }
+
+  }
+
+  void List_checksum::file_list(std::string directory,std::string rootname){
+        std::vector<std::string> files;
+
+#ifdef _WIN64
+    std::string search_path = directory + rootname + "*";
+    WIN32_FIND_DATAA fd;
+    HANDLE hFind = ::FindFirstFileA(search_path.c_str(), &fd);
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+                string fname(fd.cFileName);
+                sort_in_lists(fname,rootname);
+            }
+        } while (::FindNextFileA(hFind, &fd));
+        ::FindClose(hFind);
+    }
+#else
+    DIR* dir = opendir(directory.c_str());
+    if (dir) {
+        struct dirent* entry;
+        while ((entry = readdir(dir)) != nullptr) {
+            std::string fname(entry->d_name);
+            if (fname.find(rootname) == 0) { // starts with rootname
+                sort_in_lists(fname,rootname);
+            }
+        }
+        closedir(dir);
+    }
+#endif
+  };
+
+
+  bool List_checksum::is_file_valid(std::string file){
+      return true;
+  }
 
   // -------------------------------------------------------------------------------------------------------------------------------------------------
   // Parse all .out files in the directory
@@ -113,41 +206,42 @@ using namespace std;
   // -------------------------------------------------------------------------------------------------------------------------------------------------
   void List_checksum::parse_output_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-    int run_number=0;
-    int found_out_file=1;
 
-    while (found_out_file){
-      
-      // Construct the output file name
-      string runnumber = format_as_4_digits(run_number);
+  for (const auto& item : out_file_list){ 
+
       string outfile;
       if ( directory.length() > 0 ){
-          outfile = directory + rootname + "_" + runnumber + ".out";
+          outfile = directory + item;
       }else{
-          outfile = rootname + "_" + runnumber + ".out";
+          outfile = item;
       }
-      
+
       fstream new_file;
       new_file.open(outfile, ios::in);
 
       if ( !new_file.is_open() ) {
           // cout << "Error: Unable to open file " << outfile << endl;
-          found_out_file=0; // No more .out files to process
       }else{
              if (debug){
                 cout << "Parsing file: " << outfile << endl;
              }
+             // Grab file checksums
              CheckSum_Output_Files out;
              list<string> checksum_list_out=out.Out_File( &new_file );
-             checksum_list->push_back(make_tuple(outfile,checksum_list_out)); // Add the checksum list to the collection
              new_file.close();
-      run_number++;
+             // Compute file checksum
+             checksum file_cs;
+             string file_checksum = file_cs.compute_checksum(outfile);
+             string formated_out = outfile + " : " + file_checksum;
+
+             checksum_list->push_back(make_tuple(formated_out,checksum_list_out)); // Add the checksum list to the collection
+             file_checksum_list.push_back(make_tuple(outfile, file_checksum)); // Add the file,checksum tuple in specific list
       }
     }
   }
 
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  // Parse all Animation files in the directory
+  // Parse all Animation files from the directory
   // input:
   // directory : directory where the .out files are located
   // rootname  : rootname of the .out files (without run number and extension)
@@ -160,14 +254,13 @@ using namespace std;
     int run_number=1;
     int found_out_file=1;
 
-    while (found_out_file){
-      // Construct the output file name
-      string st_runnumber = format_as_3_digits(run_number);
+    for (const auto& item : anim_file_list){ 
+
       string anim_file;
       if ( directory.length() > 0 ){
-          anim_file = directory + rootname + "A" + st_runnumber;
+          anim_file = directory + item;
       }else{
-        anim_file = rootname + "A" + st_runnumber;
+          anim_file = item;
       }
 
       FILE *new_file;
@@ -187,17 +280,23 @@ using namespace std;
 
              CheckSum_Output_Files out;
              list<string> checksum_list_out=out.Animation( new_file );
-             checksum_list->push_back(make_tuple(anim_file,checksum_list_out)); // Add the checksum list to the collection
              fclose(new_file);
+             // Compute file checksum
+             checksum file_cs;
+             string file_checksum = file_cs.compute_checksum(anim_file);
+             string formated_out = anim_file + " : " + file_checksum;
+             
+             checksum_list->push_back(make_tuple(formated_out,checksum_list_out)); // Add the checksum list to the collection
+             file_checksum_list.push_back(make_tuple(anim_file, file_checksum)); // Add the file,checksum tuple in specific list
+
       
             }
             run_number++;
     }
   }
 
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------
-  // Parse all Animation files in the directory
+  // Parse all time history files from the directory
   // input:
   // directory : directory where the .out files are located
   // rootname  : rootname of the .out files (without run number and extension)
@@ -207,17 +306,16 @@ using namespace std;
   // -------------------------------------------------------------------------------------------------------------------------------------------------
   void List_checksum::parse_th_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){ 
     // -------------------------------------------------------------------------------------------------------------------------------------------------
-      int run_number=1;
       int found_out_file=1;
   
-      while (found_out_file){
-        // Construct the output file name
-        string st_runnumber = format_as_4_digits(run_number);
-        string th_file;
-        th_file = rootname + "_" + st_runnumber+".thy";
-        if ( directory.length() > 0 ){
-            th_file = directory + th_file;
-        }
+    for (const auto& item : th_file_list){ 
+
+      string th_file;
+      if ( directory.length() > 0 ){
+          th_file = directory + item;
+      }else{
+          th_file = item;
+      }
         FILE *new_file;
   #ifdef _WIN64
         fopen_s(&new_file, th_file.c_str(), "rb");
@@ -229,20 +327,73 @@ using namespace std;
             // cout << "Error: Unable to open file " << anim_file << endl;
             found_out_file=0; // No more .out files to process
         }else{
-               if (debug){
-                  cout << "Parsing file: " << th_file << endl;
-               }
+                 if (debug){
+                    cout << "Parsing file: " << th_file << endl;
+                 }
   
-               CheckSum_Output_Files out;
-               list<string> checksum_list_th=out.Time_History( new_file );
-               checksum_list->push_back(make_tuple(th_file,checksum_list_th)); // Add the checksum list to the collection
-               fclose(new_file);
-        
+                 CheckSum_Output_Files out;
+                 list<string> checksum_list_th=out.Time_History( new_file );
+                 fclose(new_file);
+
+                 checksum file_cs;
+                 string file_checksum = file_cs.compute_checksum(th_file);
+                 string formated_out = th_file + " : " + file_checksum;
+
+                 checksum_list->push_back(make_tuple(formated_out,checksum_list_th)); // Add the checksum list to the collection
+                 file_checksum_list.push_back(make_tuple(th_file, file_checksum)); // Add the file,checksum tuple in specific list
               }
-              run_number++;
       }
     }
   
+void List_checksum::parse_checksum_files(string directory, string rootname,list<tuple<string,list<string>>> *checksum_list){
+
+ for (const auto& item : checksum_file_list){ 
+
+      string chkfile;
+      if ( directory.length() > 0 ){
+          chkfile = directory + item;
+      }else{
+          chkfile = item;
+      }
+             
+      bool valid_file = is_file_valid(chkfile);
+      string valid_message;
+      if (valid_file) {
+          valid_message = "Valid Fingerprint";
+      }else{
+          valid_message = "Invalid Fingerprint";
+      }
+
+      fstream new_file;
+      new_file.open(chkfile, ios::in);
+
+      if ( !new_file.is_open() ) {
+          // cout << "Error: Unable to open file " << outfile << endl;
+      }else{
+             if (debug){
+                cout << "Parsing file: " << chkfile << endl;
+             }
+             // Grab file checksums
+             CheckSum_Output_Files out;
+             std::list<std::tuple<std::string,std::string>> checksum_list_chk;
+             checksum_list_chk=out.Checksum_File( &new_file );
+             new_file.close();
+
+             string formated_out = chkfile + " : " + valid_message;
+             list<string> verify_checksum_list;
+
+             // print the checksum list
+             for (const auto& item2 :checksum_list_chk){
+                string filename = get<0>(item2);
+                string checksum = get<1>(item2);
+
+                
+             }
+             checksum_list->push_back(make_tuple(formated_out,verify_checksum_list)); // Add the checksum list to the collection
+
+      }
+    }
+  };
 
 
   List_checksum::List_checksum()    // Constructor
@@ -284,6 +435,7 @@ std::string List_checksum::get_path(const std::string& filepath) {
   // -------------------------------------------------------------------------------
     list<tuple<string,list<string>>>  checksum_list; // checksum list collection from all decks : filename, checksum list
 
+
     // Add separator to directory if not present
     if (directory.length() > 0){
        string last_char=directory.substr(directory.length()-1); 
@@ -301,6 +453,9 @@ std::string List_checksum::get_path(const std::string& filepath) {
     }else{
       rootname = "unkown";
     }
+  
+    file_list(directory,rootname); // List all files in the directory
+
 
     // Debug prints
     if (debug){
@@ -312,7 +467,8 @@ std::string List_checksum::get_path(const std::string& filepath) {
       cout << "Rootname: " << rootname << endl;
       cout << endl;
     }
-    
+  
+
 
     // Compute checksum from input deck
     MD5Checksum my_checksums;
@@ -341,6 +497,9 @@ std::string List_checksum::get_path(const std::string& filepath) {
 
     // parse all animation files in the directory
     parse_th_files(directory, rootname, &checksum_list);
+
+    // Parse all checksum files in the directory
+    parse_checksum_files(directory, rootname, &checksum_list); 
 
     // print the checksum list from all output files
     if (debug){
@@ -394,6 +553,9 @@ extern "C" {
       const char* line=filename.c_str();
       int len_line= strlen(line);
       write_out_file(fd,line,&len_line);
+      int len_blanck=1;
+      write_out_file(fd," ",&len_blank);
+   
       for (const auto& checksum : get<1>(item)){
         string title=checksum.substr(0,checksum.length()-33); // Remove the checksum value
         string digest=checksum.substr(checksum.length()-32);  // Keep only the checksum value

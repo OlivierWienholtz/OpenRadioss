@@ -80,8 +80,8 @@ module checksum_check_mod
         call  radioss_title(fchecksum,cpunam,archtitle,input,leni,runn,iresp,1)
 
         write(fchecksum,'(A)')' '
-        write(fchecksum,'(A)')'    DECK AND OUTPUT CHECKSUMS'
-        write(fchecksum,'(A)')'    -------------------------'
+        write(fchecksum,'(A)')'    DECK AND OUTPUT CHECKSUM REPORT'
+        write(fchecksum,'(A)')'    -------------------------------'
         write(fchecksum,'(A)')'    INPUT DECK. . . . . . . . . . . .     '//trim(input)
         write(fchecksum,'(A)')'    DIRECTORY . . . . . . . . . . . .     '//trim(path)
         write(fchecksum,'(A)')' '

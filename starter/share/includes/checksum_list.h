@@ -27,7 +27,8 @@
 #include <list>
 #include <filesystem>
 #include <algorithm>
-
+#include <stdexcept>
+#include <checksum.h>
 // C calls fortran 
 #define _FCALL
 
@@ -40,39 +41,52 @@
 #endif
 
 extern "C" {
-void write_out_file(int * fd,const char * line,int * len_line);
-void grab_checksums(int *fd,char *input,int *leni,char *path,int *lenp);
+     void write_out_file(int * fd,const char * line,int * len_line);
+     void grab_checksums(int *fd,char *input,int *leni,char *path,int *lenp);
 }
 
 
 class List_checksum {
 
-    public:
+    private:
+
     // Debug flag
     // Set to 1 to enable debug mode, 0 to disable it
-  #ifdef DEBUG
+#ifdef DEBUG
     int debug=1;
-  #else
+#else
     int debug=0;
   #endif
 
-  
-    private:
+    std::list<std::string> out_file_list; // File checksums : Filename, checksum
+    std::list<std::string> th_file_list; // File checksums : Filename, checksum
+    std::list<std::string> anim_file_list; // File checksums : Filename, checksum
+    std::list<std::string> checksum_file_list; // File checksums : Filename, checksum
+
+
+    std::list<std::tuple<std::string,std::string>> file_checksum_list; // File checksums : Filename, checksum
+    
     // -----------------------------------------------------------------------------------
     // Tool : get directory path from a file path
     // -----------------------------------------------------------------------------------
+      bool is_integer(const std::string s);
+      void sort_in_lists(std::string file,std::string rootname);
       std::string format_as_4_digits(int number);
       std::string format_as_3_digits(int number);
       void remove_cr(std::string &line);
       std::string separator();
       int compare_lists(std::list<std::string> list1, std::list<std::string> list2);
+      bool is_file_valid(std::string file);
+      void file_list(std::string directory,std::string rootname);
       void parse_output_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
       void parse_animation_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
       void parse_th_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
+      void parse_checksum_files(std::string directory, std::string rootname,std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
     public:
+
+      std::list<std::tuple<std::string,std::list<std::string>>> chk_list(std::string input,std::string directory);
       std::string get_path(const std::string& filepath) ;
       List_checksum();
-      std::list<std::tuple<std::string,std::list<std::string>>> chk_list(std::string input,std::string directory);
   }; 
 
   

@@ -24,7 +24,6 @@ public:
     std::list <std::tuple< std::string, std::string>> dump_list();
 };
 
-checksum cs_output_files;
 
 #ifdef _WIN64
 #define write_out_file WRITE_OUT_FILE

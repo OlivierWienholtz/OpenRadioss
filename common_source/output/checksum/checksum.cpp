@@ -1,5 +1,8 @@
 #include <checksum.h>
 
+// Global variables
+checksum cs_output_files;
+
 std::string  checksum::compute_checksum(std::string file){
     std::ifstream input_file(file, std::ios::binary);
 

@@ -59,13 +59,13 @@ class List_checksum {
     int debug=0;
   #endif
 
-    std::list<std::string> out_file_list; // File checksums : Filename, checksum
-    std::list<std::string> th_file_list; // File checksums : Filename, checksum
-    std::list<std::string> anim_file_list; // File checksums : Filename, checksum
-    std::list<std::string> checksum_file_list; // File checksums : Filename, checksum
-
-
-    std::map<std::string,std::string> file_checksum_list; // File checksums : Filename, checksum
+    // List of files to be processed sorted o, file_list
+    std::list<std::string> out_file_list;                                           // .out files
+    std::list<std::string> th_file_list;                                            // .thy files
+    std::list<std::string> anim_file_list;                                          // rootnameAxxx
+    std::list<std::string> checksum_file_list;                                      // .checksum files
+    std::map<std::string,std::string> file_checksum_list;                           // File checksums : Filename, checksum
+    std::list<std::tuple<std::string,std::list<std::string>>> checksum_list ;       // extracted checksum list from the output files : Filename, checksum list
     
     // -----------------------------------------------------------------------------------
     // Tool : get directory path from a file path
@@ -83,8 +83,8 @@ class List_checksum {
       void parse_animation_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
       void parse_th_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
       void parse_checksum_files(std::string directory, std::string rootname,std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
-    public:
 
+    public:
       std::list<std::tuple<std::string,std::list<std::string>>> chk_list(std::string input,std::string directory);
       std::string get_path(const std::string& filepath) ;
       List_checksum();

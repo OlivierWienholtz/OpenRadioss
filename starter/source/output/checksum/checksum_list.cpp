@@ -126,8 +126,10 @@ bool List_checksum::is_integer(const std::string s) {
   // -----------------------------------------------------------------------------------
   void List_checksum::sort_in_lists(std::string fname,std::string rootname){
 
+      // Grab the file extension
       size_t pos = string(fname).find_last_of('.');
       std::string extension = fname.substr(pos + 1);
+
       if (extension == "out") {
              out_file_list.push_back(fname);
       }
@@ -145,7 +147,7 @@ bool List_checksum::is_integer(const std::string s) {
           }
       }
 
-      // Old styled files
+      // Old styled files Axxx, Txxx
       string rd_run = fname.substr(fname.length()-3);
       string file_A=fname.substr(0,fname.length()-3);
       string anim_pattern=rootname+ "A";
@@ -159,8 +161,17 @@ bool List_checksum::is_integer(const std::string s) {
 
   }
 
+  // -----------------------------------------------------------------------------------
+  // file_list : read all files in the directory and sort them in the corresponding list
+  // input:
+  // directory : directory where the files are located
+  // rootname  : rootname of the files (without run number and extension)
+  // output:
+  // out_file_list, th_file_list, anim_file_list are updated
+  // -----------------------------------------------------------------------------------
   void List_checksum::file_list(std::string directory,std::string rootname){
-        std::vector<std::string> files;
+
+    std::vector<std::string> files;
 
 #ifdef _WIN64
     std::string search_path = directory + rootname + "*";
@@ -188,15 +199,21 @@ bool List_checksum::is_integer(const std::string s) {
         closedir(dir);
     }
 #endif
-  };
+};
 
+
+  // -----------------------------------------------------------------------------------
+  // is_file_valid : check if the file has valid fingerprint
+  // -----------------------------------------------------------------------------------
 
   bool List_checksum::is_file_valid(std::string file){
       return true;
   }
 
+
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  // Parse all .out files in the directory
+  // Parse all .out files in the directory, grab the deck checsksums fingerprints
+  // Do an MD5 on the file
   // input:
   // directory : directory where the .out files are located
   // rootname  : rootname of the .out files (without run number and extension)
@@ -206,8 +223,8 @@ bool List_checksum::is_integer(const std::string s) {
   // -------------------------------------------------------------------------------------------------------------------------------------------------
   void List_checksum::parse_output_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-
-  for (const auto& item : out_file_list){ 
+  
+    for (const auto& item : out_file_list){ 
 
       string outfile;
       if ( directory.length() > 0 ){
@@ -229,6 +246,7 @@ bool List_checksum::is_integer(const std::string s) {
              CheckSum_Output_Files out;
              list<string> checksum_list_out=out.Out_File( &new_file );
              new_file.close();
+
              // Compute file checksum
              checksum file_cs;
              string file_checksum = file_cs.compute_checksum(outfile);
@@ -241,7 +259,8 @@ bool List_checksum::is_integer(const std::string s) {
   }
 
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  // Parse all Animation files from the directory
+  // Parse all Animation files from the directory, grab the deck checsksums fingerprints
+  // Do an MD5 on the file
   // input:
   // directory : directory where the .out files are located
   // rootname  : rootname of the .out files (without run number and extension)
@@ -295,8 +314,9 @@ bool List_checksum::is_integer(const std::string s) {
     }
   }
 
-// -------------------------------------------------------------------------------------------------------------------------------------------------
-  // Parse all time history files from the directory
+  // -------------------------------------------------------------------------------------------------------------------------------------------------
+  // Parse all time history files from the directory, grab the deck checsksums fingerprints
+  // Do an MD5 on the file
   // input:
   // directory : directory where the .out files are located
   // rootname  : rootname of the .out files (without run number and extension)
@@ -305,7 +325,7 @@ bool List_checksum::is_integer(const std::string s) {
   // The checksum match is 1 if the checksums are equal, 0 if they are not equal
   // -------------------------------------------------------------------------------------------------------------------------------------------------
   void List_checksum::parse_th_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){ 
-    // -------------------------------------------------------------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------------------------------------------------------------
       int found_out_file=1;
   
     for (const auto& item : th_file_list){ 
@@ -344,10 +364,20 @@ bool List_checksum::is_integer(const std::string s) {
               }
       }
     }
-  
-void List_checksum::parse_checksum_files(string directory, string rootname,list<tuple<string,list<string>>> *checksum_list){
 
- for (const auto& item : checksum_file_list){ 
+  // -------------------------------------------------------------------------------------------------------------------------------------------------
+  // Parse all .checksum files from the directory
+  // Verifies the .checksum filefingerprint
+  // 
+  // input:
+  // directory : directory where the .out files are located
+  // rootname  : rootname of the .out files (without run number and extension)
+  // output:
+  // formated list of tupes
+  // -------------------------------------------------------------------------------------------------------------------------------------------------
+  void List_checksum::parse_checksum_files(string directory, string rootname,list<tuple<string,list<string>>> *checksum_list){
+
+    for (const auto& item : checksum_file_list){ 
 
       string chkfile;
       if ( directory.length() > 0 ){

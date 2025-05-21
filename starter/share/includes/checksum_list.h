@@ -60,6 +60,7 @@ class List_checksum {
   #endif
 
     // List of files to be processed sorted o, file_list
+    std::list<std::string> deck_file_list;                                          // deck files
     std::list<std::string> out_file_list;                                           // .out files
     std::list<std::string> th_file_list;                                            // .thy files
     std::list<std::string> anim_file_list;                                          // rootnameAxxx

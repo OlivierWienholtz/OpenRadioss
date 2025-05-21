@@ -130,6 +130,12 @@ bool List_checksum::is_integer(const std::string s) {
       size_t pos = string(fname).find_last_of('.');
       std::string extension = fname.substr(pos + 1);
 
+      // Input deck
+      string input_deck=rootname+"_0000.rad";
+      if (fname == input_deck){
+          deck_file_list.push_back(fname);
+      }
+
       if (extension == "out") {
              out_file_list.push_back(fname);
       }
@@ -502,23 +508,26 @@ std::string List_checksum::get_path(const std::string& filepath) {
     }
   
 
+    for (const auto& deck_file : deck_file_list){ 
 
-    // Compute checksum from input deck
-    MD5Checksum my_checksums;
-    my_checksums.parse(starter_input_file);
-    list<string> deck_checksum_list=my_checksums.get_checksums();    // Compute checksum from input deck
+         // If deck is present:
+        // Compute checksum from input deck
+        MD5Checksum my_checksums;
+        my_checksums.parse(starter_input_file);
+        list<string> deck_checksum_list=my_checksums.get_checksums();    // Compute checksum from input deck
 
-    // Add Starter computed checksum to the list
-    checksum_list.push_back(make_tuple(starter_input_file,deck_checksum_list)); // Add the checksum list to the collection
+        // Add Starter computed checksum to the list
+        checksum_list.push_back(make_tuple(starter_input_file,deck_checksum_list)); // Add the checksum list to the collection
 
-    if (debug){    
-      cout << "Commputed Checksum list from deck: " << endl;
-      cout << "===================================" << endl; 
-      for (const auto& item : deck_checksum_list){
-        cout << item << endl;
-      }
-      cout << "==============================" << endl;
-      cout << endl;
+        if (debug){    
+          cout << "Commputed Checksum list from deck: " << endl;
+          cout << "===================================" << endl; 
+          for (const auto& item : deck_checksum_list){
+            cout << item << endl;
+          }
+          cout << "==============================" << endl;
+          cout << endl;
+        }
     }
 
     

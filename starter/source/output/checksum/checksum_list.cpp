@@ -221,7 +221,7 @@ bool List_checksum::is_integer(const std::string s) {
   // list of tuples (filename, checksum match)
   // The checksum match is 1 if the checksums are equal, 0 if they are not equal
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  void List_checksum::parse_output_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){
+  void List_checksum::parse_output_files(string directory, string rootname){
   // -------------------------------------------------------------------------------------------------------------------------------------------------
   
     for (const auto& item : out_file_list){ 
@@ -252,7 +252,7 @@ bool List_checksum::is_integer(const std::string s) {
              string file_checksum = file_cs.compute_checksum(outfile);
              string formated_out = outfile + " : " + file_checksum;
 
-             checksum_list->push_back(make_tuple(formated_out,checksum_list_out)); // Add the checksum list to the collection
+             checksum_list.push_back(make_tuple(formated_out,checksum_list_out)); // Add the checksum list to the collection
              file_checksum_list.insert(pair<string,string>(outfile, file_checksum)); // Add the file,checksum tuple in specific list
       }
     }
@@ -268,7 +268,7 @@ bool List_checksum::is_integer(const std::string s) {
   // list of tuples (filename, checksum match)
   // The checksum match is 1 if the checksums are equal, 0 if they are not equal
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  void List_checksum::parse_animation_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){ 
+  void List_checksum::parse_animation_files(string directory, string rootname){ 
   // -------------------------------------------------------------------------------------------------------------------------------------------------
     int run_number=1;
     int found_out_file=1;
@@ -305,7 +305,7 @@ bool List_checksum::is_integer(const std::string s) {
              string file_checksum = file_cs.compute_checksum(anim_file);
              string formated_out = anim_file + " : " + file_checksum;
              
-             checksum_list->push_back(make_tuple(formated_out,checksum_list_out)); // Add the checksum list to the collection
+             checksum_list.push_back(make_tuple(formated_out,checksum_list_out)); // Add the checksum list to the collection
              file_checksum_list.insert(pair<string,string>(anim_file, file_checksum)); // Add the file,checksum tuple in specific list
 
       
@@ -324,7 +324,7 @@ bool List_checksum::is_integer(const std::string s) {
   // list of tuples (filename, checksum match)
   // The checksum match is 1 if the checksums are equal, 0 if they are not equal
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  void List_checksum::parse_th_files(string directory, string rootname, list<tuple<string,list<string>>> *checksum_list){ 
+  void List_checksum::parse_th_files(string directory, string rootname){ 
   // -------------------------------------------------------------------------------------------------------------------------------------------------
       int found_out_file=1;
   
@@ -359,7 +359,7 @@ bool List_checksum::is_integer(const std::string s) {
                  string file_checksum = file_cs.compute_checksum(th_file);
                  string formated_out = th_file + " : " + file_checksum;
 
-                 checksum_list->push_back(make_tuple(formated_out,checksum_list_th)); // Add the checksum list to the collection
+                 checksum_list.push_back(make_tuple(formated_out,checksum_list_th)); // Add the checksum list to the collection
                  file_checksum_list.insert(pair<string,string>(th_file, file_checksum)); // Add the file,checksum tuple in specific list
               }
       }
@@ -375,7 +375,7 @@ bool List_checksum::is_integer(const std::string s) {
   // output:
   // formated list of tupes
   // -------------------------------------------------------------------------------------------------------------------------------------------------
-  void List_checksum::parse_checksum_files(string directory, string rootname,list<tuple<string,list<string>>> *checksum_list){
+  void List_checksum::parse_checksum_files(string directory, string rootname){
 
     for (const auto& item : checksum_file_list){ 
 
@@ -424,7 +424,7 @@ bool List_checksum::is_integer(const std::string s) {
                    verify_checksum_list.push_back(filename + "_" + "Failed checksum check : File: "+ checksum + "   Computed: " + computed_checksum);
                 }
              }
-             checksum_list->push_back(make_tuple(formated_out,verify_checksum_list)); // Add the checksum list to the collection
+             checksum_list.push_back(make_tuple(formated_out,verify_checksum_list)); // Add the checksum list to the collection
 
       }
     }
@@ -468,8 +468,6 @@ std::string List_checksum::get_path(const std::string& filepath) {
   // -------------------------------------------------------------------------------
   list<tuple<string,list<string>>> List_checksum::chk_list(string filename,string directory){
   // -------------------------------------------------------------------------------
-    list<tuple<string,list<string>>>  checksum_list; // checksum list collection from all decks : filename, checksum list
-
 
     // Add separator to directory if not present
     if (directory.length() > 0){
@@ -525,16 +523,16 @@ std::string List_checksum::get_path(const std::string& filepath) {
 
     
     // Parse all .out files in the directory
-    parse_output_files(directory, rootname, &checksum_list);
+    parse_output_files(directory, rootname);
 
     // parse all animation files in the directory
-    parse_animation_files(directory, rootname, &checksum_list);
+    parse_animation_files(directory, rootname);
 
     // parse all animation files in the directory
-    parse_th_files(directory, rootname, &checksum_list);
+    parse_th_files(directory, rootname);
 
     // Parse all checksum files in the directory
-    parse_checksum_files(directory, rootname, &checksum_list); 
+    parse_checksum_files(directory, rootname); 
 
     // print the checksum list from all output files
     if (debug){
@@ -548,6 +546,7 @@ std::string List_checksum::get_path(const std::string& filepath) {
         cout << "==============================" << endl; 
       }
     }
+
     return checksum_list ;
   }
 

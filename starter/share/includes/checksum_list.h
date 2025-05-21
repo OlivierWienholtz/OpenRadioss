@@ -79,10 +79,10 @@ class List_checksum {
       int compare_lists(std::list<std::string> list1, std::list<std::string> list2);
       bool is_file_valid(std::string file);
       void file_list(std::string directory,std::string rootname);
-      void parse_output_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
-      void parse_animation_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
-      void parse_th_files(std::string directory, std::string rootname, std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
-      void parse_checksum_files(std::string directory, std::string rootname,std::list<std::tuple<std::string,std::list<std::string>>> *checksum_list);
+      void parse_output_files(std::string directory, std::string rootname);
+      void parse_animation_files(std::string directory, std::string rootname);
+      void parse_th_files(std::string directory, std::string rootname);
+      void parse_checksum_files(std::string directory, std::string rootname);
 
     public:
       std::list<std::tuple<std::string,std::list<std::string>>> chk_list(std::string input,std::string directory);

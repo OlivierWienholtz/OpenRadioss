@@ -30,8 +30,10 @@ using std::cout;
 using std::endl;
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <zlib.h>
 
 #ifdef _WIN64
 
@@ -58,6 +60,10 @@ private:
 #else
     int debug=0;
 #endif
+  FILE * fstream;
+  gzFile gzstream;
+  std::string file_mode;
+
   void remove_cr(std::string &line);
   void remove_trailing_blanks(std::string& str);
   inline void SWAP_MANY2BYTES(uint16_t *intPtr, size_t number);
@@ -66,12 +72,13 @@ private:
   inline void SWAP_BYTESINDATA(void *itemList, size_t itemCount, size_t sizeOfItem);
   int Ufread(void *pchar, size_t sizeOfItem,
            size_t numItems,
-           FILE *OpenedFile,
            bool text = false);
 
 public:
-  std::list<std::string> Animation(FILE *inf);
-  std::list<std::string> Time_History(FILE *inf);
+  int open_binary_file(std::string filename);
+  void close_binary_file();
+  std::list<std::string> Animation();
+  std::list<std::string> Time_History();
   std::list<std::string> Out_File(std::fstream *new_file);
   std::list<std::tuple<std::string,std::string>> Checksum_File(std::fstream *new_file);
 };

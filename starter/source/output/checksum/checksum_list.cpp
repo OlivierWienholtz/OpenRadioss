@@ -154,8 +154,15 @@ bool List_checksum::is_integer(const std::string s) {
       }
 
       // Old styled files Axxx, Txxx
-      string rd_run = fname.substr(fname.length()-3);
-      string file_A=fname.substr(0,fname.length()-3);
+      string rd_run;
+      string file_A;
+      if (extension == "gz"){
+            rd_run = fname.substr(fname.length()-6,3);
+            file_A=fname.substr(0,fname.length()-6);
+      }else{
+            rd_run = fname.substr(fname.length()-3);
+            file_A=fname.substr(0,fname.length()-3);        
+      }
       string anim_pattern=rootname+ "A";
       if ( is_integer(rd_run)  && anim_pattern == file_A){
           anim_file_list.push_back(fname);
@@ -290,14 +297,12 @@ bool List_checksum::is_integer(const std::string s) {
           anim_file = item;
       }
 
+      CheckSum_Output_Files out;
       FILE *new_file;
-#ifdef _WIN64
-      fopen_s(&new_file, anim_file.c_str(), "rb");
-#else
-      new_file = fopen(anim_file.c_str(), "rb");
-#endif
+      int success=0;
+      success=out.open_binary_file(anim_file);
 
-      if ( !new_file ) {
+      if ( success == 0 ) {
           // cout << "Error: Unable to open file " << anim_file << endl;
           found_out_file=0; // No more .out files to process
       }else{
@@ -305,9 +310,9 @@ bool List_checksum::is_integer(const std::string s) {
                 cout << "Parsing file: " << anim_file << endl;
              }
 
-             CheckSum_Output_Files out;
-             list<string> checksum_list_out=out.Animation( new_file );
-             fclose(new_file);
+
+             list<string> checksum_list_out=out.Animation( );
+             out.close_binary_file();
              // Compute file checksum
              checksum file_cs;
              string file_checksum = file_cs.compute_checksum(anim_file);
@@ -344,24 +349,19 @@ bool List_checksum::is_integer(const std::string s) {
       }else{
           th_file = item;
       }
-        FILE *new_file;
-  #ifdef _WIN64
-        fopen_s(&new_file, th_file.c_str(), "rb");
-  #else
-        new_file = fopen(th_file.c_str(), "rb");
-  #endif
+
+      CheckSum_Output_Files out;
+      int success = out.open_binary_file(th_file);
   
-        if ( !new_file ) {
+        if ( success == 0 ) {
             // cout << "Error: Unable to open file " << anim_file << endl;
             found_out_file=0; // No more .out files to process
         }else{
                  if (debug){
                     cout << "Parsing file: " << th_file << endl;
                  }
-  
-                 CheckSum_Output_Files out;
-                 list<string> checksum_list_th=out.Time_History( new_file );
-                 fclose(new_file);
+                 list<string> checksum_list_th=out.Time_History();
+                 out.close_binary_file();
 
                  checksum file_cs;
                  string file_checksum = file_cs.compute_checksum(th_file);

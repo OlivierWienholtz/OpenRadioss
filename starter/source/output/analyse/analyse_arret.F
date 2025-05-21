@@ -269,11 +269,13 @@ C-----------------------------------------------
       INTEGER IEX
       LOGICAL :: FILE_EXIST
       CHARACTER(LEN=4)::CHRUN
+      INTEGER IZIP
 C
       CALL ANPRINT()
 C
       CALL ANFILE()  ! Closes *000.out file
-      CALL COMPUTE_BINARY_CHECKSUM(FILENAME,LEN_FILENAME )
+      IZIP=0
+      CALL COMPUTE_BINARY_CHECKSUM(FILENAME,LEN_FILENAME,IZIP )
       CALL st_checksum_file_print(rootname,ROOTLEN)
 C
 #ifdef DNC

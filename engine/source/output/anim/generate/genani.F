@@ -6738,7 +6738,7 @@ C=======================================================================
         CALL CLOSE_C()
 
         IF (OUTPUT%checksum%checksum_count > 0) THEN
-          CALL COMPUTE_BINARY_CHECKSUM(TMP_NAME,LEN_TMP_NAME) 
+          CALL COMPUTE_BINARY_CHECKSUM(TMP_NAME,LEN_TMP_NAME,IZIP) 
         ENDIF
 
         ANIMTOTALSIZE=ANIMTOTALSIZE+ANIMSIZE

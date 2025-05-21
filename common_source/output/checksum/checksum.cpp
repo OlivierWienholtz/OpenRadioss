@@ -53,7 +53,7 @@ std::list <std::tuple< std::string, std::string>>  checksum::dump_list() {
 
 // C/FORTRAN Engine interface
 extern "C" {
-    void compute_binary_checksum_(char *file, int *len ) {
+    void compute_binary_checksum_(char *file, int *len , int *izip) {
         char *file_c;
         file_c=(char*)malloc(sizeof(char)* *len+1);
         for (int i=0; i<*len; i++){
@@ -62,12 +62,16 @@ extern "C" {
         file_c[*len]='\0';
 
         std::string file_str(file_c);
+        if (*izip > 0) {
+            file_str = file_str + ".gz";
+        }   
+
         std::string checksum_str=cs_output_files.compute_checksum(file_str);
         // std::cout << "Checksum for file " << file_str << " is: " << checksum_str << std::endl;
     }
 
-    void _FCALL COMPUTE_BINARY_CHECKSUM(char *file,int *len ) {
-        compute_binary_checksum_(file,len);
+    void _FCALL COMPUTE_BINARY_CHECKSUM(char *file,int *len , int *izip) {
+        compute_binary_checksum_(file,len,izip);
     }
 
     void print_checksum_list_(int *fd ) {

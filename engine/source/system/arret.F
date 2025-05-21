@@ -465,6 +465,7 @@ C-----------------------------------------------
       INTEGER IFIL
       INTEGER :: LEN_TMP_NAME
       CHARACTER(len=2148) :: TMP_NAME 
+      INTEGER :: IZIP
 C-----------------------------------------------
 C Different End Values
 C ----------------------------------------------
@@ -499,7 +500,8 @@ C -----------------------------------------------
 
             ! Compute checksum if option is present
             IF (OUTPUT_PTR%CHECKSUM%CHECKSUM_COUNT >0)THEN
-               CALL COMPUTE_BINARY_CHECKSUM(OUTPUT_PTR%TH%TH_FILENAME,LEN_TRIM(OUTPUT_PTR%TH%TH_FILENAME))
+               IZIP=0
+               CALL COMPUTE_BINARY_CHECKSUM(OUTPUT_PTR%TH%TH_FILENAME,LEN_TRIM(OUTPUT_PTR%TH%TH_FILENAME),IZIP)
             ENDIF
           ENDIF
        ENDIF
@@ -654,8 +656,9 @@ C
               ENDIF
 
               CLOSE(UNIT=IOUT)
-              IF (ISPMD==0)THEN   
-                 CALL COMPUTE_BINARY_CHECKSUM(OUTPUT_PTR%OUT_FILENAME,LEN_TRIM(OUTPUT_PTR%OUT_FILENAME))
+              IF (ISPMD==0)THEN
+                 IZIP=0
+                 CALL COMPUTE_BINARY_CHECKSUM(OUTPUT_PTR%OUT_FILENAME,LEN_TRIM(OUTPUT_PTR%OUT_FILENAME),IZIP)
               ENDIF
 
               IF(ISPMD /=0) THEN

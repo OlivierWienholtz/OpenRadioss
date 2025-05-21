@@ -30,7 +30,7 @@ module checksum_check_mod
       !||--- called by ------------------------------------------------------
       !||    lectur                 ../starter/source/model/sets/fill_igr.F
       !||====================================================================
-       subroutine checksum_check(INPUT,PATH,cpunam,archtitle,iresp)
+       subroutine checksum_check(rootname,PATH,cpunam,archtitle,iresp)
 ! ----------------------------------------------------------------------------------------------------------------------
 !                                                   Modules
 ! ----------------------------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ module checksum_check_mod
 ! ----------------------------------------------------------------------------------------------------------------------
 !                                                   Arguments
 ! ----------------------------------------------------------------------------------------------------------------------
-        character(len=256), intent(in)  :: input
+        character(len=80), intent(in)   :: rootname
         character(len=2048), intent(in) :: path
         integer, intent(in)             :: iresp    ! single or double precision
         character(len=20),intent(in)    :: cpunam
@@ -50,7 +50,6 @@ module checksum_check_mod
 ! ----------------------------------------------------------------------------------------------------------------------     
 !                                                   Local variables
 ! ----------------------------------------------------------------------------------------------------------------------
-        character(len=80) rootname
         ! Variables for get_file_name_info
         integer :: leni    ! input file length
         integer :: lenp    ! path length
@@ -63,31 +62,28 @@ module checksum_check_mod
 ! ----------------------------------------------------------------------------------------------------------------------
 !                                                   Body
 ! ----------------------------------------------------------------------------------------------------------------------
-        leni = len_trim(input)
-        rootname=''
         checksum_file=''
+        runn=0
+        lenr=len_trim(rootname)
 
         write(istdo,'(A)')' .. CHECKSUMS FROM INPUT DECK AND RESULT FILES'
 
-        ! Rootname / run number / version / dyna model
-        call get_file_name_info(input, leni, rootname, lenr, runn, fvers, is_dyna)
-
         ! Open checksum file
-        checksum_file  = trim(rootname)//'.checksum'
+        checksum_file  = trim(rootname)//'.report'
         open(unit=fchecksum,file=trim(checksum_file),access='sequential',form='formatted',status='unknown')
 
         ! Write checksum file header
-        call  radioss_title(fchecksum,cpunam,archtitle,input,leni,runn,iresp,1)
+        call  radioss_title(fchecksum,cpunam,archtitle,rootname,len_trim(rootname),runn,iresp,1)
 
         write(fchecksum,'(A)')' '
         write(fchecksum,'(A)')'    DECK AND OUTPUT CHECKSUM REPORT'
         write(fchecksum,'(A)')'    -------------------------------'
-        write(fchecksum,'(A)')'    INPUT DECK. . . . . . . . . . . .     '//trim(input)
+        write(fchecksum,'(A)')'    ROOTNAME. . . . . . . . . . . . .     '//trim(rootname)
         write(fchecksum,'(A)')'    DIRECTORY . . . . . . . . . . . .     '//trim(path)
         write(fchecksum,'(A)')' '
 
         lenp=len_trim(path)
-        call grab_checksums(fchecksum,input,leni,path,lenp);
+        call grab_checksums(fchecksum,rootname,lenr,path,lenp);
 
         close(unit=fchecksum)
 

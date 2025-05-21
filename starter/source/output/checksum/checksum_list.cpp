@@ -161,7 +161,9 @@ bool List_checksum::is_integer(const std::string s) {
           anim_file_list.push_back(fname);
       }
       string th_pattern=rootname+ "T";
-      if ( is_integer(rd_run)  && th_pattern == file_A){
+      string file_T=fname.substr(0,fname.length()-2);
+      rd_run = fname.substr(fname.length()-2);
+      if ( is_integer(rd_run)  && th_pattern == file_T){
           th_file_list.push_back(fname);
       }
 
@@ -472,40 +474,18 @@ std::string List_checksum::get_path(const std::string& filepath) {
   // output:
   // list of checksums found in the .out file : format (filename, checksum list)
   // -------------------------------------------------------------------------------
-  list<tuple<string,list<string>>> List_checksum::chk_list(string filename,string directory){
+  list<tuple<string,list<string>>> List_checksum::chk_list(string rootname,string directory){
   // -------------------------------------------------------------------------------
-
-    // Add separator to directory if not present
-    if (directory.length() > 0){
-       string last_char=directory.substr(directory.length()-1); 
-       if  (last_char != "/" && last_char != "\\"){
-          directory=directory+separator();
-       }
-    }
-    string starter_input_file=directory+filename  ; // Starter input file name
-
-    // Extract directory, filename, extension, rootname from starter_input_file
-    string extension = filename.substr(filename.find_last_of('.'));
-    string rootname;
-    if (extension == ".rad"){
-      rootname = filename.substr(0, filename.find_last_of('_'));
-    }else{
-      rootname = "unkown";
-    }
-  
-    file_list(directory,rootname); // List all files in the directory
-
 
     // Debug prints
     if (debug){
       cout <<  endl;
-      cout << "Filename: " << filename << endl;
-      cout << "Directory: " << directory << endl;
-      cout << "Input file: " << starter_input_file << endl;
-      cout << "Extension: " << extension << endl;    
+      cout << "Directory: " << directory << endl;  
       cout << "Rootname: " << rootname << endl;
       cout << endl;
     }
+
+    file_list(directory,rootname); // List all files in the directory
   
 
     for (const auto& deck_file : deck_file_list){ 
@@ -513,11 +493,11 @@ std::string List_checksum::get_path(const std::string& filepath) {
          // If deck is present:
         // Compute checksum from input deck
         MD5Checksum my_checksums;
-        my_checksums.parse(starter_input_file);
+        my_checksums.parse(deck_file);
         list<string> deck_checksum_list=my_checksums.get_checksums();    // Compute checksum from input deck
 
         // Add Starter computed checksum to the list
-        checksum_list.push_back(make_tuple(starter_input_file,deck_checksum_list)); // Add the checksum list to the collection
+        checksum_list.push_back(make_tuple(deck_file,deck_checksum_list)); // Add the checksum list to the collection
 
         if (debug){    
           cout << "Commputed Checksum list from deck: " << endl;
@@ -566,29 +546,36 @@ std::string List_checksum::get_path(const std::string& filepath) {
 
 // C/Fortran interface for Starter
 extern "C" {
-  void grab_checksums(int *fd,char *input,int *leni,char *path,int *lenp){
+  void grab_checksums(int *fd,char *rootname,int *lenr,char *path,int *lenp){
     int i;
-    //Convert input fortran to C Character
-    char input_c[257];  // maximum length of the input string is 256 in Starter
-    for (i=0;i<*leni;i++){
-      input_c[i]=input[i];
-    }
-    input_c[*leni]='\0'; // Add null character to the end of the string
-    string str_input(input_c); // Convert to string
 
-    char path_c[2029];  // maximum length of the path string is 2048 in Starter
+    // Convert input fortran to C Character
+
+    char rootname_c[257];             // maximum length of the input string is 256 in Starter
+    for (i=0;i<*lenr;i++){
+      rootname_c[i]=rootname[i];
+    }
+    rootname_c[*lenr]='\0';           // Add null character to the end of the string
+    string str_rootname(rootname_c);  // Convert to string
+
+
+    char path_c[2029];                // maximum length of the path string is 2048 in Starter
     for (i=0;i<*lenp;i++){
       path_c[i]=path[i];
     }
-    path_c[*lenp]='\0'; // Add null character to the end of the string
-    string str_path(path_c); // Convert to string
+    path_c[*lenp]='\0';               // Add null character to the end of the string
+    string str_path(path_c);          // Convert to string
     
-    list<tuple<string,list<string>>> checksum_list; // checksum list collection from all decks : filename, checksum list
-    List_checksum chksum_tool;
-    checksum_list=chksum_tool.chk_list(str_input,str_path); // Compute the checksums from the input deck and parse the output files
 
-    string blank_line=" ";
-    const char* blank=blank_line.c_str();
+    // Create checksum_list object
+    // grab the input deck name
+    list<tuple<string,list<string>>> checksum_list;            // checksum list collection from all decks : filename, checksum list
+    List_checksum chksum_tool;
+    checksum_list=chksum_tool.chk_list(str_rootname,str_path); // Compute the checksums from the input deck and parse the output files
+
+
+    // Print the checksum list to the output file
+    const char* blank=" ";
     int len_blank= strlen(blank);
 
     for (const auto& item : checksum_list){

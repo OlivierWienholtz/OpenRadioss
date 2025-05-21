@@ -30,6 +30,7 @@ module checksum_output_option_mod
     type checksum_option_
        integer :: checksum_count
        integer :: st_checksum_read
+       character(len=ncharline) :: rootname      ! Stores rootname of -checksum option        
        character(len=ncharline),dimension(:),allocatable :: checksums
     end type checksum_option_
 

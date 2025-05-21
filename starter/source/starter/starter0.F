@@ -206,6 +206,15 @@ C=======================================================================
 C -------------------------------------------------
 C First task check the exec arguments (fill common)
       CALL EXECARGCHECK(OUTPUT)
+
+      ! Options not requiering Starter deck read
+      ! ----------------------------------------
+
+      ! -checksum_read [rootname]
+      IF ( OUTPUT%CHECKSUM%ST_CHECKSUM_READ == 1 ) THEN
+         CALL CHECKSUM_CHECK(OUTPUT%CHECKSUM%ROOTNAME,PATH,CPUNAM,ARCHTITLE,IRESP)
+         STOP
+      ENDIF
 C -------------------------------------------------
 C     Constants
       CALL INICONSTANT
@@ -224,10 +233,6 @@ C=======================================================================
       CALL  RADIOSS_TITLE(ISTDO,CPUNAM,ARCHTITLE,FILNAM,ROOTLEN,CHRUN,IRESP,1)
 C=======================================================================
 c
-      IF ( OUTPUT%CHECKSUM%ST_CHECKSUM_READ == 1 ) THEN
-         CALL CHECKSUM_CHECK(INPUT,PATH,CPUNAM,ARCHTITLE,IRESP)
-         STOP
-      ENDIF
 
 C-------------------------------------------------------------------
 C     Version number

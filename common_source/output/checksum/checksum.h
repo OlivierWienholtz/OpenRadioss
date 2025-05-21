@@ -32,7 +32,7 @@ public:
 #endif
 
 extern "C" {
-    void compute_binary_checksum_(char *file, int *len ) ;
-    void _FCALL COMPUTE_BINARY_CHECKSUM(char *file,int *len );
+    void compute_binary_checksum_(char *file, int *len , int *izip) ;
+    void _FCALL COMPUTE_BINARY_CHECKSUM(char *file,int *len , int *izip);
     void write_out_file(int * fd,const char * line,int * len_line);
 }

@@ -235,7 +235,7 @@ bool List_checksum::is_integer(const std::string s) {
              string formated_out = outfile + " : " + file_checksum;
 
              checksum_list->push_back(make_tuple(formated_out,checksum_list_out)); // Add the checksum list to the collection
-             file_checksum_list.push_back(make_tuple(outfile, file_checksum)); // Add the file,checksum tuple in specific list
+             file_checksum_list.insert(pair<string,string>(outfile, file_checksum)); // Add the file,checksum tuple in specific list
       }
     }
   }
@@ -287,7 +287,7 @@ bool List_checksum::is_integer(const std::string s) {
              string formated_out = anim_file + " : " + file_checksum;
              
              checksum_list->push_back(make_tuple(formated_out,checksum_list_out)); // Add the checksum list to the collection
-             file_checksum_list.push_back(make_tuple(anim_file, file_checksum)); // Add the file,checksum tuple in specific list
+             file_checksum_list.insert(pair<string,string>(anim_file, file_checksum)); // Add the file,checksum tuple in specific list
 
       
             }
@@ -340,7 +340,7 @@ bool List_checksum::is_integer(const std::string s) {
                  string formated_out = th_file + " : " + file_checksum;
 
                  checksum_list->push_back(make_tuple(formated_out,checksum_list_th)); // Add the checksum list to the collection
-                 file_checksum_list.push_back(make_tuple(th_file, file_checksum)); // Add the file,checksum tuple in specific list
+                 file_checksum_list.insert(pair<string,string>(th_file, file_checksum)); // Add the file,checksum tuple in specific list
               }
       }
     }
@@ -387,7 +387,12 @@ void List_checksum::parse_checksum_files(string directory, string rootname,list<
                 string filename = get<0>(item2);
                 string checksum = get<1>(item2);
 
-                
+                string computed_checksum= file_checksum_list[filename];
+                if (checksum == computed_checksum){
+                   verify_checksum_list.push_back(filename + "_" + "Valid Checksum" );
+                }else{
+                   verify_checksum_list.push_back(filename + "_" + "Failed checksum check : File: "+ checksum + "   Computed: " + computed_checksum);
+                }
              }
              checksum_list->push_back(make_tuple(formated_out,verify_checksum_list)); // Add the checksum list to the collection
 
@@ -557,8 +562,9 @@ extern "C" {
       write_out_file(fd," ",&len_blank);
    
       for (const auto& checksum : get<1>(item)){
-        string title=checksum.substr(0,checksum.length()-33); // Remove the checksum value
-        string digest=checksum.substr(checksum.length()-32);  // Keep only the checksum value
+        size_t pos = checksum.find_last_of("_");
+        string title=checksum.substr(0,pos); // Remove the checksum value
+        string digest=checksum.substr(pos+1);  // Keep only the checksum value
         string checksum_line="                  "+title+" : "+digest;
         const char* line=checksum_line.c_str();
         len_line= strlen(line);

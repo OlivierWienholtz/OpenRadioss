@@ -28,6 +28,7 @@
 #include <filesystem>
 #include <algorithm>
 #include <stdexcept>
+#include <map>
 #include <checksum.h>
 // C calls fortran 
 #define _FCALL
@@ -64,7 +65,7 @@ class List_checksum {
     std::list<std::string> checksum_file_list; // File checksums : Filename, checksum
 
 
-    std::list<std::tuple<std::string,std::string>> file_checksum_list; // File checksums : Filename, checksum
+    std::map<std::string,std::string> file_checksum_list; // File checksums : Filename, checksum
     
     // -----------------------------------------------------------------------------------
     // Tool : get directory path from a file path

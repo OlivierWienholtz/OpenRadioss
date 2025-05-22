@@ -426,10 +426,13 @@ bool List_checksum::is_integer(const std::string s) {
                 string checksum = get<1>(item2);
 
                 string computed_checksum= file_checksum_list[filename];
-                if (checksum == computed_checksum){
-                   verify_checksum_list.push_back(filename + "_" + "Valid Checksum" );
-                }else{
-                   verify_checksum_list.push_back(filename + "_" + "Failed checksum check : File: "+ checksum + "   Computed: " + computed_checksum);
+
+                if (computed_checksum.length() > 0){
+                   if (checksum == computed_checksum){
+                      verify_checksum_list.push_back(filename + "_" + "Valid Checksum" );
+                   }else{
+                      verify_checksum_list.push_back(filename + "_" + "Failed checksum check : File: "+ checksum + "   Computed: " + computed_checksum);
+                   }
                 }
              }
              checksum_list.push_back(make_tuple(formated_out,verify_checksum_list)); // Add the checksum list to the collection

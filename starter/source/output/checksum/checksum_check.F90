@@ -66,6 +66,7 @@ module checksum_check_mod
         runn=0
         lenr=len_trim(rootname)
 
+        call  radioss_title(istdo,cpunam,archtitle,rootname,len_trim(rootname),runn,iresp,1)
         write(istdo,'(A)')' .. CHECKSUMS FROM INPUT DECK AND RESULT FILES'
 
         ! Open checksum file

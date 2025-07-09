@@ -25,8 +25,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||--- called by ------------------------------------------------------
       !||    read_monvol                 ../starter/source/airbag/read_monvol.F
       !||====================================================================
-      MODULE HM_READ_MONVOL_TYPE11_MOD
-      CONTAINS
+
       !||====================================================================
       !||    hm_read_monvol_type11        ../starter/source/airbag/hm_read_monvol_type11.F
       !||--- called by ------------------------------------------------------
@@ -1409,4 +1408,3 @@ C-----------------------------------------------
      .     /5X,'   IH3D_FLAG (H3D OUTPUT). . . . . . . .=', I10)
       
       END SUBROUTINE HM_READ_MONVOL_TYPE11
-      END MODULE HM_READ_MONVOL_TYPE11_MOD

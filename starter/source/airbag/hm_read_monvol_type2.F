@@ -25,8 +25,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||--- called by ------------------------------------------------------
       !||    read_monvol                ../starter/source/airbag/read_monvol.F
       !||====================================================================
-      MODULE HM_READ_MONVOL_TYPE2_MOD
-      CONTAINS
+
       !||====================================================================
       !||    hm_read_monvol_type2     ../starter/source/airbag/hm_read_monvol_type2.F
       !||--- called by ------------------------------------------------------
@@ -231,4 +230,4 @@ C-----------------------------------------------
      .     /5X,'  2 : P=F(V)',
      .     /5X,'  3 : P=(1/V) F(T)'/)
       END SUBROUTINE HM_READ_MONVOL_TYPE2
-      END MODULE HM_READ_MONVOL_TYPE2_MOD
+

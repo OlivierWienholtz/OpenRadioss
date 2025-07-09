@@ -25,8 +25,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||--- called by ------------------------------------------------------
       !||    read_monvol                ../starter/source/airbag/read_monvol.F
       !||====================================================================
-      MODULE HM_READ_MONVOL_TYPE1_MOD
-      CONTAINS
+
       !||====================================================================
       !||    hm_read_monvol_type1     ../starter/source/airbag/hm_read_monvol_type1.F
       !||--- called by ------------------------------------------------------
@@ -188,4 +187,4 @@ C-----------------------------------------------
      .     /5X,'UNIT SCALE FOR DISTANCE FUNCTIONS      =',1PG20.13)
  1005 FORMAT( 5X,'EXTERNAL SURFACE ID . . . . . . . . . .=',I10)
       END SUBROUTINE HM_READ_MONVOL_TYPE1
-      END MODULE HM_READ_MONVOL_TYPE1_MOD
+

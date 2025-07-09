@@ -25,8 +25,6 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       !||--- called by ------------------------------------------------------
       !||    read_monvol                 ../starter/source/airbag/read_monvol.F
       !||====================================================================
-      MODULE HM_READ_MONVOL_TYPE10_MOD
-      CONTAINS
       !||====================================================================
       !||    hm_read_monvol_type10    ../starter/source/airbag/hm_read_monvol_type10.F
       !||--- called by ------------------------------------------------------
@@ -321,4 +319,3 @@ C-----------------------------------------------
      .     /5X,'MAXIMUM PRESSURE TIME FUNCTION. . . . . . . . . . . . .=',I10,
      .     /5X,'MAXIMUM PRESSURE TIME FUNCTION SCALE FACTOR. . . . . . =',1PG20.13)
       END SUBROUTINE HM_READ_MONVOL_TYPE10
-      END MODULE HM_READ_MONVOL_TYPE10_MOD

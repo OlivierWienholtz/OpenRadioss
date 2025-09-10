@@ -4,11 +4,10 @@ cmake_minimum_required (VERSION 3.15)
 project(dyna2rad)
 enable_language (CXX)
 
-set (library_name "dyna2rad_${arch}" )
-
 #Include the CMake configuration file
 include ( CMake_arch/CMake_${arch}.cmake )
 
+set (library_name "dyna2rad_${arch}" )
 
 #set source directory
 set (source_directory ${CMAKE_CURRENT_SOURCE_DIR})

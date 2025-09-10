@@ -108,7 +108,7 @@ if (com STREQUAL "0")
     endif()
 
 else()
-   set (link_library_name "reader_${arch}" )
+   set (link_library_name "com_reader_${arch}" )
    add_library(${link_library_name} STATIC $<TARGET_OBJECTS:solver_interface_${arch}> 
                                            $<TARGET_OBJECTS:dyna2rad_${arch}>
                                            $<TARGET_OBJECTS:io_${arch}>

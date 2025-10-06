@@ -672,6 +672,9 @@ C-----------------------------------------------
         CALL MPI_COMM_SIZE(SPMD_COMM_WORLD, NNODES, IERROR)
         CALL MPI_COMM_RANK(SPMD_COMM_WORLD, MYRANK, IERROR)
 
+        write(6,'(A,I4,A,I4,A)') 'Execargcheck Initialization successfull: ', MYRANK,' of ',NNODES,' processes'
+        call my_flush(6)
+
         if (MYRANK==0) CALL PREXECINFO(IDUM)
         
         CALL MPI_BARRIER(SPMD_COMM_WORLD,IERROR)

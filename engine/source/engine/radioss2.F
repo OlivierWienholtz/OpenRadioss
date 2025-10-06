@@ -562,6 +562,10 @@ C Common initialization for arrays size
       BCSFILESIZE = 0
       MUMPSFILESIZE = 0
       H3DTOTALSIZE = 0
+
+      write(6,'(A,A,I4)') 'Beginning: ',__FILE__, __LINE__
+      call my_flush(6)
+
 C--------------------------------------------------
       IF (GOT_INPUT == 1) THEN
 C Get input numer & run number
@@ -842,6 +846,9 @@ C
         FILNAM(I:I) = CHAR(IFILNAM(I))
       END DO
 C
+
+      write(6,'(A,I4)') 'Radioss title: ', ISPMD
+      call my_flush(6)
       IF (ISPMD==0) THEN
         CALL  RADIOSS_TITLE(IOUT ,CPUNAM,ARCHTITLE,
      *                      FILNAM,ROOTLEN,CHRUN,IRESP,0)

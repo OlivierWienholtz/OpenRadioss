@@ -46,6 +46,7 @@ C card has no influence and a warning is output
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod, only: IUSC1, IUSC2
       USE MESSAGE_MOD
       USE ALE_MOD
       USE NAMES_AND_TITLES_MOD, ONLY: NCHARLINE100

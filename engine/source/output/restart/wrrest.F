@@ -34,6 +34,10 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 !||====================================================================
       SUBROUTINE FXBWREST(ICH)
 C-----------------------------------------------
+C  M o d u l e   U s e d
+C-----------------------------------------------
+      USE file_descriptor_mod, ONLY : IFXM,IFXS
+C-----------------------------------------------
 C   M o d u l e s
 C----------------------------------------------- 
       USE FXB_MOD
@@ -46,7 +50,6 @@ C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
-#include      "units_c.inc"
 #include      "fxbcom.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
@@ -129,6 +132,7 @@ C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
       USE SCRATCHFILE_MOD
+      USE file_descriptor_mod, ONLY : IEIGM
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -136,7 +140,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "units_c.inc"
 #include      "com04_c.inc"
 #include      "scr05_c.inc"
 #include      "eigcom.inc"

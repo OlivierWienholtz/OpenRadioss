@@ -38,6 +38,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod, only: IUSC1, IUSC2
       USE MESSAGE_MOD
       USE NAMES_AND_TITLES_MOD, ONLY: NCHARLINE100
 C-----------------------------------------------
@@ -178,6 +179,7 @@ C format v12
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod, only: IUSC1, IUSC2
       USE MESSAGE_MOD
       USE NAMES_AND_TITLES_MOD, ONLY: NCHARLINE100
 C-----------------------------------------------

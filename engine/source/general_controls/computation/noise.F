@@ -41,7 +41,8 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
-      USE ELBUFDEF_MOD            
+      USE ELBUFDEF_MOD
+      USE file_descriptor_mod, ONLY : IUNOI, IOUT, ISTDO       
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -52,7 +53,6 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
 #include      "com08_c.inc"
-#include      "units_c.inc"
 #include      "scrnoi_c.inc"
 #include      "scr05_c.inc"
 #include      "scr13_c.inc"

@@ -93,6 +93,7 @@ C It reads all Engine options from user input file
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod, only: IUSC1, IUSC2
       USE MESSAGE_MOD
       USE H3D_MOD
       USE METRIC_MOD

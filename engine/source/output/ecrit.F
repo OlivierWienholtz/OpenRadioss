@@ -51,6 +51,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      USE file_descriptor_mod
       USE TIMER_MOD
       USE IMP_DYNA
       USE MESSAGE_MOD
@@ -76,7 +77,6 @@ C-----------------------------------------------
 #include      "scr11_c.inc"
 #include      "scr16_c.inc"
 #include      "param_c.inc"
-#include      "units_c.inc"
 #include      "stati_c.inc"
 #include      "statr_c.inc"
 #include      "warn_c.inc"

@@ -180,6 +180,7 @@ C-----------------------------------------------
       use PBLAST_MOD
       USE HIST2_MOD , ONLY : HIST2
       USE NODAL_ARRAYS_MOD , ONLY : NODAL_ARRAYS_
+      use file_descriptor_mod, only: iuhis,iuhi_1,iuhi_2,iuhi_3,iuhi_4,iuhi_5,iuhi_6,iuhi_7,iuhi_8,iuhi_9           ! Contains the file descriptors for all files / same as unit_c.inc
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1026,7 +1027,7 @@ c in this case set flag to 1
         IF (ILASTANIM/=1.AND.ILASTANIM/=2) THEN
 C         To have double points
           IF (NTHGRP01(1)/=0)THEN
-            IUNIT = IUHI(1)
+            IUNIT = IUHI_1
             IFIL = IUNIT
             IF (TT>=OUTPUT%TH%THIS1(1))THEN
               SIZE_MES=1
@@ -1121,7 +1122,7 @@ C         To have double points
           ENDIF
 C
           IF(NTHGRP01(2)/=0)THEN
-            IUNIT = IUHI(2)
+            IUNIT = IUHI_2
             IFIL = IUNIT
             IF (TT>=OUTPUT%TH%THIS1(2))THEN
               SIZE_MES=1
@@ -1215,7 +1216,7 @@ C
           ENDIF
 C
           IF(NTHGRP01(3)/=0)THEN
-            IUNIT = IUHI(3)
+            IUNIT = IUHI_3
             IFIL = IUNIT
 !
             IF (TT>=OUTPUT%TH%THIS1(3))THEN
@@ -1306,7 +1307,7 @@ C
           ENDIF
 C
           IF(NTHGRP01(4)/=0)THEN
-            IUNIT = IUHI(4)
+            IUNIT = IUHI_4
             IFIL = IUNIT
 !
             IF (TT>=OUTPUT%TH%THIS1(4))THEN
@@ -1398,7 +1399,7 @@ C
           ENDIF
 C
           IF(NTHGRP01(5)/=0)THEN
-            IUNIT = IUHI(5)
+            IUNIT = IUHI_5
             IFIL = IUNIT
 !
             IF (TT>=OUTPUT%TH%THIS1(5))THEN
@@ -1490,7 +1491,7 @@ C
           ENDIF
 C
           IF(NTHGRP01(6)/=0)THEN
-            IUNIT = IUHI(6)
+            IUNIT = IUHI_6
             IFIL = IUNIT
             IF (TT>=OUTPUT%TH%THIS1(6))THEN
               SIZE_MES=1
@@ -1581,7 +1582,7 @@ C
           ENDIF
 C
           IF(NTHGRP01(7)/=0)THEN
-            IUNIT = IUHI(7)
+            IUNIT = IUHI_7
             IFIL = IUNIT
 !
              IF (TT>=OUTPUT%TH%THIS1(7))THEN
@@ -1673,7 +1674,7 @@ C
           ENDIF
 C
           IF(NTHGRP01(8)/=0)THEN
-            IUNIT = IUHI(8)
+            IUNIT = IUHI_8
             IFIL = IUNIT
 !
             IF (TT>=OUTPUT%TH%THIS1(8))THEN
@@ -1761,7 +1762,7 @@ C
           ENDIF
 C
           IF(NTHGRP01(9)/=0)THEN
-            IUNIT = IUHI(9)
+            IUNIT = IUHI_9
             IFIL = IUNIT
             IF (TT>=OUTPUT%TH%THIS1(9))THEN
               SIZE_MES=1

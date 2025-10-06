@@ -39,6 +39,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod
       USE NAMES_AND_TITLES_MOD, ONLY: NCHARLINE100
       USE H3D_MOD         
       USE INOUTFILE_MOD
@@ -56,7 +57,6 @@ C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "com06_c.inc"
 #include      "com08_c.inc"
-#include      "units_c.inc"
 #include      "scr06_c.inc"
 #include      "scr07_c.inc"
 #include      "scr14_c.inc"

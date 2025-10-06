@@ -49,6 +49,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod , only : iugeo
       USE ELBUFDEF_MOD         
       USE STACK_MOD
       USE DRAPE_MOD
@@ -64,7 +65,6 @@ C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "mvsiz_p.inc"
 #include      "param_c.inc"
-#include      "units_c.inc"
 #include      "task_c.inc"
 #include      "scr14_c.inc"
 #include      "scr16_c.inc"

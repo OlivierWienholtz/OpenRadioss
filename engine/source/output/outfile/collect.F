@@ -29,6 +29,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 !||====================================================================
       SUBROUTINE COLLECT(A,ITAB,WEIGHT,NODGLOB)
       USE INOUTFILE_MOD
+      USE FILE_DESCRIPTOR_MOD, ONLY : idbg5,iout,istdo
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -39,7 +40,6 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
 #include      "chara_c.inc"
-#include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -92,6 +92,7 @@ C-----------------------------------------------
 !||    collect_pit   ../engine/source/output/outfile/collect.F
 !||====================================================================
       SUBROUTINE COLLECT_PIT(A,ITAB,WEIGHT,NODGLOB)
+      USE FILE_DESCRIPTOR_MOD, ONLY : idbg5,iout,istdo
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -102,7 +103,6 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
 #include      "chara_c.inc"
-#include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -153,6 +153,8 @@ C-----------------------------------------------
 !||====================================================================
       SUBROUTINE COLLECTX(X,ITAB,WEIGHT,NODGLOB)
 C-----------------------------------------------
+      USE FILE_DESCRIPTOR_MOD, ONLY : idbg5,iout,istdo
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
@@ -162,7 +164,6 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
 #include      "chara_c.inc"
-#include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------
@@ -376,6 +377,8 @@ C-----------------------------------------------
 !||    inoutfile_mod   ../common_source/modules/inoutfile_mod.F
 !||====================================================================
       SUBROUTINE COLLECTT(TEMP,ITAB,WEIGHT,NODGLOB)
+C-----------------------------------------------
+      USE FILE_DESCRIPTOR_MOD, ONLY : idbg8,iout,istdo
       USE INOUTFILE_MOD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
@@ -387,7 +390,6 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
 #include      "chara_c.inc"
-#include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------

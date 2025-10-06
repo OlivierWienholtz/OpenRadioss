@@ -36,6 +36,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod , only : IUGEO
       USE INOUTFILE_MOD
       USE NAMES_AND_TITLES_MOD, only:NAMES_AND_TITLES_,NCHARTITLE !< NAMES_AND_TITLES host the input deck names and titles for outputs
       USE FORMAT_MOD , ONLY : FMT_3I, FMT_8I

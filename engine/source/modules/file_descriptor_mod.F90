@@ -43,12 +43,37 @@
         ! Fortran file descriptor / same as units_c.inc
         ! --------------------------
       implicit none
-        integer, parameter :: iuhis=1
         integer, parameter :: istdo=6
         integer, parameter :: iout=7
-        integer, parameter :: ifxm=25
-        integer, parameter :: ifxs=26
-        integer, parameter :: ieigm=27
+        ! Files
+        integer, parameter :: restart=2           ! Restart file
+        integer, parameter :: iuhis=3             ! Time history file
+        integer, parameter :: iuhi_1=31           ! Mulitple Time history TA01A / _a.thy
+        integer, parameter :: iuhi_2=32           ! Mulitple Time history T01B / _b.thy
+        integer, parameter :: iuhi_3=33           ! Mulitple Time history T01C / _c.thy
+        integer, parameter :: iuhi_4=34           ! Mulitple Time history T01D / _d.thy
+        integer, parameter :: iuhi_5=35           ! Mulitple Time history T01E / _e.thy
+        integer, parameter :: iuhi_6=36           ! Mulitple Time history T01F / _f.thy
+        integer, parameter :: iuhi_7=37           ! Mulitple Time history T01G / _g.thy
+        integer, parameter :: iuhi_8=38           ! Mulitple Time history T01H / _h.thy
+        integer, parameter :: iuhi_9=39           ! Mulitple Time history TT01I / _i.thy
+        integer, parameter :: iugeo=4             ! State file .sta / Outp file .sty
+        integer, parameter :: icheckd=40          ! CHECK_DATA file (checkpoint restart)
+        integer, parameter :: iunoi=10            ! Noise reading _@.thy
+        integer, parameter :: iusc1=9             ! input scratch file (.tmp)
+        integer, parameter :: iusc2=30            ! input scratch file 2 (.tmp)
+        integer, parameter :: iusc3=50            ! Control file (.ctl)
+        integer, parameter :: iuinimap=21         ! Inimap file (.inimap)
+        integer, parameter :: IUDYNAIN=19833333   ! .dynain file
+        ! Debug files
+        integer, parameter :: idbg5=67            ! .adb, vdb,xdb file
+        integer, parameter :: idbg8=68            ! .tdb (temp) file
+        !
+        integer, parameter :: ifxm=25             ! .tmp file for flexible bodies (main)
+        integer, parameter :: ifxs=26             ! .tmp file for flexible bodies (secondary)
+        integer, parameter :: ifixm=23            ! Eigenvalue file
+        integer, parameter :: ifixm2=24           ! Eigenvalue file
+        integer, parameter :: ieigm=27            ! Eigenvalue file
         integer, parameter :: fchecksum = 4566
 
         ! IDs for cur_fil_c (C / write_routines.c )

@@ -48,6 +48,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod, only: IUDYNAIN
       USE ELBUFDEF_MOD   
       USE MATPARAM_DEF_MOD
       USE STACK_MOD

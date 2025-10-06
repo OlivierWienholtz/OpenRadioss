@@ -54,6 +54,7 @@ C-----------------------------------------------
       USE INOUTFILE_MOD
       USE TH_MOD
       USE NAMES_AND_TITLES_MOD, only:NAMES_AND_TITLES_,LTITLE
+      USE file_descriptor_mod, only: IUHIS
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------

@@ -196,7 +196,8 @@ C-----------------------------------------------
       USE TIME_HISTORY_MOD , only : TH_CLEAN
       USE SPMD_MOD
       use checksum_output_option_mod
-      use file_descriptor_mod,only : fd_bin_th,fd_bin_rd_rst,fd_bin_wr_rst           ! Contains the file descriptors for all files / same as unit_c.inc
+      use file_descriptor_mod,only : fd_bin_th,fd_bin_rd_rst,fd_bin_wr_rst,iuhis,iuhi_1,iuhi_2,iuhi_3,iuhi_4,iuhi_5,
+     *                               iuhi_6,iuhi_7,iuhi_8,iuhi_9           ! Contains the file descriptors for all files / same as unit_c.inc
       use coupling_adapter_mod
       USE ANIM_MOD
 C-----------------------------------------------
@@ -433,7 +434,6 @@ C------------------------------------------------------------------
       IOUT=7
       ISOLV=0
       ISTDI=5
-      IUGEO=4
 !       ----------------------------------------
 !       in order to open a file, need a FILE 
 !       pointer
@@ -445,34 +445,7 @@ C------------------------------------------------------------------
 !       42-->42+n for sectio (but I don't known
 !       the value of n)
 !       ----------------------------------------
-      IUHIS=3
-      IUHI(1)=31
-      IUHI(2)=32
-      IUHI(3)=33
-      IUHI(4)=34
-      IUHI(5)=35
-      IUHI(6)=36
-      IUHI(7)=37
-      IUHI(8)=38
-      IUHI(9)=39
-      ICHECKD = 40
-      ICHECKR = 41
-      IUINIMAP=21
-      IUREE=22
-      IFICM=23
-      IFICM2=24
-      IFXM=25
-      IFXS=26
-      IEIGM=27
-      IUSC1=9
-      IUSC2=30
-      IUSC3=50
-      IUSC4=70
-      IUNOI=10
-      IDBG5=67
-      IDBG8=68
       NODADT=0
-      IFICDS=103
       NIXX=5
       NIXIG3D=15
       NANIM2D=0
@@ -495,7 +468,6 @@ C------------------------------------------------------------------
       NRBE3L = 10
       NRBE2L = 12
       NSMSPCG=0
-      IUDYNAIN = 19833333
       ALEMUSCL_Param%I_MUSCL_OFF = 0
       IUTITLHIS=110
       IUTITLHI(1)=110
@@ -1633,7 +1605,7 @@ C   Multiple th files
      .             //'_'//CHRUN//'_'//ABC(1)//'.thy'
                LONG = 11
               ENDIF
-              IUNIT= IUHI(1)
+              IUNIT= IUHI_1
               IFIL= IUNIT
               IFILTITL = IUTITLHI(1)
               ITHFLAG = 1
@@ -1656,7 +1628,7 @@ C   Multiple th files
      .             //'_'//CHRUN//'_'//ABC(2)//'.thy'
                LONG = 11
               ENDIF
-              IUNIT= IUHI(2)
+              IUNIT= IUHI_2
               IFIL= IUNIT
               IFILTITL = IUTITLHI(2)
               ITHFLAG = 2
@@ -1679,7 +1651,7 @@ C   Multiple th files
      .             //'_'//CHRUN//'_'//ABC(3)//'.thy'
                LONG = 11
               ENDIF
-              IUNIT= IUHI(3)
+              IUNIT= IUHI_3
               IFIL= IUNIT
               IFILTITL = IUTITLHI(3)
               ITHFLAG = 3
@@ -1702,7 +1674,7 @@ C   Multiple th files
      .             //'_'//CHRUN//'_'//ABC(4)//'.thy'
                LONG = 11
               ENDIF
-              IUNIT= IUHI(4)
+              IUNIT= IUHI_4
               IFILTITL = IUTITLHI(4)
               IFIL= IUNIT
               ITHFLAG = 4
@@ -1725,7 +1697,7 @@ C   Multiple th files
      .             //'_'//CHRUN//'_'//ABC(5)//'.thy'
                LONG = 11
               ENDIF
-              IUNIT= IUHI(5)
+              IUNIT= IUHI_5
               IFIL= IUNIT
               IFILTITL = IUTITLHI(5)
               ITHFLAG = 5
@@ -1748,7 +1720,7 @@ C   Multiple th files
      .             //'_'//CHRUN//'_'//ABC(6)//'.thy'
                LONG = 11
               ENDIF
-              IUNIT= IUHI(6)
+              IUNIT= IUHI_6
               IFIL= IUNIT
               IFILTITL = IUTITLHI(6)
               ITHFLAG = 6
@@ -1771,7 +1743,7 @@ C   Multiple th files
      .             //'_'//CHRUN//'_'//ABC(7)//'.thy'
                LONG = 11
               ENDIF
-              IUNIT= IUHI(7)
+              IUNIT= IUHI_7
               IFIL= IUNIT
               IFILTITL = IUTITLHI(7)
               ITHFLAG = 7
@@ -1794,7 +1766,7 @@ C   Multiple th files
      .             //'_'//CHRUN//'_'//ABC(8)//'.thy'
                LONG = 11
               ENDIF
-              IUNIT= IUHI(8)
+              IUNIT= IUHI_8
               IFIL= IUNIT
               IFILTITL = IUTITLHI(8)
               ITHFLAG = 8
@@ -1817,7 +1789,7 @@ C   Multiple th files
      .             //'_'//CHRUN//'_'//ABC(9)//'.thy'
                LONG = 11
               ENDIF
-              IUNIT= IUHI(9)
+              IUNIT= IUHI_9
               IFIL= IUNIT
               IFILTITL = IUTITLHI(9)
               ITHFLAG = 9

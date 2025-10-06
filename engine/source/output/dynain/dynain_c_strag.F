@@ -47,6 +47,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod, only: IUDYNAIN
       USE ELBUFDEF_MOD   
       USE STACK_MOD
       USE DRAPE_MOD      
@@ -61,7 +62,6 @@ C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "mvsiz_p.inc"
 #include      "param_c.inc"
-#include      "units_c.inc"
 #include      "task_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s

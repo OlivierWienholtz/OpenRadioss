@@ -747,6 +747,7 @@ C-----------------------------------------------
               use damping_funct_ini_mod    , only : damping_funct_ini
               USE VIPER_MOD
               USE BCS_NRF_MOD , ONLY : BCS_NRF
+              USE file_descriptor_mod, ONLY : ICHECKD
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------

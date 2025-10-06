@@ -45,6 +45,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      USE file_descriptor_mod, ONLY : IUNOI
       USE MESSAGE_MOD
       USE INOUTFILE_MOD
       USE NAMES_AND_TITLES_MOD,only:NAMES_AND_TITLES_,LTITLE

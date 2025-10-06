@@ -40,6 +40,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod, only: IUDYNAIN
       USE ELBUFDEF_MOD 
       USE STATE_MOD
 C-----------------------------------------------
@@ -56,7 +57,6 @@ C-----------------------------------------------
 #include      "scr17_c.inc"
 #include      "spmd_c.inc"
 #include      "task_c.inc"
-#include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------

@@ -1679,6 +1679,8 @@ C
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      USE file_descriptor_mod, ONLY : IFXM,IFXS
+
       USE SCRATCHFILE_MOD
       USE FXB_MOD
 C-----------------------------------------------
@@ -1690,7 +1692,6 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com04_c.inc"
 #include      "scr05_c.inc"
-#include      "units_c.inc"
 #include      "fxbcom.inc"
 #include      "chara_c.inc"
 #include      "task_c.inc"
@@ -1819,6 +1820,7 @@ C   M o d u l e s
 C-----------------------------------------------
       USE EIG_MOD
       USE SCRATCHFILE_MOD
+      USE file_descriptor_mod, ONLY : IEIGM
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -1826,7 +1828,6 @@ C-----------------------------------------------
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "units_c.inc"
 #include      "com04_c.inc"
 #include      "scr05_c.inc"
 #include      "eigcom.inc"

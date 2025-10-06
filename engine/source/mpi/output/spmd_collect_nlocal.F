@@ -35,6 +35,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
      .                               POSI   ,NLOC_DMG,SIZP0       ,
      .                               NODGLOB,ITAB    )
 
+      use file_descriptor_mod, only : idbg5,iout,istdo
       USE INOUTFILE_MOD
       USE DEBUG_MOD
       USE NLOCAL_REG_MOD
@@ -54,7 +55,6 @@ C-----------------------------------------------
 #include      "task_c.inc"
 #include      "spmd_c.inc"
 #include      "chara_c.inc"
-#include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------

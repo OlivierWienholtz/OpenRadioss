@@ -30,13 +30,16 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
       SUBROUTINE OUTP_N_V(KEY,TEXT,LEN,VECT,NUMNOD,ITAB,ITABG,LENG,
      .                    NODGLOB,WEIGHT)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      use file_descriptor_mod , only : iugeo
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "units_c.inc"
 #include      "task_c.inc"
 #include      "scr16_c.inc"
 #include      "spmd_c.inc"
@@ -106,8 +109,8 @@ C
       SUBROUTINE OUTP_N_V2(FOPT ,NPBY ,NOM_SECT ,NOM_WALL )
 C-----------------------------------------------
 C   M o d u l e s
-C-----------------------------------------------
-C
+C----------------------------------------------- 
+      use file_descriptor_mod , only : iugeo
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -120,7 +123,6 @@ C-----------------------------------------------
 #include      "scr16_c.inc"
 #include      "scr17_c.inc"
 #include      "task_c.inc"
-#include      "units_c.inc"
 #include      "com01_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
@@ -242,13 +244,16 @@ C
       SUBROUTINE OUTP_N_VC(KEY,TEXT,LEN,VECT,NUMNOD,ITAB,ITABG,LENG,
      .                    NODGLOB,WEIGHT)
 C-----------------------------------------------
+C   M o d u l e s
+C----------------------------------------------- 
+      use file_descriptor_mod , only : iugeo
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"
 C-----------------------------------------------
 C   C o m m o n   B l o c k s
 C-----------------------------------------------
-#include      "units_c.inc"
 #include      "task_c.inc"
 #include      "scr16_c.inc"
 #include      "spmd_c.inc"

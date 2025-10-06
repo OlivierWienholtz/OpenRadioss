@@ -32,6 +32,10 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 !||====================================================================
       SUBROUTINE READ10P(IREC,NBC,KEY0,IV2,JJ)
 C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      use file_descriptor_mod, only: IUSC1, IUSC2
+C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
 #include      "implicit_f.inc"

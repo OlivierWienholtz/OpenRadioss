@@ -46,6 +46,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 !        * creation of the *.adb file
 !
 !$ENDCOMMENT
+      use file_descriptor_mod, only : idbg5,iout,istdo
       USE CHECKSUM_MOD, ONLY : DOUBLE_ARRAY_CHECKSUM
       USE INOUTFILE_MOD
       USE DEBUG_MOD
@@ -53,7 +54,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
-        USE SPMD_COMM_WORLD_MOD, ONLY : SPMD_COMM_WORLD
+      USE SPMD_COMM_WORLD_MOD, ONLY : SPMD_COMM_WORLD
 #include      "implicit_f.inc"
 C-----------------------------------------------------------------
 C   M e s s a g e   P a s s i n g
@@ -67,7 +68,6 @@ C-----------------------------------------------
 #include      "task_c.inc"
 #include      "spmd_c.inc"
 #include      "chara_c.inc"
-#include      "units_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s
 C-----------------------------------------------

@@ -27,7 +27,11 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 !||--- calls      -----------------------------------------------------
 !||    wciusc2   ../engine/source/input/wciusc2.F
 !||====================================================================
-      SUBROUTINE READ5P(IREC,NBC,KEY0,IV2,JJ)
+      SUBROUTINE READ5P(IREC,NBC,KEY0,IV2,JJ)     
+C-----------------------------------------------
+C   M o d u l e s
+C-----------------------------------------------
+      use file_descriptor_mod, only: IUSC1, IUSC2
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------

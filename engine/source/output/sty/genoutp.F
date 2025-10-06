@@ -82,6 +82,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod , only : iugeo,iout,istdo
       USE ELBUFDEF_MOD         
       USE STACK_MOD
       USE INOUTFILE_MOD
@@ -96,11 +97,9 @@ C   C o m m o n   B l o c k s
 C-----------------------------------------------
 #include      "com01_c.inc"
 #include      "com04_c.inc"
-!#include      "com06_c.inc"
 #include      "com08_c.inc"
 #include      "com09_c.inc"
 #include      "param_c.inc"
-#include      "units_c.inc"
 #include      "scr03_c.inc"
 #include      "scr11_c.inc"
 #include      "scr14_c.inc"

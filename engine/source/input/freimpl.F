@@ -41,6 +41,7 @@ Copyright>        commercial version may interest you: https://www.altair.com/ra
 C-----------------------------------------------
 C   M o d u l e s
 C-----------------------------------------------
+      use file_descriptor_mod, only: IUSC1, IUSC2
       USE IMP_DYNA
       USE IMP_KBCS
       USE IMP_PCG_PROJ

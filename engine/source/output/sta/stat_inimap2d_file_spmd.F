@@ -67,6 +67,7 @@ C-----------------------------------------------
       USE INOUTFILE_MOD
       USE MULTIMAT_PARAM_MOD , ONLY : M51_N0PHAS, M51_NVPHAS
       USE MATPARAM_DEF_MOD, ONLY : MATPARAM_STRUCT_
+      USE file_descriptor_mod, ONLY : iuinimap,iout,istdo
 C-----------------------------------------------
 C   I m p l i c i t   T y p e s
 C-----------------------------------------------
@@ -81,7 +82,6 @@ C-----------------------------------------------
 #include      "scr03_c.inc"
 #include      "scr17_c.inc"
 #include      "task_c.inc"
-#include      "units_c.inc"
 #include      "chara_c.inc"
 C-----------------------------------------------
 C   D u m m y   A r g u m e n t s

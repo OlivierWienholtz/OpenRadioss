@@ -89,11 +89,17 @@ C
         CALL MPI_INITIALIZED(KEY, IERR)
         VALID = 0
         COLOUR_ADDR = 0
-
+        write(6,'(A,I4,A,I4,A)') 'Before MPI_INIT: ',__FILE__, __LINE__
+        call my_flush(6)
         CALL MPI_INIT(IERROR)
+
+        write(6,'(A,I4,A,I4,A)') 'MPI_INIT done: ',__FILE__, __LINE__
+        call my_flush(6)
 
         CALL MPI_COMM_GET_ATTR(MPI_COMM_WORLD, MPI_APPNUM,
      *                            COLOUR_ADDR, VALID, IERROR)
+        write(6,'(A,I4,A,I4,A)') 'MPI_COMM_GET_ATTR: ',__FILE__, __LINE__
+        call my_flush(6)
 
         IF (IERROR == MPI_SUCCESS) THEN
            COLOUR = INT(COLOUR_ADDR)
@@ -102,12 +108,18 @@ C
         ENDIF
         call coupling_configure(coupling, TRIM(coupling%FILNAM))  
 
+        write(6,'(A,I4,A,I4,A)') 'after coupling_get_communicator: ',__FILE__, __LINE__
+        call my_flush(6)
+
 #ifndef WITH_CWIPI 
         CALL MPI_COMM_SPLIT(MPI_COMM_WORLD,COLOUR,KEY,
      *                      SPMD_COMM_WORLD,IERROR)
 #else
         SPMD_COMM_WORLD = coupling_get_communicator(coupling%adapter_ptr)
 #endif
+        write(6,'(A,I4,A,I4,A)') 'after coupling_get_communicator: ',__FILE__, __LINE__
+        call my_flush(6)
+
         CALL MPI_COMM_SIZE(SPMD_COMM_WORLD, NNODES, IERROR)
         CALL MPI_COMM_RANK(SPMD_COMM_WORLD, MYRANK, IERROR)
 
@@ -405,6 +417,10 @@ C--------------------------------------------------
 C     CONVENTIONS:
 C                  ispmd 0...NSPMD-1
 C--------------------------------------------------
+        write(6,'(A,I4,A,I4,A)') 'MAUVAISE ROUTINE !!!!!',__FILE__, __LINE__
+        call my_flush(6)
+        CALL MPI_INIT(IERROR)
+
       IF(ICAS==1) THEN
 C
         REAL = 4

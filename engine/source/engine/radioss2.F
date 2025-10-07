@@ -597,6 +597,8 @@ c
         BOOL_C = 0
         IF(OUTFILE_BOOL) BOOL_C = 1
 
+        write(6,'(A,A,I4)') 'CPU_info: ',__FILE__, __LINE__
+        call my_flush(6)
         CALL LF_CONVERT_C_FLAT(GOT_INPUT,ROOTN,LENROOTN,FNAME,LFNAME,
      .                         INAME, IERR,1024,LEN_TMP_NAME,TMP_NAME,
      .                         LEN_TMP_NAME2,TMP_NAME2)
@@ -619,14 +621,20 @@ C initialization bool variables for smp termination
 C--------------------------------------------------
       CALL INICOD
       CALL COQINI
+      write(6,'(A,A,I4)') 'CPU_info: ',__FILE__, __LINE__
+      call my_flush(6)
 C--------------------------------------------------
 C Get Hardware characteristics before init // (system incompatible with infiniband)
       CALL PRINTCPU(1)
 C Init NTHREAD(=NPROC) tasks
       coupling%FILNAM=ROOTN(1:LENROOTN)//'.cpl'
+      write(6,'(A,A,I4)') 'Inipar: ',__FILE__, __LINE__
+      call my_flush(6)
       CALL INIPAR(coupling,ITID,1,NNODES,INPUTNAM,GOT_INPUT,NBTASK)
 C KMP_STACKSIZE/OMP_STACKSIZE Environment variable check
       CALL SOLVER_STACKSIZE()
+      write(6,'(A,A,I4)') 'CPU_info: ',__FILE__, __LINE__
+      call my_flush(6)
 C--------------------------------------------------
 C some initializations to be done after INIPAR
 
@@ -659,6 +667,8 @@ C--------------------------------------------------
 C------------------------------------------------
 C     Standard input reading
 C------------------------------------------------
+      write(6,'(A,A,I4)') 'INP: ',__FILE__, __LINE__
+      call my_flush(6)
       CALL LECINP(IRUNN,IRFL,IRFE,H3D_DATA,FLAG_CST_AMS,DYNAIN_DATA,
      .            SENSORS,DT,OUTPUT,GLOB_THERM)
 

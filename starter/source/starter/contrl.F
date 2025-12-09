@@ -382,7 +382,7 @@ C  /ARCH option not defined, IARCH= IBUILTIN & Grpsiz = ARCHINFO(IBUILTIN)
         IARCH = IBUILTIN
         NVSIZ = ARCHINFO(IBUILTIN,1)
         IVECTOR = ARCHINFO(IBUILTIN,2)
-    
+        NVSIZ=10000
       ! ---------------------------
       ! -grp_size hidden option
       IF(GRP_SIZE_BOOL) THEN

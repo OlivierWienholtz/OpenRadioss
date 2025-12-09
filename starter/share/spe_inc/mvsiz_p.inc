@@ -21,5 +21,5 @@
       !Copyright>        software under a commercial license.  Contact Altair to discuss further if the 
       !Copyright>        commercial version may interest you: https://www.altair.com/radioss/.    
        INTEGER MVSIZ
-       PARAMETER (MVSIZ = 512)
+       PARAMETER (MVSIZ = 10001)
 

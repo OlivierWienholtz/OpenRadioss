@@ -122,7 +122,7 @@
           integer, dimension(6)  :: ii
           integer, dimension(nel)  :: iprop,sid,imat
           integer, dimension(nel,4)  :: ncj
-          real(kind=WP),dimension(mvsiz,8) :: xx,yy,zz,ux,uy,uz,vx,vy,vz,vrx,vry,vrz,fx,fy,fz,mx,my,mz
+          real(kind=WP),dimension(nel,nnod) :: xx,yy,zz,ux,uy,uz,vx,vy,vz,vrx,vry,vrz,fx,fy,fz,mx,my,mz
           real(kind=WP),dimension(mvsiz)   :: area,mass,dtx,iner,sti,stir,viscm,viscr,rx,ry,rz,sx,sy,sz
           real(kind=WP),dimension(nel)     :: eint_loc,vol_loc,off_loc,rho_loc,thk,fr_w_e
           real(kind=WP),dimension(6,nel)   :: sig_loc
@@ -194,31 +194,14 @@
          rho_loc(i)   = rho0
        enddo
       if (userl_avail>0) then
-          call eng_userlib_suser(igtyp,                                    &
-       nel    ,nuvar        ,iprop  ,imat  ,sid  ,time   ,dt1    ,         &
-       eint_loc,vol_loc,uvar,fr_w_e,off_loc,rho_loc,sig_loc      ,         &
-       xx(1,1),xx(1,2),xx(1,3),xx(1,4),xx(1,5),xx(1,6),xx(1,7),xx(1,8),    &
-       yy(1,1),yy(1,2),yy(1,3),yy(1,4),yy(1,5),yy(1,6),yy(1,7),yy(1,8),    &
-       zz(1,1),zz(1,2),zz(1,3),zz(1,4),zz(1,5),zz(1,6),zz(1,7),zz(1,8),    &
-       ux(1,1),ux(1,2),ux(1,3),ux(1,4),ux(1,5),ux(1,6),ux(1,7),ux(1,8),    &
-       uy(1,1),uy(1,2),uy(1,3),uy(1,4),uy(1,5),uy(1,6),uy(1,7),uy(1,8),    &
-       uz(1,1),uz(1,2),uz(1,3),uz(1,4),uz(1,5),uz(1,6),uz(1,7),uz(1,8),    &
-       vx(1,1),vx(1,2),vx(1,3),vx(1,4),vx(1,5),vx(1,6),vx(1,7),vx(1,8),    &
-       vy(1,1),vy(1,2),vy(1,3),vy(1,4),vy(1,5),vy(1,6),vy(1,7),vy(1,8),    &
-       vz(1,1),vz(1,2),vz(1,3),vz(1,4),vz(1,5),vz(1,6),vz(1,7),vz(1,8),    &
-       vrx(1,1),vrx(1,2),vrx(1,3),vrx(1,4),                                &
-                                   vrx(1,5),vrx(1,6),vrx(1,7),vrx(1,8),    &
-       vry(1,1),vry(1,2),vry(1,3),vry(1,4),                                &
-                                   vry(1,5),vry(1,6),vry(1,7),vry(1,8),    &
-       vrz(1,1),vrz(1,2),vrz(1,3),vrz(1,4),                                &
-                                   vrz(1,5),vrz(1,6),vrz(1,7),vrz(1,8),    &
-       fx(1,1),fx(1,2),fx(1,3),fx(1,4),fx(1,5),fx(1,6),fx(1,7),fx(1,8),    &
-       fy(1,1),fy(1,2),fy(1,3),fy(1,4),fy(1,5),fy(1,6),fy(1,7),fy(1,8),    &
-       fz(1,1),fz(1,2),fz(1,3),fz(1,4),fz(1,5),fz(1,6),fz(1,7),fz(1,8),    &
-       mx(1,1),mx(1,2),mx(1,3),mx(1,4),mx(1,5),mx(1,6),mx(1,7),mx(1,8),    &
-       my(1,1),my(1,2),my(1,3),my(1,4),my(1,5),my(1,6),my(1,7),my(1,8),    &
-       mz(1,1),mz(1,2),mz(1,3),mz(1,4),mz(1,5),mz(1,6),mz(1,7),mz(1,8),    &
-       sti    ,stir   ,viscm  ,viscr) ! add mass_el(replacing rho_loc?) iner_el,thk_new,dt_elem  
+          call engine_userlib_cuser(nel    ,nnod                                  , &
+                 nuvar    ,iprop   ,imat   ,sid     ,time    ,dt1                 , &
+                 eint_loc ,vol_loc ,uvar   ,fr_w_e  ,off_loc ,rho_loc   ,sig_loc  , &
+                 xx       ,yy       ,zz     ,ux     ,uy      ,uz                  , &
+                 vx       ,vy       ,vz     ,vrx    ,vry     ,vrz                 , &
+                 fx       ,fy       ,fz     ,mx     ,my      ,mz                  , &
+                 sti      ,stir     ,viscm  ,viscr) ! add mass_el(replacing rho_loc?) iner_el,thk_new,dt_elem  
+
        do i=1,nel
          gbuf%eint(i) = eint_loc(i)
          gbuf%vol(i) = vol_loc(i)

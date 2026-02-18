@@ -289,9 +289,9 @@ void (*eng_set_law_user_var_2) (     my_real*VAR01,int *SIZVAR01,my_real*VAR02,i
          my_real*VAR96,int *SIZVAR96,my_real*VAR97,int *SIZVAR97,my_real*VAR98,int *SIZVAR98,my_real*VAR99,int *SIZVAR99);
 
          
-/* ------------ */
-/* User strings */
-/* ------------ */
+/* ----------- */
+/* User solids */
+/* ----------- */
 void  (*eng_suser)(int*ITYP,
       int*NEL     ,int*NUVAR   ,int*IPROP  ,int*IMAT  ,int*SOLID_ID,my_real *TIME  ,my_real *TIMESTEP,
       my_real *EINT   ,my_real *VOL    ,my_real *UVAR   ,my_real *FR_WAVE,my_real *OFF    ,my_real *RHO    ,my_real *SIG    ,
@@ -315,6 +315,16 @@ void  (*eng_suser)(int*ITYP,
       my_real *MZ1    ,my_real *MZ2    ,my_real *MZ3    ,my_real *MZ4    ,my_real *MZ5    ,my_real *MZ6    ,my_real *MZ7    ,my_real *MZ8    ,
       my_real *STIFM  ,my_real *STIFR  ,my_real *VISCM  ,my_real *VISCR  );
 
+/* ----------- */
+/* User shells */
+/* ----------- */
+void  (*eng_cuser)(
+      int *NEL ,int* nnod    ,int*NUVAR   ,int*IPROP  ,int*IMAT  ,int*SOLID_ID,my_real *TIME  ,my_real *TIMESTEP,
+      my_real *EINT   ,my_real *VOL    ,my_real *UVAR   ,my_real *FR_WAVE ,my_real *OFF   ,my_real *RHO    ,my_real *SIG    ,
+      my_real *XX     ,my_real *YY     ,my_real *ZZ     ,my_real *UX      ,my_real *UY    ,my_real *UZ     ,
+      my_real *VX     ,my_real *VY     ,my_real *VZ     ,my_real *VRX     ,my_real *VRY   ,my_real *VRZ    ,
+      my_real *FX     ,my_real *FY     ,my_real *FZ     ,my_real *MX      ,my_real *MY    ,my_real *MZ     ,
+      my_real *STIFM  ,my_real *STIFR  ,my_real *VISCM  ,my_real *VISCR  );
 
 /* ------------------------- */
 /* T2 INTERFACE USER RUPTURE */
@@ -368,7 +378,7 @@ void eng_array_init_(){
 
 }
 
-#if CPP_mach == CPP_w95 || CPP_mach == CPP_win64_spmd || CPP_mach == CPP_p4win64_spmd || CPP_mach == CPP_wnt || CPP_mach == CPP_wmr || CPP_mach == CPP_p4win64 || CPP_mach == CPP_p4win32
+#ifdef _WIN64
 void init_callback(void ** callback_array);
 void userlib_init_callback();
 
@@ -596,6 +606,12 @@ void _FCALL DYN_USERLIB_INIT (char * libname, int *size, int * userlib_avail, in
 //         if (!engine_user_initialize) err=err+1;
      }
     
+    sprintf(rname,"ENG_CUSER");
+    eng_cuser=(void*)GetProcAddress(userlibhandler,rname);
+    if(eng_cuser) {
+         dlib_array[3]=1;
+    }else{
+      printf("CUSER load unsuccessful\n"); }
 
 
      if (err==0)*userlib_avail = 1;
@@ -1851,7 +1867,6 @@ void   eng_userlib_ruser_(int *ITYP,
       }
 }
 
-
 void _FCALL ENG_USERLIB_SUSER(int*ITYP,
       int*NEL     ,int*NUVAR   ,int*IPROP  ,int*IMAT  ,int*SOLID_ID,my_real *TIME  ,my_real *TIMESTEP,
       my_real *EINT   ,my_real *VOL    ,my_real *UVAR   ,my_real *FR_WAVE,my_real *OFF    ,my_real *RHO    ,my_real *SIG    ,
@@ -1901,7 +1916,6 @@ void _FCALL ENG_USERLIB_SUSER(int*ITYP,
       }
 }
 
-
 void eng_userlib_suser_(int*ITYP,
       int*NEL     ,int*NUVAR   ,int*IPROP  ,int*IMAT  ,int*SOLID_ID,my_real *TIME  ,my_real *TIMESTEP,
       my_real *EINT   ,my_real *VOL    ,my_real *UVAR   ,my_real *FR_WAVE,my_real *OFF    ,my_real *RHO    ,my_real *SIG    ,
@@ -1950,6 +1964,28 @@ void eng_userlib_suser_(int*ITYP,
       STIFM  ,STIFR  ,VISCM  ,VISCR  );
       }
 }
+
+void _FCALL ENGINE_USERLIB_CUSER(
+      int*NEL         ,int * NNOD       ,int*NUVAR   ,int*IPROP  ,int*IMAT  ,int*SOLID_ID,my_real *TIME  ,my_real *TIMESTEP,
+      my_real *EINT   ,my_real *VOL    ,my_real *UVAR   ,my_real *FR_WAVE,my_real *OFF    ,my_real *RHO    ,my_real *SIG    ,
+      my_real *XX     ,my_real *YY     ,my_real *ZZ     ,my_real *UX     ,my_real *UY     ,my_real *UZ     ,
+      my_real *VX     ,my_real *VY     ,my_real *VZ     ,my_real *VRX    ,my_real *VRY    ,my_real *VRZ    ,
+      my_real *FX     ,my_real *FY     ,my_real *FZ     ,my_real *MX     ,my_real *MY     ,my_real *MZ     ,
+      my_real *STIFM  ,my_real *STIFR  ,my_real *VISCM  ,my_real *VISCR  ){
+      
+      if (eng_cuser){
+         (*eng_cuser)(
+             NEL  ,NNOD,NUVAR  ,IPROP  ,IMAT    ,SOLID_ID ,TIME  ,TIMESTEP,
+             EINT      ,VOL    ,UVAR   ,FR_WAVE ,OFF      ,RHO   ,SIG     ,
+             XX        ,YY     ,ZZ     ,UX      ,UY       ,UZ             ,
+             VX        ,VY     ,VZ     ,VRX     ,VRY      ,VRZ            ,
+             FX        ,FY     ,FZ     ,MX      ,MY       ,MZ             ,
+             STIFM     ,STIFR  ,VISCM  ,VISCR  );
+      }else{
+        printf("ENG_USERLIB_CUSER is not defined in the user library\n");
+      }
+}
+
 
 /* ------------------------------ */
 /* Interface type 2 / USERRUPTURE */
